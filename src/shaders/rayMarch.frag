@@ -40,7 +40,7 @@ vec2 map( in vec3 pos )
 		float sphere2 = sdSphere(pos-vec3( 0.5, 0.8, 0.0), sphere2R );
 		float sphere3 = sdSphere(pos-vec3( 0.3, 0.0, 0.0), sphere3R );
 		float sphere4 = sdSphere(pos-vec3( -0.3, 1.2, 0.0), sphere4R );
-		vec2 res = vec2(opS(opS(opS(sphere1, sphere2), sphere3),sphere4), 124.0);
+		vec2 res = vec2(opS(opS(opS(sphere1, sphere2), sphere3),sphere4), 100.0);
 		/*
     res = opU( res, vec2( sdBox(       pos-vec3( 1.0,0.25, 0.0), vec3(0.25) ), 20.0 ) );
     res = opU( res, vec2( udRoundBox(  pos-vec3( 1.0,0.25, 1.0), vec3(0.15), 0.1 ), 41.0 ) );
@@ -83,21 +83,21 @@ vec2 castRay( in vec3 ro, in vec3 rd )
     float tmin = 1.0;
     float tmax = 20.0;
 
-#if 0
-    float tp1 = (0.0-ro.y)/rd.y; if( tp1>0.0 ) tmax = min( tmax, tp1 );
-    float tp2 = (1.6-ro.y)/rd.y; if( tp2>0.0 ) { if( ro.y>1.6 ) tmin = max( tmin, tp2 );
-                                                 else           tmax = min( tmax, tp2 ); }
-#endif
+		#if 0
+		    float tp1 = (0.0-ro.y)/rd.y; if( tp1>0.0 ) tmax = min( tmax, tp1 );
+		    float tp2 = (1.6-ro.y)/rd.y; if( tp2>0.0 ) { if( ro.y>1.6 ) tmin = max( tmin, tp2 );
+				                                           else           tmax = min( tmax, tp2 ); }
+		#endif
 
-	float precis = 0.002;
+		float precis = 0.002;
     float t = tmin;
     float m = -1.0;
-    for( int i=0; i<50; i++ )
+    for( int i=0; i<25; i++ )
     {
 	    vec2 res = map( ro+rd*t );
-        if( res.x<precis || t>tmax ) break;
-        t += res.x;
-	    m = res.y;
+      if( res.x<precis || t>tmax ) break;
+      t += res.x;
+    	m = res.y;
     }
 
     if( t>tmax ) m=-1.0;
@@ -117,7 +117,6 @@ float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax )
         if( h<0.001 || t>tmax ) break;
     }
     return clamp( res, 0.0, 1.0 );
-
 }
 
 vec3 calcNormal( in vec3 pos )
@@ -145,15 +144,12 @@ float calcAO( in vec3 pos, in vec3 nor )
     return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );
 }
 
-
-
-
 vec3 render( in vec3 ro, in vec3 rd )
 {
     vec3 col = vec3(0.7, 0.9, 1.0) +rd.y*0.8;
     vec2 res = castRay(ro,rd);
     float t = res.x;
-	float m = res.y;
+		float m = res.y;
     if( m>-0.5 )
     {
         vec3 pos = ro + t*rd;
@@ -161,11 +157,10 @@ vec3 render( in vec3 ro, in vec3 rd )
         vec3 ref = reflect( rd, nor );
 
         // material
-		col = 0.45 + 0.3*sin( vec3(0.05,0.08,0.10)*(m-1.0) );
+				col = 0.45 + 0.3*sin( vec3(0.05,0.08,0.10)*(m-1.0) );
 
         if( m<1.5 )
         {
-
             float f = mod( floor(5.0*pos.z) + floor(5.0*pos.x), 2.0);
             col = 0.4 + 0.1*f*vec3(1.0);
         }
@@ -184,21 +179,20 @@ vec3 render( in vec3 ro, in vec3 rd )
 				float fre = pow( clamp(1.0+dot(nor,rd),0.0,1.0), 2.0 );
 				float spe = pow(clamp( dot( ref, lig ), 0.0, 1.0 ),16.0);
 
-
         //
 				if(toggleSoftShadows){
 					dif *= softshadow( pos, lig, 0.02, 2.5 );
 	        dom *= softshadow( pos, ref, 0.02, 2.5 );
 				}
 
-		vec3 lin = vec3(0.0);
+				vec3 lin = vec3(0.0);
         lin += 1.20*dif*vec3(1.00,0.85,0.55);
-		lin += 1.20*spe*vec3(1.00,0.85,0.55)*dif;
+				lin += 1.20*spe*vec3(1.00,0.85,0.55)*dif;
         lin += 0.20*amb*vec3(0.50,0.70,1.00)*occ;
         lin += 0.30*dom*vec3(0.50,0.70,1.00)*occ;
         lin += 0.30*bac*vec3(0.25,0.25,0.25)*occ;
         lin += 0.40*fre*vec3(1.00,1.00,1.00)*occ;
-		col = col*lin;
+				col = col*lin;
 
     	col = mix( col, vec3(0.8,0.9,1.0), 1.0-exp( -0.002*t*t ) );
 
@@ -219,9 +213,9 @@ mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
 	vec2 q = fragCoord.xy/iResolution.xy;
-    vec2 p = -1.0+2.0*q;
+  vec2 p = -1.0+2.0*q;
 	p.x *= iResolution.x/iResolution.y;
-    vec2 mo = iMouse.xy/iResolution.xy;
+  vec2 mo = iMouse.xy/iResolution.xy;
 
 	float time = 15.0 + iGlobalTime;
 
@@ -230,17 +224,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	vec3 ta = vec3( -0.5, -0.4, 0.5 );
 
 	// camera-to-world transformation
-    mat3 ca = setCamera( ro, ta, 0.0 );
+  mat3 ca = setCamera( ro, ta, 0.0 );
 
-    // ray direction
+  // ray direction
 	vec3 rd = ca * normalize( vec3(p.xy,2.0) );
 
-    // render
-    vec3 col = render( ro, rd );
+  // render
+  vec3 col = render( ro, rd );
 
 	col = pow( col, vec3(0.4545) );
 
-    fragColor=vec4( col, 1.0 );
+  fragColor=vec4( col, 1.0 );
 }
 
 

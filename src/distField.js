@@ -3,13 +3,14 @@ var glslify = require('glslify')
 var mouse = require('mouse-change')(function () {})
 const {frame, clear, buffer, texture} = regl
 
-let pixels = texture()
-
+let frameTime = 30
 let toggleSoftShadows = false
 let toggleAO = false
 
+let pixels = texture()
+
 const drawFSO = regl({
-  frag: glslify(__dirname + '/shaders/rayMarch.frag'),
+  frag: glslify(__dirname + '/shaders/rayMarch2.frag'),
   vert: glslify(__dirname + '/shaders/feedback.vert'),
 
   attributes: {
@@ -26,7 +27,7 @@ const drawFSO = regl({
       mouse.x * pixelRatio,
       height - mouse.y * pixelRatio
     ],
-    iGlobalTime: (args, batchId, {count}) => 0.01 * count,
+    iGlobalTime: (args, batchId, {count}) => 0.01 * count+15,
     toggleSoftShadows: () => toggleSoftShadows,
     toggleAO: () => toggleAO
   },
@@ -34,7 +35,7 @@ const drawFSO = regl({
   count: 3
 })
 
-/*frame(function () {
+function drawFrame () {
   clear({
     color: [0, 0, 0, 1]
   })
@@ -44,11 +45,22 @@ const drawFSO = regl({
   pixels({
     copy: true
   })
-})*/
-setInterval(function () {
-  //toggleSoftShadows = ! toggleSoftShadows
-  clear({
-    color: [0, 0, 0, 1]
-  })
-  drawFSO()
-}, 90);
+}
+
+function controlledFrame (cb){
+  let frameState = {count: 0, t: performance.now(), dt: undefined}
+
+  setInterval(function () {
+    // ugh mutating
+    var now = performance.now()
+    frameState.dt = now - frameState.t
+    frameState.t = now
+    frameState.count += 1
+
+    // console.log(frameState.count, frameState.t, frameState.dt)
+    cb(frameState.count, frameState.t, frameState.dt)
+  }, frameTime)
+}
+
+frame(drawFrame)
+//controlledFrame(drawFrame)
