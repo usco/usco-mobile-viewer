@@ -9,14 +9,16 @@ var glslify = require('glslify')
 const positions = [
   2, 2, 0,
   1, 2, -2,
-  0, 1, -2,
-  ]
-let objMat = mat4.identity([])//create([])
+  0, 1, -2
+]
+let objMat = mat4.identity([])// create([])
 mat4.translate(objMat, objMat, [1, 10, 20])
 
-const camSpeed = 5.2
+let bunnyMat = mat4.identity([])// create([])
 
-const drawBunny = regl({
+const camSpeed = 0.2
+
+const drawTri = regl({
   vert: glslify(__dirname + '/shaders/base.vert'),
   frag: glslify(__dirname + '/shaders/base.frag'),
 
@@ -24,22 +26,51 @@ const drawBunny = regl({
     position: buffer(positions)
   },
   count: 3,
-  // elements: elements(bunny.cells),
 
   uniforms: {
-    model: objMat,//identity([]),
-    view: (args, batchId, stats) => {
-      const t = 0.01 * stats.count * 1 / camSpeed
-      return lookAt([],
+    model: objMat, // identity([]),
+    view: (props, context) => {
+      const t = 0.01 * context.count * camSpeed
+      return mat4.lookAt([],
         [30 * Math.cos(t), 2.5, 30 * Math.sin(t)],
         [0, 2.5, 0],
         [0, 1, 0])
     },
-    projection: (args, batchId, stats) => perspective([],
+    projection: (props, context) => {
+      return perspective([],
         Math.PI / 4,
-        stats.width / stats.height,
+        context.viewportWidth / context.viewportHeight,
         0.01,
         1000)
+    }
+  }
+})
+
+const drawBunny = regl({
+  vert: glslify(__dirname + '/shaders/base.vert'),
+  frag: glslify(__dirname + '/shaders/base.frag'),
+
+  attributes: {
+    position: buffer(bunny.positions)
+  },
+   elements: elements(bunny.cells),
+
+  uniforms: {
+    model: bunnyMat, // identity([]),
+    view: (props, context) => {
+      const t = 0.01 * context.count * camSpeed
+      return mat4.lookAt([],
+        [30 * Math.cos(t), 2.5, 30 * Math.sin(t)],
+        [0, 2.5, 0],
+        [0, 1, 0])
+    },
+    projection: (props, context) => {
+      return perspective([],
+        Math.PI / 4,
+        context.viewportWidth / context.viewportHeight,
+        0.01,
+        1000)
+    }
   }
 })
 
@@ -51,19 +82,5 @@ frame(() => {
   })
 
   drawBunny()
+  drawTri()
 })
-
-/*view: (props, context) => {
-      var t = 0.01 * context.count
-      return mat4.lookAt([],
-        [30 * Math.cos(t), 2.5, 30 * Math.sin(t)],
-        [0, 2.5, 0],
-        [0, 1, 0])
-    },
-    projection: (props, context) => {
-      return mat4.perspective([],
-        Math.PI / 4,
-        context.viewportWidth / context.viewportHeight,
-        0.01,
-        1000)
-    }*/
