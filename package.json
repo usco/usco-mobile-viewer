@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify src/feedback.js -o dist/index.js -t [ babelify]",
     "watch": "watchify src/bunny_6.js -o dist/index.js -t [ babelify]",
-    "start-dev": "budo src/distField.js --port=8080 --live -- -t babelify"
+    "start-dev": "budo src/bunny_6.js --port=8080 --live -- -t babelify"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
