@@ -6,29 +6,21 @@ import bunny from 'bunny'
 //import glslify from 'glslify'
 var glslify = require('glslify')
 
-const positions = [
-  2, 2, 0,
-  1, 2, -2,
-  0, 1, -2
-]
-let objMat = mat4.identity([])// create([])
-mat4.translate(objMat, objMat, [1, 10, 20])
-
-let bunnyMat = mat4.identity([])// create([])
 
 const camSpeed = 0.2
 
 function drawModel(data) {
-  const {positions, cells, count, mat, color} = data
+  //const {positions, cells, mat, color, pos} = data
+  const {geometry, transforms} = data
   let params = {
     vert: glslify(__dirname + '/shaders/base.vert'),
     frag: glslify(__dirname + '/shaders/base.frag'),
 
     attributes: {
-      position: buffer(positions)
+      position: buffer(geometry.positions)
     },
     uniforms: {
-      model: mat,
+      model: transforms.mat,
       view: (props, context) => {
         const t = 0.01 * context.count * camSpeed
         return mat4.lookAt([],
@@ -42,39 +34,71 @@ function drawModel(data) {
           context.viewportWidth / context.viewportHeight,
           0.01,
           1000)
-      }
-    },
+      },
 
-    offset: prop('offset')
+      'lights[0].color': [1, 0, 0],
+      'lights[1].color': [0, 1, 0],
+      'lights[2].color': [0, 0, 1],
+      'lights[3].color': [1, 1, 0],
+
+      color: prop('color'),
+      pos: prop('pos'),
+      rot: prop('rot'),
+      sca: prop('sca')
+    }
   }
-  if (cells) {
+  if (geometry.cells) {
     //params = Object.assign(params, {elements: elements(cells)})
-    params.elements = elements(cells)
+    params.elements = elements(geometry.cells)
   }
-  if (count) {
-    //params = Object.assign(params, {count})
-    params.count = count
+  else{
+    params.count = geometry.positions.length/3
   }
-  if (color) {
-    let uniforms = Object.assign(params.uniforms, {color})
-    //params = Object.assign(params, {uniforms})
-    params.uniforms = uniforms
-  }
+  const {pos, rot, sca} = data.transforms
+  const {color} = data
+  return regl(params)({pos, color})
+}
+///per model data
+let triMat = mat4.identity([])// create([])
+mat4.translate(triMat, triMat, [1, 10, 20])
 
-  return regl(params)({offset: [-1, -1]})
+const triData = {
+  geometry:{
+    positions :[
+      2, 2, 0,
+      1, 2, -2,
+      0, 1, -2
+    ],
+  },
+  transforms:{
+    pos:[0,0,0],
+    rot:[0,0,0],
+    sca:[1,1,1],
+    mat:triMat
+  },
+  color:[1,0,0,0.5]
+}
+
+let bunnyMat = mat4.identity([])// create([])
+const bunnyData = {
+  geometry:bunny,
+  transforms:{
+    pos:[0 ,0 ,0],
+    rot:[0 ,0 ,0],
+    sca:[1 ,1 ,1],
+    mat:bunnyMat
+  },
+  color:[0,1,0,0.5]
 }
 
 // do the drawing
-//
 frame((props, context) => {
   const count = context.count
   clear({
     depth: 1,
-    color: [0, 0, 0, 1]
+    color: [1, 1, 1, 1]
   })
 
-  //drawBunny()
-  //drawTri()
   const color =   [
       Math.sin(0.001 * count),
       Math.cos(0.02 * count),
@@ -82,6 +106,7 @@ frame((props, context) => {
       1
     ]
 
-  drawModel({positions, count: 3, mat: objMat, color})
-  drawModel({positions: bunny.positions, cells: bunny.cells, mat: bunnyMat, color})
+  drawModel(triData)
+  drawModel(bunnyData)
+  //drawModel({positions: bunny.positions, cells: bunny.cells, mat: bunnyMat, color})
 })
