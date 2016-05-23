@@ -17,11 +17,11 @@ void main() {
   //gl_FragColor = vec4(abs(vnormal), 1.0)*0.5+color*0.5;
 
   vec3 normal = normalize(fragNormal);
-  vec3 light = vec3(0, 0, 0);
+  vec3 light = vec3(0.3); // ambient ??
   for (int i = 0; i < lightsNb; ++i) {
      vec3 lightDir = normalize(lights[i].position - fragPosition);
      float diffuse = max(0.0, dot(lightDir, normal));
      light += diffuse * lights[i].color * lights[i].intensity;
   }
-  gl_FragColor = vec4(light, 1)*0.5+color*0.5;
+  gl_FragColor = mix( vec4(light, 1), color, 0.6);
 }

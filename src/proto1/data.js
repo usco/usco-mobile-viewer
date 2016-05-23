@@ -37,6 +37,17 @@ const bunnyData = {
   selected: true
 }
 
+const bunnyData3 = {
+  geometry: bunny,
+  transforms: {
+    pos: [10, -12.989, 3],
+    rot: [0, 0, 0],
+    sca: [1, 1, 1]
+  },
+  color: [0, 1, 0, 0.5],
+  selected: false
+}
+
 const bunnyData2 = {
   geometry: bunny,
   transforms: {
@@ -63,7 +74,7 @@ const sceneData = {
   controls: [
     {
       up: [0, 0, 1],
-      rotateSpeed: 2.0,
+      rotateSpeed: 0.2,
       panSpeed: 2.0,
       zoomSpeed: 2.0,
       autoRotate: {
@@ -76,4 +87,4 @@ const sceneData = {
   ]
 }
 
-export {bunnyData, bunnyData2, sceneData}
+export {bunnyData, bunnyData2, bunnyData3, sceneData}

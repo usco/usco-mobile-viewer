@@ -18,7 +18,7 @@
 - do 'picking' *MEDIUM*
 - work server side *EASY*
 - object outlines (hopefully BETTER than the current ones) *MEDIUM*
-- lines (for gcode etc) *TRIVIAL*
+- lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering
 - what to do with all 'visual helpers' ? *HARD*
 - shadows *HARD*
 
