@@ -2,6 +2,7 @@ var regl = require('regl')()
 import { identity, perspective, lookAt } from 'gl-mat4'
 import mat4 from 'gl-mat4'
 const {frame, clear, buffer, elements, prop} = regl
+import normals from 'angle-normals'
 import bunny from 'bunny'
 // import glslify from 'glslify'
 var glslify = require('glslify')
@@ -16,7 +17,8 @@ function drawModel (data) {
     frag: glslify(__dirname + '/shaders/base.frag'),
 
     attributes: {
-      position: buffer(geometry.positions)
+      position: buffer(geometry.positions),
+      normal: buffer(normals(geometry.cells, geometry.positions))
     },
     uniforms: {
       model: prop('mat'),//transforms.mat,
@@ -35,10 +37,22 @@ function drawModel (data) {
           1000)
       },
 
+      //lighting
       'lights[0].color': [1, 0, 0],
+      'lights[0].intensity': 0.2,
+      'lights[0].position': [10, 10, 10],
+
       'lights[1].color': [0, 1, 0],
+      'lights[1].intensity': 1,
+      'lights[1].position': [-10, 10, 10],
+
       'lights[2].color': [0, 0, 1],
+      'lights[2].intensity': 1,
+      'lights[2].position': [10, 20, 10],
+
       'lights[3].color': [1, 1, 0],
+      'lights[3].intensity': 1,
+      'lights[3].position': [10, 10, 0],
 
       color: prop('color'),
       pos: prop('pos'),
@@ -59,6 +73,9 @@ function drawModel (data) {
   let modelMat = mat4.identity([])
   mat4.translate(modelMat, modelMat, [pos[0], pos[2], pos[1]])//z up
   //mat4.rotate(modelMat, modelMat, rad:Number, axis:vec3)
+  mat4.rotateX(modelMat, modelMat, rot[0])
+  mat4.rotateY(modelMat, modelMat, rot[2])
+  mat4.rotateZ(modelMat, modelMat, rot[1])
   mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
 
   //test for batches
@@ -82,11 +99,16 @@ mat4.translate(triMat, triMat, [1, 10, 20])
 
 const triData = {
   geometry: {
-    positions: [
+    positions: /*[
       2, 2, 0,
       1, 2, -2,
       0, 1, -2
-    ],
+    ],*/
+    new Float32Array([// works too!
+      2, 2, 0,
+      1, 2, -2,
+      0, 1, -2
+    ])
   },
   transforms: {
     pos: [0, 0, 0],
@@ -111,7 +133,7 @@ const bunnyData2 = {
   transforms: {
     pos: [0, 0, 0],
     rot: [0, 0, 0],
-    sca: [-1, 1, -1]
+    sca: [1, 1, -1]
   },
   color: [0, 1, 1, 0.5]
 }
@@ -131,7 +153,7 @@ frame((props, context) => {
     1
   ]
 
-  drawModel(triData)
+  //drawModel(triData)
   drawModel(bunnyData)
   drawModel(bunnyData2)
 
