@@ -5,14 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify src/feedback.js -o dist/index.js -t [ babelify]",
+    "build": "browserify src/proto1 -o dist/index.js -t [ babelify]",
     "watch": "watchify src/model.js -o dist/index.js -t [ babelify]",
-    "start-dev": "budo src/proto1/model.js --port=8080 --live -- -t babelify"
+    "start-dev": "budo src/proto1 --port=8080 --live -- -t babelify"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
   "dependencies": {
+    "angle-normals": "^1.0.0",
     "bunny": "^1.0.1",
+    "camera-picking-ray": "^1.0.1",
     "gl-mat4": "^1.1.4",
     "glslify": "^5.0.2",
     "mouse-change": "^1.2.1",

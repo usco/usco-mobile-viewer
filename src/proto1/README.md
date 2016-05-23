@@ -5,14 +5,22 @@
 - have identical controls (camera controls)
 - replicate (need not match 100%) object transform controls
 - replicate (need not match 100%) the 'grid'
-- be able to do 'picking'
+- do 'picking'
 - work server side
+- object outlines (hopefully BETTER than the current ones)
+- lines (for gcode etc)
+- shadows (less important, waaay harder than all the rest ?)
 
 ##TODO/ to investigate:
-- picking
-- porting camera controls
-- porting grid
-- what to do with all 'visual helpers' ?
+- have identical controls (camera controls) *MEDIUM*
+- replicate (need not match 100%) object transform controls *HARD*
+- replicate (need not match 100%) the 'grid' *MEDIUM*
+- do 'picking' *MEDIUM*
+- work server side *EASY*
+- object outlines (hopefully BETTER than the current ones) *MEDIUM*
+- lines (for gcode etc) *TRIVIAL*
+- what to do with all 'visual helpers' ? *HARD*
+- shadows *HARD*
 
 
 ##Cool extras and tools:
