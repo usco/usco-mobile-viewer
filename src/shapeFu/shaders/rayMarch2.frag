@@ -6,12 +6,15 @@ uniform float iGlobalTime;
 
 uniform bool toggleSoftShadows;
 uniform bool toggleAO;
+uniform vec4 bgColor;
+
 
 // ray marching
-const int max_iterations = 255;
-const float stop_threshold = 0.001;
-const float grad_step = 0.1;
-const float clip_far = 10.0;
+const int MAX_ITERATIONS = 512;
+uniform int uRM_maxIterations;//for dynamicly settable stuff
+const float uRM_stop_threshold = 0.001;
+const float uRM_grad_step = 0.1;
+const float uRM_clip_far = 10.0;
 
 // math
 const float PI = 3.14159265359;
@@ -98,9 +101,9 @@ vec3 shading( vec3 v, vec3 n, vec3 eye ) {
 
 // get gradient in the world
 vec3 gradient( vec3 pos ) {
-	const vec3 dx = vec3( grad_step, 0.0, 0.0 );
-	const vec3 dy = vec3( 0.0, grad_step, 0.0 );
-	const vec3 dz = vec3( 0.0, 0.0, grad_step );
+	const vec3 dx = vec3( uRM_grad_step, 0.0, 0.0 );
+	const vec3 dy = vec3( 0.0, uRM_grad_step, 0.0 );
+	const vec3 dz = vec3( 0.0, 0.0, uRM_grad_step );
 	return normalize (
 		vec3(
 			dist_field( pos + dx ) - dist_field( pos - dx ),
@@ -113,15 +116,18 @@ vec3 gradient( vec3 pos ) {
 // ray marching
 float ray_marching( vec3 origin, vec3 dir, float start, float end ) {
 	float depth = start;
-	for ( int i = 0; i < max_iterations; i++ ) {
-		float dist = dist_field( origin + dir * depth );
-		if ( dist < stop_threshold ) {
-			return depth;
+	for ( int i = 0; i < MAX_ITERATIONS; i++ ) {
+		if(i < uRM_maxIterations){
+			float dist = dist_field( origin + dir * depth );
+			if ( dist < uRM_stop_threshold ) {
+				return depth;
+			}
+			depth += dist;
+			if ( depth >= end) {
+				return end;
+			}
 		}
-		depth += dist;
-		if ( depth >= end) {
-			return end;
-		}
+
 	}
 	return end;
 }
@@ -162,9 +168,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	eye = rot * eye;
 
 	// ray marching
-	float depth = ray_marching( eye, dir, 0.0, clip_far );
-	if ( depth >= clip_far ) {
-		fragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+	float depth = ray_marching( eye, dir, 0.0, uRM_clip_far );
+	if ( depth >= uRM_clip_far ) {
+		fragColor = bgColor;
         return;
 	}
 
@@ -175,7 +181,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 }
 
 void main () {
-	vec4 color = vec4(0.0,0.0,0.0,1.0);
+
+
+	vec4 color = bgColor;
   mainImage( color, gl_FragCoord.xy );
   color.w = 1.0;
   gl_FragColor = color;
