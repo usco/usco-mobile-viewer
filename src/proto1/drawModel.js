@@ -48,9 +48,9 @@ export function drawModelCommand (regl, sceneData, data) {
           1000)
       },
 
-      mouse: (props, {pixelRatio, height}) => [
+      mouse: (props, {pixelRatio, viewportHeight}) => [
         mouse.x * pixelRatio,
-        height - mouse.y * pixelRatio
+        viewportHeight - mouse.y * pixelRatio
       ],
       // lighting
       /*lights: [
@@ -126,6 +126,8 @@ export default function drawModel(regl, sceneData, data){
 
   //all sorts of 'dynamic' data
   const {pos, rot, sca} = data.transforms
+
+  // simple hack for selection state
   // const {color} = data
   const color = data.selected ? [1, 0, 0, 1] : data.color
 

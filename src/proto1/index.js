@@ -21,7 +21,7 @@ const fullData = {
   modelsData: [bunnyData, bunnyData2, bunnyData3]
 }
 
-//main render function
+// main render function: data in, rendered frame out
 function render (data) {
   clear({
     depth: 1,
