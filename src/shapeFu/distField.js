@@ -11,7 +11,7 @@ let pixels = texture()
 
 const drawFSO = regl({
   frag: glslify(__dirname + '/shaders/rayMarch2.frag'),
-  vert: glslify(__dirname + '/shaders/feedback.vert'),
+  vert: glslify(__dirname + '/shaders/base.vert'),
 
   attributes: {
     position: buffer([
