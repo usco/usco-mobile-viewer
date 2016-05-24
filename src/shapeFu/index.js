@@ -50,7 +50,7 @@ const settings = {
     uRM_maxIterations: 400,
     uRM_stop_threshold: 0.001,
     uRM_grad_step: 0.1,
-    uRM_clip_far: 1000.0
+    uRM_clip_far: 100.0
   }
 }
 

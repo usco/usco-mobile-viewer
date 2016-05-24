@@ -12,9 +12,9 @@ uniform vec4 bgColor;
 // ray marching
 const int MAX_ITERATIONS = 512;
 uniform int uRM_maxIterations;//for dynamicly settable stuff
-const float uRM_stop_threshold = 0.001;
-const float uRM_grad_step = 0.1;
-const float uRM_clip_far = 10.0;
+uniform float uRM_stop_threshold;
+uniform float uRM_grad_step;
+uniform float uRM_clip_far;
 
 // math
 const float PI = 3.14159265359;
@@ -45,11 +45,12 @@ float opSubtract( float d0, float d1){
 float dist_field( vec3 pos ) {
 	// ...add objects here...
 
+	vec3 offset = vec3(3,3,0);
 	// object 0 : sphere
-	float d0 = dist_sphere( pos, 2.7 );
+	float d0 = dist_sphere( pos+offset, 2.7 );
 
 	// object 1 : cube
-	float d1 = dist_box( pos, vec3( 2.0 ) );
+	float d1 = dist_box( pos+offset, vec3( 2.0 ) );
 
 	// union     : min( d0,  d1 )
 	// intersect : max( d0,  d1 )
@@ -101,9 +102,9 @@ vec3 shading( vec3 v, vec3 n, vec3 eye ) {
 
 // get gradient in the world
 vec3 gradient( vec3 pos ) {
-	const vec3 dx = vec3( uRM_grad_step, 0.0, 0.0 );
-	const vec3 dy = vec3( 0.0, uRM_grad_step, 0.0 );
-	const vec3 dz = vec3( 0.0, 0.0, uRM_grad_step );
+ 	vec3 dx = vec3( uRM_grad_step, 0.0, 0.0 );
+	vec3 dy = vec3( 0.0, uRM_grad_step, 0.0 );
+	vec3 dz = vec3( 0.0, 0.0, uRM_grad_step );
 	return normalize (
 		vec3(
 			dist_field( pos + dx ) - dist_field( pos - dx ),
@@ -117,7 +118,7 @@ vec3 gradient( vec3 pos ) {
 float ray_marching( vec3 origin, vec3 dir, float start, float end ) {
 	float depth = start;
 	for ( int i = 0; i < MAX_ITERATIONS; i++ ) {
-		if(i < uRM_maxIterations){
+		//if(i < uRM_maxIterations){
 			float dist = dist_field( origin + dir * depth );
 			if ( dist < uRM_stop_threshold ) {
 				return depth;
@@ -126,7 +127,7 @@ float ray_marching( vec3 origin, vec3 dir, float start, float end ) {
 			if ( depth >= end) {
 				return end;
 			}
-		}
+		//}
 
 	}
 	return end;
@@ -163,7 +164,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	vec3 eye = vec3( 0.0, 0.0, 10.0 );
 
 	// rotate camera
-	mat3 rot = rotationXY( vec2( iGlobalTime ) );
+	mat3 rot = rotationXY( vec2( 0 ) );//iGlobalTime
 	dir = rot * dir;
 	eye = rot * eye;
 
