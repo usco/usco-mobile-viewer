@@ -14,6 +14,11 @@ const regl = reglM()
 const {frame, clear} = regl
 
 const drawModel = _drawModel.bind(null, regl)
+
+import {params, update} from '../common/orbitControls'
+
+update(params)
+
 /* //////////////// */
 
 const fullData = {

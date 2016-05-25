@@ -5,7 +5,7 @@ const mat4 = require('gl-mat4')
 const v3 = vec3.create()
 const m4 = mat4.create()*/
 
-const params = {
+export const params = {
   enabled: true,
   userZoom: true,
   userZoomSpeed: 1.0,
@@ -30,22 +30,28 @@ const params = {
   EPS: 0.000001,
   PIXELS_PER_ROUND: 1800,
 
-  phiDelta: 0,
-  thetaDelta: 0,
-  scale: 1,
-
   up: [0, 1, 0],
 
-  /////not sure about theses
+  // ///not sure about theses
+  camStates: [
+    {
+      phiDelta: 0,
+      thetaDelta: 0,
+      scale: 1,
+      lastPosition: [0, 0, 0]
+    }
+  ],
+
   centers: [
     [0, 0, 0]
   ],
   objects: [
-    {position:[0,0,0]}
+    {position: [0, 0, 0]}
   ]
 }
 
-function update (params, dt) {
+
+export function update (params, dt) {
   const {EPS, up} = params
   // this is a modified version, with inverted Y and Z (since we use camera[2] => up)
   // we also allow multiple objects/cameras
@@ -54,25 +60,27 @@ function update (params, dt) {
     var center = params.centers[i]
     var camState = params.camStates[i]
 
-    var curThetaDelta = camState.thetaDelta
-    var curPhiDelta = camState.phiDelta
-    var curScale = camState.scale
-
-    var lastPosition = camState.lastPosition
+    let curThetaDelta = camState.thetaDelta
+    let curPhiDelta = camState.phiDelta
+    let curScale = camState.scale
+    let lastPosition = camState.lastPosition
 
     const position = object.position
     // var offset = position.clone().sub(center)
     const offset = vec3.subtract(vec3.create(), position, center)
 
+    let theta
+    let phi
+
     if (up[2] === 1) {
       // angle from z-axis around y-axis, upVector : z
-      const theta = Math.atan2(offset[0], offset[1])
+      theta = Math.atan2(offset[0], offset[1])
       // angle from y-axis
-      const phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[1] * offset[1]), offset[2])
+      phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[1] * offset[1]), offset[2])
     } else {
       // in case of y up
-      const theta = Math.atan2(offset[0], offset[2])
-      const phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[2] * offset[2]), offset[1])
+      theta = Math.atan2(offset[0], offset[2])
+      phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[2] * offset[2]), offset[1])
       curThetaDelta = -(curThetaDelta)
     }
 
@@ -93,7 +101,7 @@ function update (params, dt) {
     // restrict phi to be betwee EPS and PI-EPS
     phi = Math.max(EPS, Math.min(Math.PI - EPS, phi))
     // multiply by scaling effect
-    var radius = offset.length() * curScale
+    let radius = vec3.length(offset) * curScale
     // restrict radius to be between desired limits
     radius = Math.max(params.minDistance, Math.min(params.maxDistance, radius))
 
@@ -109,18 +117,24 @@ function update (params, dt) {
 
     // position.copy(center).add(offset)
     // object.lookAt(center)
+
+    // temporary
+    const eye = vec3.create([10, 0, 10])
     vec3.add(vec3.create(), center, offset)
-    objMat = mat4.lookAt(mat4.create(), eye, center, up)
+    const objMat = mat4.lookAt(mat4.create(), eye, center, up)
 
     const positionChanged = vec3.distance(lastPosition, position) > 0 // TODO optimise
     const results = {
       camState: {
-        thetaDelta: thetaDelta / 1.5,
-        phiDelta: phiDelta / 1.5,
-        scale: 1
+        thetaDelta: curThetaDelta / 1.5,
+        phiDelta: curPhiDelta / 1.5,
+        scale: 1,
+        lastPosition: position
       },
       changed: positionChanged,
-      lastPosition: position
+      object: {
+        mat: objMat
+      }
     }
     console.log('results', results)
   /*camState.thetaDelta /= 1.5
