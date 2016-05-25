@@ -15,9 +15,7 @@ const {frame, clear} = regl
 
 const drawModel = _drawModel.bind(null, regl)
 
-import {params, update} from '../common/orbitControls'
-
-update(params)
+import { params, update, rotate } from '../common/orbitControls'
 
 /* //////////////// */
 
@@ -26,6 +24,27 @@ const fullData = {
   modelsData: [bunnyData, bunnyData2, bunnyData3]
 }
 
+// FIXME: hack for now
+let cameraDefaults = params
+let cameraData = update(params)
+let prevMouse = [0, 0]
+
+function onMouseChange (buttons, x, y, mods) {
+  //console.log('mouse-change', buttons, x, y, mods)
+  if(buttons === 1) {
+    let delta = [x - prevMouse[0], y - prevMouse[1]]
+    let angle = [0, 0]
+    angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
+    angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
+
+    cameraData = Object.assign({}, cameraDefaults, cameraData)
+    cameraData = update(rotate(cameraData, angle))
+    render(fullData)
+  }
+  prevMouse = [x, y]
+}
+require('mouse-change')(onMouseChange)
+
 // main render function: data in, rendered frame out
 function render (data) {
   clear({
@@ -33,10 +52,11 @@ function render (data) {
     color: [1, 1, 1, 1]
   })
 
+  // const cameraData = update(params)
   // bunnyData.selected = getRandomInt(0, 20) === 0
-  drawModel(data.sceneData, data.modelsData[0])
-  drawModel(data.sceneData, data.modelsData[1])
-  drawModel(data.sceneData, data.modelsData[2])
+  drawModel(data.sceneData, data.modelsData[0], cameraData)
+  drawModel(data.sceneData, data.modelsData[1], cameraData)
+  drawModel(data.sceneData, data.modelsData[2], cameraData)
 }
 
 // dynamic drawing

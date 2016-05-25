@@ -1,10 +1,10 @@
 const vec3 = require('gl-vec3')
 const mat4 = require('gl-mat4')
-
-const {max, min, sqrt, PI, sin, cos, atan2} = Math
 /*
 const v3 = vec3.create()
 const m4 = mat4.create()*/
+const {max, min, sqrt, PI, sin, cos, atan2} = Math
+
 
 /* cameras are assumed to have:
  projection
@@ -24,7 +24,7 @@ export const params = {
   userPan: true,
   userPanSpeed: 2.0,
 
-  autoRotate: false,
+  autoRotate: true,
   autoRotateSpeed: 2.0, // 30 seconds per round when fps is 60
 
   minPolarAngle: 0, // radians
@@ -38,7 +38,7 @@ export const params = {
 
   EPS: 0.000001,
   PIXELS_PER_ROUND: 1800,
-  drag: 0.01,// Decrease the momentum by 1% each iteration
+  drag: 0.01, // Decrease the momentum by 1% each iteration
 
   // below this, dynamic stuff mostly
   up: [0, 1, 0],
@@ -48,9 +48,9 @@ export const params = {
   phiDelta: 0,
   scale: 1,
 
-  position: [0, 0, 0],
+  position: [15, 0, 10],
   target: [0, 0, 0],
-  view: new Float32Array(16)// default, this is just a 4x4 matrix
+  view: mat4.create() // default, this is just a 4x4 matrix
 
 }
 
@@ -61,7 +61,7 @@ export function update (params) {
   let curPhiDelta = params.phiDelta
   let curScale = params.scale
 
-  const offset = vec3.subtract(vec3.create(), position, target)
+  let offset = vec3.subtract(vec3.create(), position, target)
   let theta
   let phi
 
@@ -100,8 +100,6 @@ export function update (params) {
     offset[2] = radius * sin(phi) * cos(theta)
   }
 
-  // position.copy(target).add(offset)
-  // object.lookAt(target)
   const newPosition = vec3.add(vec3.create(), target, offset)
   const newTarget = target
   const newView = mat4.lookAt(view, newPosition, target, up)
@@ -122,78 +120,46 @@ export function update (params) {
     target: newTarget,
     view: newView
   }
-  console.log('results', results)
+  // console.log('results', results)
   return results
 }
 
 export function rotate (params, angle) {
-  params.thetaDelta += angle
-  params.phiDelta += angle
+  if (params.userRotate) {
+    params.thetaDelta += angle[0]
+    params.phiDelta += angle[1]
+  }
+
   return params
 }
 
 export function zoom (params, zoomDir, zoomScale) {
-  const scale = zoomDir < 0 ? params.scale / zoomScale : params.scale * zoomScale
-  params.scale = scale
+  // are these useful ?
+  //scope.userZoomSpeed = 0.6
+  /*let zoomScale = undefined
+  if (!zoomScale) {
+    zoomScale = getZoomScale()
+  }*/
+  if (params.userZoom) {
+    const scale = zoomDir < 0 ? params.scale / zoomScale : params.scale * zoomScale
+    params.scale = scale
+  }
   return params
 }
 
 function pan (params) {
-
+  // TODO: implement
+  /*let distance = _origDist.clone()
+  distance.transformDirection(object.matrix)
+  distance.multiplyScalar(scope.userPanSpeed)
+  object.position.add(distance)
+  scope.centers[index].add(distance)*/
+  return params
 }
 
 /*
 function setObservables (observables) {
   let {dragMoves$, zooms$} = observables
-
-  let self = this
-
-  // are these useful ?
-  //scope.userZoomSpeed = 0.6
-  // onPinch
-  function zoom (zoomDir, zoomScale, cameras) {
-    if (scope.enabled === false) return
-    if (scope.userZoom === false) return
-
-    // PER camera
-    cameras.map(function (object, index) {
-      if (scope.objectOptions[index].userZoom) {
-        if (zoomDir < 0) scope.camStates[index].scale /= zoomScale
-        if (zoomDir > 0) scope.camStates[index].scale *= zoomScale
-      }
-    })
-  }
-
-  function rotate (cameras, angle) {
-    if (scope.enabled === false) return
-    if (scope.userRotate === false) return
-
-    // PER camera
-    cameras.map(function (object, index) {
-      if (scope.objectOptions[index].userRotate) {
-        scope.camStates[index].thetaDelta += angle[0]
-        scope.camStates[index].phiDelta += angle[1]
-      }
-    })
-  }
-
-  // TODO: implement
-  function pan (cameras, offset) {
-    // console.log(event)
-    var _origDist = distance.clone()
-
-    // do this PER camera
-    cameras.map(function (object, index) {
-      if (scope.objectOptions[index].userPan) {
-        let distance = _origDist.clone()
-        distance.transformDirection(object.matrix)
-        distance.multiplyScalar(scope.userPanSpeed)
-        object.position.add(distance)
-        scope.centers[index].add(distance)
-      }
-    })
-  }
-
   dragMoves$
     .subscribe(function (e) {
       let delta = e.delta
@@ -201,14 +167,5 @@ function setObservables (observables) {
       angle[0] = 2 * Math.PI * delta[0] / PIXELS_PER_ROUND * scope.userRotateSpeed
       angle[1] = -2 * Math.PI * delta[1] / PIXELS_PER_ROUND * scope.userRotateSpeed
       rotate(self.objects, angle)
-    })
-
-  zooms$
-    .subscribe(function (delta) {
-      let zoomScale = undefined
-      if (!zoomScale) {
-        zoomScale = getZoomScale()
-      }
-      zoom(delta, zoomScale, self.objects)
     })
 }*/

@@ -33,13 +33,14 @@ export function drawModelCommand (regl, scene, data) {
     },
     uniforms: {
       model: prop('mat'),
-      view: (props, context) => {
+      view: prop('view'),
+      /*(props, context) => {
         const t = 0.01 * context.count * scene.controls[0].rotateSpeed
         return lookAt([],
           [30 * Math.cos(t), 2.5, 30 * Math.sin(t)],
           [0, 2.5, 0],
           [0, 1, 0])
-      },
+      },*/
       projection: (props, context) => {
         return perspective([],
           Math.PI / 4,
@@ -109,7 +110,7 @@ export function drawModelCommand (regl, scene, data) {
   return regl(params)
 }
 
-export default function drawModel(regl, scene, data) {
+export default function drawModel(regl, scene, data, cameraData) {
   const cmd = drawModelCommand(regl, scene, data)
 
   //all sorts of 'dynamic' data
@@ -127,5 +128,5 @@ export default function drawModel(regl, scene, data) {
   mat4.rotateZ(modelMat, modelMat, rot[1])
   mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
 
-  return cmd({color, mat: modelMat, scene})
+  return cmd({color, mat: modelMat, scene, view: cameraData.view })
 }
