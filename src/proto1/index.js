@@ -37,7 +37,7 @@ function onMouseChange (buttons, x, y, mods) {
     angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
     angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
 
-    cameraData = Object.assign({}, cameraDefaults, cameraData)
+    cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
     cameraData = update(rotate(cameraData, angle))
     render(fullData)
   }

@@ -41,25 +41,28 @@ export const params = {
   drag: 0.01, // Decrease the momentum by 1% each iteration
 
   // below this, dynamic stuff mostly
-  up: [0, 1, 0],
+  cam: {
+    up: [0, 1, 0],
+    // not sure about these
+    thetaDelta: 0,
+    phiDelta: 0,
+    scale: 1,
 
-  // not sure about these
-  thetaDelta: 0,
-  phiDelta: 0,
-  scale: 1,
+    position: [15, 0, 10],
+    target: [0, 0, 0],
+    view: mat4.create() // default, this is just a 4x4 matrix
+  }
 
-  position: [15, 0, 10],
-  target: [0, 0, 0],
-  view: mat4.create() // default, this is just a 4x4 matrix
 
 }
 
 export function update (params) {
   // this is a modified version, with inverted Y and Z (since we use camera[2] => up)
-  const {EPS, up, position, target, view} = params
-  let curThetaDelta = params.thetaDelta
-  let curPhiDelta = params.phiDelta
-  let curScale = params.scale
+  const {EPS, cam} = params
+  const {up, position, target, view} = cam
+  let curThetaDelta = cam.thetaDelta
+  let curPhiDelta = cam.phiDelta
+  let curScale = cam.scale
 
   let offset = vec3.subtract(vec3.create(), position, target)
   let theta
@@ -116,6 +119,7 @@ export function update (params) {
     phiDelta: curPhiDelta / 1.5,
     scale: curScale,
 
+    up,
     position: newPosition,
     target: newTarget,
     view: newView
@@ -126,8 +130,8 @@ export function update (params) {
 
 export function rotate (params, angle) {
   if (params.userRotate) {
-    params.thetaDelta += angle[0]
-    params.phiDelta += angle[1]
+    params.cam.thetaDelta += angle[0]
+    params.cam.phiDelta += angle[1]
   }
 
   return params
@@ -141,8 +145,8 @@ export function zoom (params, zoomDir, zoomScale) {
     zoomScale = getZoomScale()
   }*/
   if (params.userZoom) {
-    const scale = zoomDir < 0 ? params.scale / zoomScale : params.scale * zoomScale
-    params.scale = scale
+    const scale = zoomDir < 0 ? params.cam.scale / zoomScale : params.cam.scale * zoomScale
+    params.cam.scale = scale
   }
   return params
 }
