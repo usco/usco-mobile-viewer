@@ -18,7 +18,7 @@ function formatLightsDataForRender(lightsData){
   return result
 }
 
-export function drawModelCommand (regl, sceneData, data) {
+export function drawModelCommand (regl, scene, data) {
   const {buffer, elements, prop} = regl
 
   // const {positions, cells, mat, color, pos} = data
@@ -34,7 +34,7 @@ export function drawModelCommand (regl, sceneData, data) {
     uniforms: {
       model: prop('mat'),
       view: (props, context) => {
-        const t = 0.01 * context.count * sceneData.controls[0].rotateSpeed
+        const t = 0.01 * context.count * scene.controls[0].rotateSpeed
         return lookAt([],
           [30 * Math.cos(t), 2.5, 30 * Math.sin(t)],
           [0, 2.5, 0],
@@ -52,28 +52,22 @@ export function drawModelCommand (regl, sceneData, data) {
         mouse.x * pixelRatio,
         viewportHeight - mouse.y * pixelRatio
       ],
-      // lighting
-      /*lights: [
-        {color: [1, 0, 0], intensity: 0.2, position: [10, 10, 10]},
-        {color: [0, 1, 0], intensity: 1, position: [-10, 10, 10]},
-        {color: [0, 0, 1], intensity: 1, position: [10, 20, 10]},
-        {color: [1, 1, 0], intensity: 1, position: [10, 10, 0]}
-      ],*/
-      //'lights[0].color': [1, 0, 0],
-      //'lights[0].intensity': 0.2,
-      'lights[0].position': [10, 10, 10],
 
-      'lights[1].color': [0, 1, 0],
-      'lights[1].intensity': 1,
-      'lights[1].position': [-10, 10, 10],
+      'lights[0].color': prop('scene.lights[0].color'),
+      'lights[0].intensity': prop('scene.lights[0].intensity'),
+      'lights[0].position': prop('scene.lights[0].position'),
 
-      'lights[2].color': [0, 0, 1],
-      'lights[2].intensity': 1,
-      'lights[2].position': [10, 20, 10],
+      'lights[1].color': prop('scene.lights[1].color'),
+      'lights[1].intensity': prop('scene.lights[1].intensity'),
+      'lights[1].position': prop('scene.lights[1].position'),
 
-      'lights[3].color': [1, 1, 0],
-      'lights[3].intensity': 1,
-      'lights[3].position': [10, 10, 0],
+      'lights[2].color': prop('scene.lights[2].color'),
+      'lights[2].intensity': prop('scene.lights[2].intensity'),
+      'lights[2].position': prop('scene.lights[2].position'),
+
+      'lights[3].color': prop('scene.lights[3].color'),
+      'lights[3].intensity': prop('scene.lights[3].intensity'),
+      'lights[3].position': prop('scene.lights[3].position'),
 
       //various dynamic uniforms
       color: prop('color'),
@@ -89,16 +83,10 @@ export function drawModelCommand (regl, sceneData, data) {
   } else {
     params.count = geometry.positions.length / 3
   }
-  //lighting data
-  const lights = [
-    {color: [1, 0, 0], intensity: 0.2, position: [10, 10, 10]},
-    {color: [0, 1, 0], intensity: 1, position: [-10, 10, 10]},
-    {color: [0, 0, 1], intensity: 1, position: [10, 20, 10]},
-    {color: [1, 1, 0], intensity: 1, position: [10, 10, 0]}
-  ]
 
 
-  formatLightsDataForRender(lights).forEach(function(fields){
+
+  /*formatLightsDataForRender(lights).forEach(function(fields){
     fields.forEach(function(entry){
       params.uniforms[entry.name] = entry.value
     })
@@ -116,7 +104,7 @@ export function drawModelCommand (regl, sceneData, data) {
         })
       })
       return params
-    })
+    })*/
 
   return regl(params)
 }
@@ -139,5 +127,5 @@ export default function drawModel(regl, sceneData, data){
   mat4.rotateZ(modelMat, modelMat, rot[1])
   mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
 
-  return cmd({color, mat: modelMat})
+  return cmd({color, mat: modelMat, scene: sceneData})
 }

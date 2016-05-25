@@ -35,9 +35,9 @@ function render (data) {
 }
 
 // dynamic drawing
-/*frame((props, context) => {
-  render()
-})*/
+frame((props, context) => {
+  render(fullData)
+})
 
 // render one frame
 render(fullData)

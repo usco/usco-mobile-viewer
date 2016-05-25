@@ -74,7 +74,7 @@ const sceneData = {
   controls: [
     {
       up: [0, 0, 1],
-      rotateSpeed: 0.2,
+      rotateSpeed: 10.2,
       panSpeed: 2.0,
       zoomSpeed: 2.0,
       autoRotate: {
@@ -84,6 +84,13 @@ const sceneData = {
       _enabled: true,
       _active: true
     }
+  ],
+  // lighting data
+  lights: [
+    {position: [10, 10, 10], color: [1.0, 0.7, 0.7], intensity: 0.5},
+    {position: [-10, 10, 10], color: [0.3, 0.7, 1.0], intensity: 1},
+    {position: [10, 20, 10], color: [0.9, 0.9, 0.9], intensity: 0.8},
+    {position: [10, 10, 0], color: [0.6, 0.7, 0.8], intensity: 0.5}
   ]
 }
 
