@@ -1,9 +1,18 @@
 const vec3 = require('gl-vec3')
 const mat4 = require('gl-mat4')
 
+const {max, min, sqrt, PI, sin, cos, atan2} = Math
 /*
 const v3 = vec3.create()
 const m4 = mat4.create()*/
+
+/* cameras are assumed to have:
+ projection
+ view
+ target (focal point)
+ eye/position
+ up
+*/
 
 export const params = {
   enabled: true,
@@ -19,7 +28,7 @@ export const params = {
   autoRotateSpeed: 2.0, // 30 seconds per round when fps is 60
 
   minPolarAngle: 0, // radians
-  maxPolarAngle: Math.PI, // radians
+  maxPolarAngle: PI, // radians
 
   minDistance: 0.2,
   maxDistance: 1400,
@@ -29,118 +38,108 @@ export const params = {
 
   EPS: 0.000001,
   PIXELS_PER_ROUND: 1800,
+  drag: 0.01,// Decrease the momentum by 1% each iteration
 
+  // below this, dynamic stuff mostly
   up: [0, 1, 0],
 
-  // ///not sure about theses
-  camStates: [
-    {
-      phiDelta: 0,
-      thetaDelta: 0,
-      scale: 1,
-      lastPosition: [0, 0, 0]
-    }
-  ],
+  // not sure about these
+  thetaDelta: 0,
+  phiDelta: 0,
+  scale: 1,
 
-  centers: [
-    [0, 0, 0]
-  ],
-  objects: [
-    {position: [0, 0, 0]}
-  ]
+  position: [0, 0, 0],
+  target: [0, 0, 0],
+  view: new Float32Array(16)// default, this is just a 4x4 matrix
+
 }
 
-
-export function update (params, dt) {
-  const {EPS, up} = params
+export function update (params) {
   // this is a modified version, with inverted Y and Z (since we use camera[2] => up)
-  // we also allow multiple objects/cameras
-  for (var i = 0; i < params.objects.length;i++) {
-    var object = params.objects[i]
-    var center = params.centers[i]
-    var camState = params.camStates[i]
+  const {EPS, up, position, target, view} = params
+  let curThetaDelta = params.thetaDelta
+  let curPhiDelta = params.phiDelta
+  let curScale = params.scale
 
-    let curThetaDelta = camState.thetaDelta
-    let curPhiDelta = camState.phiDelta
-    let curScale = camState.scale
-    let lastPosition = camState.lastPosition
+  const offset = vec3.subtract(vec3.create(), position, target)
+  let theta
+  let phi
 
-    const position = object.position
-    // var offset = position.clone().sub(center)
-    const offset = vec3.subtract(vec3.create(), position, center)
-
-    let theta
-    let phi
-
-    if (up[2] === 1) {
-      // angle from z-axis around y-axis, upVector : z
-      theta = Math.atan2(offset[0], offset[1])
-      // angle from y-axis
-      phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[1] * offset[1]), offset[2])
-    } else {
-      // in case of y up
-      theta = Math.atan2(offset[0], offset[2])
-      phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[2] * offset[2]), offset[1])
-      curThetaDelta = -(curThetaDelta)
-    }
-
-    /*if ( params.autoRotate ) {
-      //PER camera
-      params.objects.map(function(object, index){
-        if(scope.objectOptions[index].userRotate){
-          scope.camStates[index].thetaDelta += getAutoRotationAngle()
-        }
-      })
-    }*/
-
-    theta += curThetaDelta
-    phi += curPhiDelta
-
-    // restrict phi to be between desired limits
-    phi = Math.max(params.minPolarAngle, Math.min(params.maxPolarAngle, phi))
-    // restrict phi to be betwee EPS and PI-EPS
-    phi = Math.max(EPS, Math.min(Math.PI - EPS, phi))
-    // multiply by scaling effect
-    let radius = vec3.length(offset) * curScale
-    // restrict radius to be between desired limits
-    radius = Math.max(params.minDistance, Math.min(params.maxDistance, radius))
-
-    if (up[2] === 1) {
-      offset[0] = radius * Math.sin(phi) * Math.sin(theta)
-      offset[2] = radius * Math.cos(phi)
-      offset[1] = radius * Math.sin(phi) * Math.cos(theta)
-    } else {
-      offset[0] = radius * Math.sin(phi) * Math.sin(theta)
-      offset[1] = radius * Math.cos(phi)
-      offset[2] = radius * Math.sin(phi) * Math.cos(theta)
-    }
-
-    // position.copy(center).add(offset)
-    // object.lookAt(center)
-
-    // temporary
-    const eye = vec3.create([10, 0, 10])
-    vec3.add(vec3.create(), center, offset)
-    const objMat = mat4.lookAt(mat4.create(), eye, center, up)
-
-    const positionChanged = vec3.distance(lastPosition, position) > 0 // TODO optimise
-    const results = {
-      camState: {
-        thetaDelta: curThetaDelta / 1.5,
-        phiDelta: curPhiDelta / 1.5,
-        scale: 1,
-        lastPosition: position
-      },
-      changed: positionChanged,
-      object: {
-        mat: objMat
-      }
-    }
-    console.log('results', results)
-  /*camState.thetaDelta /= 1.5
-  camState.phiDelta /= 1.5
-  camState.scale = 1*/
+  if (up[2] === 1) {
+    // angle from z-axis around y-axis, upVector : z
+    theta = atan2(offset[0], offset[1])
+    // angle from y-axis
+    phi = atan2(sqrt(offset[0] * offset[0] + offset[1] * offset[1]), offset[2])
+  } else {
+    // in case of y up
+    theta = atan2(offset[0], offset[2])
+    phi = atan2(sqrt(offset[0] * offset[0] + offset[2] * offset[2]), offset[1])
+    curThetaDelta = -(curThetaDelta)
   }
+
+  /*if (params.autoRotate && params.userRotate) {
+    scope.camStates[index].thetaDelta += getAutoRotationAngle()
+  }*/
+  theta += curThetaDelta
+  phi += curPhiDelta
+
+  // restrict phi to be between desired limits
+  phi = max(params.minPolarAngle, min(params.maxPolarAngle, phi))
+  // restrict phi to be betwee EPS and PI-EPS
+  phi = max(EPS, min(PI - EPS, phi))
+  // multiply by scaling effect and restrict radius to be between desired limits
+  const radius = max(params.minDistance, min(params.maxDistance, vec3.length(offset) * curScale))
+
+  if (up[2] === 1) {
+    offset[0] = radius * sin(phi) * sin(theta)
+    offset[2] = radius * cos(phi)
+    offset[1] = radius * sin(phi) * cos(theta)
+  } else {
+    offset[0] = radius * sin(phi) * sin(theta)
+    offset[1] = radius * cos(phi)
+    offset[2] = radius * sin(phi) * cos(theta)
+  }
+
+  // position.copy(target).add(offset)
+  // object.lookAt(target)
+  const newPosition = vec3.add(vec3.create(), target, offset)
+  const newTarget = target
+  const newView = mat4.lookAt(view, newPosition, target, up)
+  /* mat3.fromMat4(camMat, camMat)
+  quat.fromMat3(this.rotation, camMat)
+  lookAt(view, this.position, this.target, this.up)
+  */
+
+  const positionChanged = vec3.distance(position, newPosition) > 0 // TODO optimise
+  const results = {
+    changed: positionChanged,
+
+    thetaDelta: curThetaDelta / 1.5,
+    phiDelta: curPhiDelta / 1.5,
+    scale: curScale,
+
+    position: newPosition,
+    target: newTarget,
+    view: newView
+  }
+  console.log('results', results)
+  return results
+}
+
+export function rotate (params, angle) {
+  params.thetaDelta += angle
+  params.phiDelta += angle
+  return params
+}
+
+export function zoom (params, zoomDir, zoomScale) {
+  const scale = zoomDir < 0 ? params.scale / zoomScale : params.scale * zoomScale
+  params.scale = scale
+  return params
+}
+
+function pan (params) {
+
 }
 
 /*
