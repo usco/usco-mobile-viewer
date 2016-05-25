@@ -8,7 +8,6 @@ uniform bool toggleSoftShadows;
 uniform bool toggleAO;
 uniform vec4 bgColor;
 
-
 // ray marching
 const int MAX_ITERATIONS = 512;
 uniform int uRM_maxIterations;//for dynamicly settable stuff
@@ -19,6 +18,16 @@ uniform float uRM_clip_far;
 // math
 const float PI = 3.14159265359;
 const float DEG_TO_RAD = PI / 180.0;
+
+//lighting
+struct Light {
+  vec3 color;
+  vec3 position;
+  float intensity;
+};
+#define lightsNb 2
+uniform Light lights[lightsNb];
+
 
 // distance function
 float dist_sphere( vec3 pos, float r ) {
@@ -45,7 +54,7 @@ float opSubtract( float d0, float d1){
 float dist_field( vec3 pos ) {
 	// ...add objects here...
 
-	vec3 offset = vec3(3,3,0);
+	vec3 offset = vec3(0,0,0);
 	// object 0 : sphere
 	float d0 = dist_sphere( pos+offset, 2.7 );
 
@@ -60,44 +69,21 @@ float dist_field( vec3 pos ) {
 
 // phong shading
 vec3 shading( vec3 v, vec3 n, vec3 eye ) {
-	// ...add lights here...
-
-	float shininess = 16.0;
-
-	vec3 final = vec3( 0.0 );
+	float shininess = 200.0;
 
 	vec3 ev = normalize( v - eye );
 	vec3 ref_ev = reflect( ev, n );
 
-	// light 0
-	{
-		vec3 light_pos   = vec3( 20.0, 20.0, 20.0 );
-		vec3 light_color = vec3( 1.0, 0.7, 0.7 );
+  vec3 light = vec3(0.2); // ambient ??
+  for (int i = 0; i < lightsNb; ++i) {
+     vec3 lightDir = normalize(lights[i].position - v);
+     float diffuse = max(0.0, dot(lightDir, n));
+		 float specular = max( 0.0, dot( lightDir, ref_ev ) );
+		 specular = pow( specular, shininess );
 
-		vec3 vl = normalize( light_pos - v );
-
-		float diffuse  = max( 0.0, dot( vl, n ) );
-		float specular = max( 0.0, dot( vl, ref_ev ) );
-		specular = pow( specular, shininess );
-
-		final += light_color * ( diffuse + specular );
-	}
-
-	// light 1
-	{
-		vec3 light_pos   = vec3( -20.0, -20.0, -20.0 );
-		vec3 light_color = vec3( 0.3, 0.7, 1.0 );
-
-		vec3 vl = normalize( light_pos - v );
-
-		float diffuse  = max( 0.0, dot( vl, n ) );
-		float specular = max( 0.0, dot( vl, ref_ev ) );
-		specular = pow( specular, shininess );
-
-		final += light_color * ( diffuse + specular );
-	}
-
-	return final;
+     light += lights[i].color * ( diffuse + specular )* lights[i].intensity; //diffuse * lights[i].color * lights[i].intensity;
+  }
+	return light;
 }
 
 // get gradient in the world
@@ -164,7 +150,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	vec3 eye = vec3( 0.0, 0.0, 10.0 );
 
 	// rotate camera
-	mat3 rot = rotationXY( vec2( 0 ) );//iGlobalTime
+	mat3 rot = rotationXY( vec2( iGlobalTime ) );//
 	dir = rot * dir;
 	eye = rot * eye;
 

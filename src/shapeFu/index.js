@@ -33,7 +33,15 @@ const drawFSO = regl({
     uRM_maxIterations: prop('rayMarch.uRM_maxIterations'),
     uRM_stop_threshold: prop('rayMarch.uRM_stop_threshold'),
     uRM_grad_step: prop('rayMarch.uRM_grad_step'),
-    uRM_clip_far: prop('rayMarch.uRM_clip_far')
+    uRM_clip_far: prop('rayMarch.uRM_clip_far'),
+
+    'lights[0].color': prop('scene.lights[0].color'),
+    'lights[0].intensity': prop('scene.lights[0].intensity'),
+    'lights[0].position': prop('scene.lights[0].position'),
+
+    'lights[1].color': prop('scene.lights[1].color'),
+    'lights[1].intensity': prop('scene.lights[1].intensity'),
+    'lights[1].position': prop('scene.lights[1].position')
   },
 
   count: 3
@@ -51,6 +59,15 @@ const settings = {
     uRM_stop_threshold: 0.001,
     uRM_grad_step: 0.1,
     uRM_clip_far: 100.0
+  },
+
+  scene: {
+    lights: [
+      {position: [20.0, 20.0, 20.0], color: [1.0, 0.7, 0.7], intensity: 0.5},
+      {position: [-20.0, -20.0, -20.0], color: [0.3, 0.7, 1.0], intensity: 1}
+      //  {position: [20.0, 20.0, 20.0], color: [0.9, 0.9, 0.9], intensity: 0.8},
+      //  {position: [-20.0, -20.0, -20.0], color: [0.6, 0.7, 0.8], intensity: 0.5}
+    ]
   }
 }
 
