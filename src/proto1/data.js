@@ -74,7 +74,7 @@ const sceneData = {
   controls: [
     {
       up: [0, 0, 1],
-      rotateSpeed: 10.2,
+      rotateSpeed: 0.2,
       panSpeed: 2.0,
       zoomSpeed: 2.0,
       autoRotate: {

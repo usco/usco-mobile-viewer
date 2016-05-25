@@ -9,7 +9,7 @@ struct Light {
   vec3 position;
   float intensity;
 };
-#define lightsNb 4
+#define lightsNb 2
 uniform Light lights[lightsNb];
 
 void main() {

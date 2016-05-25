@@ -109,8 +109,8 @@ export function drawModelCommand (regl, scene, data) {
   return regl(params)
 }
 
-export default function drawModel(regl, sceneData, data){
-  const cmd = drawModelCommand(regl, sceneData, data)
+export default function drawModel(regl, scene, data) {
+  const cmd = drawModelCommand(regl, scene, data)
 
   //all sorts of 'dynamic' data
   const {pos, rot, sca} = data.transforms
@@ -127,5 +127,5 @@ export default function drawModel(regl, sceneData, data){
   mat4.rotateZ(modelMat, modelMat, rot[1])
   mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
 
-  return cmd({color, mat: modelMat, scene: sceneData})
+  return cmd({color, mat: modelMat, scene})
 }
