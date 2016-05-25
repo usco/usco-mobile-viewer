@@ -1,8 +1,14 @@
+const vec3 = require('gl-vec3')
+const mat4 = require('gl-mat4')
+
+/*
+const v3 = vec3.create()
+const m4 = mat4.create()*/
 
 const params = {
   enabled: true,
   userZoom: true,
-  userZoomSpeed:1.0,
+  userZoomSpeed: 1.0,
   userRotate: true,
   userRotateSpeed: 1.0,
 
@@ -28,182 +34,168 @@ const params = {
   thetaDelta: 0,
   scale: 1,
 
-  origPhiDelta: phiDelta,
-  origThetaDelta: thetaDelta,
-  origScale: scale,
+  up: [0, 1, 0],
 
-  up: [0,1,0],
+  /////not sure about theses
+  centers: [
+    [0, 0, 0]
+  ],
+  objects: [
+    {position:[0,0,0]}
+  ]
 }
 
-function update(params, dt){
-  //this is a modified version, with inverted Y and Z (since we use camera.z => up)
-  //we also allow multiple objects/cameras
-  for(var i =0; i< params.objects.length;i++)
-  {
+function update (params, dt) {
+  const {EPS, up} = params
+  // this is a modified version, with inverted Y and Z (since we use camera[2] => up)
+  // we also allow multiple objects/cameras
+  for (var i = 0; i < params.objects.length;i++) {
     var object = params.objects[i]
     var center = params.centers[i]
     var camState = params.camStates[i]
 
     var curThetaDelta = camState.thetaDelta
-    var curPhiDelta   = camState.phiDelta
-    var curScale      = camState.scale
+    var curPhiDelta = camState.phiDelta
+    var curScale = camState.scale
 
     var lastPosition = camState.lastPosition
 
-    var position = object.position
-    var offset = position.clone().sub( center )
+    const position = object.position
+    // var offset = position.clone().sub(center)
+    const offset = vec3.subtract(vec3.create(), position, center)
 
-    if(params.up[2] === 1)
-    {
+    if (up[2] === 1) {
       // angle from z-axis around y-axis, upVector : z
-      var theta = Math.atan2( offset.x, offset.y )
+      const theta = Math.atan2(offset[0], offset[1])
       // angle from y-axis
-      var phi = Math.atan2( Math.sqrt( offset.x * offset.x + offset.y * offset.y ), offset.z )
-    }
-    else
-    {
-      //in case of y up
-      var theta = Math.atan2( offset.x, offset.z )
-      var phi = Math.atan2( Math.sqrt( offset.x * offset.x + offset.z * offset.z ), offset.y )
+      const phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[1] * offset[1]), offset[2])
+    } else {
+      // in case of y up
+      const theta = Math.atan2(offset[0], offset[2])
+      const phi = Math.atan2(Math.sqrt(offset[0] * offset[0] + offset[2] * offset[2]), offset[1])
       curThetaDelta = -(curThetaDelta)
     }
 
-    if ( params.autoRotate ) {
+    /*if ( params.autoRotate ) {
       //PER camera
       params.objects.map(function(object, index){
         if(scope.objectOptions[index].userRotate){
           scope.camStates[index].thetaDelta += getAutoRotationAngle()
         }
       })
-    }
+    }*/
 
     theta += curThetaDelta
     phi += curPhiDelta
 
     // restrict phi to be between desired limits
-    phi = Math.max( params.minPolarAngle, Math.min( params.maxPolarAngle, phi ) )
+    phi = Math.max(params.minPolarAngle, Math.min(params.maxPolarAngle, phi))
     // restrict phi to be betwee EPS and PI-EPS
-    phi = Math.max( EPS, Math.min( Math.PI - EPS, phi ) )
-    //multiply by scaling effect
+    phi = Math.max(EPS, Math.min(Math.PI - EPS, phi))
+    // multiply by scaling effect
     var radius = offset.length() * curScale
     // restrict radius to be between desired limits
-    radius = Math.max( params.minDistance, Math.min( params.maxDistance, radius ) )
+    radius = Math.max(params.minDistance, Math.min(params.maxDistance, radius))
 
-    if(params.up[2] === 1)
-    {
-      offset.x = radius * Math.sin( phi ) * Math.sin( theta )
-      offset.z = radius * Math.cos( phi )
-      offset.y = radius * Math.sin( phi ) * Math.cos( theta )
-    }
-    else
-    {
-      offset.x = radius * Math.sin( phi ) * Math.sin( theta )
-      offset.y = radius * Math.cos( phi )
-      offset.z = radius * Math.sin( phi ) * Math.cos( theta )
+    if (up[2] === 1) {
+      offset[0] = radius * Math.sin(phi) * Math.sin(theta)
+      offset[2] = radius * Math.cos(phi)
+      offset[1] = radius * Math.sin(phi) * Math.cos(theta)
+    } else {
+      offset[0] = radius * Math.sin(phi) * Math.sin(theta)
+      offset[1] = radius * Math.cos(phi)
+      offset[2] = radius * Math.sin(phi) * Math.cos(theta)
     }
 
-    //
-    position.copy( center ).add( offset )
-    object.lookAt( center )
+    // position.copy(center).add(offset)
+    // object.lookAt(center)
+    vec3.add(vec3.create(), center, offset)
+    objMat = mat4.lookAt(mat4.create(), eye, center, up)
 
-    if ( lastPosition.distanceTo( object.position ) > 0 ) {
-        //this.active = true
-        //this.dispatchEvent( changeEvent )
-        lastPosition.copy( object.position )
+    const positionChanged = vec3.distance(lastPosition, position) > 0 // TODO optimise
+    const results = {
+      camState: {
+        thetaDelta: thetaDelta / 1.5,
+        phiDelta: phiDelta / 1.5,
+        scale: 1
+      },
+      changed: positionChanged,
+      lastPosition: position
     }
-    camState.thetaDelta /= 1.5
-    camState.phiDelta /= 1.5
-    camState.scale = 1
+    console.log('results', results)
+  /*camState.thetaDelta /= 1.5
+  camState.phiDelta /= 1.5
+  camState.scale = 1*/
   }
 }
 
-
+/*
 function setObservables (observables) {
   let {dragMoves$, zooms$} = observables
 
   let self = this
 
-  /* are these useful ?
-  scope.userZoomSpeed = 0.6
-  onPinch
-  */
-  function zoom(zoomDir, zoomScale, cameras){
+  // are these useful ?
+  //scope.userZoomSpeed = 0.6
+  // onPinch
+  function zoom (zoomDir, zoomScale, cameras) {
+    if (scope.enabled === false) return
+    if (scope.userZoom === false) return
 
-    if ( scope.enabled === false ) return
-    if ( scope.userZoom === false ) return
-
-    //PER camera
-    cameras.map(function(object, index){
-      if(scope.objectOptions[index].userZoom){
-
-        if(zoomDir < 0) scope.camStates[index].scale /= zoomScale
-        if(zoomDir > 0) scope.camStates[index].scale *= zoomScale
+    // PER camera
+    cameras.map(function (object, index) {
+      if (scope.objectOptions[index].userZoom) {
+        if (zoomDir < 0) scope.camStates[index].scale /= zoomScale
+        if (zoomDir > 0) scope.camStates[index].scale *= zoomScale
       }
     })
   }
 
-  function rotate(cameras, angle){
+  function rotate (cameras, angle) {
+    if (scope.enabled === false) return
+    if (scope.userRotate === false) return
 
-    if ( scope.enabled === false ) return
-    if ( scope.userRotate === false ) return
-
-    //PER camera
-    cameras.map(function(object, index){
-      if(scope.objectOptions[index].userRotate){
-        scope.camStates[index].thetaDelta += angle.x
-        scope.camStates[index].phiDelta   += angle.y
-
+    // PER camera
+    cameras.map(function (object, index) {
+      if (scope.objectOptions[index].userRotate) {
+        scope.camStates[index].thetaDelta += angle[0]
+        scope.camStates[index].phiDelta += angle[1]
       }
     })
   }
 
-  //TODO: implement
-  function pan(cameras, offset){
-    //console.log(event)
+  // TODO: implement
+  function pan (cameras, offset) {
+    // console.log(event)
     var _origDist = distance.clone()
 
-     //do this PER camera
-    cameras.map(function(object, index){
-        if(scope.objectOptions[index].userPan){
-          let distance = _origDist.clone()
-          distance.transformDirection( object.matrix )
-          distance.multiplyScalar( scope.userPanSpeed )
-
-          object.position.add( distance )
-          scope.centers[index].add( distance )
-        }
-      })
+    // do this PER camera
+    cameras.map(function (object, index) {
+      if (scope.objectOptions[index].userPan) {
+        let distance = _origDist.clone()
+        distance.transformDirection(object.matrix)
+        distance.multiplyScalar(scope.userPanSpeed)
+        object.position.add(distance)
+        scope.centers[index].add(distance)
+      }
+    })
   }
 
-
   dragMoves$
-    .subscribe(function(e){
+    .subscribe(function (e) {
       let delta = e.delta
-
-      /*if ( angle === undefined ) {
-      angle = 2 * Math.PI /180  * scope.userRotateSpeed
-    }*/
-      let angle ={x:0,y:0}
-      angle.x = 2 * Math.PI * delta.x / PIXELS_PER_ROUND * scope.userRotateSpeed
-      angle.y = -2 * Math.PI * delta.y / PIXELS_PER_ROUND * scope.userRotateSpeed
-
-      //console.log("rotate by angle",angle)
-      /*if ( angle === undefined ) {
-        angle = 2 * Math.PI /180  * scope.userRotateSpeed
-      } */
+      let angle = {x: 0,y: 0}
+      angle[0] = 2 * Math.PI * delta[0] / PIXELS_PER_ROUND * scope.userRotateSpeed
+      angle[1] = -2 * Math.PI * delta[1] / PIXELS_PER_ROUND * scope.userRotateSpeed
       rotate(self.objects, angle)
-
     })
-    //.subscribe(e=>e)//console.log("dragMoves",e.delta))
 
   zooms$
-    .subscribe(function(delta){
+    .subscribe(function (delta) {
       let zoomScale = undefined
-      if ( !zoomScale ) {
+      if (!zoomScale) {
         zoomScale = getZoomScale()
       }
       zoom(delta, zoomScale, self.objects)
     })
-    //.subscribe(e=>e)//console.log("zoom",e))
-
-}
+}*/
