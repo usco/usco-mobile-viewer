@@ -5,12 +5,13 @@ const reglM = require('regl')
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 import _drawModel from './drawModel'
+import { params as cameraDefaults } from '../common/orbitControls'
 
 const regl = reglM()
 const {frame, clear} = regl
 const drawModel = _drawModel.bind(null, regl)
 
-import { params, update, rotate, zoom } from '../common/orbitControls'
+import loop from '../common/loop'
 
 /* //////////////// */
 
@@ -19,48 +20,12 @@ const fullData = {
   modelsData: [bunnyData, bunnyData2, bunnyData3]
 }
 
-// FIXME: hack for now
-const cameraDefaults = params
-let cameraData = update(cameraDefaults)
-let prevMouse = [0, 0]
-
-function onMouseChange (buttons, x, y, mods) {
-  //console.log('mouse-change', buttons, x, y, mods)
-  if(buttons === 1) {
-    let delta = [x - prevMouse[0], y - prevMouse[1]]
-    let angle = [0, 0]
-    angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
-    angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
-
-    cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
-    cameraData = rotate(cameraData, angle)
-  }
-  prevMouse = [x, y]
-}
-
-function onMouseWheel (dx, dy) {
-  const zoomDelta = dy
-  cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
-  cameraData = zoom(cameraData, zoomDelta)
-}
-
-function updateStep () {
-  cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
-  cameraData = update(cameraData)
-
-  if (cameraData && cameraData.changed) {
-    render(fullData)
-  }
-  window.requestAnimationFrame(updateStep)
-}
-
-require('mouse-change')(onMouseChange)
-require('mouse-wheel')(onMouseWheel)
-requestAnimationFrame(updateStep)
 /* ============================================ */
 
 // main render function: data in, rendered frame out
 function render (data) {
+  const {cameraData} = data
+  
   clear({
     depth: 1,
     color: [1, 1, 1, 1]
@@ -78,7 +43,8 @@ function render (data) {
 })*/
 
 // render one frame
-render(fullData)
+//render(fullData)
+loop(cameraDefaults, render, fullData)
 
 /*const copyPixels = regl.texture({
   x: 5,
