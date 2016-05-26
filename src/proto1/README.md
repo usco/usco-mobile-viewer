@@ -8,7 +8,7 @@
 - do 'picking'
 - work server side
 - object outlines (hopefully BETTER than the current ones)
-- lines (for gcode etc)
+- lines (for gcode etc) => WORKS
 - shadows (less important, waaay harder than all the rest ?)
 
 ##TODO/ to investigate:
@@ -18,7 +18,7 @@
 - do 'picking' *MEDIUM*
 - work server side *EASY*
 - object outlines (hopefully BETTER than the current ones) *MEDIUM*
-- lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering
+- lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => WORKS
 - what to do with all 'visual helpers' ? *HARD*
 - shadows *HARD*
 
