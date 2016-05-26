@@ -7,16 +7,18 @@ const {clear} = regl
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 import {params, update} from '../common/orbitControls'
 
-const cameraData = update(params)
 const fullData = {
   sceneData,
-  modelsData: [bunnyData, bunnyData2, bunnyData3]
+  modelsData: [bunnyData, bunnyData2, bunnyData3],
+  cameraData: update(params)
 }
 
 import _drawModel from '../proto1/drawModel'
 const drawModel = _drawModel.bind(null, regl)
 
 function render (data) {
+  const {cameraData} = data
+
   clear({
     depth: 1,
     color: [1, 1, 1, 1]

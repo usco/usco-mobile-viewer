@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify src/proto1 -o dist/index.js -t [ babelify]",
+    "build": "browserify src/proto1-basics -o dist/index.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
-    "watch": "watchify src/model.js -o dist/index.js -t [ babelify]",
-    "start-dev": "budo src/proto1 --port=8080 --live -- -t babelify"
+    "watch": "watchify src/proto1-basics -o dist/index.js -t [ babelify]",
+    "start-dev": "budo src/proto1-basics --port=8080 --live -- -t babelify",
+    "test-render":"npm run build-srv && node dist/serverSide/index.js"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
