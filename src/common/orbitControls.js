@@ -110,14 +110,13 @@ export function update (params) {
   quat.fromMat3(this.rotation, camMat)
   lookAt(view, this.position, this.target, this.up)
   */
-
   const positionChanged = vec3.distance(position, newPosition) > 0 // TODO optimise
   const results = {
     changed: positionChanged,
 
-    thetaDelta: curThetaDelta / 1.5,
-    phiDelta: curPhiDelta / 1.5,
-    scale: curScale,
+    thetaDelta: curThetaDelta / 2.5,
+    phiDelta: curPhiDelta / 2.5,
+    scale: 1,
 
     up,
     position: newPosition,
@@ -134,21 +133,19 @@ export function rotate (params, angle) {
     params.cam.phiDelta += angle[1]
   }
 
-  return params
+  return params.cam
 }
 
-export function zoom (params, zoomDir, zoomScale) {
-  // are these useful ?
-  //scope.userZoomSpeed = 0.6
-  /*let zoomScale = undefined
-  if (!zoomScale) {
-    zoomScale = getZoomScale()
-  }*/
+export function zoom (params, zoomScale) {
   if (params.userZoom) {
-    const scale = zoomDir < 0 ? params.cam.scale / zoomScale : params.cam.scale * zoomScale
-    params.cam.scale = scale
+    zoomScale = Math.min(Math.max(zoomScale, -0.1), 0.1);
+    const amount = Math.abs(zoomScale) === 1 ? Math.pow( 0.95, params.userZoomSpeed ): zoomScale
+    const scale = zoomScale < 0 ? (params.cam.scale / amount) : (params.cam.scale * amount)
+    //console.log('zoomScale',zoomScale,scale)
+
+    params.cam.scale += amount
   }
-  return params
+  return params.cam
 }
 
 function pan (params) {

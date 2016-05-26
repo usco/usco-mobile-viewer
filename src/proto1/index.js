@@ -15,7 +15,7 @@ const {frame, clear} = regl
 
 const drawModel = _drawModel.bind(null, regl)
 
-import { params, update, rotate } from '../common/orbitControls'
+import { params, update, rotate, zoom } from '../common/orbitControls'
 
 /* //////////////// */
 
@@ -25,8 +25,8 @@ const fullData = {
 }
 
 // FIXME: hack for now
-let cameraDefaults = params
-let cameraData = update(params)
+const cameraDefaults = params
+let cameraData = update(cameraDefaults)
 let prevMouse = [0, 0]
 
 function onMouseChange (buttons, x, y, mods) {
@@ -37,13 +37,41 @@ function onMouseChange (buttons, x, y, mods) {
     angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
     angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
 
+
     cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
-    cameraData = update(rotate(cameraData, angle))
-    render(fullData)
+    cameraData = rotate(cameraData, angle)
+    //cameraData = update(cameraData)
+    //render(fullData)
   }
   prevMouse = [x, y]
 }
+
+function onMouseWheel (dx, dy) {
+  const zoomDelta = dy//*0.001
+  cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
+  cameraData = zoom(cameraData, zoomDelta)
+
+  //console.log(zoomDelta,cameraData)
+  //render(fullData)
+}
+
+
+function updateStep(){
+  //console.log('cameraData',cameraData)
+  cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
+  cameraData = update(cameraData)
+
+  if(cameraData && cameraData.changed){
+    render(fullData)
+  }
+  window.requestAnimationFrame(updateStep)
+}
+
 require('mouse-change')(onMouseChange)
+require('mouse-wheel')(onMouseWheel)
+
+
+requestAnimationFrame(updateStep)
 
 // main render function: data in, rendered frame out
 function render (data) {
