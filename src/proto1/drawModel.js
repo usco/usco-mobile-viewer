@@ -4,8 +4,8 @@ import mat4 from 'gl-mat4'
 import normals from 'angle-normals'
 
 // import glslify from 'glslify' // does not work
-var glslify = require('glslify')
-var mouse = require('mouse-change')(function () {})
+//var glslify = require('glslify') // works only in browser (browserify transform)
+var glslify = require('glslify-sync') // works in client & server
 
 function formatLightsDataForRender(lightsData){
   const result = lightsData.map(function (data, index) {
@@ -49,10 +49,10 @@ export function drawModelCommand (regl, scene, data) {
           1000)
       },
 
-      mouse: (props, {pixelRatio, viewportHeight}) => [
+      /*mouse: (props, {pixelRatio, viewportHeight}) => [
         mouse.x * pixelRatio,
         viewportHeight - mouse.y * pixelRatio
-      ],
+      ],*/
 
       'lights[0].color': prop('scene.lights[0].color'),
       'lights[0].intensity': prop('scene.lights[0].intensity'),
@@ -128,5 +128,5 @@ export default function drawModel(regl, scene, data, cameraData) {
   mat4.rotateZ(modelMat, modelMat, rot[1])
   mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
 
-  return cmd({color, mat: modelMat, scene, view: cameraData.view })
+  return cmd({ color, mat: modelMat, scene, view: cameraData.view })
 }
