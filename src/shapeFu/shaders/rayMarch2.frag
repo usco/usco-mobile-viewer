@@ -28,6 +28,7 @@ struct Light {
 #define lightsNb 2
 uniform Light lights[lightsNb];
 
+uniform mat4 model, view, projection;
 
 // distance function
 float dist_sphere( vec3 pos, float r ) {
@@ -150,7 +151,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	vec3 eye = vec3( 0.0, 0.0, 10.0 );
 
 	// rotate camera
-	mat3 rot = rotationXY( vec2( iGlobalTime ) );//
+	//mat3 rot = rotationXY( vec2( iGlobalTime ) );//
+  mat3 rot = mat3(view);
 	dir = rot * dir;
 	eye = rot * eye;
 

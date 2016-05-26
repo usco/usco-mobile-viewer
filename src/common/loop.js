@@ -40,7 +40,6 @@ export default function loop(cameraDefaults, render, fullData){
   require('mouse-change')(onMouseChange)
   require('mouse-wheel')(onMouseWheel)
 
-  //
   let data = fullData
   data.cameraData = cameraData
   render(data)

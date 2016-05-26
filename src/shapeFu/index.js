@@ -2,8 +2,10 @@ var regl = require('regl')()
 var glslify = require('glslify-sync')
 var mouse = require('mouse-change')(function () {})
 const {frame, clear, buffer, texture, prop} = regl
+import mat4 from 'gl-mat4'
+import { params as cameraDefaults } from '../common/orbitControls'
 import { sceneData } from '../common/data'
-
+import loop from '../common/loop'
 
 const drawFSO = regl({
   frag: glslify(__dirname + '/shaders/rayMarch2.frag'),
@@ -17,11 +19,8 @@ const drawFSO = regl({
   },
 
   uniforms: {
+    view: prop('view'),
     iResolution: (props, {viewportWidth, viewportHeight}) => [viewportWidth, viewportHeight],
-    iMouse: (props, {pixelRatio, viewportHeight}) => [
-      mouse.x * pixelRatio,
-      viewportHeight - mouse.y * pixelRatio
-    ],
     iGlobalTime: (props, {count}) => 0.01 * count + 15,
 
     bgColor: prop('bgColor'),
@@ -39,7 +38,15 @@ const drawFSO = regl({
 
     'lights[1].color': prop('scene.lights[1].color'),
     'lights[1].intensity': prop('scene.lights[1].intensity'),
-    'lights[1].position': prop('scene.lights[1].position')
+    'lights[1].position': prop('scene.lights[1].position'),
+
+    'lights[2].color': prop('scene.lights[2].color'),
+    'lights[2].intensity': prop('scene.lights[2].intensity'),
+    'lights[2].position': prop('scene.lights[2].position'),
+
+    'lights[3].color': prop('scene.lights[3].color'),
+    'lights[3].intensity': prop('scene.lights[3].intensity'),
+    'lights[3].position': prop('scene.lights[3].position')
   },
 
   count: 3
@@ -53,30 +60,29 @@ const settings = {
 
   rayMarch: {
     uRM_maxIterations: 400,
-    uRM_stop_threshold: 0.001,
-    uRM_grad_step: 0.1,
+    uRM_stop_threshold: 0.0001,
+    uRM_grad_step: 0.01,
     uRM_clip_far: 100.0
-  },
-
-  scene: {
-    lights: [
-      {position: [20.0, 20.0, 20.0], color: [1.0, 0.7, 0.7], intensity: 0.5},
-      {position: [-20.0, -20.0, -20.0], color: [0.3, 0.7, 1.0], intensity: 1}
-      //  {position: [20.0, 20.0, 20.0], color: [0.9, 0.9, 0.9], intensity: 0.8},
-      //  {position: [-20.0, -20.0, -20.0], color: [0.6, 0.7, 0.8], intensity: 0.5}
-    ]
   }
 }
 
+const fullData = Object.assign({}, {scene: sceneData}, {view: cameraDefaults.cam.view}, settings)
+
 // main render function: data in, rendered frame out
 function render (data) {
-  drawFSO(data)
+  let _data = data
+  let viewMat = data.cameraData.view
+  _data.view = mat4.invert(viewMat, viewMat)
+  drawFSO(_data)
 }
 
 // dynamic drawing
-frame((props, context) => {
+/*frame((props, context) => {
   render(settings)
-})
+})*/
 
 // render one frame
-render(settings)
+// render(fullData)
+
+// render multiple, with controls
+loop(cameraDefaults, render, fullData)
