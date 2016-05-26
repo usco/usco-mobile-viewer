@@ -16,28 +16,20 @@ const {max, min, sqrt, PI, sin, cos, atan2} = Math
 
 export const params = {
   enabled: true,
+
   userZoom: true,
   userZoomSpeed: 1.0,
   userRotate: true,
   userRotateSpeed: 1.0,
-
   userPan: true,
   userPanSpeed: 2.0,
-
-  autoRotate: true,
+  autoRotate: false,
   autoRotateSpeed: 2.0, // 30 seconds per round when fps is 60
 
-  minPolarAngle: 0, // radians
-  maxPolarAngle: PI, // radians
-
   minDistance: 0.2,
-  maxDistance: 1400,
-
-  active: false,
-  mainPointerPressed: false,
+  maxDistance: 400,
 
   EPS: 0.000001,
-  PIXELS_PER_ROUND: 1800,
   drag: 0.01, // Decrease the momentum by 1% each iteration
 
   // below this, dynamic stuff mostly
@@ -80,14 +72,13 @@ export function update (params) {
     curThetaDelta = -(curThetaDelta)
   }
 
-  /*if (params.autoRotate && params.userRotate) {
-    scope.camStates[index].thetaDelta += getAutoRotationAngle()
-  }*/
+  if (params.autoRotate && params.userRotate) {
+    curThetaDelta += 2 * Math.PI / 60 / 60 * params.autoRotateSpeed // arbitrary, kept for backwards compatibility
+  }
+
   theta += curThetaDelta
   phi += curPhiDelta
 
-  // restrict phi to be between desired limits
-  phi = max(params.minPolarAngle, min(params.maxPolarAngle, phi))
   // restrict phi to be betwee EPS and PI-EPS
   phi = max(EPS, min(PI - EPS, phi))
   // multiply by scaling effect and restrict radius to be between desired limits
@@ -111,7 +102,7 @@ export function update (params) {
   lookAt(view, this.position, this.target, this.up)
   */
   const positionChanged = vec3.distance(position, newPosition) > 0 // TODO optimise
-  const results = {
+  return {
     changed: positionChanged,
 
     thetaDelta: curThetaDelta / 2.5,
@@ -123,8 +114,6 @@ export function update (params) {
     target: newTarget,
     view: newView
   }
-  // console.log('results', results)
-  return results
 }
 
 export function rotate (params, angle) {
@@ -138,7 +127,7 @@ export function rotate (params, angle) {
 
 export function zoom (params, zoomScale) {
   if (params.userZoom) {
-    zoomScale = Math.min(Math.max(zoomScale, -0.1), 0.1);
+    zoomScale = zoomScale*0.001 //Math.min(Math.max(zoomScale, -0.1), 0.1);
     const amount = Math.abs(zoomScale) === 1 ? Math.pow( 0.95, params.userZoomSpeed ): zoomScale
     const scale = zoomScale < 0 ? (params.cam.scale / amount) : (params.cam.scale * amount)
     //console.log('zoomScale',zoomScale,scale)
