@@ -7,9 +7,10 @@
 - replicate (need not match 100%) the 'grid' *MEDIUM*
 - do 'picking' *MEDIUM*
 - work server side  *EASY* => DONE, IN COLOR
-- object outlines (hopefully BETTER than the current ones) *MEDIUM*
+- object outlines (hopefully BETTER than the current ones) *HARD*
 - lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => DONE
 - shadows (less important, waaay harder than all the rest ?) *VERY HARD*
+- shading /visual quality *MEDIUM*  
 - what to do with all 'visual helpers' ? *HARD*
 
 ##Cool extras and tools:
