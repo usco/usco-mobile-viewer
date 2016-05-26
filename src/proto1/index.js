@@ -3,14 +3,11 @@ const reglM = require('regl')
 // const regl = require('regl')(require('gl')(256, 256))
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
-import normals from 'angle-normals'
-
-import { bunnyData, bunnyData2, bunnyData3, sceneData } from './data'
+import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 import _drawModel from './drawModel'
 
 const regl = reglM()
 const {frame, clear} = regl
-
 const drawModel = _drawModel.bind(null, regl)
 
 import { params, update, rotate, zoom } from '../common/orbitControls'
@@ -35,31 +32,23 @@ function onMouseChange (buttons, x, y, mods) {
     angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
     angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
 
-
     cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
     cameraData = rotate(cameraData, angle)
-    //cameraData = update(cameraData)
-    //render(fullData)
   }
   prevMouse = [x, y]
 }
 
 function onMouseWheel (dx, dy) {
-  const zoomDelta = dy//*0.001
+  const zoomDelta = dy
   cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
   cameraData = zoom(cameraData, zoomDelta)
-
-  //console.log(zoomDelta,cameraData)
-  //render(fullData)
 }
 
-
-function updateStep(){
-  //console.log('cameraData',cameraData)
+function updateStep () {
   cameraData = Object.assign({}, cameraDefaults, {cam: cameraData})
   cameraData = update(cameraData)
 
-  if(cameraData && cameraData.changed){
+  if (cameraData && cameraData.changed) {
     render(fullData)
   }
   window.requestAnimationFrame(updateStep)
@@ -67,8 +56,8 @@ function updateStep(){
 
 require('mouse-change')(onMouseChange)
 require('mouse-wheel')(onMouseWheel)
-
 requestAnimationFrame(updateStep)
+/* ============================================ */
 
 // main render function: data in, rendered frame out
 function render (data) {
@@ -77,7 +66,6 @@ function render (data) {
     color: [1, 1, 1, 1]
   })
 
-  // const cameraData = update(params)
   // bunnyData.selected = getRandomInt(0, 20) === 0
   drawModel(data.sceneData, data.modelsData[0], cameraData)
   drawModel(data.sceneData, data.modelsData[1], cameraData)

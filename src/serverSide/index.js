@@ -4,7 +4,7 @@ import {writeContextToFile} from './utils'
 
 const {clear} = regl
 
-import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../proto1/data'
+import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 import {params, update} from '../common/orbitControls'
 
 const cameraData = update(params)
