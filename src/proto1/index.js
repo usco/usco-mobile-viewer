@@ -3,8 +3,6 @@ const reglM = require('regl')
 // const regl = require('regl')(require('gl')(256, 256))
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
-import { identity, perspective } from 'gl-mat4'
-import mat4 from 'gl-mat4'
 import normals from 'angle-normals'
 
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from './data'
@@ -69,7 +67,6 @@ function updateStep(){
 
 require('mouse-change')(onMouseChange)
 require('mouse-wheel')(onMouseWheel)
-
 
 requestAnimationFrame(updateStep)
 
