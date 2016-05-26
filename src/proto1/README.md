@@ -1,27 +1,16 @@
 ##We need to be able to
 
-- displays meshes, from raw hashes of Float32Array (positions, normals) => WORKS
-- display meshes given lots of 'meta' data : ie json object containing transforms, colors, etc IN , render OUT => WORKS
-- have identical controls (camera controls)
-- replicate (need not match 100%) object transform controls
-- replicate (need not match 100%) the 'grid'
-- do 'picking'
-- work server side
-- object outlines (hopefully BETTER than the current ones)
-- lines (for gcode etc) => WORKS
-- shadows (less important, waaay harder than all the rest ?)
-
-##TODO/ to investigate:
-- have identical controls (camera controls) *MEDIUM*
-- replicate (need not match 100%) object transform controls *HARD*
+- displays meshes, from raw hashes of Float32Array (positions, normals) => DONE
+- display meshes given lots of 'meta' data : ie json object containing transforms, colors, etc IN , render OUT => DONE
+- have identical controls (camera controls) *MEDIUM* => DONE
+- replicate (need not match 100%) object transform controls  *VERY HARD*
 - replicate (need not match 100%) the 'grid' *MEDIUM*
 - do 'picking' *MEDIUM*
-- work server side *EASY*
+- work server side  *EASY* => DONE, IN COLOR
 - object outlines (hopefully BETTER than the current ones) *MEDIUM*
-- lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => WORKS
+- lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => DONE
+- shadows (less important, waaay harder than all the rest ?) *VERY HARD*
 - what to do with all 'visual helpers' ? *HARD*
-- shadows *HARD*
-
 
 ##Cool extras and tools:
 - good performance
