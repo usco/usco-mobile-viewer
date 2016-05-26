@@ -1,10 +1,9 @@
 var regl = require('regl')()
-var glslify = require('glslify')
+var glslify = require('glslify-sync')
 var mouse = require('mouse-change')(function () {})
 const {frame, clear, buffer, texture, prop} = regl
+import { sceneData } from '../common/data'
 
-let frameTime = 30
-let pixels = texture()
 
 const drawFSO = regl({
   frag: glslify(__dirname + '/shaders/rayMarch2.frag'),
@@ -18,7 +17,6 @@ const drawFSO = regl({
   },
 
   uniforms: {
-    texture: pixels,
     iResolution: (props, {viewportWidth, viewportHeight}) => [viewportWidth, viewportHeight],
     iMouse: (props, {pixelRatio, viewportHeight}) => [
       mouse.x * pixelRatio,
@@ -47,7 +45,6 @@ const drawFSO = regl({
   count: 3
 })
 
-
 // data
 const settings = {
   toggleSoftShadows: false,
@@ -74,10 +71,6 @@ const settings = {
 // main render function: data in, rendered frame out
 function render (data) {
   drawFSO(data)
-
-  pixels({
-    copy: true
-  })
 }
 
 // dynamic drawing
