@@ -25,5 +25,6 @@ SDF based modeling:
     - without normals , nice shading etc, performance is about 3 X better(no more interactive speeds beyond 300 boolean operations)
 
 
-####Tooling:
+####Tooling, extra docs , links etc:
+- all essentially based on : http://iquilezles.org/www/articles/distfunctions/distfunctions.htm
 - for debuging perhaps use https://github.com/stackgl/glsl-transpiler to convert shader code to js

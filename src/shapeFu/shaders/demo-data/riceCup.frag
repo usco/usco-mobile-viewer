@@ -4,6 +4,7 @@ const float PI = 3.14159265359;
 #pragma glslify: sdConeSection = require('../primitives/coneSection.frag')
 
 #pragma glslify: opS = require('../operations/subtract.frag')
+#pragma glslify: opU = require('../operations/union.frag')
 
 
 float riceCup( vec3 pos ) {
@@ -37,16 +38,16 @@ difference() {
 }
 
 */
-float BASE = 55.;
+float BASE = 5.5;
 float TOP = BASE*1.2;
 float AVGDIAM = (BASE*TOP)/2.;
-float VOLUME = 180000.;
+float VOLUME = 1800.;
 float HEIGHT = VOLUME/((AVGDIAM/2.)*(AVGDIAM/2.)*PI);
-float WALLS = 2.;
+float WALLS = 0.2;
 
 // rice cup exterior
 vec3 cu1_offset = vec3(0,-(HEIGHT+WALLS)/2.,0);//
-float cu1 = sdBox( pos+cu1_offset, vec3( HEIGHT+(WALLS*3.), HEIGHT+WALLS, HEIGHT+(WALLS*3.) ) );
+float cu1 = sdBox( pos-cu1_offset, vec3( HEIGHT+(WALLS*3.), HEIGHT+WALLS, HEIGHT+(WALLS*3.) ) );
 
 // rice cup interior
 vec3 c1_offset = vec3(0,-(WALLS+0.01+HEIGHT/2.),0);
@@ -56,8 +57,8 @@ float c1 = sdConeSection(pos+c1_offset, HEIGHT, BASE/2., TOP/2.);
 
 float result = opS(cu1, c1);
 //result = cu1;
-result = c1;
-//result = opUnion(c1, cu1);
+//result = c1;
+//result = opU(c1, cu1);
 return result;
 }
 
