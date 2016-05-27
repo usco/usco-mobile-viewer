@@ -28,3 +28,4 @@
 - reindex geometric data to keep hard edges while keeping advantage of indexed geometry: see http://stack.gl/packages/#hughsk/mesh-reindex
 - center mesh http://stack.gl/packages/#wwwtyro/geo-center
 - ambient occlusion ?http://wwwtyro.github.io/geo-ambient-occlusion/example/
+- for drawing grids, axes, etc, this can be a good reference https://github.com/gl-vis/gl-axes3d
