@@ -8,8 +8,9 @@
     "build": "browserify src/proto1-basics -o dist/index.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
     "watch": "watchify src/proto1-basics -o dist/index.js -t [ babelify]",
-    "start-dev": "budo src/proto1-basics --port=8080 --live -- -t babelify",
-    "test-render":"npm run build-srv && node dist/serverSide/index.js"
+    "start-dev": "budo src/shapeFu --port=8080 --live -- -t babelify",
+    "test-render": "npm run build-srv && node dist/serverSide/index.js",
+    "test-scadParse": "node src/shapeFu/parsing/launchTestParse.js"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
@@ -21,6 +22,7 @@
     "gl-mat4": "^1.1.4",
     "glslify": "^5.0.2",
     "glslify-sync": "^2.0.0",
+    "jison": "^0.4.17",
     "mouse-change": "^1.2.1",
     "mouse-wheel": "^1.1.0",
     "pngjs": "^2.3.1",
