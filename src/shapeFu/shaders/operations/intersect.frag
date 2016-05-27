@@ -1,7 +1,6 @@
 //intersect
-/*float opI( float d1, float d2 )
-{
-    return max(d1,d2);
+float opIntersect( float d0, float d1){
+  return max( d0,  d1 );
 }
 
-#pragma glslify: export(opI)
+#pragma glslify: export(opIntersect)

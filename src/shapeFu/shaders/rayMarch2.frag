@@ -30,32 +30,18 @@ uniform Light lights[lightsNb];
 
 uniform mat4 model, view, projection;
 
-// distance function
-float dist_sphere( vec3 pos, float r ) {
-	return length( pos ) - r;
-}
 
-float dist_box( vec3 pos, vec3 size ) {
-	return length( max( abs( pos ) - size, 0.0 ) );
-}
+#pragma glslify: riceCup = require('./demo-data/riceCup.frag')
+#pragma glslify: basic = require('./demo-data/basic.frag')
 
-float opUnion( float d0, float d1){
-  return min( d0,  d1 );
-}
-
-float opIntersect( float d0, float d1){
-  return max( d0,  d1 );
-}
-
-float opSubtract( float d0, float d1){
-  return max( d1,  d0 );
-}
 
 // get distance in the world
 float dist_field( vec3 pos ) {
 	// ...add objects here...
 
-	vec3 offset = vec3(0,0,0);
+  return riceCup(pos+vec3(0,0,0));
+
+	/*vec3 offset = vec3(0,0,0);
 	// object 0 : sphere
 	float d0 = dist_sphere( pos+offset, 2.7 );
 
@@ -65,7 +51,7 @@ float dist_field( vec3 pos ) {
 	// union     : min( d0,  d1 )
 	// intersect : max( d0,  d1 )
 	// subtract  : max( d1, -d0 )
-	return opSubtract(d0, d1);
+	return opSubtract(d0, d1);*/
 }
 
 // phong shading
@@ -154,7 +140,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	//mat3 rot = rotationXY( vec2( iGlobalTime ) );//
   mat3 rot = mat3(view);
 	dir = rot * dir;
-	eye = rot * eye;
+	eye = rot * eye * 5.;
 
 	// ray marching
 	float depth = ray_marching( eye, dir, 0.0, uRM_clip_far );

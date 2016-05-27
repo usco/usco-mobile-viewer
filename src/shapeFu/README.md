@@ -23,3 +23,7 @@ SDF based modeling:
   - interestingly there barely seems to be a difference between 32 & 320 iterations or any other parameter change
   - gradient (normals) generation means calling the distance function 6 times in extra to the base computation
     - without normals , nice shading etc, performance is about 3 X better(no more interactive speeds beyond 300 boolean operations)
+
+
+####Tooling:
+- for debuging perhaps use https://github.com/stackgl/glsl-transpiler to convert shader code to js
