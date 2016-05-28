@@ -491,13 +491,11 @@ vector_expr:
             $$ = {children:[]}
             $$.type = 'V';
             $$.children.push($1);
-            console.log('vector expr', $$, $1)
         }
     |   vector_expr ',' optional_commas expr
         {
             $$ = $1;
             $$.children.push($4);
-            console.log('vector sub', $$, $4)
         }
     ;
 
@@ -555,7 +553,7 @@ arguments_call:
         }
     |   arguments_call ',' optional_commas argument_call
         {
-          console.log('here 4', $$, $4)
+          console.log('here 4')
             $$ = $1;
             $$.argnames.push($4.argname);
             $$.argexpr.push($4.argexpr);

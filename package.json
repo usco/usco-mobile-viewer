@@ -8,9 +8,10 @@
     "build": "browserify src/proto1-basics -o dist/index.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
     "watch": "watchify src/proto1-basics -o dist/index.js -t [ babelify]",
-    "start-dev": "budo src/shapeFu --port=8080 --live -- -t babelify",
+    "start-dev": "budo src/proto1-basics --port=8080 --live -- -t babelify",
     "test-render": "npm run build-srv && node dist/serverSide/index.js",
-    "test-scadParse": "node src/shapeFu/parsing/launchTestParse.js"
+    "test-scadParse": "node src/shapeFu/parsing/launchTestParse.js",
+    "test-scadParse2":"jison src/shapeFu/parsing/openscad.jison -m commonjs -o src/shapeFu/parsing/openscadParser.js"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
@@ -26,7 +27,10 @@
     "mouse-change": "^1.2.1",
     "mouse-wheel": "^1.1.0",
     "pngjs": "^2.3.1",
-    "regl": "github:mikolalysenko/regl#gh-pages"
+    "ray-aabb-intersection": "^1.0.1",
+    "ray-sphere-intersection": "^1.0.0",
+    "regl": "github:mikolalysenko/regl#gh-pages",
+    "vertices-bounding-box": "^1.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
