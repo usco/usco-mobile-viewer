@@ -101,6 +101,7 @@ program:
         input
         {
             // FIXME return ext.processModule(yy);
+            yy.settings.processModule(yy);
         }
     ;
 
@@ -123,7 +124,7 @@ statement_begin:
         /*empty*/
     |   TOK_MODULE TOK_ID '(' arguments_decl optional_commas ')'
         {
-            // FIXME: ext.stashModule($2, $4.argnames, $4.argexpr);
+            yy.settings.stashModule($2, $4.argnames, $4.argexpr);
             delete $4;
         }
     ;
@@ -134,19 +135,20 @@ statement_end:
         }
     |   '{' inner_input '}'
         {
-            // FIXME ext.popModule();
+            yy.settings.popModule();
+            console.log('popModule')
         }
     |   module_instantiation
         {
-            // FIXME ext.addModuleChild($1);
+            yy.settings.addModuleChild($1)
         }
     |   TOK_ID '=' expr ';'
         {
-            // FIXME ext.addModuleAssignmentVar($1, $3);
+            yy.settings.addModuleAssignmentVar($1, $3);
         }
     |   TOK_FUNCTION TOK_ID '(' arguments_decl optional_commas ')' '=' expr ';'
         {
-            // FIXME ext.addModuleFunction($2, $8, $4.argnames, $4.argexpr);
+            yy.settings.addModuleFunction($2, $8, $4.argnames, $4.argexpr);
             delete $4;
         }
     |   BR
@@ -155,7 +157,7 @@ statement_end:
 children_instantiation:
         module_instantiation
         {
-            $$ = { t:'moduleInstanciation', children:[]}
+            $$ = { t:'moduleInstantiation', children:[]}
             if ($1) {
                 $$.children.push($1);
             }
@@ -229,7 +231,7 @@ module_instantiation:
 module_instantiation_list:
         /* empty */
         {
-            $$ = { t:'moduleInstanciation', children:[]}
+            $$ = { t:'moduleInstantiation', children:[]}
         }
     |   module_instantiation_list module_instantiation
         {
@@ -247,7 +249,7 @@ module_instantiation_list:
 single_module_instantiation:
         TOK_ID '(' arguments_call ')'
         {
-            $$ = { t:'moduleInstanciation', children:[]}
+            $$ = { t:'moduleInstantiation', children:[]}
             $$.name = $1;
             $$.argnames = $3.argnames;
             $$.argexpr = $3.argexpr;
@@ -318,7 +320,8 @@ expr:
     |   TOK_NUMBER
         {
             //$$ =new Expression(Number($1));
-            console.log('number',$1)
+            //console.log('number',$1)
+            $$ = parseInt($1)
         }
     |   '[' expr ':' expr ']'
         {
@@ -491,13 +494,13 @@ vector_expr:
             $$ = {children:[]}
             $$.type = 'V';
             $$.children.push($1);
-            console.log('vector expr', $$, $1)
+            //console.log('vector expr', $$, $1)
         }
     |   vector_expr ',' optional_commas expr
         {
             $$ = $1;
             $$.children.push($4);
-            console.log('vector sub', $$, $4)
+            //console.log('vector sub', $$, $4)
         }
     ;
 
