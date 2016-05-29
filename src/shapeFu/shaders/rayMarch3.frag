@@ -31,16 +31,20 @@ uniform Light lights[lightsNb];
 uniform mat4 model, view, projection;
 
 
-#pragma glslify: riceCup = require('./demo-data/riceCup.frag')
-#pragma glslify: basic = require('./demo-data/basic.frag')
-#pragma glslify: test = require('./demo-data/convTest.frag')
+#pragma glslify: sdBox = require('./primitives/box.frag')
+#pragma glslify: sdConeSection = require('./primitives/coneSection.frag')
+#pragma glslify: opS = require('./operations/subtract.frag')
+#pragma glslify: opU = require('./operations/union.frag')
+//#pragma glslify: riceCup = require('./demo-data/riceCup.frag')
+//#pragma glslify: basic = require('./demo-data/basic.frag')
+//#pragma glslify: test = require('./demo-data/convTest.frag')
 
 
 // get distance in the world
 float dist_field( vec3 pos ) {
 	// ...add objects here...
 
-  return test(pos);
+  return root(pos);
 
 	/*vec3 offset = vec3(0,0,0);
 	// object 0 : sphere

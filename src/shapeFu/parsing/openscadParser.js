@@ -86,11 +86,12 @@ switch (yystate) {
 case 1:
 
             // FIXME return ext.processModule(yy);
+            yy.settings.processModule(yy);
         
 break;
 case 8:
 
-            // FIXME: ext.stashModule($$[$0-4], $$[$0-2].argnames, $$[$0-2].argexpr);
+            yy.settings.stashModule($$[$0-4], $$[$0-2].argnames, $$[$0-2].argexpr);
             delete $$[$0-2];
         
 break;
@@ -100,28 +101,29 @@ case 9:
 break;
 case 10:
 
-            // FIXME ext.popModule();
+            yy.settings.popModule();
+            console.log('popModule')
         
 break;
 case 11:
 
-            // FIXME ext.addModuleChild($$[$0]);
+            yy.settings.addModuleChild($$[$0])
         
 break;
 case 12:
 
-            // FIXME ext.addModuleAssignmentVar($$[$0-3], $$[$0-1]);
+            yy.settings.addModuleAssignmentVar($$[$0-3], $$[$0-1]);
         
 break;
 case 13:
 
-            // FIXME ext.addModuleFunction($$[$0-7], $$[$0-1], $$[$0-5].argnames, $$[$0-5].argexpr);
+            yy.settings.addModuleFunction($$[$0-7], $$[$0-1], $$[$0-5].argnames, $$[$0-5].argexpr);
             delete $$[$0-5];
         
 break;
 case 15:
 
-            this.$ = { t:'moduleInstanciation', children:[]}
+            this.$ = { t:'moduleInstantiation', children:[]}
             if ($$[$0]) {
                 this.$.children.push($$[$0]);
             }
@@ -179,7 +181,7 @@ case 21:
 break;
 case 23:
 
-            this.$ = { t:'moduleInstanciation', children:[]}
+            this.$ = { t:'moduleInstantiation', children:[]}
         
 break;
 case 24:
@@ -196,7 +198,7 @@ case 24:
 break;
 case 25:
 
-            this.$ = { t:'moduleInstanciation', children:[]}
+            this.$ = { t:'moduleInstantiation', children:[]}
             this.$.name = $$[$0-3];
             this.$.argnames = $$[$0-1].argnames;
             this.$.argexpr = $$[$0-1].argexpr;
@@ -239,17 +241,17 @@ case 29:
 break;
 case 30:
 
-            this.$ = new Expression(true);
+            this.$ = true;//new Expression(true);
         
 break;
 case 31:
 
-            this.$ = new Expression(false);
+            this.$ = false;//new Expression(false);
         
 break;
 case 32:
 
-            this.$ = new Expression(undefined);
+            this.$ = undefined;//new Expression(undefined);
         
 break;
 case 33:
@@ -275,7 +277,8 @@ break;
 case 36:
 
             //this.$ =new Expression(Number($$[$0]));
-            console.log('number',$$[$0])
+            //console.log('number',$$[$0])
+            this.$ = parseInt($$[$0])
         
 break;
 case 37:
@@ -460,14 +463,14 @@ case 63:
             this.$ = {children:[]}
             this.$.type = 'V';
             this.$.children.push($$[$0]);
-            console.log('vector expr', this.$, $$[$0])
+            //console.log('vector expr', this.$, $$[$0])
         
 break;
 case 64:
 
             this.$ = $$[$0-3];
             this.$.children.push($$[$0]);
-            console.log('vector sub', this.$, $$[$0])
+            //console.log('vector sub', this.$, $$[$0])
         
 break;
 case 65: case 70:
