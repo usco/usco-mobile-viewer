@@ -277,8 +277,8 @@ break;
 case 36:
 
             //this.$ =new Expression(Number($$[$0]));
-            //console.log('number',$$[$0])
-            this.$ = parseInt($$[$0])
+            this.$ = Number(Math.round($$[$0]+'e2')+'e-2').toFixed(2); //+ Number(parseFloat($$[$0])).toFixed(2) //Math.round(parseFloat($$[$0]) * 100) / 100
+            //console.log('NUMBER', this.$)
         
 break;
 case 37:

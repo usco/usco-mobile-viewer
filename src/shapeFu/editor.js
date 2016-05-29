@@ -121,14 +121,18 @@ const parser = require('./parsing/openscadParser.js').parser
 const area = document.querySelector('#typeHere')
 area.addEventListener('input', function (e) {
   const input = e.target.value
-  console.log('change in source code', input)
+  //console.log('change in source code', input)
   function onFinished (data) {
     console.log('finished parsing', data)
     // dynamicCode = data
     drawFrame = makeDrawFrame(data)
     render(fullData)
   }
-  exec(parser, input, 'root', onFinished)
+  try{
+    exec(parser, input, 'root', onFinished)
+  }catch(error){
+    console.log('error while parsing')
+  }
 }, false)
 
 // /////////////DRAW stuff

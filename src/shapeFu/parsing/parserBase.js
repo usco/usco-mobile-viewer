@@ -10,7 +10,7 @@ function flipVec3Abs (original) { // convert openscad z up to shapeFu inverted y
 }
 
 function vecToStr (original) {
-  return (`vec${original.length}(${original.join('.,')}.)`)
+  return (`vec${original.length}(${original.join(',')})`)
 }
 
 function evaluate (node) {
@@ -38,14 +38,12 @@ function evaluateModule (module) {
     const r2 = params['r2'] ? params['r2'] : params['r']
     const h = params['h']
 
-    lines.push(` sdConeSection(pos, ${h}., ${r1 * 2}., ${r2 * 2}.);`)
-  // lines.push(`float result = opS(cu1, c1);`)
+    lines.push(` sdConeSection(pos, ${h}, ${r1 * 2}, ${r2 * 2});`)
   }
 
   if (module.name === 'translate') {
     // console.log(module.argnames, module.argexpr)
-    let pos = module.argexpr[0].children
-    // console.log('pos', pos)
+    let pos = flipVec3(module.argexpr[0].children)
     lines.push('{')
     lines.push(`pos += vec3(${pos});`)
   }

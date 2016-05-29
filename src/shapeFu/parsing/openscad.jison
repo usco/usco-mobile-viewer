@@ -320,8 +320,8 @@ expr:
     |   TOK_NUMBER
         {
             //$$ =new Expression(Number($1));
-            //console.log('number',$1)
-            $$ = parseInt($1)
+            $$ = Number(Math.round($1+'e2')+'e-2').toFixed(2); //+ Number(parseFloat($1)).toFixed(2) //Math.round(parseFloat($1) * 100) / 100
+            //console.log('NUMBER', $$)
         }
     |   '[' expr ':' expr ']'
         {
@@ -558,7 +558,7 @@ arguments_call:
         }
     |   arguments_call ',' optional_commas argument_call
         {
-          console.log('here 4', $$, $4)
+          //console.log('here 4', $$, $4)
             $$ = $1;
             $$.argnames.push($4.argname);
             $$.argexpr.push($4.argexpr);
