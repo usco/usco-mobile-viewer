@@ -290,15 +290,15 @@ single_module_instantiation:
 expr:
         TOK_TRUE
         {
-            $$ = new Expression(true);
+            $$ = true;//new Expression(true);
         }
     |   TOK_FALSE
         {
-            $$ = new Expression(false);
+            $$ = false;//new Expression(false);
         }
     |   TOK_UNDEF
         {
-            $$ = new Expression(undefined);
+            $$ = undefined;//new Expression(undefined);
         }
     |   TOK_ID
         {
