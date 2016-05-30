@@ -33,8 +33,22 @@ uniform mat4 model, view, projection;
 
 #pragma glslify: sdBox = require('./primitives/box.frag')
 #pragma glslify: sdConeSection = require('./primitives/coneSection.frag')
+#pragma glslify: sdHexPrism = require('./primitives/hexaPrism.frag')
+
 #pragma glslify: opS = require('./operations/subtract.frag')
 #pragma glslify: opU = require('./operations/union.frag')
+#pragma glslify: opI = require('./operations/intersect.frag')
+
+#pragma glslify: opRotX = require('./operations/rotateX.frag')
+#pragma glslify: opRotY = require('./operations/rotateY.frag')
+#pragma glslify: opRotZ = require('./operations/rotateZ.frag')
+
+//#pragma glslify: opScale = require('./operations/scale.frag')
+
+
+
+
+
 //#pragma glslify: riceCup = require('./demo-data/riceCup.frag')
 //#pragma glslify: basic = require('./demo-data/basic.frag')
 //#pragma glslify: test = require('./demo-data/convTest.frag')

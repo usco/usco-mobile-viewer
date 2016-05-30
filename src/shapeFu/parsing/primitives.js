@@ -1,25 +1,46 @@
+import { flipVec3, flipVec3Abs, vecToStr, forceDecimal } from './utils'
 
+export function cylinder (module) {
+  console.log('cylinder', module)
+  const params = module.argnames.reduce(function (rs, argName, index) {
+    rs[argName] = module.argexpr[index]
+    return rs
+  }, {})
 
+  const r1 = (params['r1'] ? params['r1'] : params['r']) * 2
+  const r2 = (params['r2'] ? params['r2'] : params['r']) * 2
+  const h = forceDecimal(parseFloat(params['h'])+0.1)
+  const res = params['$fn'] ? parseInt(params['$fn']) : undefined
+  const center = params['center'] ? params['center'] : false
+  let pos = !center ? [0, -h, 0] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
 
-function cylinder(){
-  if (module.name === 'cylinder') {
-    // console.log('cylinder')
-    const params = module.argnames.reduce(function (rs, argName, index) {
-      rs[argName] = module.argexpr[index]
-      return rs
-    }, {})
-
-    const r1 = params['r1'] ? params['r1'] : params['r']
-    const r2 = params['r2'] ? params['r2'] : params['r']
-    const h = params['h']
-
-    return ` sdConeSection(pos, ${h}., ${r1}., ${r2}.);`
-  // lines.push(`float result = opS(cu1, c1);`)
+  if (!res || res && res > 100) {
+    return ` sdConeSection( pos+ ${vecToStr(pos)} , ${h}, ${forceDecimal(r1)}, ${forceDecimal(r2)});`
+  }
+  if (res && res < 100) { // TODO: how to make generic ??
+    return ` sdHexPrism(opRotY(pos + ${vecToStr(pos)}, PI), ${h} ,${forceDecimal(r1)});`
   }
 }
 
-function cuboid(){
-  if (module.name === 'cube') {
+export function cuboid (module) {
+  console.log('cuboid', module)
+  const params = module.argnames.reduce(function (rs, argName, index) {
+    rs[argName] = module.argexpr[index]
+    return rs
+  }, {})
+
+  let size = params['size'].children
+  const center = params['center'] ? params['center'] : false
+  let pos = !center ? [size[0], -size[1], size[2]] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
+
+  // to string
+  pos = flipVec3(pos)
+  size = flipVec3Abs(size)
+
+  return ` sdBox(pos + ${vecToStr(pos)}, ${vecToStr(size)});`
+}
+
+/*  if (module.name === 'cube') {
     const params = module.argnames.reduce(function (rs, argName, index) {
       rs[argName] = module.argexpr[index]
       return rs
@@ -28,8 +49,8 @@ function cuboid(){
     let size = params['size'].children
     const center = params['center'] ? params['center'] : false
     let pos = [0, 0, 0]
-    if (center) {
-      pos = [-size[0] / 2, -size[1] / 2, -size[2] / 2]
+    if (!center) {
+      pos = [size[0] / 2, size[1] / 2, size[2] / 2]
     }
 
     vecToStr(size)
@@ -38,7 +59,7 @@ function cuboid(){
     pos = flipVec3(pos)
     size = flipVec3Abs(size)
 
-    // console.log('cube', params, size, center, module)
-    return ` sdBox(pos + ${vecToStr(pos)}, ${vecToStr(size)});`
-  }
-}
+    const res = ` sdBox(pos + ${vecToStr(pos)}, ${vecToStr(size)});`
+    console.log('cube', params, size, center, module)
+    lines.push(res)
+  }*/

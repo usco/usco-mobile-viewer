@@ -1,16 +1,6 @@
+import { cylinder, cuboid } from './primitives'
+import { flipVec3 } from './utils'
 function geometryLookup () {
-}
-
-function flipVec3 (original) { // convert openscad z up to shapeFu inverted y up
-  return [original[0], -original[2], original[1]]
-}
-
-function flipVec3Abs (original) { // convert openscad z up to shapeFu inverted y up, not negated
-  return [original[0], original[2], original[1]]
-}
-
-function vecToStr (original) {
-  return (`vec${original.length}(${original.join(',')})`)
 }
 
 function evaluate (node) {
@@ -29,70 +19,68 @@ function evaluateModule (module) {
 
   if (module.name === 'cylinder') {
     // console.log('cylinder')
-    const params = module.argnames.reduce(function (rs, argName, index) {
-      rs[argName] = module.argexpr[index]
-      return rs
-    }, {})
+    lines.push(cylinder(module))
+  }
 
-    const r1 = params['r1'] ? params['r1'] : params['r']
-    const r2 = params['r2'] ? params['r2'] : params['r']
-    const h = params['h']
-
-    lines.push(` sdConeSection(pos, ${h}, ${r1 * 2}, ${r2 * 2});`)
+  if (module.name === 'cube') {
+    lines.push(cuboid(module))
   }
 
   if (module.name === 'translate') {
     // console.log(module.argnames, module.argexpr)
     let pos = flipVec3(module.argexpr[0].children)
-    lines.push('{')
     lines.push(`pos += vec3(${pos});`)
   }
 
-  if (module.name === 'cube') {
-    const params = module.argnames.reduce(function (rs, argName, index) {
-      rs[argName] = module.argexpr[index]
-      return rs
-    }, {})
-
-    let size = params['size'].children
-    const center = params['center'] ? params['center'] : false
-    let pos = [0, 0, 0]
-    if (!center) {
-      pos = [size[0] / 2, size[1] / 2, size[2] / 2]
-    }
-
-    vecToStr(size)
-
-    // to string
-    pos = flipVec3(pos)
-    size = flipVec3Abs(size)
-
-    const res = ` sdBox(pos + ${vecToStr(pos)}, ${vecToStr(size)});`
-    console.log('cube', params, size, center, module)
-    lines.push(res)
-  }
-
   if (module.name === 'difference') {
-    // let res = 'opS('
     let base = []
     let operandNames = []
-    nonControlChildren.forEach(function (child, index) {
-      // console.log('child module', child)
+    let operands = []
 
-      /*if (index > 2) {
-        lines.push(`result = opU()`)
-      }*/
-      const opName = `foo${index}`
-      operandNames.push(opName)
-      base.push(`float ${opName} =` + evaluateModule(child))
-    // res += evaluateModule(child) + ','
-    })
+    const firstOp = `float _op0 = ${evaluateModule(nonControlChildren[0])}`
+    const otherOps = nonControlChildren.slice(1)
+      .map(function (child, index) {
+        const opName = `foo${index}`
+        operandNames.push(opName)
+        base.push(`float ${opName} =` + evaluateModule(child))
+        return ''
+      })
+
+    const allOps = nonControlChildren
+      .map(function (child, index) {
+        const opName = `_op0${index}`
+        const opValue = `float ${opName} =` + evaluateModule(child)
+        return {opName, opValue}
+      })
+    console.log('allOps', allOps)
+
+    // build intermediary unions
+    let prev = undefined
+    let unions = []
+    for (let i = 1;i < allOps.length;i++) {
+      let cur = allOps[i]
+      let resName = `_op${i - i}_op${i}`
+      if (prev) {
+        unions.push({opName: resName, opValue: `float ${resName} = opU(${cur.opName},${prev.opName});`})
+        prev = {opName: resName}
+      } else {
+        prev = cur
+      }
+    }
+
+    console.log('unions', unions)
+    const opResult = allOps.map(op => op.opValue).concat(
+      unions.map(op => op.opValue),
+      [`return opS(${allOps[0].opName}, ${unions[unions.length - 1].opName} );`]
+    ).join('\n')
+    console.log('opResult', opResult)
+
+    return opResult
     let res = base.join('\n')
-
     let op = 'return opS(' + operandNames.join(',') + ');'
+    return res + `` + op
 
-    return res + `
-` + op
+
   } else {
     nonControlChildren.forEach(function (child) {
       // console.log('child module', child)
@@ -103,30 +91,36 @@ function evaluateModule (module) {
   return lines.join('\n')
 }
 
-function exec (parser, input, rootName = 'root', callBack) {
+function exec (parser, input, rootName = 'root' , callBack, options = {}) {
   console.log('attempting to parse', input)
 
   let result = {}
   let curModule = { children: [], name: rootName, level: 0}
 
+  const {glslify} = options
+
   parser.yy.settings = {
     processModule: function (yy) {
       let lines = []
-      //lines.push(`#pragma glslify: sdBox = require('../primitives/box.frag')`)
-      //lines.push(`#pragma glslify: sdConeSection = require('../primitives/coneSection.frag')`)
-      //lines.push(`#pragma glslify: opS = require('../operations/subtract.frag')`)
-      //lines.push(`#pragma glslify: opU = require('../operations/union.frag')`)
-      lines.push(`float ${curModule.name}(vec3 pos)`)
+      if (glslify) {
+        lines.push(`#pragma glslify: sdBox = require('../primitives/box.frag')`)
+        lines.push(`#pragma glslify: sdConeSection = require('../primitives/coneSection.frag')`)
+        lines.push(`#pragma glslify: opS = require('../operations/subtract.frag')`)
+        lines.push(`#pragma glslify: opU = require('../operations/union.frag')`)
+      }
+
+      lines.push(`float ${curModule.name}(vec3 pos){`)
       lines.push(evaluateModule(curModule))
       lines.push('}')
-      //lines.push(`#pragma glslify: export(${curModule.name})`)
 
+      if (glslify) {
+        lines.push(`#pragma glslify: export(${curModule.name})`)
+      }
       const res = lines.join('\n')
-      // fs.writeFileSync(__dirname + '/../shaders/demo-data/convTest.frag', res)
+
       if (callBack) {
         callBack(res)
       }
-      //console.log(res)
     },
 
     addModuleChild: function (child) {

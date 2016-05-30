@@ -1,6 +1,5 @@
-translate([2.85,3,10]){
-  difference() {
-    cube(size=[14,18,2],center=true);
-    cylinder(h=4,r=7,center=true);
-  }
+difference() {
+cube(size=[13,23,2],center=true);
+cylinder(h=1,r=2.,$fn=200,center=true);
+cylinder(h=2,r=10.,$fn=200,center=false);
 }

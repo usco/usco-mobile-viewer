@@ -15,7 +15,13 @@
   <body>
 
     <canvas id='drawHere'> </canvas>
-    <textarea id='typeHere'> </textarea>
+    <textarea id='typeHere'>translate([5.9,0,0]){
+difference() {
+cube(size=[14,28,2],center=false);
+cylinder(h=4,r=2.9,center=false);
+}
+}
+</textarea>
     <script type='text/javascript' src='./dist/shapeFu/editor.js'></script>
   </body>
 </html>

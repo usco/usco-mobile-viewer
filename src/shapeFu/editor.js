@@ -19,7 +19,7 @@ translate([2.85,3,10]){
 //
 let dynamicCode = ''
 let drawFrame = regl({
-  frag: 'precision mediump float;\n' + glslify(__dirname + '/shaders/rayMarch2.frag'),
+  frag: 'precision mediump float;\n' + glslify(__dirname + '/shaders/rayMarch3.frag'),
   vert: glslify(__dirname + '/shaders/base.vert'),
 
   attributes: {
@@ -131,7 +131,7 @@ area.addEventListener('input', function (e) {
   try{
     exec(parser, input, 'root', onFinished)
   }catch(error){
-    console.log('error while parsing')
+    console.log('error while parsing',error)
   }
 }, false)
 

@@ -1,8 +1,10 @@
 // get distance in the world
 float dist_field( vec3 pos ) {
 	// ...add objects here...
-
-  return root(pos);
+  float axes = opU(sdBox(pos,vec3(10000.,.1,.1)), sdBox(pos,vec3(.1,10000.,.1)));
+  axes= opU(axes, sdBox(pos,vec3(.1,.1,10000.)));
+  
+  return opU(axes , root(pos));
 
 	/*vec3 offset = vec3(0,0,0);
 	// object 0 : sphere
