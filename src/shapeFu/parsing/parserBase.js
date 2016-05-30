@@ -1,15 +1,5 @@
 import { evaluateModule } from './evaluators'
 
-function geometryLookup () {
-}
-
-function evaluate (node) {
-  switch (node.type) {
-    case expression:
-      break
-  }
-}
-
 function exec (parser, input, rootName = 'root' , callBack, options = {}) {
   console.log('attempting to parse', input)
 
@@ -35,8 +25,7 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
       if (glslify) {
         lines.push(`#pragma glslify: export(${curModule.name})`)
       }
-      const res = lines.join('\n')
-
+      let res = lines.join('\n')
       if (callBack) {
         callBack(res)
       }
