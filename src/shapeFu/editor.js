@@ -7,16 +7,6 @@ import { params as cameraDefaults } from '../common/orbitControls'
 import { sceneData } from '../common/data'
 import loop from '../common/loop'
 
-/*
-translate([2.85,3,10]){
-  difference() {
-    cube(size=[14,18,2],center=true);
-    cylinder(h=4,r=7,center=true);
-  }
-}
-*/
-
-//
 let dynamicCode = ''
 let drawFrame = regl({
   frag: 'precision mediump float;\n' + glslify(__dirname + '/shaders/rayMarch3.frag'),
