@@ -1,32 +1,62 @@
-import {evaluateModule} from './evaluators'
+import { evaluateModule } from './evaluators'
 
-export function difference(module){
+export function union (module) {
+  console.log('union')
+  const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
+  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren)
+
+
+  const opResult = [].concat(
+    declarations,
+    unions,
+    [`return opU(${allOps[0].opName}, ${operands} );`]
+  ).join('\n')
+
+  console.log('opResult', opResult)
+  return opResult
+}
+
+export function difference (module) {
   console.log('difference')
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
+  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren)
 
-  let base = []
-  let operandNames = []
-  let operands = []
 
-  const firstOp = `float _op0 = ${evaluateModule(nonControlChildren[0])}`
-  const otherOps = nonControlChildren.slice(1)
-    .map(function (child, index) {
-      const opName = `foo${index}`
-      operandNames.push(opName)
-      base.push(`float ${opName} =` + evaluateModule(child))
-      return ''
-    })
+  const opResult = [].concat(
+    declarations,
+    unions,
+    [`return opS(${allOps[0].opName}, ${operands} );`]
+  ).join('\n')
 
-  const allOps = nonControlChildren
+  console.log('opResult', opResult)
+  return opResult
+}
+
+export function intersection (module) {
+  console.log('intersection')
+  const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
+  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren)
+
+  const opResult = [].concat(
+    declarations,
+    unions,
+    [`return opI(${allOps[0].opName}, ${operands} );`]
+  ).join('\n')
+
+  console.log('opResult', opResult)
+  return opResult
+}
+
+/* creates a set of intermediary unions when needed*/
+export function operationsHelper (children) {
+  const allOps = children
     .map(function (child, index) {
       const opName = `_op0${index}`
       const opValue = `float ${opName} =` + evaluateModule(child)
       return {opName, opValue}
     })
-  console.log('allOps', allOps)
-
   // build intermediary unions
-  let prev = undefined
+  let prev
   let unions = []
   for (let i = 1;i < allOps.length;i++) {
     let cur = allOps[i]
@@ -39,13 +69,13 @@ export function difference(module){
     }
   }
 
-  console.log('unions', unions)
-  const ops2 = unions.length>0? unions[unions.length - 1].opName : allOps[1].opName
-  const opResult = allOps.map(op => op.opValue).concat(
-    unions.map(op => op.opValue),
-    [`return opS(${allOps[0].opName}, ${ops2} );`]
-  ).join('\n')
-  console.log('opResult', opResult)
+  const declarations = allOps.map(op => op.opValue)
+  const finalUnions = unions.map(op => op.opValue)
+  const secondOp = allOps.length > 1 ? allOps[1].opName : ''
+  const operands = unions.length > 0 ? unions[unions.length - 1].opName : secondOp
 
-  return opResult
+  console.log('declarations', declarations)
+  console.log('unions', unions)
+  console.log('operands', operands)
+  return {declarations, unions: finalUnions, allOps, operands}
 }

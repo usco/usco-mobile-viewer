@@ -1,10 +1,10 @@
-import { flipVec3 } from './utils'
-import { difference } from './operations'
+import { flipVec3, flipVec3Abs } from './utils'
+import { union, intersection, difference, operationsHelper } from './operations'
 import { cylinder, cuboid } from './primitives'
 
 export function evaluateModule (module) {
   let lines = []
-  // console.log('evaluateModule', module.name, module)
+  console.log('evaluateModule', module.name, module)
 
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
 
@@ -22,14 +22,26 @@ export function evaluateModule (module) {
     lines.push(`pos += vec3(${pos});`)
   }
 
-  if (module.name === 'difference') {
-    return difference(module)
+  if (module.name === 'rotate') {
+    let rot = flipVec3Abs(module.argexpr[0].children)
+    lines.push(`pos += rotateZ( rotateY( rotateX( pos, ${rot[0]}), ${rot[1]} ) ${rot[2]} );`)
+  }
+
+  const operations = {
+    'union': union,
+    'difference': difference,
+    'intersection': intersection
+  }
+
+  const op = operations[module.name]
+
+  if (op) {
+    return op(module)
   } else {
     nonControlChildren.forEach(function (child) {
       // console.log('child module', child)
       lines.push(evaluateModule(child))
     })
   }
-
   return lines.join('\n')
 }
