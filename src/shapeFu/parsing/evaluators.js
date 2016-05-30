@@ -2,8 +2,8 @@ import { flipVec3, flipVec3Abs } from './utils'
 import { translation, union, intersection, difference, operationsHelper } from './operations'
 import { cuboid, sphere, cylinder } from './primitives'
 
-export function evaluateModule (module) {
-  console.log('evaluateModule', module.name, module)
+export function evaluateModule (module, parent) {
+  console.log('evaluateModule', module.name, module, parent)
 
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
 
@@ -29,12 +29,11 @@ export function evaluateModule (module) {
   const op = operations[module.name]
 
   if (op) {
-    return op(module)
+    return op(module, parent)
   } else {
-    let {declarations, operands, allOps, unions} = operationsHelper(nonControlChildren, true)
+    let {declarations, operands} = operationsHelper(nonControlChildren, true, module)
     return [].concat(
       //declarations,
-      //unions,
       [`return ${operands};`]
     ).join('\n')
   }

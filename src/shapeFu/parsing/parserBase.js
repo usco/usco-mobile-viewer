@@ -4,7 +4,7 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
   console.log('attempting to parse', input)
 
   let result = {}
-  let curModule = { children: [], name: rootName, level: 0}
+  let curModule = { children: [], name: rootName, level: 0, transforms: undefined} // transforms is for position , specific for distance field transforms
 
   const {glslify} = options
 
