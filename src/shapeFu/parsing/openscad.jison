@@ -290,15 +290,15 @@ single_module_instantiation:
 expr:
         TOK_TRUE
         {
-            $$ = true;//new Expression(true);
+            $$ = {type:'BOOL',value:true}//new Expression(true);
         }
     |   TOK_FALSE
         {
-            $$ = false;//new Expression(false);
+            $$ = {type:'BOOL',value:false} ////new Expression(false);
         }
     |   TOK_UNDEF
         {
-            $$ = undefined;//new Expression(undefined);
+            $$ = {type:'UDEF',value:undefined} //new Expression(undefined);
         }
     |   TOK_ID
         {
@@ -320,7 +320,10 @@ expr:
     |   TOK_NUMBER
         {
             //$$ =new Expression(Number($1));
-            $$ = Number(Math.round($1+'e2')+'e-2').toFixed(2); //+ Number(parseFloat($1)).toFixed(2) //Math.round(parseFloat($1) * 100) / 100
+            $$ = {
+              type:'NUM',
+              value: Number(Math.round($1+'e2')+'e-2').toFixed(2) //+ Number(parseFloat($1)).toFixed(2) //Math.round(parseFloat($1) * 100) / 100
+            }
             //console.log('NUMBER', $$)
         }
     |   '[' expr ':' expr ']'

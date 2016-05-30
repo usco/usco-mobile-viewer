@@ -1,9 +1,10 @@
 import { flipVec3, flipVec3Abs, vecToStr, forceDecimal } from './utils'
+import {evaluateModule} from './evaluators'
 
 export function cylinder (module, context) {
   console.log('cylinder', module, context)
   const params = module.argnames.reduce(function (rs, argName, index) {
-    rs[argName] = module.argexpr[index]
+    rs[argName] = evaluateModule(module.argexpr[index])
     return rs
   }, {})
   const transforms = context.transforms || 'pos'
@@ -26,12 +27,12 @@ export function cylinder (module, context) {
 export function cuboid (module, context) {
   console.log('cuboid', module, context)
   const params = module.argnames.reduce(function (rs, argName, index) {
-    rs[argName] = module.argexpr[index]
+    rs[argName] = evaluateModule(module.argexpr[index])
     return rs
   }, {})
   const transforms = context.transforms || 'pos'
 
-  let size = params['size'].children
+  let size = params['size'] || params[undefined]
   const center = params['center'] ? params['center'] : false
   let pos = !center ? [size[0], -size[1], size[2]] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
 
@@ -45,7 +46,7 @@ export function cuboid (module, context) {
 export function sphere (module, context) {
   console.log('sphere', module)
   const params = module.argnames.reduce(function (rs, argName, index) {
-    rs[argName] = module.argexpr[index]
+    rs[argName] = evaluateModule(module.argexpr[index])
     return rs
   }, {})
   const transforms = context.transforms || 'pos'

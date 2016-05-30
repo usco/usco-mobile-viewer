@@ -241,17 +241,17 @@ case 29:
 break;
 case 30:
 
-            this.$ = true;//new Expression(true);
+            this.$ = {type:'BOOL',value:true}//new Expression(true);
         
 break;
 case 31:
 
-            this.$ = false;//new Expression(false);
+            this.$ = {type:'BOOL',value:false} ////new Expression(false);
         
 break;
 case 32:
 
-            this.$ = undefined;//new Expression(undefined);
+            this.$ = {type:'UDEF',value:undefined} //new Expression(undefined);
         
 break;
 case 33:
@@ -277,7 +277,10 @@ break;
 case 36:
 
             //this.$ =new Expression(Number($$[$0]));
-            this.$ = Number(Math.round($$[$0]+'e2')+'e-2').toFixed(2); //+ Number(parseFloat($$[$0])).toFixed(2) //Math.round(parseFloat($$[$0]) * 100) / 100
+            this.$ = {
+              type:'NUM',
+              value: Number(Math.round($$[$0]+'e2')+'e-2').toFixed(2) //+ Number(parseFloat($$[$0])).toFixed(2) //Math.round(parseFloat($$[$0]) * 100) / 100
+            }
             //console.log('NUMBER', this.$)
         
 break;

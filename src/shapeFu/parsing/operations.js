@@ -3,9 +3,9 @@ import { flipVec3 } from './utils'
 
 export function translation (module, context) {
   console.log('translate', module)
-  const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
+  const nonControlChildren = module.children? module.children.filter(child => child && child.name !== 'echo') : []
 
-  const pos = flipVec3(module.argexpr[0].children)
+  const pos = evaluateModule(module.argexpr[0])
 
   //module.transforms ? module.transforms.push(`opT(pos, ${pos})`) : [] // yeeeek !! we mutate the data so all children have an updated position to deal with
   const transforms = context.transforms? `opT(${context.transforms}, vec3(${pos}))` : `opT(pos, vec3(${pos}))`
@@ -20,10 +20,10 @@ export function translation (module, context) {
   return opResult
 }
 
-export function union (module) {
+export function union (module, context) {
   console.log('union')
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, module)
+  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, context)
 
   const opResult = [` opU(${allOps[0].opValue}, ${operands})`].join('\n')
 
@@ -31,10 +31,10 @@ export function union (module) {
   return opResult
 }
 
-export function difference (module, parent) {
+export function difference (module, context) {
   console.log('difference')
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, module)
+  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, context)
 
   const opResult = [` opS(${allOps[0].opValue}, ${operands} )`].join('\n')
 
@@ -42,10 +42,10 @@ export function difference (module, parent) {
   return opResult
 }
 
-export function intersection (module, parent) {
+export function intersection (module, context) {
   console.log('intersection')
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, module)
+  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, context)
 
   const opResult = [` opI(${allOps[0].opValue}, ${operands} )`].join('\n')
 
