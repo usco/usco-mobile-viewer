@@ -13,7 +13,7 @@ const fullData = {
   cameraData: update(params)
 }
 
-import _drawModel from '../proto1/drawModel'
+import _drawModel from '../proto1-basics/drawModel'
 const drawModel = _drawModel.bind(null, regl)
 
 function render (data) {
