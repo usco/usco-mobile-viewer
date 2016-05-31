@@ -1,21 +1,37 @@
-import { evaluateModule } from './evaluators'
+import { evaluateModule, evaluateExpression } from './evaluators'
 import { flipVec3 } from './utils'
 
 export function translation (module, context) {
   console.log('translate', module)
-  const nonControlChildren = module.children? module.children.filter(child => child && child.name !== 'echo') : []
+  const nonControlChildren = module.children ? module.children.filter(child => child && child.name !== 'echo') : []
 
-  const pos = evaluateModule(module.argexpr[0])
+  const pos = evaluateExpression(module.argexpr[0])
 
-  //module.transforms ? module.transforms.push(`opT(pos, ${pos})`) : [] // yeeeek !! we mutate the data so all children have an updated position to deal with
-  const transforms = context.transforms? `opT(${context.transforms}, vec3(${pos}))` : `opT(pos, vec3(${pos}))`
-  context = Object.assign(context,{transforms}) // assig
+  // module.transforms ? module.transforms.push(`opT(pos, ${pos})`) : [] // yeeeek !! we mutate the data so all children have an updated position to deal with
+  const transforms = context.transforms ? `opT(${context.transforms}, vec3(${pos}))` : `opT(pos, vec3(${pos}))`
+  context = Object.assign(context, {transforms}) // assig
 
   let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, true, context)
 
-  // pos += vec3(${pos})
   const opResult = [`${operands}`].join('\n')
-  // console.log(module.argnames, module.argexpr)
+  console.log('opResult', opResult)
+  return opResult
+}
+
+export function rotation (module, context) {
+  console.log('rotate', module)
+  const nonControlChildren = module.children ? module.children.filter(child => child && child.name !== 'echo') : []
+
+  const rot = evaluateExpression(module.argexpr[0])
+  // let rot = flipVec3Abs(module.argexpr[0].children)
+  // lines.push(`pos += rotateZ( rotateY( rotateX( pos, ${rot[0]}), ${rot[1]} ) ${rot[2]} );`)
+
+  const transforms = context.transforms ? `opR(${context.transforms}, vec3(${rot}))` : `opR(pos, vec3(${rot}))`
+  context = Object.assign(context, {transforms})
+
+  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, true, context)
+
+  const opResult = [`${operands}`].join('\n')
   console.log('opResult', opResult)
   return opResult
 }
@@ -54,7 +70,7 @@ export function intersection (module, context) {
 }
 
 /* creates a set of intermediary unions when needed*/
-export function operationsHelper (children, includeFirst = false, parent) {
+export function operationsHelper (children, includeFirst = false , parent) {
   const allOps = children
     .map(function (child, index) {
       const opName = `_op0${index}`
@@ -84,8 +100,8 @@ export function operationsHelper (children, includeFirst = false, parent) {
   const secondOp = allOps.length > start ? allOps[start].opValue : '' // opName
   const operands = unions.length > 0 ? unionedResult : secondOp // opName
 
-  //console.log('declarations', declarations)
-  //console.log('unions', unions)
-  //console.log('operands', operands)
+  // console.log('declarations', declarations)
+  // console.log('unions', unions)
+  // console.log('operands', operands)
   return {declarations, unions: finalUnions, allOps, operands}
 }

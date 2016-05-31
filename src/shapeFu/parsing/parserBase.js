@@ -3,7 +3,6 @@ import { evaluateModule } from './evaluators'
 function exec (parser, input, rootName = 'root' , callBack, options = {}) {
   console.log('attempting to parse', input)
 
-  let result = {}
   let curModule = { children: [], name: rootName, level: 0, transforms: undefined} // transforms is for position , specific for distance field transforms
 
   const {glslify} = options
@@ -34,6 +33,12 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
     addModuleChild: function (child) {
       // console.log('adding child to module', JSON.stringify(child))
       curModule.children.push(child)
+    },
+
+    addModuleAssignmentVar: function (left, right) {
+      // console.log('addModuleAssignmentVar',left, right)
+      curModule.variables = curModule.variables ? curModule.variables : []
+      curModule.variables.push({left, right})
     }
   }
   parser.parse(input)
