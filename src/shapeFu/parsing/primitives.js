@@ -9,19 +9,31 @@ export function cylinder (module, context) {
   }, {})
   const transforms = context.transforms || 'pos'
 
-  const r1 = (params['r1'] ? params['r1'] : params['r']) * 2
-  const r2 = (params['r2'] ? params['r2'] : params['r']) * 2
+  /*evaluated version : ie we actually have the values of our variables
+  const r1 = forceDecimal( (params['r1'] ? params['r1'] : params['r']) * 2)
+  const r2 = forceDecimal( (params['r2'] ? params['r2'] : params['r']) * 2)
   const h = forceDecimal(parseFloat(params['h']) + 0.1)
   const res = params['$fn'] ? parseInt(params['$fn']) : undefined
   const center = params['center'] ? params['center'] : false
-  let pos = !center ? [0, -h, 0] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
+  let pos = !center ? [0, -h, 0] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]*/
 
+  const r1 = (params['r1'] ? params['r1'] : params['r']) //+'* 2.'
+  const r2 = (params['r2'] ? params['r2'] : params['r']) //+'* 2.'
+  const h = params['h'] + '+0.1'
+  const res = params['$fn'] ? parseInt(params['$fn']) : undefined
+  const center = params['center'] ? params['center'] : false
+  let pos = !center ? [0, `-${h}`, 0] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
+
+  console.log('pos',pos)
+  let result
   if (!res || res && res > 100) {
-    return ` sdConeSection( ${transforms} + ${vecToStr(pos)} , ${h}, ${forceDecimal(r1)}, ${forceDecimal(r2)})`
+    result = ` sdConeSection( ${transforms} + ${vecToStr(pos)} , ${h}, ${r1}, ${r2})`
   }
   if (res && res < 100) { // TODO: how to make generic ??
-    return ` sdHexPrism(opRotY(${transforms} + ${vecToStr(pos)}, PI), ${h} ,${forceDecimal(r1)})`
+    result = ` sdHexPrism(opRotY(${transforms} + ${vecToStr(pos)}, PI), ${h} ,${r1})`
   }
+
+  return result
 }
 
 export function cuboid (module, context) {

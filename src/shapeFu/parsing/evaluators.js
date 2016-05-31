@@ -121,7 +121,13 @@ export function evaluateModule (module, parent) {
     'NUM': number,
     'BOOL': bool,
     'I': invert,
-    'V': vector
+    'V': vector,
+    '+': add,
+    '-': sub,
+    '*': mul,
+    '/': div,
+
+    'L': selfAssign
   }
 
   const op = operations[module.name || module.type]
