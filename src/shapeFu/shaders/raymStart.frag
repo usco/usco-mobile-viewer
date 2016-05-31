@@ -41,6 +41,7 @@ uniform mat4 model, view, projection;
 #pragma glslify: opI = require('./operations/intersect.frag')
 
 #pragma glslify: opT = require('./operations/translate.frag')
+#pragma glslify: opR = require('./operations/rotate.frag')
 #pragma glslify: opRotX = require('./operations/rotateX.frag')
 #pragma glslify: opRotY = require('./operations/rotateY.frag')
 #pragma glslify: opRotZ = require('./operations/rotateZ.frag')

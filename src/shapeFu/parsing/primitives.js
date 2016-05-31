@@ -46,7 +46,7 @@ export function cuboid (module, context) {
 
   let size = params['size'] || params[undefined]
   const center = params['center'] ? params['center'] : false
-  let pos = !center ? [size[0], -size[1], size[2]] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
+  let pos = !center ? [size[0], `-${size[1]}`, size[2]] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
 
   // to string
   pos = flipVec3(pos)
@@ -63,7 +63,7 @@ export function sphere (module, context) {
   }, {})
   const transforms = context.transforms || 'pos'
 
-  const r = params['r'] ? params['r'] : 1
+  const r = params['r'] ? params['r'] : '1'
   const center = params['center'] ? params['center'] : false
   // let pos = !center ? [size[0], -size[1], size[2]] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
   // pos = flipVec3(pos)

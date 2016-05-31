@@ -6,8 +6,6 @@ export function translation (module, context) {
   const nonControlChildren = module.children ? module.children.filter(child => child && child.name !== 'echo') : []
 
   const pos = evaluateExpression(module.argexpr[0])
-
-  // module.transforms ? module.transforms.push(`opT(pos, ${pos})`) : [] // yeeeek !! we mutate the data so all children have an updated position to deal with
   const transforms = context.transforms ? `opT(${context.transforms}, vec3(${pos}))` : `opT(pos, vec3(${pos}))`
   context = Object.assign(context, {transforms}) // assig
 
@@ -69,12 +67,33 @@ export function intersection (module, context) {
   return opResult
 }
 
+
+export function makeUnions(inputs, includeFirst=false){
+  let prev
+  let unions = []
+  let unionedResult = ''
+  const start = includeFirst ? 0 : 1
+  for (let i = start;i < inputs.length;i++) {
+    let cur = inputs[i]
+    let resName = `_op${i - i}_op${i}`
+    if (prev) {
+      unions.push({opName: resName, opValue: ` opU(${cur.opValue},${prev.opValue})`})
+      unionedResult = ` opU(${cur.opValue},${unionedResult})`
+      prev = {opName: resName}
+    } else {
+      prev = cur
+      unionedResult = cur.opValue
+    }
+  }
+  return {unions, unionedResult}
+}
+
 /* creates a set of intermediary unions when needed*/
-export function operationsHelper (children, includeFirst = false , parent) {
+export function operationsHelper (children, includeFirst = false , context) {
   const allOps = children
     .map(function (child, index) {
       const opName = `_op0${index}`
-      const opValue = `` + evaluateModule(child, parent) // float ${opName} =
+      const opValue = `` + evaluateModule(child, context) // float ${opName} =
       return {opName, opValue}
     })
   // build intermediary unions

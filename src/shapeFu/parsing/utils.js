@@ -11,5 +11,9 @@ export function vecToStr (original) {
 }
 
 export function forceDecimal (original) {
-  return Number(Math.round(''+original + 'e2') + 'e-2').toFixed(2) // find something more efficient
+  return Number(Math.round('' + original + 'e2') + 'e-2').toFixed(2) // find something more efficient
+}
+
+export function getNonControlChildren (node) {
+  return node.children ? node.children.filter(child => child && child.name !== 'echo') : []
 }
