@@ -22,15 +22,15 @@ export function cylinder (module, context) {
   const h = params['h'] + '+0.1'
   const res = params['$fn'] ? parseInt(params['$fn']) : undefined
   const center = params['center'] ? params['center'] : false
-  let pos = !center ? [0, `-${h}`, 0] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
+  let pos = !center ? [0, 0, `${h}`] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
 
   console.log('pos', pos)
   let result
   if (!res || res && res > 100) {
-    result = ` sdConeSection( ${transforms} + ${vecToStr(pos)} , ${h}, ${r1}, ${r2})`
+    result = ` sdConeSection( opRotY(${transforms} + ${vecToStr(pos)},PI) , ${h}, ${r1}, ${r2})`
   }
   if (res && res < 100) { // TODO: how to make generic ??
-    result = ` sdHexPrism(opRotY(${transforms} + ${vecToStr(pos)}, PI), ${h} ,${r1})`
+    result = ` sdHexPrism(${transforms} + ${vecToStr(pos)}, ${h} ,${r1})`
   }
 
   return result
@@ -47,10 +47,10 @@ export function cuboid (module, context) {
   let size = params['size'] || params[undefined]
   size = [`${size[0]}/2.0`, `${size[1]}/2.0`, `${size[2]}/2.0`]
   const center = params['center'] ? params['center'] : false
-  let pos = !center ? [size[0], `-${size[1]}`, size[2]] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
+  let pos = !center ? size : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
 
-  pos = flipVec3(pos, true) // force to string
-  size = flipVec3Abs(size)
+  //pos = flipVec3(pos, true) // force to string
+  //size = flipVec3Abs(size)
 
   return ` sdBox(${transforms} + ${vecToStr(pos)}, ${vecToStr(size)})`
 }

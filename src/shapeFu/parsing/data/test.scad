@@ -8,5 +8,5 @@ difference() {
     translate([adapter_width/2,a_depth,3]) rotate([90,0,0]) cylinder(r=3.0,h=2,center=true);
   }
   cylinder(r=15/2,h=90);
-  translate([0,a_depth,a_height-2]) cube([20,3,4],center=true);
+  translate([0,a_depth,a_height-2]) #cube([20,3,4],center=true);
 }

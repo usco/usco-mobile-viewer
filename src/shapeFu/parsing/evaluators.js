@@ -1,4 +1,4 @@
-import { flipVec3, flipVec3Abs, forceDecimal } from './utils'
+import { forceDecimal } from './utils'
 import { translation, rotation, union, intersection, difference, operationsHelper, makeUnions } from './operations'
 import { cuboid, sphere, cylinder } from './primitives'
 
@@ -128,6 +128,7 @@ function evaluateVariables (module) {
 }
 
 export function evaluateModule (module, context) {
+  context = context || {}
   console.log('evaluateModule', module.name, module, context)
 
   const nonControlChildren = module.children ? module.children.filter(child => child && child.name !== 'echo') : []
@@ -166,7 +167,7 @@ export function evaluateModule (module, context) {
   if (op) {
     return op(module, context)
   } else {
-    let {declarations, operands} = operationsHelper(nonControlChildren, true, module)
+    let {declarations, operands} = operationsHelper(nonControlChildren, true, context)
     return [].concat(
       // declarations,
       assignments,

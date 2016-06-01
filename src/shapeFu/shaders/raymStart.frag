@@ -7,6 +7,7 @@ uniform float iGlobalTime;
 uniform bool toggleSoftShadows;
 uniform bool toggleAO;
 uniform vec4 bgColor;
+uniform bool showAxes;
 
 // ray marching
 const int MAX_ITERATIONS = 512;

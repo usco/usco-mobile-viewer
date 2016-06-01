@@ -1,8 +1,8 @@
 export function flipVec3 (original, asString = false) { // convert openscad z up to shapeFu inverted y up
   if (asString) {
-    return [original[0], `-${original[2]}`, original[1]]
+    return [original[0], `-${original[2]}`, `${original[1]}`]
   }
-  return [original[0], -original[2], original[1]]
+  return [original[0], original[2], original[1]]
 }
 
 export function flipVec3Abs (original) { // convert openscad z up to shapeFu inverted y up, not negated

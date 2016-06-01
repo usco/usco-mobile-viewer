@@ -1,15 +1,14 @@
 import { evaluateModule, evaluateExpression } from './evaluators'
-import { flipVec3 } from './utils'
 
 export function translation (module, context) {
   console.log('translate', module)
   const nonControlChildren = module.children ? module.children.filter(child => child && child.name !== 'echo') : []
 
-  const pos = flipVec3(evaluateExpression(module.argexpr[0]), true)//as string, inverted
+  const pos = evaluateExpression(module.argexpr[0])
   const transforms = context.transforms ? `opT(${context.transforms}, vec3(${pos}))` : `opT(pos, vec3(${pos}))`
-  context = Object.assign(context, {transforms}) // assig
+  context = Object.assign({}, context, {transforms}) // assig
 
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, true, context)
+  let {operands} = operationsHelper(nonControlChildren, true, context)
 
   const opResult = [`${operands}`].join('\n')
   console.log('opResult', opResult)
@@ -27,7 +26,7 @@ export function rotation (module, context) {
   const transforms = context.transforms ? `opR(${context.transforms}, vec3(${rot}))` : `opR(pos, vec3(${rot}))`
   context = Object.assign(context, {transforms})
 
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, true, context)
+  let {operands} = operationsHelper(nonControlChildren, true, context)
 
   const opResult = [`${operands}`].join('\n')
   console.log('opResult', opResult)
@@ -37,7 +36,7 @@ export function rotation (module, context) {
 export function union (module, context) {
   console.log('union')
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, context)
+  let {operands, allOps} = operationsHelper(nonControlChildren, false, context)
 
   const opResult = [` opU(${allOps[0].opValue}, ${operands})`].join('\n')
 
@@ -48,7 +47,7 @@ export function union (module, context) {
 export function difference (module, context) {
   console.log('difference')
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, context)
+  let {operands, allOps} = operationsHelper(nonControlChildren, false, context)
 
   const opResult = [` opS(${allOps[0].opValue}, ${operands} )`].join('\n')
 
@@ -59,14 +58,13 @@ export function difference (module, context) {
 export function intersection (module, context) {
   console.log('intersection')
   const nonControlChildren = module.children.filter(child => child && child.name !== 'echo')
-  let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, false, context)
+  let {operands, allOps} = operationsHelper(nonControlChildren, false, context)
 
   const opResult = [` opI(${allOps[0].opValue}, ${operands} )`].join('\n')
 
   console.log('opResult', opResult)
   return opResult
 }
-
 
 export function makeUnions(inputs, includeFirst=false){
   let prev
