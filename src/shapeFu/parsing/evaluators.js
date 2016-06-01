@@ -19,7 +19,7 @@ function vector (node) {
 
 function invert (node) {
   console.log('INVERT', node)
-  return - evaluateModule(node.children[0])
+  return  `- ${evaluateExpression(node.children[0])}`
 }
 
 function add (node) {

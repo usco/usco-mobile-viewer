@@ -5,7 +5,7 @@ export function translation (module, context) {
   console.log('translate', module)
   const nonControlChildren = module.children ? module.children.filter(child => child && child.name !== 'echo') : []
 
-  const pos = evaluateExpression(module.argexpr[0])
+  const pos = flipVec3(evaluateExpression(module.argexpr[0]), true)//as string, inverted
   const transforms = context.transforms ? `opT(${context.transforms}, vec3(${pos}))` : `opT(pos, vec3(${pos}))`
   context = Object.assign(context, {transforms}) // assig
 

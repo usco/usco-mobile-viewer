@@ -65,6 +65,18 @@ use[ \t\r\n>]*"<"           %{ this.begin('cond_use');%}
 \/\/[^\n]*\n?               /* Ignore */
 \/\*.+\*\/                  /* Ignore Note: multi-line comments are removed via a preparse regex. */
 
+/*
+"//"                        %{ this.begin('cond_comment');
+                              console.log('comment')
+                            %}
+<cond_comment>.|"\n"        %{  console.log('here in comments') %}
+<cond_comment>"^\\\n"       %{  this.popState(); return TOK_COMMENT %}
+*/
+
+\/\/.                       return TOK_COMMENT
+"/*"([^\*]|\*[^/])"*/"      { return TOK_COMMENT; }
+
+
 {D}*\.{D}+{E}?              return 'TOK_NUMBER'
 {D}+\.{D}*{E}?              return 'TOK_NUMBER'
 {D}+{E}?                    return 'TOK_NUMBER'
@@ -299,6 +311,10 @@ expr:
     |   TOK_UNDEF
         {
             $$ = {type:'UDEF',value:undefined} //new Expression(undefined);
+        }
+    |   TOK_COMMENT
+        {
+          console.log('got a comment')
         }
     |   TOK_ID
         {

@@ -8,3 +8,8 @@
 - named expressions: ie TOK_NUMBER, FOO returned from lexical grammar part
 - expressions made of other expressions (note the $$) :
     expr: expr '+' expr   { $$ = $1 + $3; }
+
+
+###Notes / issues:
+
+double size for cuboid compared to openscad
