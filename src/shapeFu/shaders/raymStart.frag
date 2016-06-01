@@ -26,7 +26,7 @@ struct Light {
   vec3 position;
   float intensity;
 };
-#define lightsNb 2
+#define lightsNb 4
 uniform Light lights[lightsNb];
 
 uniform mat4 model, view, projection;

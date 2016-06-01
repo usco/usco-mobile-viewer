@@ -12,7 +12,7 @@ const triData = {
       1, 2, -2,
       0, 1, -2
     ],*/
-    new Float32Array([// works too!
+    new Float32Array([ // works too!
       2, 2, 0,
       1, 2, -2,
       0, 1, -2
@@ -27,13 +27,21 @@ const triData = {
 }
 
 const bunnyData = {
-  geometry: bunny,
+  geometry: bunny, // in truth I do not see cases where bounds would change independantly of geometry, but we might
+  // have bounds WITHOUTH geometry
+
+  bounds: {
+    dia: 40,
+    min: [9, 10, 0],
+    max: [15, 10, 4]
+  },
+
   transforms: {
     pos: [0, 0, 0],
     rot: [0, 0, 0],
     sca: [1, 1, 1]
   },
-  color: [0, 1, 0, 0.5],
+  color: [1, 1, 0, 0.5],
   selected: true
 }
 
@@ -44,7 +52,7 @@ const bunnyData3 = {
     rot: [0, 0, 0],
     sca: [1, 1, 1]
   },
-  color: [0, 1, 0, 0.5],
+  color: [1, 1, 0, 0.5],
   selected: false
 }
 
@@ -87,11 +95,11 @@ const sceneData = {
   ],
   // lighting data
   lights: [
-    {position: [10, 10, 20], color: [1.0, 0.7, 0.7], intensity: 0.5},
-    {position: [-10, 20, 10], color: [0.3, 0.7, 1.0], intensity: 1},
-    {position: [10, 20, 10], color: [0.9, 0.9, 0.9], intensity: 0.8},
-    {position: [10, -10, 0], color: [0.6, 0.7, 0.8], intensity: 0.5}
+    {position: [100, 100, 200], color: [0.8, 0.6, 0.6], intensity: 0.4},
+    {position: [-100, -200, 100], color: [0.75, 0.7, 0.7], intensity: 0.4},
+    {position: [100, 200, -210], color: [0.9, 0.9, 0.9], intensity: 0.4},
+    {position: [-100, -210, -200], color: [0.7, 0.7, 0.8], intensity: 0.4}
   ]
 }
 
-export {bunnyData, bunnyData2, bunnyData3, sceneData}
+export { bunnyData, bunnyData2, bunnyData3, sceneData }
