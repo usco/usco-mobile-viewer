@@ -77,6 +77,7 @@ function makeDrawFrame (data) {
       bgColor: prop('bgColor'),
       toggleSoftShadows: prop('toggleSoftShadows'),
       toggleAO: prop('toggleAO'),
+      showAxes: prop('showAxes'),
 
       uRM_maxIterations: prop('rayMarch.uRM_maxIterations'),
       uRM_stop_threshold: prop('rayMarch.uRM_stop_threshold'),
@@ -133,12 +134,13 @@ const settings = {
   toggleSoftShadows: false,
   toggleAO: false,
   bgColor: [1, 1, 1, 1],
+  showAxes: false,
 
   rayMarch: {
-    uRM_maxIterations: 400,
+    uRM_maxIterations: 4000,
     uRM_stop_threshold: 0.0001,
     uRM_grad_step: 0.01,
-    uRM_clip_far: 100.0
+    uRM_clip_far: 10000.0
   }
 }
 
