@@ -134,7 +134,7 @@ const settings = {
   toggleSoftShadows: false,
   toggleAO: false,
   bgColor: [1, 1, 1, 1],
-  showAxes: true,
+  showAxes: false,
 
   rayMarch: {
     uRM_maxIterations: 4000,

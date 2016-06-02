@@ -183,9 +183,10 @@ export function evaluateModule (module, context) {
 
     }*/
     const params = operands === '' ? args : Object.assign({}, {undefined: 'vec3 pos'}, args)
+    const transforms = context.transforms || 'pos'
 
     const formatedParams = formatParams(params)
-    const inner = (operands === '' ? ['pos'].concat(formatedParams).join(',') : [`return ${operands};\n`].join('\n'))
+    const inner = (operands === '' ? [transforms].concat(formatedParams).join(',') : [`return ${operands};\n`].join('\n'))
     const result = operands === '' ? `${module.name}(${inner})` : `${assignments} ${subModules}\n float ${module.name}(${formatedParams}){\n${inner}}`
 
     return result
