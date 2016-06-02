@@ -134,10 +134,16 @@ export function evaluateModule (module, context) {
 
   const variables = evaluateVariables(module)
   const assignments = variables.map(a => a.assignment).join('\n')
-  const params = !module.argnames ? [] : module.argnames.reduce(function (rs, argName, index) {
+  const args = !module.argnames ? [] : module.argnames.reduce(function (rs, argName, index) {
     rs[argName] = evaluateExpression(module.argexpr[index])
     return rs
   }, {})
+  const params = Object.assign({}, {undefined: 'vec3 pos'}, args)
+
+  let subModules = !module.modules ? [] : module.modules.map(function (subMod) {
+    const evaled = evaluateModule(subMod, context)
+    return evaled
+  }).join('\n')
 
   const operations = {
     'union': union,
@@ -172,7 +178,10 @@ export function evaluateModule (module, context) {
   } else {
     let {declarations, operands} = operationsHelper(nonControlChildren, true, context)
 
-    const result = (operands === '' ? [`${module.name}(${formatParams(params)})`] : [assignments, `return ${operands};`]).join('\n')
+    const formatedParams = formatParams(params)
+    const inner = (operands === '' ? [formatedParams] : [assignments, `return ${operands};`]).join('\n')
+    const result = operands === '' ? `${module.name}(pos, ${inner})` : `${subModules}\n float ${module.name}(${formatedParams}){${inner}}`
+
     return result
   }
 }

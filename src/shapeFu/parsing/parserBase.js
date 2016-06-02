@@ -14,7 +14,7 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
     processModule: function (yy) {
       console.log('processModule')
       let lines = []
-      if (glslify) {
+      /*if (glslify) {
         lines.push(`#pragma glslify: sdBox = require('../primitives/box.frag')`)
         lines.push(`#pragma glslify: sdConeSection = require('../primitives/coneSection.frag')`)
         lines.push(`#pragma glslify: opS = require('../operations/subtract.frag')`)
@@ -28,7 +28,8 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
       if (glslify) {
         lines.push(`#pragma glslify: export(${curModule.name})`)
       }
-      let res = lines.join('\n')
+      //let res = lines.join('\n')*/
+      const res = evaluateModule(curModule, {})
       console.log('Module done', res)
       if (curModule.name === 'root' && callBack) {
         callBack(res)

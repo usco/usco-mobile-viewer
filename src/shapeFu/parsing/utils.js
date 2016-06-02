@@ -27,6 +27,6 @@ export function formatParams (params) {
 
       return params[key]
     }
-    return `${key}=${params[key]}`
+    return `float ${key}`//`float ${key}=${params[key]}`
   })
 }
