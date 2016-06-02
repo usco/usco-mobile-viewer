@@ -102,7 +102,6 @@ break;
 case 10:
 
             yy.settings.popModule();
-            console.log('popModule')
         
 break;
 case 11:

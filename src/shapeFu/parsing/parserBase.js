@@ -3,12 +3,16 @@ import { evaluateModule } from './evaluators'
 function exec (parser, input, rootName = 'root' , callBack, options = {}) {
   console.log('attempting to parse', input)
 
-  let curModule = { children: [], name: rootName, level: 0, transforms: undefined} // transforms is for position , specific for distance field transforms
+  let curModule = { name: rootName, children: [], modules: [], argnames: [], argexpr: []} // transforms is for position , specific for distance field transforms
+
+  let contextStack = []
+  let moduleStack = []
 
   const {glslify} = options
 
   parser.yy.settings = {
     processModule: function (yy) {
+      console.log('processModule')
       let lines = []
       if (glslify) {
         lines.push(`#pragma glslify: sdBox = require('../primitives/box.frag')`)
@@ -25,7 +29,8 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
         lines.push(`#pragma glslify: export(${curModule.name})`)
       }
       let res = lines.join('\n')
-      if (callBack) {
+      console.log('Module done', res)
+      if (curModule.name === 'root' && callBack) {
         callBack(res)
       }
     },
@@ -39,7 +44,28 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
       // console.log('addModuleAssignmentVar',left, right)
       curModule.variables = curModule.variables ? curModule.variables : []
       curModule.variables.push({left, right})
+    },
+
+    addModuleFunction: function (name, expr, argnames, argexpr) {
+      console.log('addModuleFunction', name, expr, argnames, argexpr)
+    },
+
+    stashModule: function (name, argnames, argexpr) {
+      // const newModule = { parent: curModule, children: [], name, moduleStack: [], variableStack: [], modules:[]}
+      const newModule = { name, children: [], modules: [], argnames, argexpr}
+      console.log('stashModule', name, argnames, argexpr)
+
+      moduleStack.push(curModule)
+      curModule.modules.push(newModule)
+
+      curModule = newModule
+    },
+
+    popModule: function () {
+      console.log('popModule')
+      curModule = moduleStack.pop()
     }
+
   }
   parser.parse(input)
 }

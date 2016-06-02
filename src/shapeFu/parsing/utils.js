@@ -20,3 +20,13 @@ export function forceDecimal (original) {
 export function getNonControlChildren (node) {
   return node.children ? node.children.filter(child => child && child.name !== 'echo') : []
 }
+
+export function formatParams (params) {
+  return Object.keys(params).map(function (key) {
+    if (key === 'undefined') {
+
+      return params[key]
+    }
+    return `${key}=${params[key]}`
+  })
+}

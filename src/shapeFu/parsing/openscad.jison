@@ -148,7 +148,6 @@ statement_end:
     |   '{' inner_input '}'
         {
             yy.settings.popModule();
-            console.log('popModule')
         }
     |   module_instantiation
         {

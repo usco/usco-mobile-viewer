@@ -1,4 +1,4 @@
-import { flipVec3, flipVec3Abs, vecToStr, forceDecimal } from './utils'
+import { vecToStr } from './utils'
 import { evaluateModule } from './evaluators'
 
 export function cylinder (module, context) {
@@ -20,7 +20,7 @@ export function cylinder (module, context) {
   const r1 = (params['r1'] ? params['r1'] : params['r']) // +'* 2.'
   const r2 = (params['r2'] ? params['r2'] : params['r']) // +'* 2.'
   const h = params['h'] + '+0.1'
-  const res = params['$fn'] ? parseInt(params['$fn']) : undefined
+  const res = params['$fn'] ? parseInt(params['$fn'], 10) : undefined
   const center = params['center'] ? params['center'] : false
   let pos = !center ? [0, 0, `${h}`] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
 
@@ -49,9 +49,6 @@ export function cuboid (module, context) {
   const center = params['center'] ? params['center'] : false
   let pos = !center ? size : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
 
-  //pos = flipVec3(pos, true) // force to string
-  //size = flipVec3Abs(size)
-
   return ` sdBox(${transforms} + ${vecToStr(pos)}, ${vecToStr(size)})`
 }
 
@@ -66,7 +63,6 @@ export function sphere (module, context) {
   const r = params['r'] ? params['r'] : '1'
   const center = params['center'] ? params['center'] : false
   // let pos = !center ? [size[0], -size[1], size[2]] : [0, 0, 0] // [-size[0] / 2, -size[1] / 2, -size[2] / 2]
-  // pos = flipVec3(pos)
 
   return ` sdSphere(${transforms}, ${r})`
 }

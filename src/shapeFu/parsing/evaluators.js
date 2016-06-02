@@ -1,4 +1,4 @@
-import { forceDecimal } from './utils'
+import { forceDecimal, formatParams } from './utils'
 import { translation, rotation, union, intersection, difference, operationsHelper, makeUnions } from './operations'
 import { cuboid, sphere, cylinder } from './primitives'
 
@@ -7,23 +7,23 @@ function bool (node) {
 }
 
 function number (node) {
-  console.log('number', node)
+  // console.log('number', node)
   return forceDecimal(node.value)
 }
 
 function vector (node) {
-  console.log('VECTOR', node)
+  // console.log('VECTOR', node)
   const result = node.children.map(evaluateExpression)
   return result
 }
 
 function invert (node) {
-  console.log('INVERT', node)
-  return  `- ${evaluateExpression(node.children[0])}`
+  // console.log('INVERT', node)
+  return `- ${evaluateExpression(node.children[0])}`
 }
 
 function add (node) {
-  console.log('addition', node)
+  // console.log('addition', node)
   const left = evaluateExpression(node.children[0])
   const right = evaluateExpression(node.children[1])
 
@@ -32,7 +32,7 @@ function add (node) {
 }
 
 function sub (node) {
-  console.log('subtraction', node)
+  // console.log('subtraction', node)
   const left = evaluateExpression(node.children[0])
   const right = evaluateExpression(node.children[1])
 
@@ -41,7 +41,7 @@ function sub (node) {
 }
 
 function mul (node) {
-  console.log('multiplication', node)
+  // console.log('multiplication', node)
   const left = evaluateExpression(node.children[0])
   const right = evaluateExpression(node.children[1])
 
@@ -50,7 +50,7 @@ function mul (node) {
 }
 
 function div (node) {
-  console.log('division', node)
+  // console.log('division', node)
   const left = evaluateExpression(node.children[0])
   const right = evaluateExpression(node.children[1])
 
@@ -63,24 +63,23 @@ function selfAssign (node) {
 }
 
 function loop (node, context) {
-  console.log('loop', node)
+  // console.log('loop', node)
 
   const nonControlChildren = node.children ? node.children.filter(child => child && child.name !== 'echo') : []
 
-  context = Object.assign({},context)
+  context = Object.assign({}, context)
   let {declarations, unions, operands, allOps} = operationsHelper(nonControlChildren, true, context)
 
-  //evaluateExpression()
+  // evaluateExpression()
   const varName = node.argnames[0]
   const items = node.argexpr.map(evaluateExpression)[0]
-  //const result = `for(int ${varName} = 0; j < noOfLightSources; j++){`
-  //const itermed = node.children.map(evaluateModule)
+  // const result = `for(int ${varName} = 0; j < noOfLightSources; j++){`
+  // const itermed = node.children.map(evaluateModule)
 
-  const foo = items.map(function(cur, index){
-    //const opValue =  `flot a = ${cur};\n ${operands}\n`
-    return {opValue, opName:''}
+  const foo = items.map(function (cur, index) {
+    // const opValue =  `flot a = ${cur};\n ${operands}\n`
+    return {opValue, opName: ''}
   })
-
 
   const bar = makeUnions(foo)
   /*for(int j = 0; j < noOfLightSources; j++)
@@ -135,6 +134,10 @@ export function evaluateModule (module, context) {
 
   const variables = evaluateVariables(module)
   const assignments = variables.map(a => a.assignment).join('\n')
+  const params = !module.argnames ? [] : module.argnames.reduce(function (rs, argName, index) {
+    rs[argName] = evaluateExpression(module.argexpr[index])
+    return rs
+  }, {})
 
   const operations = {
     'union': union,
@@ -168,10 +171,8 @@ export function evaluateModule (module, context) {
     return op(module, context)
   } else {
     let {declarations, operands} = operationsHelper(nonControlChildren, true, context)
-    return [].concat(
-      // declarations,
-      assignments,
-      [`return ${operands};`]
-    ).join('\n')
+
+    const result = (operands === '' ? [`${module.name}(${formatParams(params)})`] : [assignments, `return ${operands};`]).join('\n')
+    return result
   }
 }
