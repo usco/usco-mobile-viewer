@@ -17,8 +17,8 @@ uniform float uRM_grad_step;
 uniform float uRM_clip_far;
 
 // math
-const float PI = 3.14159265359;
-const float DEG_TO_RAD = PI / 180.0;
+const float _PI = 3.14159265359;
+const float DEG_TO_RAD = _PI / 180.0;
 
 //lighting
 struct Light {
