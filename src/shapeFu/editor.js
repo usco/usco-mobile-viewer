@@ -114,7 +114,7 @@ area.addEventListener('input', function (e) {
   const input = e.target.value
   //console.log('change in source code', input)
   function onFinished (data) {
-    console.log('finished parsing', data)
+    console.log('finished parsing:\n', data)
     // dynamicCode = data
     drawFrame = makeDrawFrame(data)
     render(fullData)
@@ -134,7 +134,7 @@ const settings = {
   toggleSoftShadows: false,
   toggleAO: false,
   bgColor: [1, 1, 1, 1],
-  showAxes: false,
+  showAxes: true,
 
   rayMarch: {
     uRM_maxIterations: 4000,

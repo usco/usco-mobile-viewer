@@ -30,7 +30,7 @@ function exec (parser, input, rootName = 'root' , callBack, options = {}) {
       }
       //let res = lines.join('\n')*/
       const res = evaluateModule(curModule, {})
-      console.log('Module done', res)
+      //console.log('Module done', res)
       if (curModule.name === 'root' && callBack) {
         callBack(res)
       }

@@ -138,7 +138,6 @@ export function evaluateModule (module, context) {
     rs[argName] = evaluateExpression(module.argexpr[index])
     return rs
   }, {})
-  const params = Object.assign({}, {undefined: 'vec3 pos'}, args)
 
   let subModules = !module.modules ? [] : module.modules.map(function (subMod) {
     const evaled = evaluateModule(subMod, context)
@@ -178,9 +177,16 @@ export function evaluateModule (module, context) {
   } else {
     let {declarations, operands} = operationsHelper(nonControlChildren, true, context)
 
+    /*if(operands === ''){
+
+    }else{
+
+    }*/
+    const params = operands === '' ? args : Object.assign({}, {undefined: 'vec3 pos'}, args)
+
     const formatedParams = formatParams(params)
-    const inner = (operands === '' ? [formatedParams] : [assignments, `return ${operands};`]).join('\n')
-    const result = operands === '' ? `${module.name}(pos, ${inner})` : `${subModules}\n float ${module.name}(${formatedParams}){${inner}}`
+    const inner = (operands === '' ? ['pos'].concat(formatedParams).join(',') : [`return ${operands};\n`].join('\n'))
+    const result = operands === '' ? `${module.name}(${inner})` : `${assignments} ${subModules}\n float ${module.name}(${formatedParams}){\n${inner}}`
 
     return result
   }
