@@ -1,11 +1,10 @@
 var regl = require('regl')()
 const {frame} = regl
 import mat4 from 'gl-mat4'
-import { params as cameraDefaults } from '../common/orbitControls'
+import { update, params as cameraDefaults } from '../common/orbitControls'
 import { sceneData } from '../common/data'
 import loop from '../common/loop'
 import drawFrame from './drawFrame'
-
 
 // data
 const settings = {
@@ -31,13 +30,22 @@ function render (data) {
   drawFrame(_data)
 }
 
+//alternate to the above
+function render2 (data) {
+  let _data = data
+  let viewMat = data.view
+  _data.view = mat4.invert(viewMat, viewMat)
+  drawFrame(_data)
+}
+
+
 // dynamic drawing
-/*frame((props, context) => {
-  render(settings)
-})*/
+frame((props, context) => {
+  render2(fullData)
+})
 
 // render one frame
-// render(fullData)
+ //render2(fullData)
 
 // render multiple, with controls
-loop(cameraDefaults, render, fullData)
+//loop(cameraDefaults, render, fullData)

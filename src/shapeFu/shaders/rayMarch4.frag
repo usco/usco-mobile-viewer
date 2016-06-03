@@ -31,16 +31,54 @@ uniform Light lights[lightsNb];
 uniform mat4 model, view, projection;
 
 
-#pragma glslify: riceCup = require('./demo-data/riceCup.frag')
-#pragma glslify: basic = require('./demo-data/basic.frag')
-#pragma glslify: test = require('./demo-data/convTest.frag')
+#pragma glslify: sdBox = require('./primitives/box.frag')
+#pragma glslify: sdConeSection = require('./primitives/coneSection.frag')
+#pragma glslify: opS = require('./operations/subtract.frag')
+#pragma glslify: opU = require('./operations/union.frag')
+#pragma glslify: opI = require('./operations/intersect.frag')
+#pragma glslify: opR = require('./operations/rotate.frag')
 
+
+float testShape(vec3 pos){
+  float foo0 = sdBox(pos + vec3(0.,0.,0.), vec3(14.,2.,18.));
+  float foo1 = sdConeSection(pos, 4., 14., 14.);
+  foo0 = opS(foo0,foo1);
+  foo0 = foo0 + (sin(0.2*pos.x)); //*cos(iGlobalTime));//*sin(2.*pos.y)*sin(20.*pos.y)
+
+  return foo0;
+}
 
 // get distance in the world
 float dist_field( vec3 pos ) {
-	// ...add objects here...
 
-  return test(pos);
+  float varia = iGlobalTime*0.2;
+  //varia = 0.9;
+
+  vec3 scale = vec3(1.);// vec3(2.4,0.4,0.2);
+
+  pos += vec3(2.,3,10);
+  pos = opR(pos,vec3(40.,10.,PI*2.)); //rotate
+  pos = pos/scale;//scale
+
+
+  /*float foo0 = sdBox(pos + vec3(0.,0.,0.), vec3(14.,2.,18.));
+  float foo1 = sdConeSection(pos, 4., 14., 14.);
+  foo0 = opS(foo0,foo1);
+  foo0 = foo0 + (sin(0.2*pos.x)); //*cos(iGlobalTime));//*sin(2.*pos.y)*sin(20.*pos.y)
+
+  foo0 = opI(foo0, sdBox(pos+vec3(0,cos(varia)*2.,0),vec3(20,0.1,20)));*/
+  float shape = testShape(pos);
+
+  //get outlines
+  vec3 borderScale = vec3(0.999);
+  float inner = testShape(pos/borderScale) * min(min(borderScale.x,borderScale.y),borderScale.z);
+  //shape *= min(min(scale.x,scale.y),scale.z);//wooh !! non unfirorm scaling !
+  //single slice
+  shape = opI(shape, sdBox(pos+vec3(0,cos(varia)*2.,0),vec3(20,0.1,20)));
+  shape = opS(shape, inner);
+
+  return shape;
+
 
 	/*vec3 offset = vec3(0,0,0);
 	// object 0 : sphere

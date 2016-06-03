@@ -3,7 +3,7 @@ var glslify = require('glslify-sync')
 const {frame, buffer, prop} = regl
 
 const drawFrame = regl({
-  frag: glslify(__dirname + '/shaders/rayMarch2.frag'),
+  frag: glslify(__dirname + '/shaders/rayMarch4.frag'),
   vert: glslify(__dirname + '/shaders/base.vert'),
 
   attributes: {
@@ -16,7 +16,16 @@ const drawFrame = regl({
   uniforms: {
     view: prop('view'),
     iResolution: (props, {viewportWidth, viewportHeight}) => [viewportWidth, viewportHeight],
-    iGlobalTime: (props, {count}) => 0.01 * count + 15,
+    /*iGlobalTime2: function(props,{count}){
+      //(props, {count}) => 0.01 * count + 15
+      console.log('count',count, props)
+      return 0.01 * count + 15
+    },*/
+    iGlobalTime: function(props, context){
+      let time = regl.context('time')
+      time = 0.1 * time.id + 15
+      return time
+    },
 
     bgColor: prop('bgColor'),
     toggleSoftShadows: prop('toggleSoftShadows'),
