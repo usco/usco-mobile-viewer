@@ -42,5 +42,6 @@ gaining an **understanding** of various lighting models , not just copy & pastin
 ## LICENSE
 
 [The MIT License (MIT)](https://github.com/kaosat-dev/shader-fu/blob/master/LICENSE)
+(unless specified otherwise)
 
 - - -
