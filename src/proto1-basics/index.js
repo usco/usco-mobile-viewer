@@ -4,7 +4,7 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import {drawModel as _drawModel, draw as _draw} from './draw'
+import { drawModel as _drawModel, draw as _draw } from './draw'
 import { params as cameraDefaults } from '../common/orbitControls'
 
 const regl = reglM()
@@ -20,10 +20,9 @@ import loop from '../common/loop'
 var pick = require('camera-picking-ray')
 var intersect = require('ray-aabb-intersection')
 var boundingBox = require('vertices-bounding-box')
-/*
-var bb = boundingBox(positions)
-//your camera matrices
-var projection = []
+
+// your camera matrices
+/*var projection = []
 var view = []
 var projView = mat4.multiply([], projection, view)
 var invProjView = mat4.invert([], projView)
@@ -39,23 +38,32 @@ let mouse = [0, 0]
 pick(ray.ro, ray.rd, mouse, viewport, invProjView)
 //pick(origin, direction, point, viewport, invProjView)
 */
-function pickStuff(){
+function pickStuff () {
   // first check aabb && sphere
   // then go into more precise stuff
 }
 
 /* //////////////// */
 
-const fullData = {
+let fullData = {
   scene: sceneData,
   entities: [bunnyData, bunnyData2, bunnyData3]
 }
+
+// inject bounding box data
+fullData.entities = fullData.entities.map(function (entity) {
+  const bb = boundingBox(entity.geometry.positions)
+  const bounds = {min: bb[0], max: bb[1]}
+
+  const result = Object.assign({}, entity, {bounds})
+  console.log('result', result)
+  return result
+})
 
 /* ============================================ */
 
 // main render function: data in, rendered frame out
 function render (data) {
-
   clear({
     depth: 1,
     color: [1, 1, 1, 1]
@@ -63,9 +71,9 @@ function render (data) {
 
   draw(data)
 
-  /*drawModel({scene: data.sceneData, entity: data.entities[0], camera: cameraData})
-  drawModel({scene: data.sceneData, entity: data.entities[1], camera: cameraData})
-  drawModel({scene: data.sceneData, entity: data.entities[2], camera: cameraData})*/
+/*drawModel({scene: data.sceneData, entity: data.entities[0], camera: cameraData})
+drawModel({scene: data.sceneData, entity: data.entities[1], camera: cameraData})
+drawModel({scene: data.sceneData, entity: data.entities[2], camera: cameraData})*/
 }
 
 // dynamic drawing
@@ -74,5 +82,5 @@ function render (data) {
 })*/
 
 // render one frame
-//render(fullData)
+// render(fullData)
 loop(cameraDefaults, render, fullData)
