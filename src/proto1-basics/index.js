@@ -13,6 +13,37 @@ const drawModel = _drawModel.bind(null, regl)
 
 import loop from '../common/loop'
 
+
+/* --------------------- */
+// Picking
+
+var pick = require('camera-picking-ray')
+var intersect = require('ray-aabb-intersection')
+var boundingBox = require('vertices-bounding-box')
+/*
+var bb = boundingBox(positions)
+//your camera matrices
+var projection = []
+var view = []
+var projView = mat4.multiply([], projection, view)
+var invProjView = mat4.invert([], projView)
+
+var ray = {
+  ro: [0, 0, 0],
+  rd: [0, 0, 0]
+}
+
+let mouse = [0, 0]
+
+//store result in ray (origin, direction)
+pick(ray.ro, ray.rd, mouse, viewport, invProjView)
+//pick(origin, direction, point, viewport, invProjView)
+*/
+function pickStuff(){
+  // first check aabb && sphere
+  // then go into more precise stuff
+}
+
 /* //////////////// */
 
 const fullData = {
@@ -25,7 +56,7 @@ const fullData = {
 // main render function: data in, rendered frame out
 function render (data) {
   const {cameraData} = data
-  
+
   clear({
     depth: 1,
     color: [1, 1, 1, 1]
@@ -45,18 +76,3 @@ function render (data) {
 // render one frame
 //render(fullData)
 loop(cameraDefaults, render, fullData)
-
-/*const copyPixels = regl.texture({
-  x: 5,
-  y: 1,
-  width: 10,
-  height: 10,
-  copy: true
-})*/
-
-// outlines experiment
-/*frame((props, context) => {
-
-  clear({stencil: 1})
-
-})*/
