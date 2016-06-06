@@ -27,8 +27,9 @@ const triData = {
 }
 
 const bunnyData = {
+  id: 'b0',
   geometry: bunny, // in truth I do not see cases where bounds would change independantly of geometry, but we might
-  // have bounds WITHOUTH geometry
+  // have bounds WITHOUT geometry
 
   bounds: {
     dia: 40,
@@ -45,7 +46,20 @@ const bunnyData = {
   selected: true
 }
 
+const bunnyData2 = {
+  id: 'b2',
+  geometry: bunny,
+  transforms: {
+    pos: [0, 0, 0],
+    rot: [0, 0, 0],
+    sca: [1, 1, -1]
+  },
+  color: [0, 1, 1, 0.5],
+  selected: false
+}
+
 const bunnyData3 = {
+  id: 'b3',
   geometry: bunny,
   transforms: {
     pos: [10, -12.989, 3],
@@ -56,15 +70,12 @@ const bunnyData3 = {
   selected: false
 }
 
-const bunnyData2 = {
-  geometry: bunny,
-  transforms: {
-    pos: [0, 0, 0],
-    rot: [0, 0, 0],
-    sca: [1, 1, -1]
-  },
-  color: [0, 1, 1, 0.5],
-  selected: false
+const allData = {
+  entities:[
+    bunnyData,
+    bunnyData2,
+    bunnyData3
+  ]
 }
 
 const sceneData = {

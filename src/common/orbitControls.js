@@ -40,7 +40,7 @@ export const params = {
     phiDelta: 0,
     scale: 1,
 
-    position: [25, 0, 10],
+    position: [45, 0, 20],
     target: [0, 0, 0],
     view: mat4.create() // default, this is just a 4x4 matrix
   }
