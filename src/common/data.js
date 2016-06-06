@@ -92,8 +92,7 @@ const sceneData = {
         enabled: false,
         speed: 0.2
       },
-      _enabled: true,
-      _active: true
+      enabled: true
     }
   ],
   // lighting data
@@ -105,13 +104,5 @@ const sceneData = {
   ]
 }
 
-const allData = {
-  entities: [
-    bunnyData,
-    bunnyData2,
-    bunnyData3
-  ],
-  meta: sceneData
-}
 
-export { bunnyData, bunnyData2, bunnyData3, sceneData, allData }
+export { bunnyData, bunnyData2, bunnyData3, sceneData }

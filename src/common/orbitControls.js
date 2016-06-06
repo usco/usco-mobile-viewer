@@ -5,7 +5,6 @@ const v3 = vec3.create()
 const m4 = mat4.create()*/
 const {max, min, sqrt, PI, sin, cos, atan2} = Math
 
-
 /* cameras are assumed to have:
  projection
  view
@@ -16,26 +15,29 @@ const {max, min, sqrt, PI, sin, cos, atan2} = Math
 
 export const params = {
   enabled: true,
-
-  userZoom: true,
-  userZoomSpeed: 1.0,
-  userRotate: true,
-  userRotateSpeed: 1.0,
-  userPan: true,
-  userPanSpeed: 2.0,
-  autoRotate: false,
-  autoRotateSpeed: 2.0, // 30 seconds per round when fps is 60
-
-  minDistance: 0.2,
-  maxDistance: 400,
-
+  userControl: {
+    zoom: true,
+    zoomSpeed: 1.0,
+    rotate: true,
+    rotateSpeed: 1.0,
+    pan: true,
+    panSpeed: 2.0
+  },
+  autoRotate: {
+    enabled: false,
+    speed: 2.0 // 30 seconds per round when fps is 60
+  },
+  limits: {
+    minDistance: 0.2,
+    maxDistance: 400
+  },
   EPS: 0.000001,
   drag: 0.01, // Decrease the momentum by 1% each iteration
 
-  // below this, dynamic stuff mostly
-  cam: {
-    up: [0, 1, 0],
-    // not sure about these
+  up: [0, 1, 0],
+
+  // below this, dynamic stuff mostly, since this is also the ouput of the controls function
+  camera: {
     thetaDelta: 0,
     phiDelta: 0,
     scale: 1,
@@ -44,17 +46,15 @@ export const params = {
     target: [0, 0, 0],
     view: mat4.create() // default, this is just a 4x4 matrix
   }
-
-
 }
 
 export function update (params) {
   // this is a modified version, with inverted Y and Z (since we use camera[2] => up)
-  const {EPS, cam} = params
-  const {up, position, target, view} = cam
-  let curThetaDelta = cam.thetaDelta
-  let curPhiDelta = cam.phiDelta
-  let curScale = cam.scale
+  const {EPS, camera, up} = params
+  const {position, target, view} = camera
+  let curThetaDelta = camera.thetaDelta
+  let curPhiDelta = camera.phiDelta
+  let curScale = camera.scale
 
   let offset = vec3.subtract(vec3.create(), position, target)
   let theta
@@ -72,8 +72,8 @@ export function update (params) {
     curThetaDelta = -(curThetaDelta)
   }
 
-  if (params.autoRotate && params.userRotate) {
-    curThetaDelta += 2 * Math.PI / 60 / 60 * params.autoRotateSpeed // arbitrary, kept for backwards compatibility
+  if (params.autoRotate.enabled && params.userControl.rotate) {
+    curThetaDelta += 2 * Math.PI / 60 / 60 * params.autoRotate.speed // arbitrary, kept for backwards compatibility
   }
 
   theta += curThetaDelta
@@ -82,7 +82,7 @@ export function update (params) {
   // restrict phi to be betwee EPS and PI-EPS
   phi = max(EPS, min(PI - EPS, phi))
   // multiply by scaling effect and restrict radius to be between desired limits
-  const radius = max(params.minDistance, min(params.maxDistance, vec3.length(offset) * curScale))
+  const radius = max(params.limits.minDistance, min(params.limits.maxDistance, vec3.length(offset) * curScale))
 
   if (up[2] === 1) {
     offset[0] = radius * sin(phi) * sin(theta)
@@ -109,7 +109,6 @@ export function update (params) {
     phiDelta: curPhiDelta / 2.5,
     scale: 1,
 
-    up,
     position: newPosition,
     target: newTarget,
     view: newView
@@ -117,24 +116,24 @@ export function update (params) {
 }
 
 export function rotate (params, angle) {
-  if (params.userRotate) {
-    params.cam.thetaDelta += angle[0]
-    params.cam.phiDelta += angle[1]
+  if (params.userControl.rotate) {
+    params.camera.thetaDelta += angle[0]
+    params.camera.phiDelta += angle[1]
   }
 
-  return params.cam
+  return params.camera
 }
 
 export function zoom (params, zoomScale) {
-  if (params.userZoom) {
-    zoomScale = zoomScale*0.001 //Math.min(Math.max(zoomScale, -0.1), 0.1);
-    const amount = Math.abs(zoomScale) === 1 ? Math.pow( 0.95, params.userZoomSpeed ): zoomScale
-    const scale = zoomScale < 0 ? (params.cam.scale / amount) : (params.cam.scale * amount)
-    //console.log('zoomScale',zoomScale,scale)
+  if (params.userControl.zoom) {
+    zoomScale = zoomScale * 0.001 // Math.min(Math.max(zoomScale, -0.1), 0.1)
+    const amount = Math.abs(zoomScale) === 1 ? Math.pow(0.95, params.userControl.zoomSpeed) : zoomScale
+    const scale = zoomScale < 0 ? (params.camera.scale / amount) : (params.camera.scale * amount)
+    // console.log('zoomScale',zoomScale,scale)
 
-    params.cam.scale += amount
+    params.camera.scale += amount
   }
-  return params.cam
+  return params.camera
 }
 
 function pan (params) {
