@@ -13,35 +13,12 @@ const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
 
 import loop from '../common/loop'
+import pickLoop from '../common/pickLoop'
 
-/* --------------------- */
-// Picking
-
-var pick = require('camera-picking-ray')
-var intersect = require('ray-aabb-intersection')
 var boundingBox = require('vertices-bounding-box')
 
-// your camera matrices
-/*var projection = []
-var view = []
-var projView = mat4.multiply([], projection, view)
-var invProjView = mat4.invert([], projView)
+/* --------------------- */
 
-var ray = {
-  ro: [0, 0, 0],
-  rd: [0, 0, 0]
-}
-
-let mouse = [0, 0]
-
-//store result in ray (origin, direction)
-pick(ray.ro, ray.rd, mouse, viewport, invProjView)
-//pick(origin, direction, point, viewport, invProjView)
-*/
-function pickStuff () {
-  // first check aabb && sphere
-  // then go into more precise stuff
-}
 
 /* //////////////// */
 
@@ -84,3 +61,6 @@ drawModel({scene: data.sceneData, entity: data.entities[2], camera: cameraData})
 // render one frame
 // render(fullData)
 loop(cameraDefaults, render, fullData)
+
+//interactions
+pickLoop(fullData)

@@ -126,11 +126,11 @@ export function drawModel (regl, datas) {
   return cmd({ color, mat: modelMat, scene, view: camera.view })
 }
 
-export function draw(regl, data){
+export function draw (regl, data) {
   //console.log('draw',data)
 
   // this needs to change everytime geometry changes: determines drawCalls, rarely changes /triggered
-  const drawCalls = data.entities.map(function(entity){
+  const drawCalls = data.entities.map(function (entity) {
     const {scene} = data
     const cmd = drawModelCommand(regl, scene, entity)
     return cmd
