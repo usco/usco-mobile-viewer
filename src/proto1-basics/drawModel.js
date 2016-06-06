@@ -1,20 +1,20 @@
-//const regl = require('regl')()
+// const regl = require('regl')()
 import { identity, perspective, lookAt } from 'gl-mat4'
 import mat4 from 'gl-mat4'
 import normals from 'angle-normals'
 
 // import glslify from 'glslify' // does not work
-//var glslify = require('glslify') // works only in browser (browserify transform)
+// var glslify = require('glslify') // works only in browser (browserify transform)
 var glslify = require('glslify-sync') // works in client & server
 
-function formatLightsDataForRender(lightsData){
+function formatLightsDataForRender (lightsData) {
   const result = lightsData.map(function (data, index) {
-    return Object.keys(data).map(function(key){
+    return Object.keys(data).map(function (key) {
       return {name: `'lights[${index}].${key}'`,value: data[key]}
     })
   })
-  //console.log('result',result[0])// JSON.stringify(result))
-  //console.log(JSON.stringify(lightsData))
+  // console.log('result',result[0])// JSON.stringify(result))
+  // console.log(JSON.stringify(lightsData))
   return result
 }
 
@@ -70,7 +70,7 @@ export function drawModelCommand (regl, scene, data) {
       'lights[3].intensity': prop('scene.lights[3].intensity'),
       'lights[3].position': prop('scene.lights[3].position'),
 
-      //various dynamic uniforms
+      // various dynamic uniforms
       color: prop('color'),
       pos: prop('pos'),
       rot: prop('rot'),
@@ -84,8 +84,6 @@ export function drawModelCommand (regl, scene, data) {
   } else {
     params.count = geometry.positions.length / 3
   }
-
-
 
   /*formatLightsDataForRender(lights).forEach(function(fields){
     fields.forEach(function(entry){
@@ -110,10 +108,10 @@ export function drawModelCommand (regl, scene, data) {
   return regl(params)
 }
 
-export default function drawModel(regl, scene, data, cameraData) {
+export default function drawModel (regl, scene, data, cameraData) {
   const cmd = drawModelCommand(regl, scene, data)
 
-  //all sorts of 'dynamic' data
+  // all sorts of 'dynamic' data
   const {pos, rot, sca} = data.transforms
 
   // simple hack for selection state
