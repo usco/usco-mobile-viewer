@@ -70,14 +70,6 @@ const bunnyData3 = {
   selected: false
 }
 
-const allData = {
-  entities:[
-    bunnyData,
-    bunnyData2,
-    bunnyData3
-  ]
-}
-
 const sceneData = {
   cameras: [
     {
@@ -113,4 +105,13 @@ const sceneData = {
   ]
 }
 
-export { bunnyData, bunnyData2, bunnyData3, sceneData }
+const allData = {
+  entities: [
+    bunnyData,
+    bunnyData2,
+    bunnyData3
+  ],
+  meta: sceneData
+}
+
+export { bunnyData, bunnyData2, bunnyData3, sceneData, allData }

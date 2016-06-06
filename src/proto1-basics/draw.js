@@ -18,29 +18,26 @@ function formatLightsDataForRender (lightsData) {
   return result
 }
 
-export function drawModelCommand (regl, scene, data) {
+
+export function drawModelCommand (regl, scene, entity) {
   const {buffer, elements, prop} = regl
 
   // const {positions, cells, mat, color, pos} = data
-  const {geometry, transforms} = data
+  const {geometry, transforms} = entity
   let params = {
     vert: glslify(__dirname + '/shaders/base.vert'),
     frag: glslify(__dirname + '/shaders/base.frag'),
 
+    //more static
     attributes: {
       position: buffer(geometry.positions),
       normal: buffer(normals(geometry.cells, geometry.positions))
     },
+
+    //more dynamic
     uniforms: {
       model: prop('mat'),
       view: prop('view'),
-      /*(props, context) => {
-        const t = 0.01 * context.count * scene.controls[0].rotateSpeed
-        return lookAt([],
-          [30 * Math.cos(t), 2.5, 30 * Math.sin(t)],
-          [0, 2.5, 0],
-          [0, 1, 0])
-      },*/
       projection: (props, context) => {
         return perspective([],
           Math.PI / 4,
@@ -48,11 +45,6 @@ export function drawModelCommand (regl, scene, data) {
           0.01,
           1000)
       },
-
-      /*mouse: (props, {pixelRatio, viewportHeight}) => [
-        mouse.x * pixelRatio,
-        viewportHeight - mouse.y * pixelRatio
-      ],*/
 
       'lights[0].color': prop('scene.lights[0].color'),
       'lights[0].intensity': prop('scene.lights[0].intensity'),
@@ -80,7 +72,6 @@ export function drawModelCommand (regl, scene, data) {
   }
   if (geometry.cells) {
     params.elements = elements(geometry.cells)
-  // console.log(geometry.cells.length*3)
   } else {
     params.count = geometry.positions.length / 3
   }
@@ -108,15 +99,21 @@ export function drawModelCommand (regl, scene, data) {
   return regl(params)
 }
 
-export default function drawModel (regl, scene, data, cameraData) {
-  const cmd = drawModelCommand(regl, scene, data)
+export function drawModel (regl, datas) {
 
+  const data = datas[0]
+  //const batchCallData = data.map(function())
+  const {scene, entity, camera} = data
+  //scene, data, cameraData
+  const cmd = drawModelCommand(regl, scene, entity)
+
+  // for entitities
   // all sorts of 'dynamic' data
-  const {pos, rot, sca} = data.transforms
+  const {pos, rot, sca} = entity.transforms
 
   // simple hack for selection state
   // const {color} = data
-  const color = data.selected ? [1, 0, 0, 1] : data.color
+  const color = entity.selected ? [1, 0, 0, 1] : entity.color
 
   // create transform matrix
   let modelMat = mat4.identity([])
@@ -126,5 +123,39 @@ export default function drawModel (regl, scene, data, cameraData) {
   mat4.rotateZ(modelMat, modelMat, rot[1])
   mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
 
-  return cmd({ color, mat: modelMat, scene, view: cameraData.view })
+  return cmd({ color, mat: modelMat, scene, view: camera.view })
+}
+
+export function draw(regl, data){
+  //console.log('draw',data)
+
+  // this needs to change everytime geometry changes: determines drawCalls, rarely changes /triggered
+  const drawCalls = data.entities.map(function(entity){
+    const {scene} = data
+    const cmd = drawModelCommand(regl, scene, entity)
+    return cmd
+  })
+
+  // more dynamic this can change every frame
+  const dynamicData = data.entities.map(function (entity, index) {
+    const {pos, rot, sca} = entity.transforms
+    const {scene, camera} = data
+
+    // simple hack for selection state
+    // const {color} = data
+    const color = entity.selected ? [1, 0, 0, 1] : entity.color
+
+    // create transform matrix
+    let modelMat = mat4.identity([])
+    mat4.translate(modelMat, modelMat, [pos[0], pos[2], pos[1]]) // z up
+    mat4.rotateX(modelMat, modelMat, rot[0])
+    mat4.rotateY(modelMat, modelMat, rot[2])
+    mat4.rotateZ(modelMat, modelMat, rot[1])
+    mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
+
+    return { color, mat: modelMat, scene, view: camera.view }
+    //return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
+  })
+
+  return drawCalls[0](dynamicData)
 }

@@ -4,15 +4,15 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import _drawModel from './drawModel'
+import {drawModel as _drawModel, draw as _draw} from './draw'
 import { params as cameraDefaults } from '../common/orbitControls'
 
 const regl = reglM()
 const {frame, clear} = regl
 const drawModel = _drawModel.bind(null, regl)
+const draw = _draw.bind(null, regl)
 
 import loop from '../common/loop'
-
 
 /* --------------------- */
 // Picking
@@ -47,25 +47,25 @@ function pickStuff(){
 /* //////////////// */
 
 const fullData = {
-  sceneData,
-  modelsData: [bunnyData, bunnyData2, bunnyData3]
+  scene: sceneData,
+  entities: [bunnyData, bunnyData2, bunnyData3]
 }
 
 /* ============================================ */
 
 // main render function: data in, rendered frame out
 function render (data) {
-  const {cameraData} = data
 
   clear({
     depth: 1,
     color: [1, 1, 1, 1]
   })
 
-  // bunnyData.selected = getRandomInt(0, 20) === 0
-  drawModel(data.sceneData, data.modelsData[0], cameraData)
-  drawModel(data.sceneData, data.modelsData[1], cameraData)
-  drawModel(data.sceneData, data.modelsData[2], cameraData)
+  draw(data)
+
+  /*drawModel({scene: data.sceneData, entity: data.entities[0], camera: cameraData})
+  drawModel({scene: data.sceneData, entity: data.entities[1], camera: cameraData})
+  drawModel({scene: data.sceneData, entity: data.entities[2], camera: cameraData})*/
 }
 
 // dynamic drawing
