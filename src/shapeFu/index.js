@@ -20,12 +20,12 @@ const settings = {
   }
 }
 
-const fullData = Object.assign({}, {scene: sceneData}, {view: cameraDefaults.cam.view}, settings)
+const fullData = Object.assign({}, {scene: sceneData}, {view: cameraDefaults.camera.view}, settings)
 
 // main render function: data in, rendered frame out
 function render (data) {
   let _data = data
-  let viewMat = data.cameraData.view
+  let viewMat = data.camera.view
   _data.view = mat4.invert(viewMat, viewMat)
   drawFrame(_data)
 }
