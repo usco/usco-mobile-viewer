@@ -11,7 +11,7 @@
     "start-dev": "budo src/proto1-basics --port=8080 --live -- -t babelify",
     "test-render": "node src/serverSide/launch.js",
     "test-scadParse": "node src/shapeFu/parsing/launchTestParse.js",
-    "test-scadParse2":"jison src/shapeFu/parsing/openscad.jison -m commonjs -o src/shapeFu/parsing/openscadParser.js"
+    "test-scadParse2": "jison src/shapeFu/parsing/openscad.jison -m commonjs -o src/shapeFu/parsing/openscadParser.js"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
@@ -29,6 +29,7 @@
     "pngjs": "^2.3.1",
     "ray-aabb-intersection": "^1.0.1",
     "ray-sphere-intersection": "^1.0.0",
+    "ray-triangle-intersection": "^1.0.3",
     "regl": "github:mikolalysenko/regl#gh-pages",
     "vertices-bounding-box": "^1.0.0"
   },
@@ -38,6 +39,7 @@
     "babel-preset-es2015": "^6.1.18",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
+    "budo": "^8.3.0",
     "watchify": "^3.7.0"
   },
   "browserify": {
