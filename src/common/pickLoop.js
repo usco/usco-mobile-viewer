@@ -51,27 +51,20 @@ export default function pickLoop (fullData) {
       .forEach(hit => console.log('hit', hit.entity.id, hit))
 
     function intersect (ray, entity, index) {
-      // FIXME: do this only once, and not here
-      const {pos, rot, sca} = entity.transforms
-      let modelMat = mat4.identity([])
-      mat4.translate(modelMat, modelMat, [pos[0], pos[2], pos[1]]) // z up
-      mat4.rotateX(modelMat, modelMat, rot[0])
-      mat4.rotateY(modelMat, modelMat, rot[2])
-      mat4.rotateZ(modelMat, modelMat, rot[1])
-      mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
-
+      // first check aabb // sphere
+      // then go into more precise stuff
+      const {modelMat} = entity
       // convert min & max to world coordinates
       let min = vec3.transformMat4(mat4.identity([]), entity.bounds.min, modelMat) // out:vec3, a:vec3, m:mat4
       let max = vec3.transformMat4(mat4.identity([]), entity.bounds.max, modelMat) // out:vec3, a:vec3, m:mat4
 
       const bounds = [min, max] // [entity.bounds.min, entity.bounds.max] // FIXME !!!! bounds are in local coordinates, not world coordinates !
 
-      // first check aabb && sphere
-      // then go into more precise stuff
       const hitAABB = intersectAABB([], ray.ro, ray.rd, bounds)
       if (hitAABB) {
         console.log('boundingBox hit', hitAABB)
         // TODO: convert ray (world) coordinates to local coordinates
+
         const {transformMat4} = vec3
         const invModelMat = mat4.invert(mat4.identity([]), modelMat)
         const localRayRo = transformMat4(vec3.create(), ray.ro, invModelMat)
@@ -79,11 +72,16 @@ export default function pickLoop (fullData) {
 
         const hitTRI = entity.geometry.cells.map(function (cell, index) {
           const positions = entity.geometry.positions
-          const tri = [ positions[cell[0]], positions[cell[1]], positions[cell[2]]]
-          const hitTRI = intersectTRI([], localRayRo, localRayRd, tri)
+
+          //FIXME : UGH local => world conversion works, but this is terribly ineficient
+          function conv (pos) {
+            return vec3.transformMat4(mat4.identity([]), pos, modelMat)
+          }
+          const tri = [ conv(positions[cell[0]]), conv(positions[cell[1]]), conv(positions[cell[2]])]
+
+          const hitTRI = intersectTRI([], ray.ro, ray.rd, tri)
           if (hitTRI) {
             console.log('tri', hitTRI)
-            // console.log('that is a match !! , for ' + entity.id)
             return hitTRI
           }
           return null

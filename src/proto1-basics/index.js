@@ -16,6 +16,7 @@ import loop from '../common/loop'
 import pickLoop from '../common/pickLoop'
 
 var boundingBox = require('vertices-bounding-box')
+import mat4 from 'gl-mat4'
 
 /* --------------------- */
 
@@ -37,10 +38,21 @@ fullData.entities = fullData.entities.map(function (entity) {
   return result
 })
 
-// inject object transformation matrix ??
-/*
+// inject object transformation matrix : costly : only do it when changes happened
+
 fullData.entities = fullData.entities.map(function (entity) {
-})*/
+  const {pos, rot, sca} = entity.transforms
+  let modelMat = mat4.identity([])
+  mat4.translate(modelMat, modelMat, [pos[0], pos[2], pos[1]]) // z up
+  mat4.rotateX(modelMat, modelMat, rot[0])
+  mat4.rotateY(modelMat, modelMat, rot[2])
+  mat4.rotateZ(modelMat, modelMat, rot[1])
+  mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
+
+  const result = Object.assign({}, entity, {modelMat})
+  console.log('result', result)
+  return result
+})
 
 /* ============================================ */
 

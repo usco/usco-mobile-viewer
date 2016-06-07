@@ -18,7 +18,6 @@ function formatLightsDataForRender (lightsData) {
   return result
 }
 
-
 export function drawModelCommand (regl, scene, entity) {
   const {buffer, elements, prop} = regl
 
@@ -28,13 +27,13 @@ export function drawModelCommand (regl, scene, entity) {
     vert: glslify(__dirname + '/shaders/base.vert'),
     frag: glslify(__dirname + '/shaders/base.frag'),
 
-    //more static
+    // more static
     attributes: {
       position: buffer(geometry.positions),
       normal: buffer(normals(geometry.cells, geometry.positions))
     },
 
-    //more dynamic
+    // more dynamic
     uniforms: {
       model: prop('mat'),
       view: prop('view'),
@@ -100,11 +99,10 @@ export function drawModelCommand (regl, scene, entity) {
 }
 
 export function drawModel (regl, datas) {
-
   const data = datas[0]
-  //const batchCallData = data.map(function())
+  // const batchCallData = data.map(function())
   const {scene, entity, camera} = data
-  //scene, data, cameraData
+  // scene, data, cameraData
   const cmd = drawModelCommand(regl, scene, entity)
 
   // for entitities
@@ -127,7 +125,7 @@ export function drawModel (regl, datas) {
 }
 
 export function draw (regl, data) {
-  //console.log('draw',data)
+  // console.log('draw',data)
 
   // this needs to change everytime geometry changes: determines drawCalls, rarely changes /triggered
   const drawCalls = data.entities.map(function (entity) {
@@ -139,6 +137,7 @@ export function draw (regl, data) {
   // more dynamic this can change every frame
   const dynamicData = data.entities.map(function (entity, index) {
     const {pos, rot, sca} = entity.transforms
+    const {modelMat} = entity
     const {scene, camera} = data
 
     // simple hack for selection state
@@ -146,15 +145,21 @@ export function draw (regl, data) {
     const color = entity.selected ? [1, 0, 0, 1] : entity.color
 
     // create transform matrix
-    let modelMat = mat4.identity([])
+    /*let modelMat = mat4.identity([])
     mat4.translate(modelMat, modelMat, [pos[0], pos[2], pos[1]]) // z up
     mat4.rotateX(modelMat, modelMat, rot[0])
     mat4.rotateY(modelMat, modelMat, rot[2])
     mat4.rotateZ(modelMat, modelMat, rot[1])
-    mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
+    mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])*/
+    /*let modelMat = mat4.identity([])
+    mat4.translate(modelMat, modelMat, pos)
+    mat4.rotateX(modelMat, modelMat, rot[0])
+    mat4.rotateY(modelMat, modelMat, rot[1])
+    mat4.rotateZ(modelMat, modelMat, rot[2])
+    mat4.scale(modelMat, modelMat, [sca[0], sca[1], sca[2]])*/
 
     return { color, mat: modelMat, scene, view: camera.view }
-    //return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
+  // return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
   })
 
   return drawCalls[0](dynamicData)
