@@ -1,4 +1,3 @@
-// const regl = require('regl')()
 import { identity, perspective, lookAt } from 'gl-mat4'
 import mat4 from 'gl-mat4'
 import normals from 'angle-normals'
@@ -30,7 +29,7 @@ export function drawModelCommand (regl, scene, entity) {
     // more static
     attributes: {
       position: buffer(geometry.positions),
-      normal: buffer(normals(geometry.cells, geometry.positions))
+      normal: geometry.cells? buffer(normals(geometry.cells, geometry.positions)): []
     },
 
     // more dynamic
@@ -65,12 +64,17 @@ export function drawModelCommand (regl, scene, entity) {
       color: prop('color'),
       pos: prop('pos'),
       rot: prop('rot'),
-      sca: prop('sca')
-    }
+      sca: prop('sca'),
+    },
+
+    primitive: entity.primitive? entity.primitive:'triangles',
+    //lineWidth: 3
 
   }
   if (geometry.cells) {
     params.elements = elements(geometry.cells)
+    //params.count = geometry.positions.length / 3
+
   } else {
     params.count = geometry.positions.length / 3
   }
@@ -158,9 +162,10 @@ export function draw (regl, data) {
     mat4.rotateZ(modelMat, modelMat, rot[2])
     mat4.scale(modelMat, modelMat, [sca[0], sca[1], sca[2]])*/
 
-    return { color, mat: modelMat, scene, view: camera.view }
-  // return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
+    //return { color, mat: modelMat, scene, view: camera.view }
+    return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
   })
 
-  return drawCalls[0](dynamicData)
+  return dynamicData
+  //return drawCalls[0](dynamicData)
 }

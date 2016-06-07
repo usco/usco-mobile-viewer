@@ -15,17 +15,19 @@ const draw = _draw.bind(null, regl)
 import controlsLoop from '../common/controls/controlsLoop'
 import pickLoop from '../common/picking/pickLoop'
 
-var boundingBox = require('vertices-bounding-box')
+import boundingBox from 'vertices-bounding-box'
 import mat4 from 'gl-mat4'
 
 /* --------------------- */
 
+import makeGrid from '../common/grid'
 
-/* //////////////// */
+const grid = makeGrid(200, 1)
+/* --------------------- */
 
 let fullData = {
   scene: sceneData,
-  entities: [bunnyData, bunnyData2, bunnyData3]
+  entities: [bunnyData, bunnyData2, bunnyData3, grid]
 }
 
 // inject bounding box data
