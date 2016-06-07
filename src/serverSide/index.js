@@ -5,7 +5,7 @@ import {writeContextToFile} from './utils'
 const {clear} = regl
 
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import {params, update} from '../common/orbitControls'
+import {params, update} from '../common/controls/orbitControls'
 
 const fullData = {
   sceneData,

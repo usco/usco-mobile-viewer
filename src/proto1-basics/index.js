@@ -5,15 +5,15 @@ const reglM = require('regl')
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 import { drawModel as _drawModel, draw as _draw } from './draw'
-import { params as cameraDefaults } from '../common/orbitControls'
+import { params as cameraDefaults } from '../common/controls/orbitControls'
 
 const regl = reglM()
 const {frame, clear} = regl
 const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
 
-import loop from '../common/loop'
-import pickLoop from '../common/pickLoop'
+import controlsLoop from '../common/controls/controlsLoop'
+import pickLoop from '../common/picking/pickLoop'
 
 var boundingBox = require('vertices-bounding-box')
 import mat4 from 'gl-mat4'
@@ -77,7 +77,7 @@ drawModel({scene: data.sceneData, entity: data.entities[2], camera: cameraData})
 
 // render one frame
 // render(fullData)
-loop(cameraDefaults, render, fullData)
+controlsLoop(cameraDefaults, render, fullData)
 
 //interactions
 pickLoop(fullData)

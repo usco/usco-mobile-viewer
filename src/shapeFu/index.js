@@ -1,9 +1,9 @@
 var regl = require('regl')()
 const {frame} = regl
 import mat4 from 'gl-mat4'
-import { update, params as cameraDefaults } from '../common/orbitControls'
+import { update, params as cameraDefaults } from '../common/controls/orbitControls'
 import { sceneData } from '../common/data'
-import loop from '../common/loop'
+import controlsLoop from '../common/controls/controlsLoop'
 import drawFrame from './drawFrame'
 
 // data
@@ -48,4 +48,4 @@ frame((props, context) => {
  //render2(fullData)
 
 // render multiple, with controls
-//loop(cameraDefaults, render, fullData)
+//controlsLoop(cameraDefaults, render, fullData)

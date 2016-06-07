@@ -1,4 +1,4 @@
-import { update, rotate, zoom } from '../common/orbitControls'
+import { update, rotate, zoom } from './orbitControls'
 
 export default function loop (cameraDefaults, render, fullData) {
   // FIXME: hack for now

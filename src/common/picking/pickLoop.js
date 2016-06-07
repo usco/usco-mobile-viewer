@@ -1,9 +1,9 @@
 import mat4 from 'gl-mat4'
 import vec3 from 'gl-vec3'
 
-var pick = require('camera-picking-ray')
-var intersectAABB = require('ray-aabb-intersection')
-var intersectTRI = require('ray-triangle-intersection')
+import pick from 'camera-picking-ray'
+import intersectAABB from 'ray-aabb-intersection'
+import intersectTRI from 'ray-triangle-intersection'
 
 export default function pickLoop (fullData) {
   function onMouseChange (buttons, x, y, mods) {
@@ -102,6 +102,5 @@ export default function pickLoop (fullData) {
       return null
     }
   }
-
   require('mouse-change')(onMouseChange)
 }
