@@ -2,7 +2,8 @@ import mat4 from 'gl-mat4'
 import vec3 from 'gl-vec3'
 
 var pick = require('camera-picking-ray')
-var intersect = require('ray-aabb-intersection')
+var intersectAABB = require('ray-aabb-intersection')
+var intersectTRI = require('ray-triangle-intersection')
 
 export default function pickLoop (fullData) {
   function onMouseChange (buttons, x, y, mods) {
@@ -44,6 +45,12 @@ export default function pickLoop (fullData) {
     const radius = 1.5
 
     fullData.entities.map(function (entity, index) {
+      return intersect(ray, entity, index)
+    })
+      .filter(h => h !== null)
+      .forEach(hit => console.log('hit', hit.entity.id, hit))
+
+    function intersect (ray, entity, index) {
       // FIXME: do this only once, and not here
       const {pos, rot, sca} = entity.transforms
       let modelMat = mat4.identity([])
@@ -59,21 +66,42 @@ export default function pickLoop (fullData) {
 
       const bounds = [min, max] // [entity.bounds.min, entity.bounds.max] // FIXME !!!! bounds are in local coordinates, not world coordinates !
 
-      const hit = intersect([], ray.ro, ray.rd, bounds) // intersect([], ray.ro, ray.rd, center, radius)
-      let hitResult = null
-      if(hit){
-        hitResult = {hit, entity, index}
-        // just for testing 'pseudo' selection
-        entity.selected = ! entity.selected
-      }
-      return hitResult
-    })
-    .filter(h=> h !== null )
-    .forEach(hit=>console.log('hit', hit.entity.id))
-
-    function pickStuff () {
       // first check aabb && sphere
       // then go into more precise stuff
+      const hitAABB = intersectAABB([], ray.ro, ray.rd, bounds)
+      if (hitAABB) {
+        console.log('boundingBox hit', hitAABB)
+        // TODO: convert ray (world) coordinates to local coordinates
+        const {transformMat4} = vec3
+        const invModelMat = mat4.invert(mat4.identity([]), modelMat)
+        const localRayRo = transformMat4(vec3.create(), ray.ro, invModelMat)
+        const localRayRd = transformMat4(vec3.create(), ray.rd, invModelMat)
+
+        const hitTRI = entity.geometry.cells.map(function (cell, index) {
+          const positions = entity.geometry.positions
+          const tri = [ positions[cell[0]], positions[cell[1]], positions[cell[2]]]
+          const hitTRI = intersectTRI([], localRayRo, localRayRd, tri)
+          if (hitTRI) {
+            console.log('tri', hitTRI)
+            // console.log('that is a match !! , for ' + entity.id)
+            return hitTRI
+          }
+          return null
+        })
+          .filter(h => h !== null)
+          .reduce(function (acc, cur) {
+            acc.push(cur)
+            return acc
+          }, [])
+
+        if (hitTRI.length > 0) {
+          // console.log('hitTRI', hitTRI)
+          console.log('that is a match !! , for ' + entity.id)
+          return {intersect: {pos: hitTRI}, entity, index}
+        }
+        return null
+      }
+      return null
     }
   }
 

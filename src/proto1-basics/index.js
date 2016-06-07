@@ -37,6 +37,11 @@ fullData.entities = fullData.entities.map(function (entity) {
   return result
 })
 
+// inject object transformation matrix ??
+/*
+fullData.entities = fullData.entities.map(function (entity) {
+})*/
+
 /* ============================================ */
 
 // main render function: data in, rendered frame out

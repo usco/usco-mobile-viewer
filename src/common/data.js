@@ -48,7 +48,7 @@ const bunnyData = {
 }
 
 const bunnyData2 = {
-  id: 'b2',
+  id: 'b1',
   geometry: bunny,
   transforms: {
     pos: [0, 0, 0],
@@ -60,7 +60,7 @@ const bunnyData2 = {
 }
 
 const bunnyData3 = {
-  id: 'b3',
+  id: 'b2',
   geometry: bunny,
   transforms: {
     pos: [10, -12.989, 3],

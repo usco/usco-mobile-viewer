@@ -3,12 +3,12 @@
 - displays meshes, from raw hashes of Float32Array (positions, normals) => DONE
 - display meshes given lots of 'meta' data : ie json object containing transforms, colors, etc IN , render OUT => DONE
 - have identical controls (camera controls) *MEDIUM* => DONE
-- replicate (need not match 100%) object transform controls  *VERY HARD*
 - replicate (need not match 100%) the 'grid' *MEDIUM*
-- do 'picking' *MEDIUM*
+- do 'picking' *MEDIUM* => DONE
 - work server side  *EASY* => DONE, IN COLOR
-- object outlines (hopefully BETTER than the current ones) *HARD*
 - lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => DONE
+- replicate (need not match 100%) object transform controls  *VERY HARD*
+- object outlines (hopefully BETTER than the current ones) *HARD*
 - shadows (less important, waaay harder than all the rest ?) *VERY HARD*
 - shading /visual quality *MEDIUM*  
 - what to do with all 'visual helpers' ? *HARD*
