@@ -20,9 +20,9 @@ import mat4 from 'gl-mat4'
 
 /* --------------------- */
 
-import makeGrid from '../common/grid'
+import makeGrid from './grid'
 
-const grid = makeGrid(200, 1)
+const grid = makeGrid(2000, 1)
 /* --------------------- */
 
 let fullData = {

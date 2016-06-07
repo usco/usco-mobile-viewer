@@ -22,9 +22,12 @@ export function drawModelCommand (regl, scene, entity) {
 
   // const {positions, cells, mat, color, pos} = data
   const {geometry, transforms} = entity
+
+  const vertShader = entity.shaders && entity.shaders.vert? entity.shaders.vert : glslify(__dirname + '/shaders/base.vert')
+  const fragShader = entity.shaders && entity.shaders.frag? entity.shaders.frag : glslify(__dirname + '/shaders/base.frag')
   let params = {
-    vert: glslify(__dirname + '/shaders/base.vert'),
-    frag: glslify(__dirname + '/shaders/base.frag'),
+    vert: vertShader,
+    frag: fragShader,
 
     // more static
     attributes: {

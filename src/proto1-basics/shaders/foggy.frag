@@ -12,9 +12,19 @@ struct Light {
 #define lightsNb 2
 uniform Light lights[lightsNb];
 
+#define FOG_DENSITY 0.03
+#pragma glslify: fog_exp2 = require(glsl-fog/exp2)
+#pragma glslify: fog_exp = require(glsl-fog/exp)
+
 void main() {
   //gl_FragColor = color;
   //gl_FragColor = vec4(abs(vnormal), 1.0)*0.5+color*0.5;
+
+  float fogDistance = gl_FragCoord.z / gl_FragCoord.w;
+  float fogAmount = fog_exp(fogDistance, FOG_DENSITY);
+  const vec4 fogColor = vec4(1.0); // white
+
+
   vec3 normal = normalize(fragNormal);
   //vec3 ev = normalize( fragPosition - eye );
 	//vec3 ref_ev = reflect( ev, normal );
@@ -27,5 +37,6 @@ void main() {
      //specular = pow(specular, shininess);
      light += diffuse * lights[i].color * lights[i].intensity;
   }
-  gl_FragColor = mix( vec4(light, 1), color, 0.6);
+  vec4 mainColor = mix( vec4(light, 1), color, 0.6);
+  gl_FragColor = mix(mainColor, fogColor, fogAmount);
 }
