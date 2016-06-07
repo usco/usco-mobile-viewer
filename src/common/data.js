@@ -44,7 +44,9 @@ const bunnyData = {
     sca: [1, 1, 1]
   },
   color: [1, 1, 0, 0.5],
-  selected: true
+
+  selected: true,
+  pickable: true
 }
 
 const bunnyData2 = {
@@ -56,7 +58,9 @@ const bunnyData2 = {
     sca: [1, 1, -1]
   },
   color: [0, 1, 1, 0.5],
-  selected: false
+
+  selected: false,
+  pickable: true
 }
 
 const bunnyData3 = {
@@ -68,7 +72,9 @@ const bunnyData3 = {
     sca: [1, 1, 1]
   },
   color: [1, 1, 0, 0.5],
-  selected: false
+  
+  selected: false,
+  pickable: true
 }
 
 const sceneData = {

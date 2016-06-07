@@ -10,7 +10,7 @@ export default function pickLoop (fullData) {
     if (buttons !== 1) {
       return
     }
-    console.log('mouse-change', fullData, buttons, x, y, mods)
+    //console.log('mouse-change', fullData, buttons, x, y, mods)
 
     // Picking
     let screenWidth = window.innerWidth
@@ -44,7 +44,9 @@ export default function pickLoop (fullData) {
     const center = [0, 0, 0]
     const radius = 1.5
 
-    fullData.entities.map(function (entity, index) {
+    fullData.entities
+      .filter(e => e.pickable)
+      .map(function (entity, index) {
       return intersect(ray, entity, index)
     })
       .filter(h => h !== null)
@@ -70,10 +72,13 @@ export default function pickLoop (fullData) {
         const localRayRo = transformMat4(vec3.create(), ray.ro, invModelMat)
         const localRayRd = transformMat4(vec3.create(), ray.rd, invModelMat)
 
+        if (!entity.geometry.cells) {
+          return null
+        }
         const hitTRI = entity.geometry.cells.map(function (cell, index) {
           const positions = entity.geometry.positions
 
-          //FIXME : UGH local => world conversion works, but this is terribly ineficient
+          // FIXME : UGH local => world conversion works, but this is terribly ineficient
           function conv (pos) {
             return vec3.transformMat4(mat4.identity([]), pos, modelMat)
           }
