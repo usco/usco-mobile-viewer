@@ -7,6 +7,7 @@
 - do 'picking' *MEDIUM* => DONE
 - work server side  *EASY* => DONE, IN COLOR
 - lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => DONE
+- handle object hiearchies (ie transform hierarchies) at least in a basic manner *MEDIUM*
 - replicate (need not match 100%) object transform controls  *VERY HARD*
 - object outlines (hopefully BETTER than the current ones) *HARD*
 - shadows (less important, waaay harder than all the rest ?) *VERY HARD*

@@ -25,6 +25,19 @@ export function drawModelCommand (regl, scene, entity) {
 
   const vertShader = entity.visuals && entity.visuals.vert ? entity.visuals.vert : glslify(__dirname + '/shaders/base.vert')
   const fragShader = entity.visuals && entity.visuals.frag ? entity.visuals.frag : glslify(__dirname + '/shaders/base.frag')
+
+  // const normal_old = buffer( geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) : geometry.normals || [])
+  let normal // = geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) :
+  if (geometry.cells) {
+    if (!geometry.normals) {
+      normal = buffer( normals(geometry.cells, geometry.positions) )
+    } else {
+      normal = buffer( geometry.normals )
+    }
+  } else {
+    normal = []
+  }
+
   let params = {
     vert: vertShader,
     frag: fragShader,
@@ -32,7 +45,7 @@ export function drawModelCommand (regl, scene, entity) {
     // more static
     attributes: {
       position: buffer(geometry.positions),
-      normal: geometry.cells ? buffer(normals(geometry.cells, geometry.positions)) : []
+      normal
     },
 
     // more dynamic
@@ -71,16 +84,26 @@ export function drawModelCommand (regl, scene, entity) {
     },
 
     primitive: (entity.visuals && entity.visuals.primitive) ? entity.visuals.primitive : 'triangles',
-    // lineWidth: 3
+
 
   }
   if (geometry.cells) {
     params.elements = elements(geometry.cells)
     // params.count = geometry.positions.length / 3
-
   } else {
     params.count = geometry.positions.length / 3
   }
+
+  if (entity.visuals && entity.visuals.lineWidth) {
+    if(entity.visuals.lineWidth){
+      params.lineWidth = entity.visuals.lineWidth
+    }
+    if(entity.visuals.depth){
+      params.depth = entity.visuals.depth
+    }
+
+  }
+
 
   /*formatLightsDataForRender(lights).forEach(function(fields){
     fields.forEach(function(entry){
@@ -115,19 +138,11 @@ export function drawModel (regl, datas) {
   // for entitities
   // all sorts of 'dynamic' data
   const {pos, rot, sca} = entity.transforms
+  const {modelMat} = entity
 
   // simple hack for selection state
   // const {color} = data
   const color = entity.selected ? [1, 0, 0, 1] : entity.visuals.color
-
-  // create transform matrix
-  let modelMat = mat4.identity([])
-  mat4.translate(modelMat, modelMat, [pos[0], pos[2], pos[1]]) // z up
-  mat4.rotateX(modelMat, modelMat, rot[0])
-  mat4.rotateY(modelMat, modelMat, rot[2])
-  mat4.rotateZ(modelMat, modelMat, rot[1])
-  mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
-
   return cmd({ color, mat: modelMat, scene, view: camera.view })
 }
 
@@ -149,7 +164,6 @@ export function draw (regl, data) {
 
     // simple hack for selection state
     // const {color} = data
-    console.log('entity', entity)
     const color = entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
 
     // create transform matrix

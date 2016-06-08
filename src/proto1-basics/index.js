@@ -21,13 +21,17 @@ import mat4 from 'gl-mat4'
 /* --------------------- */
 
 import makeGrid from './grid'
+import makeTransformGizmo from './transformsGizmo'
+
 
 const grid = makeGrid(2000, 1)
+const gizmo = makeTransformGizmo()
+
 /* --------------------- */
 
 let fullData = {
   scene: sceneData,
-  entities: [bunnyData, bunnyData2, bunnyData3, grid]
+  entities: [bunnyData, bunnyData2, bunnyData3, grid, gizmo]//
 }
 
 // inject bounding box data
@@ -66,10 +70,6 @@ function render (data) {
   })
 
   draw(data)
-
-/*drawModel({scene: data.sceneData, entity: data.entities[0], camera: cameraData})
-drawModel({scene: data.sceneData, entity: data.entities[1], camera: cameraData})
-drawModel({scene: data.sceneData, entity: data.entities[2], camera: cameraData})*/
 }
 
 // dynamic drawing
