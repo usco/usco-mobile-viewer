@@ -5,7 +5,6 @@ import bunny from 'bunny'
 let triMat = mat4.identity([]) // create([])
 mat4.translate(triMat, triMat, [1, 10, 20])
 
-
 const triData = {
   geometry: {
     positions: /* [
@@ -24,7 +23,11 @@ const triData = {
     rot: [0, 0, 0],
     sca: [1, 1, 1]
   },
-  color: [1, 0, 0, 0.5]
+
+  visuals: {
+    color: [1, 0, 0, 0.5]
+  }
+
 }
 
 const bunnyData = {
@@ -43,10 +46,16 @@ const bunnyData = {
     rot: [0, 0, 0],
     sca: [1, 1, 1]
   },
-  color: [1, 1, 0, 0.5],
 
-  selected: true,
-  pickable: true
+  visuals: {
+    color: [1, 1, 0, 0.5]
+  },
+
+  meta: {
+    selected: true,
+    pickable: true
+  }
+
 }
 
 const bunnyData2 = {
@@ -57,10 +66,15 @@ const bunnyData2 = {
     rot: [0, 0, 0],
     sca: [1, 1, -1]
   },
-  color: [0, 1, 1, 0.5],
 
-  selected: false,
-  pickable: true
+  visuals: {
+    color: [0, 1, 1, 0.5]
+  },
+
+  meta: {
+    selected: false,
+    pickable: true
+  }
 }
 
 const bunnyData3 = {
@@ -71,10 +85,14 @@ const bunnyData3 = {
     rot: [0, 0, 0],
     sca: [1, 1, 1]
   },
-  color: [1, 1, 0, 0.5],
-  
-  selected: false,
-  pickable: true
+  visuals: {
+    color: [1, 1, 0, 0.5]
+  },
+
+  meta: {
+    selected: false,
+    pickable: true
+  }
 }
 
 const sceneData = {
@@ -110,6 +128,5 @@ const sceneData = {
     {position: [-100, -210, -200], color: [0.7, 0.7, 0.8], intensity: 0.4}
   ]
 }
-
 
 export { bunnyData, bunnyData2, bunnyData3, sceneData }

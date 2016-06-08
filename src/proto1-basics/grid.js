@@ -17,12 +17,16 @@ export default function makeGrid (size, ticks = 10) {
   }
 
   const gridData = {
-    shaders: {
-      vert: glslify(__dirname + '/shaders/base.vert'),
-      frag: glslify(__dirname + '/shaders/foggy.frag')
+    visuals: {
+      frag: glslify(__dirname + '/shaders/foggy.frag'),
+
+      color: [0, 0, 0, 0.8], // 0.7, 0.8, 0.9],
+      primitive: 'line strip'
     },
 
-    geometry: {positions},
+    geometry: {
+      positions
+    },
 
     transforms: {
       pos: [0, 0, 0],
@@ -30,10 +34,10 @@ export default function makeGrid (size, ticks = 10) {
       sca: [1, 1, 1]
     },
 
-    color: [0, 0.7, 0.8, 0.6],
-    primitive: 'line strip',
+    meta: {
+      pickable: false
+    }
 
-    pickable: false
   }
 
   return gridData

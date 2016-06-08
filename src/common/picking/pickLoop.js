@@ -45,7 +45,7 @@ export default function pickLoop (fullData) {
     const radius = 1.5
 
     fullData.entities
-      .filter(e => e.pickable)
+      .filter(e => e.meta.pickable)
       .map(function (entity, index) {
       return intersect(ray, entity, index)
     })
