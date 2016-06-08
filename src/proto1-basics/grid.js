@@ -22,8 +22,7 @@ export default function makeGrid (size, ticks = 10) {
       frag: glslify(__dirname + '/shaders/foggy.frag')
     },
 
-    geometry: {
-    positions},
+    geometry: {positions},
 
     transforms: {
       pos: [0, 0, 0],

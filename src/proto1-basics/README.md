@@ -3,7 +3,7 @@
 - displays meshes, from raw hashes of Float32Array (positions, normals) => DONE
 - display meshes given lots of 'meta' data : ie json object containing transforms, colors, etc IN , render OUT => DONE
 - have identical controls (camera controls) *MEDIUM* => DONE
-- replicate (need not match 100%) the 'grid' *MEDIUM*
+- replicate (need not match 100%) the 'grid' *MEDIUM* => DONE
 - do 'picking' *MEDIUM* => DONE
 - work server side  *EASY* => DONE, IN COLOR
 - lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => DONE
