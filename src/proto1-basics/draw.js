@@ -142,7 +142,7 @@ export function drawModel (regl, datas) {
 
   // simple hack for selection state
   // const {color} = data
-  const color = entity.selected ? [1, 0, 0, 1] : entity.visuals.color
+  const color = entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
   return cmd({ color, mat: modelMat, scene, view: camera.view })
 }
 

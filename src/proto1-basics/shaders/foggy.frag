@@ -17,7 +17,7 @@ uniform Light lights[lightsNb];
 #pragma glslify: fog_exp = require(glsl-fog/exp)
 
 void main() {
-  //gl_FragColor = color;
+  //
   //gl_FragColor = vec4(abs(vnormal), 1.0)*0.5+color*0.5;
 
   float fogDistance = gl_FragCoord.z / gl_FragCoord.w;
@@ -37,6 +37,7 @@ void main() {
      //specular = pow(specular, shininess);
      light += diffuse * lights[i].color * lights[i].intensity;
   }
-  vec4 mainColor = mix( vec4(light, 1), color, 0.6);
+  //vec4 mainColor = mix( vec4(light, 1), color, 0.6);
+  vec4 mainColor = color;
   gl_FragColor = mix(mainColor, fogColor, fogAmount);
 }

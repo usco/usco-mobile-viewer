@@ -1,9 +1,6 @@
 var glslify = require('glslify-sync') // works in client & server
 
-export function makeCube (size) {
-}
-
-export default function makeTransformGizmo () {
+export function makeCube () {
   const size = 2
   const positions = [
     -1, -1, -1,
@@ -15,7 +12,7 @@ export default function makeTransformGizmo () {
     1, 1, -1,
     1, 1, 1,
     -1, 1, 1,
-  ].map(p => p * size*0.5)
+  ].map(p => p * size * 0.5)
 
   /*const cells = [
     0, 1, 2, // bottom
@@ -37,7 +34,7 @@ export default function makeTransformGizmo () {
     4, 6, 7,
   ]*/
 
-  //use this one for clean cube wireframe outline
+  // use this one for clean cube wireframe outline
   const cells = [
     0, 1, 2, 3, 0,
     4, 5, 6, 7, 4,
@@ -67,8 +64,7 @@ export default function makeTransformGizmo () {
     geometry: {
       positions,
       cells,
-      normals
-    },
+    normals},
 
     transforms: {
       pos: [0, 0, 0],
@@ -77,9 +73,31 @@ export default function makeTransformGizmo () {
     },
 
     meta: {
-      pickable: false
+      pickable: true,
+      pickLimit: 'bounds',
+      fastPick: true,
+      selected: false,
+      //problem ; local vs external picking loop
+      name: 'pickCube',
+      id: 'pC'
     }
   }
 
   return data
+}
+
+
+
+export default function makeTransformGizmo () {
+  let xCube = makeCube()
+  let yCube = makeCube()
+  let zCube = makeCube()
+
+  xCube.transforms.pos = [-20,0,0]
+  xCube.meta.name = 'pickCubeX'
+  yCube.meta.name = 'pickCubeY'
+  zCube.meta.name = 'pickCubeZ'
+
+
+  return [xCube, yCube, zCube]
 }

@@ -15,7 +15,7 @@ const draw = _draw.bind(null, regl)
 import controlsLoop from '../common/controls/controlsLoop'
 import pickLoop from '../common/picking/pickLoop'
 
-import boundingBox from 'vertices-bounding-box'
+import boundingBox from '../common/utils/boundingBox'// from 'vertices-bounding-box'
 import mat4 from 'gl-mat4'
 
 /* --------------------- */
@@ -29,9 +29,15 @@ const gizmo = makeTransformGizmo()
 
 /* --------------------- */
 
+function flatten (arr) {
+  return arr.reduce(function (a, b) {
+    return a.concat(b)
+  }, [])
+}
+
 let fullData = {
   scene: sceneData,
-  entities: [bunnyData, bunnyData2, bunnyData3, grid, gizmo]//
+  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, gizmo])//
 }
 
 // inject bounding box data
