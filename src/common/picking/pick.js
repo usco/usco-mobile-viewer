@@ -3,8 +3,7 @@ var set = require('gl-vec3/set')
 var sub = require('gl-vec3/subtract')
 var normalize = require('gl-vec3/normalize')
 
-module.exports = createPickRay
-function createPickRay (point, viewport, invProjView) {
+export default function createPickRay (point, viewport, invProjView) {
   let origin = [0, 0, 0]
   let direction = [0, 0, 0]
   set(origin, point[0], point[1], 0)
