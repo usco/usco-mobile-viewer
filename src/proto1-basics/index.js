@@ -20,6 +20,9 @@ import mat4 from 'gl-mat4'
 
 /* --------------------- */
 
+const container = document.querySelector('canvas')
+
+
 import makeGrid from './grid'
 import makeTransformGizmo from './transformsGizmo'
 
@@ -85,7 +88,9 @@ function render (data) {
 
 // render one frame
 // render(fullData)
-controlsLoop(cameraDefaults, render, fullData)
+//controlsLoop(cameraDefaults, render, fullData)
+controlsLoop(container, cameraDefaults, render, fullData)
 
 //interactions
-pickLoop(fullData)
+//pickLoop(fullData)
+pickLoop(container, fullData)
