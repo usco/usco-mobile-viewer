@@ -27,7 +27,7 @@ export function cylinder (module, context) {
   console.log('pos', pos)
   let result
   if (!res || res && res > 100) {
-    result = ` sdConeSection( opRotY(${transforms} + ${vecToStr(pos)},PI) , ${h}, ${r1}, ${r2})`
+    result = ` sdConeSection( opRotY(${transforms} + ${vecToStr(pos)},_PI) , ${h}, ${r1}, ${r2})`
   }
   if (res && res < 100) { // TODO: how to make generic ??
     result = ` sdHexPrism(${transforms} + ${vecToStr(pos)}, ${h} ,${r1})`

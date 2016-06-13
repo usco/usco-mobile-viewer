@@ -3,9 +3,9 @@ const {frame, buffer, prop} = regl
 var glslify = require('glslify-sync')
 
 import mat4 from 'gl-mat4'
-import { params as cameraDefaults } from '../common/orbitControls'
+import { params as cameraDefaults } from '../common/controls/orbitControls'
 import { sceneData } from '../common/data'
-import loop from '../common/loop'
+import controlsLoop from '../common/controls/controlsLoop'
 
 let dynamicCode = ''
 let drawFrame = regl({
@@ -109,6 +109,7 @@ function makeDrawFrame (data) {
 import { exec } from './parsing/parserBase'
 const parser = require('./parsing/openscadParser.js').parser
 
+const drawArea = document.querySelectorAll('canvas')[1]
 const area = document.querySelector('#typeHere')
 area.addEventListener('input', function (e) {
   const input = e.target.value
@@ -144,12 +145,12 @@ const settings = {
   }
 }
 
-const fullData = Object.assign({}, {scene: sceneData}, {view: cameraDefaults.cam.view}, settings)
+const fullData = Object.assign({}, {scene: sceneData}, {view: cameraDefaults.camera.view}, settings)
 
 // main render function: data in, rendered frame out
 function render (data) {
   let _data = data
-  let viewMat = data.cameraData.view
+  let viewMat = data.camera.view
   _data.view = mat4.invert(viewMat, viewMat)
   drawFrame(_data)
 }
@@ -163,4 +164,4 @@ function render (data) {
 // render(fullData)
 
 // render multiple, with controls
-loop(cameraDefaults, render, fullData)
+controlsLoop(drawArea, cameraDefaults, render, fullData)
