@@ -2,7 +2,7 @@ import { update, rotate, zoom } from './orbitControls'
 
 import { fromEvent, combineArray, combine } from 'most'
 
-export default function loop (targetEl, cameraDefaults, render, fullData) {
+export default function controlsLoop (targetEl, cameraDefaults, render, fullData) {
   const mouseDowns$ = fromEvent('mousedown', targetEl)
     .map(e => e.buttons)
     .startWith([])
@@ -18,17 +18,21 @@ export default function loop (targetEl, cameraDefaults, render, fullData) {
     //.forEach(e => console.log('mousewheel', e))
 
   combine(function(down,move,wheel){
-    return {x:move.x, y:move.y, buttons:down}
+    return {pos:[move.x, move.y], buttons:down}
   }, mouseDowns$, mouseMoves$, mouseWheels$)
+    .scan(function(acc, current){
+
+      return
+    },{pos:[0,0]})
     .forEach(e => console.log('combined', e))
 
   let camera = update(cameraDefaults)
   let data = fullData
   data.camera = camera
-  render(data)
+  //render(data)
 }
 
-export function loopOld (cameraDefaults, render, fullData) {
+export function controlsLoopOld (cameraDefaults, render, fullData) {
   // FIXME: hack for now
   let camera = update(cameraDefaults)
   let prevMouse = [0, 0]
