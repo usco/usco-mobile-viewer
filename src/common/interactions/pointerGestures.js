@@ -1,7 +1,13 @@
 import most from 'most'
-import { fromEvent, merge, empty } from 'most'
+import { fromEvent, merge, empty, continueWith } from 'most'
 import assign from 'fast.js/object/assign' // faster object.assign
 import { isMoving, normalizeWheel } from './utils'
+
+// //////FOr most.js
+
+const repeat = (n, stream) => n === 0 ? empty()
+  : n === 1 ? stream
+    : continueWith(() => repeat(n - 1, stream), stream)
 
 // this is in another package/module normally
 export function preventDefault (event) {
@@ -47,7 +53,7 @@ function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250 , d
           left: e.clientX - startX,
           top: e.clientY - startY
         }
-        return assign({}, e, delta)
+        return {mouseEvent: e, delta}
       })
       .takeUntil(mouseUps)
   })
@@ -70,8 +76,8 @@ function touchDrags (touchStart$, touchEnd$, touchMove$) {
             x,
           y}
 
-          let output = assign({}, e, {delta})
-          return output
+          //let output = assign({}, e, {delta})
+          return {mouseEvent: e, delta}
         })
         .takeUntil(touchEnd$)
     })
@@ -83,7 +89,8 @@ function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$
     mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, longPressDelay, deltaSqr),
     touchDrags(touchStart$, touchEnd$, touchMoves$)
   )
-    .takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
+  //.map()
+    //.takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
 
   return dragMoves$
 }
@@ -99,14 +106,6 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
   // only doing any "clicks if the time between mDOWN and mUP is below longpressDelay"
   // any small mouseMove is ignored (shaky hands)
 
-  /*
-  return most.switch(//Rx.Observable.amb(
-    [
-      moves$ // Skip if we get a movement before a mouse up
-        .filter(data => isMoving(data.delta, deltaSqr)) // allow for small movement (shaky hands!)
-        .take(1).flatMap(x => empty()).timeInterval(),
-      ends$.take(1).timeInterval()
-    ])*/
   return starts$
     .timestamp()
     .flatMap(function (downEvent) {
@@ -215,5 +214,5 @@ export function pointerGestures (baseInteractions) {
   const taps$ = taps(baseInteractions, settings)
   const dragMoves$ = dragMoves(assign({}, baseInteractions, taps$), settings)
 
-  return {taps: taps$, dragMoves: dragMoves$}
+  return {taps: taps$, dragMoves: dragMoves$, zooms: baseInteractions.zooms$}
 }

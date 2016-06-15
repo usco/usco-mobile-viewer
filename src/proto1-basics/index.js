@@ -12,7 +12,7 @@ const {frame, clear} = regl
 const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
 
-import controlsLoop from '../common/controls/controlsLoop'
+import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
 import pickLoop from '../common/picking/pickLoop'
 
 import boundingBox from '../common/utils/boundingBox'// from 'vertices-bounding-box'
@@ -89,8 +89,9 @@ function render (data) {
 // render one frame
 // render(fullData)
 //controlsLoop(cameraDefaults, render, fullData)
-controlsLoop(container, cameraDefaults, render, fullData)
+controlsLoop(container, cameraDefaults, fullData)
+  .forEach(render)
 
 //interactions
 //pickLoop(fullData)
-pickLoop(container, fullData)
+//pickLoop(container, fullData)
