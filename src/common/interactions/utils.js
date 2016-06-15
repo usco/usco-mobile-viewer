@@ -18,3 +18,12 @@ export function normalizeWheel (event) {
 
   return delta
 }
+
+
+
+////////FOr most.js
+
+const repeat = (n, stream) =>
+	n === 0 ? empty()
+		: n === 1 ? stream
+		: continueWith(() => repeat(n-1, stream), stream)

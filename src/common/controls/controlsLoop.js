@@ -1,8 +1,11 @@
 import { update, rotate, zoom } from './orbitControls'
 
+import most from 'most'
 import { fromEvent, combineArray, combine } from 'most'
 
-export default function controlsLoop (targetEl, cameraDefaults, render, fullData) {
+import {interactionsFromEvents, pointerGestures} from '../interactions/pointerGestures'
+
+export function controlsLoop (targetEl, cameraDefaults, fullData) {
   const mouseDowns$ = fromEvent('mousedown', targetEl)
     .map(e => e.buttons)
     .startWith([])
@@ -17,19 +20,50 @@ export default function controlsLoop (targetEl, cameraDefaults, render, fullData
     .startWith(undefined)
     //.forEach(e => console.log('mousewheel', e))
 
-  combine(function(down,move,wheel){
+  const dragMoves$ = most.just()
+
+  /*
+  function onMouseChange (buttons, x, y, mods) {
+    // console.log('mouse-change', buttons, x, y, mods)
+    if (buttons === 1) {
+      let delta = [x - prevMouse[0], y - prevMouse[1]]
+      let angle = [0, 0]
+      angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
+      angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
+
+      camera = Object.assign({}, cameraDefaults, {camera})
+      camera = rotate(camera, angle)
+    }
+    prevMouse = [x, y]
+  }
+  */
+
+
+  const gestures$ = combine(function(down,move,wheel){
     return {pos:[move.x, move.y], buttons:down}
   }, mouseDowns$, mouseMoves$, mouseWheels$)
     .scan(function(acc, current){
 
       return
     },{pos:[0,0]})
-    .forEach(e => console.log('combined', e))
+    .map(function(){
+      let camera = update(cameraDefaults)
+      let data = fullData
+      data.camera = camera
+      return data
+    })
 
-  let camera = update(cameraDefaults)
-  let data = fullData
-  data.camera = camera
-  //render(data)
+
+  const interactions$ = interactionsFromEvents(targetEl)
+  const gestures = pointerGestures(interactions$)
+  console.log('pointerGestures', gestures)
+  //gestures.taps.taps$.forEach(e=>console.log('taps',e))
+  gestures.taps.shortSingleTaps$.forEach(e=>console.log('shortSingleTaps',e))
+  gestures.taps.shortDoubleTaps$.forEach(e=>console.log('shortDoubleTaps',e))
+  gestures.taps.longTaps$.forEach(e=>console.log('longTaps',e))
+
+
+  return gestures$
 }
 
 export function controlsLoopOld (cameraDefaults, render, fullData) {
