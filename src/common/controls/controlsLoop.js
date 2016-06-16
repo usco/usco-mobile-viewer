@@ -4,7 +4,7 @@ import most from 'most'
 import { fromEvent, combineArray, combine, mergeArray } from 'most'
 import { interactionsFromEvents, pointerGestures } from '../interactions/pointerGestures'
 
-import {model} from '../utils/modelUtils'
+import { model } from '../utils/modelUtils'
 
 export function controlsLoop (targetEl, cameraData, fullData) {
   const {settings, camera} = cameraData
@@ -17,29 +17,28 @@ export function controlsLoop (targetEl, cameraData, fullData) {
   gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
   gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
-  const heartBeat$ = most.periodic(33, 'x')
+  const heartBeat$ = most.periodic(40, 'x')
 
   const dragMoves$ = gestures.dragMoves
-    .map(function (moveData) {
-      const delta = [moveData.delta.left, moveData.delta.top]
-      let angle = [0, 0]
-      angle[0] = 2 * Math.PI * delta[0] / 5800
-      angle[1] = -2 * Math.PI * delta[1] / 5800
-
-      console.log('angle',moveData)
+    .loop(function (acc, moveData) {
+      const delta = !acc ? [0, 0] : [acc.mouseEvent.offsetX - moveData.mouseEvent.offsetX, moveData.mouseEvent.offsetY - acc.mouseEvent.offsetY] // [moveData.delta.left, moveData.delta.top]
+      return {seed: moveData, value: delta}
+    }, undefined).startWith([0, 0])
+    .filter(x => x !== undefined)
+    .map(function (delta) {
+      const angle = [Math.PI * delta[0], - Math.PI * delta[1]]
+      console.log('angle', angle)
       return angle
-
-    }).startWith([0, 0])
+    })
     // .scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
 
   const zooms$ = gestures.zooms
     .map(x => -x) // we invert zoom direction
-    //.scan((acc, cur) => acc + cur, 0)
     .startWith(0)
 
   function makeCameraModel () {
-    function applyRotate (state, angles) {
-      state = rotate(settings, state, angles)  // mutating, meh
+    function applyRotation (state, angles) {
+      state = rotate(settings, state, angles) // mutating, meh
       return state
     }
 
@@ -52,27 +51,26 @@ export function controlsLoop (targetEl, cameraData, fullData) {
       return update(settings, state)
     }
 
-    const updateFunctions = {applyZoom, applyRotate}
-    const actions = {applyZoom: zooms$, applyRotate: dragMoves$, updateState: heartBeat$}
+    const updateFunctions = {applyZoom, applyRotation, updateState}
+    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: heartBeat$}
 
     const cameraState$ = model(camera, actions, updateFunctions)
-      .map(cameraState => update(settings, cameraState))
+    // .map(cameraState => update(settings, cameraState))
     return cameraState$
   }
 
   const cameraState$ = makeCameraModel()
-    //.tap(e => console.log('cameraState update', e))
+    .filter(x => x.changed)
     .map(updateCompleteState)
 
-
-  function updateCompleteState(cameraState){
+  function updateCompleteState (cameraState) {
     let data = fullData
     data.camera = cameraState
     return data
   }
 
-  //const updateForRender$ = most.sample(updateCompleteState, heartBeat$, cameraState$)
-  //return updateForRender$
+  // const updateForRender$ = most.sample(updateCompleteState, heartBeat$, cameraState$)
+  // return updateForRender$
 
   /*const cameraState$ = most.combine(function (angles, zooms) {
     return {angles, zooms}
@@ -93,19 +91,6 @@ export function controlsLoop (targetEl, cameraData, fullData) {
     .filter(x => x !== undefined)*/
 
   return cameraState$
-
-  /*function updateStep () {
-    camera = Object.assign({}, settings, {camera})
-    camera = update(camera)
-
-    if (camera && camera.changed) {
-      let data = fullData
-      data.camera = camera
-      render(data)
-    }
-    window.requestAnimationFrame(updateStep)
-  }*/
-
 }
 
 export function controlsLoopOld (cameraDefaults, render, fullData) {

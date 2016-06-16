@@ -1,8 +1,5 @@
 const vec3 = require('gl-vec3')
 const mat4 = require('gl-mat4')
-/*
-const v3 = vec3.create()
-const m4 = mat4.create()*/
 const {max, min, sqrt, PI, sin, cos, atan2} = Math
 
 /* cameras are assumed to have:
@@ -12,7 +9,6 @@ const {max, min, sqrt, PI, sin, cos, atan2} = Math
  eye/position
  up
 */
-
 export const params = {
   enabled: true,
   userControl: {
@@ -32,15 +28,15 @@ export const params = {
     maxDistance: 400
   },
   EPS: 0.000001,
-  drag: 0.01, // Decrease the momentum by 1% each iteration
+  drag: 0.47, // Decrease the momentum by 1% each iteration
 
   up: [0, 1, 0]
 }
 
 export function update (settings, state) {
-  // this is a modified version, with inverted Y and Z (since we use camera[2] => up)
+  // custom z up is settable, with inverted Y and Z (since we use camera[2] => up)
   const camera = state
-  const {EPS, up} = settings
+  const {EPS, up, drag} = settings
   const {position, target, view} = camera
   let curThetaDelta = camera.thetaDelta
   let curPhiDelta = camera.phiDelta
@@ -59,7 +55,7 @@ export function update (settings, state) {
     // in case of y up
     theta = atan2(offset[0], offset[2])
     phi = atan2(sqrt(offset[0] * offset[0] + offset[2] * offset[2]), offset[1])
-    curThetaDelta = -(curThetaDelta)
+  // curThetaDelta = -(curThetaDelta)
   }
 
   if (params.autoRotate.enabled && params.userControl.rotate) {
@@ -91,12 +87,13 @@ export function update (settings, state) {
   quat.fromMat3(this.rotation, camMat)
   lookAt(view, this.position, this.target, this.up)
   */
+  const dragEffect = 1 - max(min(drag, 1.0), 0.01)
+
   const positionChanged = vec3.distance(position, newPosition) > 0 // TODO optimise
   return {
     changed: positionChanged,
-
-    thetaDelta: curThetaDelta / 2.5,
-    phiDelta: curPhiDelta / 2.5,
+    thetaDelta: curThetaDelta * dragEffect,
+    phiDelta: curPhiDelta * dragEffect,
     scale: 1,
 
     position: newPosition,
@@ -106,9 +103,10 @@ export function update (settings, state) {
 }
 
 export function rotate (params, cameraState, angle) {
+  const reductionFactor = 500
   if (params.userControl.rotate) {
-    cameraState.thetaDelta += angle[0]
-    cameraState.phiDelta += angle[1]
+    cameraState.thetaDelta += (angle[0] / reductionFactor)
+    cameraState.phiDelta += (angle[1] / reductionFactor)
   }
 
   return cameraState
