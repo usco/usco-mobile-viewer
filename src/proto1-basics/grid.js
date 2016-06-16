@@ -25,7 +25,8 @@ export default function makeGrid (size, ticks = 10) {
     },
 
     geometry: {
-      positions
+      positions,
+      id:'-1'
     },
 
     transforms: {

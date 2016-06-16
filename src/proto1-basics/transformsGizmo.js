@@ -64,7 +64,9 @@ export function makeCube () {
     geometry: {
       positions,
       cells,
-    normals},
+      normals,
+      id:'0949039'
+    },
 
     transforms: {
       pos: [0, 0, 0],

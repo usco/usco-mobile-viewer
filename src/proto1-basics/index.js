@@ -4,8 +4,9 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import { drawModel as _drawModel, draw as _draw } from './draw'
+import { drawModel as _drawModel, draw as _draw, makeDrawCalls } from './draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
+import camera from '../common/camera'
 
 const regl = reglM()
 const {frame, clear} = regl
@@ -69,6 +70,9 @@ fullData.entities = fullData.entities.map(function (entity) {
   return result
 })
 
+makeDrawCalls(regl, fullData)
+
+
 /* ============================================ */
 
 // main render function: data in, rendered frame out
@@ -88,8 +92,8 @@ function render (data) {
 
 // render one frame
 // render(fullData)
-//controlsLoop(cameraDefaults, render, fullData)
-controlsLoop(container, cameraDefaults, fullData)
+//controlsLoop({cameraDefaults, camera}, render, fullData)
+controlsLoop(container, {settings: cameraDefaults, camera}, fullData)
   .forEach(render)
 
 //interactions

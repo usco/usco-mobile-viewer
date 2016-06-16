@@ -30,9 +30,9 @@ export function drawModelCommand (regl, scene, entity) {
   let normal // = geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) :
   if (geometry.cells) {
     if (!geometry.normals) {
-      normal = buffer( normals(geometry.cells, geometry.positions) )
+      normal = buffer(normals(geometry.cells, geometry.positions))
     } else {
-      normal = buffer( geometry.normals )
+      normal = buffer(geometry.normals)
     }
   } else {
     normal = []
@@ -45,8 +45,7 @@ export function drawModelCommand (regl, scene, entity) {
     // more static
     attributes: {
       position: buffer(geometry.positions),
-      normal
-    },
+    normal},
 
     // more dynamic
     uniforms: {
@@ -85,25 +84,22 @@ export function drawModelCommand (regl, scene, entity) {
 
     primitive: (entity.visuals && entity.visuals.primitive) ? entity.visuals.primitive : 'triangles',
 
-
   }
   if (geometry.cells) {
     params.elements = elements(geometry.cells)
-    // params.count = geometry.positions.length / 3
+  // params.count = geometry.positions.length / 3
   } else {
     params.count = geometry.positions.length / 3
   }
 
   if (entity.visuals && entity.visuals.lineWidth) {
-    if(entity.visuals.lineWidth){
+    if (entity.visuals.lineWidth) {
       params.lineWidth = entity.visuals.lineWidth
     }
-    if(entity.visuals.depth){
+    if (entity.visuals.depth) {
       params.depth = entity.visuals.depth
     }
-
   }
-
 
   /*formatLightsDataForRender(lights).forEach(function(fields){
     fields.forEach(function(entry){
@@ -146,13 +142,86 @@ export function drawModel (regl, datas) {
   return cmd({ color, mat: modelMat, scene, view: camera.view })
 }
 
+/*
+* memoize.js
+* by @philogb and @addyosmani
+* with further optimizations by @mathias
+* and @DmitryBaranovsk
+* perf tests: http://bit.ly/q3zpG3
+* Released under an MIT license.
+*/
+export function memoize (fn) {
+  return function () {
+    var args = Array.prototype.slice.call(arguments),
+      hash = '',
+      i = args.length
+    currentArg = null
+    while (i--) {
+      currentArg = args[i]
+      hash += (currentArg === Object(currentArg)) ?
+        JSON.stringify(currentArg) : currentArg
+      fn.memoize || (fn.memoize = {})
+    }
+    return (hash in fn.memoize) ? fn.memoize[hash] :
+      fn.memoize[hash] = fn.apply(this, args)
+  }
+}
+
+function hashCode (str) {
+  var hash = 0
+  if (str.length === 0) return hash
+  for (let i = 0; i < str.length; i++) {
+    let char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  return hash
+}
+
+export function makeDrawCalls (regl, data) {
+  const hashSet = new Set()
+  const hashMap = {}
+
+  // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
+  const drawCalls = data.entities.reduce(function (hashStore, entity) {
+    const {scene} = data
+    const cmd = drawModelCommand(regl, scene, entity)
+
+    console.log('entity', entity)
+    const vertShader = hashCode(entity.visuals && entity.visuals.vert ? entity.visuals.vert : 'base')
+    const fragShader = hashCode(entity.visuals && entity.visuals.frag ? entity.visuals.frag : 'base')
+
+    const hash = JSON.stringify({geom: entity.geometry.id, fragShader, vertShader})
+    hashSet.add(hash)
+    hashSet.add('foo')
+
+    hashStore[hash] = cmd
+    return hashStore
+  }, {})
+
+  console.log('hashSet', hashSet)
+  console.log(hashSet.has(JSON.stringify({geom: data.entities[0].geometry.id, fragShader: 'base',vertShader: 'base'})))
+  console.log(hashSet.has('foo'))
+}
+
 export function draw (regl, data) {
   // console.log('draw',data)
 
-  // this needs to change everytime geometry changes: determines drawCalls, rarely changes /triggered
+  /*
+  Things that need different drawCalls
+  Geometry
+  visuals:
+    entity.visuals.vert
+    entity.visuals.frag
+  */
+  // makeDrawCalls(regl,data)
+
+  // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
   const drawCalls = data.entities.map(function (entity) {
     const {scene} = data
     const cmd = drawModelCommand(regl, scene, entity)
+    // const hash =
+    // console.log('entity', entity)
     return cmd
   })
 
@@ -180,10 +249,10 @@ export function draw (regl, data) {
     mat4.rotateZ(modelMat, modelMat, rot[2])
     mat4.scale(modelMat, modelMat, [sca[0], sca[1], sca[2]])*/
 
-    // return { color, mat: modelMat, scene, view: camera.view }
-    return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
+    return { color, mat: modelMat, scene, view: camera.view }
+  // return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
   })
 
-  return dynamicData
-// return drawCalls[0](dynamicData)
+  // return dynamicData
+  return drawCalls[0](dynamicData)
 }
