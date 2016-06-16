@@ -15,17 +15,19 @@ export function controlsLoop (targetEl, cameraDefaults, fullData) {
   gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
   const dragMoves$ = gestures.dragMoves
-    .map(function (moveData) {
+    .scan(function (acc, moveData) {
       const delta = [moveData.delta.left, moveData.delta.top]
       let angle = [0, 0]
       angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
       angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
+
       return angle
-    }).startWith([0, 0])
-    //.scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
+    // return [angle[0]+acc[0], angle[1]+acc[1]]
+    }, [0, 0]).startWith([0, 0])
+    // .scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
 
   const zooms$ = gestures.zooms
-    .map(x=>-x)
+    .map(x => -x)// we invert zoom direction
     .scan((acc, cur) => acc + cur, 0)
     .startWith(0)
 
@@ -34,30 +36,18 @@ export function controlsLoop (targetEl, cameraDefaults, fullData) {
   }, dragMoves$, zooms$)
     .scan(function (state, current) {
       const {angles, zooms} = current
-      console.log('here', angles)
+      console.log('delta', angles)
 
-      let camera = update(cameraDefaults)
-      camera = Object.assign({}, cameraDefaults, {camera})
-      camera = zoom(camera, zooms)
-      camera = Object.assign({}, cameraDefaults, {camera})
-      camera = rotate(camera, angles)
-
-      camera = Object.assign({}, cameraDefaults, {camera})
-      camera = update(camera)
+      let cameraState = update(cameraDefaults, cameraDefaults.camera)
+      cameraState = zoom(cameraDefaults, cameraState, zooms)// mutating, meh
+      cameraState = rotate(cameraDefaults, cameraState, angles)
+      cameraState = update(cameraDefaults, cameraState)
 
       let data = fullData
-      data.camera = camera
+      data.camera = cameraState
       return data
     }, undefined)
     .filter(x => x !== undefined)
-    /*.map(function (camera) {
-      // console.log('camera', camera)
-      camera = Object.assign({}, cameraDefaults, {camera})
-      camera = update(camera)
-      let data = fullData
-      data.camera = camera
-      return data
-    })*/
 
   return res$
 
@@ -77,7 +67,7 @@ export function controlsLoop (targetEl, cameraDefaults, fullData) {
 
 export function controlsLoopOld (cameraDefaults, render, fullData) {
   // FIXME: hack for now
-  let camera = update(cameraDefaults)
+  let cameraState = update(cameraDefaults, cameraDefaults.camera)
   let prevMouse = [0, 0]
 
   function onMouseChange (buttons, x, y, mods) {
@@ -88,25 +78,22 @@ export function controlsLoopOld (cameraDefaults, render, fullData) {
       angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
       angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
 
-      camera = Object.assign({}, cameraDefaults, {camera})
-      camera = rotate(camera, angle)
+      cameraState = rotate(cameraDefaults, cameraState, angle)
     }
     prevMouse = [x, y]
   }
 
   function onMouseWheel (dx, dy) {
     const zoomDelta = dy
-    camera = Object.assign({}, cameraDefaults, {camera})
-    camera = zoom(camera, zoomDelta)
+    cameraState = zoom(cameraDefaults, cameraState, zoomDelta)
   }
 
   function updateStep () {
-    camera = Object.assign({}, cameraDefaults, {camera})
-    camera = update(camera)
+    cameraState = update(cameraDefaults, cameraState)
 
-    if (camera && camera.changed) {
+    if (cameraState && cameraState.changed) {
       let data = fullData
-      data.camera = camera
+      data.camera = cameraState
       render(data)
     }
     window.requestAnimationFrame(updateStep)
@@ -116,7 +103,7 @@ export function controlsLoopOld (cameraDefaults, render, fullData) {
   require('mouse-wheel')(onMouseWheel)
 
   let data = fullData
-  data.camera = camera
+  data.camera = cameraState
   render(data)
 
   requestAnimationFrame(updateStep)

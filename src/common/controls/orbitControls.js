@@ -36,6 +36,7 @@ export const params = {
 
   up: [0, 1, 0],
 
+
   // below this, dynamic stuff mostly, since this is also the ouput of the controls function
   camera: {
     thetaDelta: 0,
@@ -48,9 +49,10 @@ export const params = {
   }
 }
 
-export function update (params) {
+export function update (settings, state) {
   // this is a modified version, with inverted Y and Z (since we use camera[2] => up)
-  const {EPS, camera, up} = params
+  const camera = state
+  const {EPS, up} = settings
   const {position, target, view} = camera
   let curThetaDelta = camera.thetaDelta
   let curPhiDelta = camera.phiDelta
@@ -115,25 +117,25 @@ export function update (params) {
   }
 }
 
-export function rotate (params, angle) {
+export function rotate (params, cameraState, angle) {
   if (params.userControl.rotate) {
-    params.camera.thetaDelta += angle[0]
-    params.camera.phiDelta += angle[1]
+    cameraState.thetaDelta += angle[0]
+    cameraState.phiDelta += angle[1]
   }
 
-  return params.camera
+  return cameraState
 }
 
-export function zoom (params, zoomScale) {
+export function zoom (params, cameraState, zoomScale) {
   if (params.userControl.zoom) {
     zoomScale = zoomScale * 0.001 // Math.min(Math.max(zoomScale, -0.1), 0.1)
     const amount = Math.abs(zoomScale) === 1 ? Math.pow(0.95, params.userControl.zoomSpeed) : zoomScale
-    const scale = zoomScale < 0 ? (params.camera.scale / amount) : (params.camera.scale * amount)
+    const scale = zoomScale < 0 ? (cameraState.scale / amount) : (cameraState.scale * amount)
     // console.log('zoomScale',zoomScale,scale)
 
-    params.camera.scale += amount
+    cameraState.scale += amount
   }
-  return params.camera
+  return cameraState
 }
 
 function pan (params) {
