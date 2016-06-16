@@ -24,7 +24,7 @@ export const params = {
     panSpeed: 2.0
   },
   autoRotate: {
-    enabled: false,
+    enabled: true,
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
@@ -34,19 +34,7 @@ export const params = {
   EPS: 0.000001,
   drag: 0.01, // Decrease the momentum by 1% each iteration
 
-  up: [0, 1, 0],
-
-
-  // below this, dynamic stuff mostly, since this is also the ouput of the controls function
-  camera: {
-    thetaDelta: 0,
-    phiDelta: 0,
-    scale: 1,
-
-    position: [45, 0, 20],
-    target: [0, 0, 0],
-    view: mat4.create() // default, this is just a 4x4 matrix
-  }
+  up: [0, 1, 0]
 }
 
 export function update (settings, state) {
