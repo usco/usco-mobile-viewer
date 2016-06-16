@@ -83,14 +83,15 @@ function touchDrags (touchStart$, touchEnd$, touchMove$) {
     })
 }
 
+/* drag move interactions press & move(continuously firing)
+*/
 function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$, longTaps$, touchMoves$}, longPressDelay, deltaSqr) {
-  // drag move interactions (continuously firing)
+
   const dragMoves$ = merge(
     mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, longPressDelay, deltaSqr),
     touchDrags(touchStart$, touchEnd$, touchMoves$)
   )
-  //.map()
-    //.takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
+  //.takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
 
   return dragMoves$
 }
@@ -180,10 +181,8 @@ function taps (baseInteractions, settings) {
       return {seed, value}
     }, [])
     .filter(x => x !== undefined)
-
     // .buffer(function () { return taps$.debounce(multiClickDelay) })// buffer all inputs, and emit at then end of multiClickDelay
     .map(list => ({list: list, nb: list.length}))
-    // .tap(e => console.log('shortTaps, perhaps', e))
     .multicast()
 
   const shortSingleTaps$ = shortTaps$.filter(x => x.nb === 1).map(e => e.list) // was flatMap
