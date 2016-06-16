@@ -15,42 +15,26 @@ export function controlsLoop (targetEl, cameraDefaults, fullData) {
   gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
   const dragMoves$ = gestures.dragMoves
-    // .tap(e => console.log('dragMoves', e))
     .map(function (moveData) {
       const delta = [moveData.delta.left, moveData.delta.top]
-      // let delta = [x - prevMouse[0], y - prevMouse[1]]
       let angle = [0, 0]
       angle[0] = 2 * Math.PI * delta[0] / 1800 * 2.0
       angle[1] = -2 * Math.PI * delta[1] / 1800 * 2.0
-
-      // UGHHHH
-      /*let camera = update(cameraDefaults)
-      camera = Object.assign({}, cameraDefaults, {camera})
-      camera = rotate(camera, angle)
-      return camera*/
       return angle
     }).startWith([0, 0])
-    //.scan((acc, cur) => [acc[0] + cur[0], acc[1]+cur[1]], [0, 0])
+    //.scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
 
-  const zooms$ = gestures.zooms.startWith(0)
+  const zooms$ = gestures.zooms
+    .map(x=>-x)
     .scan((acc, cur) => acc + cur, 0)
-
-  /*.map(function(zoomDelta){
-      console.log('zoomData', zoomDelta)
-
-      let camera = update(cameraDefaults)
-      camera = Object.assign({}, cameraDefaults, {camera})
-      camera = zoom(camera, zoomDelta)
-
-      return camera
-    })*/
+    .startWith(0)
 
   const res$ = most.combine(function (angles, zooms) {
     return {angles, zooms}
   }, dragMoves$, zooms$)
     .scan(function (state, current) {
       const {angles, zooms} = current
-      console.log('here', current)
+      console.log('here', angles)
 
       let camera = update(cameraDefaults)
       camera = Object.assign({}, cameraDefaults, {camera})
@@ -58,17 +42,22 @@ export function controlsLoop (targetEl, cameraDefaults, fullData) {
       camera = Object.assign({}, cameraDefaults, {camera})
       camera = rotate(camera, angles)
 
-      return camera
-    })
+      camera = Object.assign({}, cameraDefaults, {camera})
+      camera = update(camera)
+
+      let data = fullData
+      data.camera = camera
+      return data
+    }, undefined)
     .filter(x => x !== undefined)
-    .map(function (camera) {
+    /*.map(function (camera) {
       // console.log('camera', camera)
       camera = Object.assign({}, cameraDefaults, {camera})
       camera = update(camera)
       let data = fullData
       data.camera = camera
       return data
-    })
+    })*/
 
   return res$
 
