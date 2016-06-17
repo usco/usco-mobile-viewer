@@ -4,8 +4,9 @@ var glslify = require('glslify-sync')
 
 import mat4 from 'gl-mat4'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
+import camera from '../common/camera'
 import { sceneData } from '../common/data'
-import controlsLoop from '../common/controls/controlsLoop'
+import {controlsLoopOld as controlsLoop} from '../common/controls/controlsLoop'
 
 let dynamicCode = ''
 let drawFrame = regl({
@@ -164,4 +165,6 @@ function render (data) {
 // render(fullData)
 
 // render multiple, with controls
-controlsLoop(drawArea, cameraDefaults, render, fullData)
+controlsLoop(cameraDefaults, render, fullData)
+/*controlsLoop(container, {settings: cameraDefaults, camera}, fullData)
+  .forEach(render)*/
