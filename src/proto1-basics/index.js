@@ -70,7 +70,9 @@ fullData.entities = fullData.entities.map(function (entity) {
   return result
 })
 
-makeDrawCalls(regl, fullData)
+//inject bactching/rendering data
+const {hashStore, entities} = makeDrawCalls(regl, fullData)
+fullData.entities = entities
 
 
 /* ============================================ */
@@ -82,7 +84,7 @@ function render (data) {
     color: [1, 1, 1, 1]
   })
 
-  draw(data)
+  draw(hashStore, data)
 }
 
 // dynamic drawing

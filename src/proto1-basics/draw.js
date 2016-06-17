@@ -155,7 +155,7 @@ export function memoize (fn) {
     var args = Array.prototype.slice.call(arguments),
       hash = '',
       i = args.length
-    currentArg = null
+    let currentArg = null
     while (i--) {
       currentArg = args[i]
       hash += (currentArg === Object(currentArg)) ?
@@ -178,35 +178,14 @@ function hashCode (str) {
   return hash
 }
 
-export function makeDrawCalls (regl, data) {
-  const hashSet = new Set()
-  const hashMap = {}
-
-  // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
-  const drawCalls = data.entities.reduce(function (hashStore, entity) {
-    const {scene} = data
-    const cmd = drawModelCommand(regl, scene, entity)
-
-    console.log('entity', entity)
-    const vertShader = hashCode(entity.visuals && entity.visuals.vert ? entity.visuals.vert : 'base')
-    const fragShader = hashCode(entity.visuals && entity.visuals.frag ? entity.visuals.frag : 'base')
-
-    const hash = JSON.stringify({geom: entity.geometry.id, fragShader, vertShader})
-    hashSet.add(hash)
-    hashSet.add('foo')
-
-    hashStore[hash] = cmd
-    return hashStore
-  }, {})
-
-  console.log('hashSet', hashSet)
-  console.log(hashSet.has(JSON.stringify({geom: data.entities[0].geometry.id, fragShader: 'base',vertShader: 'base'})))
-  console.log(hashSet.has('foo'))
+export function hashEntityForRender (entity) {
+  const vertShader = hashCode(entity.visuals && entity.visuals.vert ? entity.visuals.vert : 'base')
+  const fragShader = hashCode(entity.visuals && entity.visuals.frag ? entity.visuals.frag : 'base')
+  const hash = JSON.stringify({geom: entity.geometry.id, fragShader, vertShader})
+  return hash
 }
 
-export function draw (regl, data) {
-  // console.log('draw',data)
-
+export function makeDrawCalls (regl, data) {
   /*
   Things that need different drawCalls
   Geometry
@@ -214,16 +193,46 @@ export function draw (regl, data) {
     entity.visuals.vert
     entity.visuals.frag
   */
+
+  const hashSet = new Set()
+  const hashStore = {}
+
+  // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
+  const entitiesWithHash = data.entities.map(function (entity) {
+    const {scene} = data
+    const cmd = drawModelCommand(regl, scene, entity)
+
+    console.log('entity', entity)
+    const hash = hashEntityForRender(entity)
+    hashSet.add(hash)
+
+    hashStore[hash] = cmd
+    return Object.assign({}, entity, {_renderBatchId: hash})
+  })
+
+  //console.log('hashSet', hashSet)
+  //console.log(hashSet.has(JSON.stringify({geom: data.entities[0].geometry.id, fragShader: 'base',vertShader: 'base'})))
+  //console.log(hashSet.has('foo'))
+  return {hashStore, entities: entitiesWithHash}
+}
+
+export function draw (regl, hashStore, data) {
+  // console.log('draw',data)
+
   // makeDrawCalls(regl,data)
 
   // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
-  const drawCalls = data.entities.map(function (entity) {
+  /*const drawCalls = data.entities.map(function (entity) {
     const {scene} = data
     const cmd = drawModelCommand(regl, scene, entity)
     // const hash =
-    // console.log('entity', entity)
     return cmd
-  })
+  })*/
+
+  /*const drawCalls = data.entities.map(function (entity) {
+    const hash = hashEntityForRender(entity)
+    return hashStore[hash]
+  })*/
 
   // more dynamic this can change every frame
   const dynamicData = data.entities.map(function (entity, index) {
@@ -249,10 +258,11 @@ export function draw (regl, data) {
     mat4.rotateZ(modelMat, modelMat, rot[2])
     mat4.scale(modelMat, modelMat, [sca[0], sca[1], sca[2]])*/
 
-    return { color, mat: modelMat, scene, view: camera.view }
-  // return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
+    //return { color, mat: modelMat, scene, view: camera.view }
+    //return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
+    return hashStore[entity._renderBatchId]({ color, mat: modelMat, scene, view: camera.view })
   })
 
-  // return dynamicData
-  return drawCalls[0](dynamicData)
+  return dynamicData
+  //return drawCalls(dynamicData)
 }
