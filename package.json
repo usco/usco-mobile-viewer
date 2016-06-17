@@ -12,7 +12,7 @@
     "test-render": "node src/serverSide/launch.js",
     "test-scadParse": "node src/shapeFu/parsing/launchTestParse.js",
     "test-scadParse2": "jison src/shapeFu/parsing/openscad.jison -m commonjs -o src/shapeFu/parsing/openscadParser.js",
-    "scad-editor":"npm run test-scadParse2 && npm run build && http-server -p 8090"
+    "scad-editor": "npm run test-scadParse2 && npm run build && http-server -p 8090"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
@@ -20,6 +20,7 @@
     "angle-normals": "^1.0.0",
     "bunny": "^1.0.1",
     "camera-picking-ray": "^1.0.1",
+    "fast.js": "^0.1.1",
     "gl": "^4.0.0",
     "gl-mat4": "^1.1.4",
     "glslify": "^5.0.2",
