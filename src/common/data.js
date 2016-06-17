@@ -30,9 +30,11 @@ const triData = {
 
 }
 
+const bunnyGeom = Object.assign({}, bunny, {id: '0'})
+
 const bunnyData = {
   id: 'b0',
-  geometry: bunny, // in truth I do not see cases where bounds would change independantly of geometry, but we might
+  geometry: bunnyGeom, // in truth I do not see cases where bounds would change independantly of geometry, but we might
   // have bounds WITHOUT geometry
 
   bounds: {
@@ -60,7 +62,7 @@ const bunnyData = {
 
 const bunnyData2 = {
   id: 'b1',
-  geometry: bunny,
+  geometry: bunnyGeom,
   transforms: {
     pos: [0, 0, 0],
     rot: [0, 0, 0],
@@ -79,7 +81,7 @@ const bunnyData2 = {
 
 const bunnyData3 = {
   id: 'b2',
-  geometry: bunny,
+  geometry: bunnyGeom,
   transforms: {
     pos: [10, -12.989, 3],
     rot: [0, 0, 0],
