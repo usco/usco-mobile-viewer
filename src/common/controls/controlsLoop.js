@@ -17,7 +17,7 @@ export function controlsLoop (targetEl, cameraData, fullData) {
   gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
   gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
-  const heartBeat$ = most.periodic(40, 'x')
+  const heartBeat$ = most.periodic(20, 'x')
 
   const dragMoves$ = gestures.dragMoves
     .loop(function (acc, moveData) {
