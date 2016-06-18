@@ -6,7 +6,7 @@ import mat4 from 'gl-mat4'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 import { sceneData } from '../common/data'
-import {controlsLoopOld as controlsLoop} from '../common/controls/controlsLoop'
+import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
 
 let dynamicCode = ''
 let drawFrame = regl({
@@ -146,7 +146,7 @@ const settings = {
   }
 }
 
-const fullData = Object.assign({}, {scene: sceneData}, {view: cameraDefaults.camera.view}, settings)
+const fullData = Object.assign({}, {scene: sceneData}, {view: camera.view}, settings)
 
 // main render function: data in, rendered frame out
 function render (data) {
@@ -165,6 +165,6 @@ function render (data) {
 // render(fullData)
 
 // render multiple, with controls
-controlsLoop(cameraDefaults, render, fullData)
-/*controlsLoop(container, {settings: cameraDefaults, camera}, fullData)
-  .forEach(render)*/
+//controlsLoop(cameraDefaults, render, fullData)
+controlsLoop(drawArea, {settings: cameraDefaults, camera}, fullData)
+  .forEach(render)

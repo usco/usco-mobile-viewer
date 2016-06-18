@@ -39,11 +39,13 @@ export function controlsLoop (targetEl, cameraData, fullData) {
   function makeCameraModel () {
     function applyRotation (state, angles) {
       state = rotate(settings, state, angles) // mutating, meh
+      state = update(settings, state) // not sure
       return state
     }
 
     function applyZoom (state, zooms) {
       state = zoom(settings, state, zooms) // mutating, meh
+      state = update(settings, state) // not sure
       return state
     }
 
@@ -51,11 +53,11 @@ export function controlsLoop (targetEl, cameraData, fullData) {
       return update(settings, state)
     }
 
-    const updateFunctions = {applyZoom, applyRotation, updateState}
+    const updateFunctions = {applyZoom, applyRotation, }
     const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: heartBeat$}
 
     const cameraState$ = model(camera, actions, updateFunctions)
-    // .map(cameraState => update(settings, cameraState))
+     //.map(cameraState => update(settings, cameraState))
     return cameraState$
   }
 
