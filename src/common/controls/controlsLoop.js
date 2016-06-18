@@ -53,7 +53,7 @@ export function controlsLoop (targetEl, cameraData, fullData) {
       return update(settings, state)
     }
 
-    const updateFunctions = {applyZoom, applyRotation, }
+    const updateFunctions = {applyZoom, applyRotation, updateState}
     const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: heartBeat$}
 
     const cameraState$ = model(camera, actions, updateFunctions)

@@ -4,7 +4,6 @@ import assign from 'fast.js/object/assign' // faster object.assign
 import { isMoving, normalizeWheel } from './utils'
 
 // //////FOr most.js
-
 const repeat = (n, stream) => n === 0 ? empty()
   : n === 1 ? stream
     : continueWith(() => repeat(n - 1, stream), stream)
@@ -41,7 +40,7 @@ export function interactionsFromEvents (targetEl) {
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
-function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250 , deltaSqr) {
+function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250 , maxStaticDeltaSqr) {
   return mouseDowns$.flatMap(function (md) {
     // calculate offsets when mouse down
     let startX = md.offsetX
@@ -76,7 +75,7 @@ function touchDrags (touchStart$, touchEnd$, touchMove$) {
             x,
           y}
 
-          //let output = assign({}, e, {delta})
+          // let output = assign({}, e, {delta})
           return {mouseEvent: e, delta}
         })
         .takeUntil(touchEnd$)
@@ -85,13 +84,13 @@ function touchDrags (touchStart$, touchEnd$, touchMove$) {
 
 /* drag move interactions press & move(continuously firing)
 */
-function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$, longTaps$, touchMoves$}, longPressDelay, deltaSqr) {
-
+function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$, longTaps$, touchMoves$}, settings) {
+  const {longPressDelay, maxStaticDeltaSqr} = settings
   const dragMoves$ = merge(
-    mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, longPressDelay, deltaSqr),
-    touchDrags(touchStart$, touchEnd$, touchMoves$)
+    mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, longPressDelay, maxStaticDeltaSqr),
+    touchDrags(touchStart$, touchEnd$, touchMoves$, longPressDelay, maxStaticDeltaSqr)
   )
-  //.takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
+  // .takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
 
   return dragMoves$
 }
@@ -99,7 +98,7 @@ function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$
 /* alternative "clicks" (ie mouseDown -> mouseUp ) implementation, with more fine
 grained control*/
 function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$, touchMoves$}, settings) {
-  const {deltaSqr} = settings
+  const {maxStaticDeltaSqr} = settings
 
   const starts$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const ends$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
@@ -113,7 +112,8 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
       return merge(
         most.of(downEvent),
         moves$ // Skip if we get a movement before a mouse up
-          .filter(data => isMoving(data.delta, deltaSqr)) // allow for small movement (shaky hands!)
+          .tap(e => console.log('e.delta', e))
+          .filter(data => isMoving(data.delta, maxStaticDeltaSqr)) // allow for small movement (shaky hands!) FIXME: implement
           .take(1).flatMap(x => empty()).timestamp(),
         ends$.take(1).timestamp()
       )
@@ -122,7 +122,9 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
       let result
       if (acc.length === 1) {
         const interval = current.time - acc[0].time
-        result = {value: current.value, interval}
+        let moveDelta = [current.value.clientX - acc[0].value.offsetX, current.value.clientY - acc[0].value.offsetY] // FIXME: duplicate of mouseDrags !
+        moveDelta = moveDelta[0] * moveDelta[0] + moveDelta[1] * moveDelta[1] // squared distance
+        result = {value: current.value, interval, moveDelta}
         acc = []
       } else {
         acc.push(current)
@@ -135,7 +137,7 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
 
 function taps (baseInteractions, settings) {
   const taps$ = baseTaps(baseInteractions, settings)
-  const {longPressDelay, multiClickDelay} = settings
+  const {longPressDelay, multiClickDelay, maxStaticDeltaSqr} = settings
 
   function bufferUntil (obsToBuffer, obsEnd) {
     return obsToBuffer
@@ -164,7 +166,8 @@ function taps (baseInteractions, settings) {
   }
 
   const shortTaps$ = taps$
-    .filter(e => e.interval <= longPressDelay)
+    .filter(e => e.interval <= longPressDelay) // any tap shorter than this time is a short one
+    .filter(e => e.moveDelta < maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
     .map(e => e.value)
     .filter(event => ('button' in event && event.button === 0)) // FIXME : bad filter , excludes mobile ?!
 
@@ -189,10 +192,9 @@ function taps (baseInteractions, settings) {
   const shortDoubleTaps$ = shortTaps$.filter(x => x.nb === 2).map(e => e.list) // .take(1) // .repeat()
 
   // longTaps: either HELD leftmouse/pointer or HELD right click
-  // FIXME : needs to be "UNTIL" mouseUp
-  // and not fire before mouseUp
   const longTaps$ = taps$
     .filter(e => e.interval > longPressDelay)
+    .filter(e => e.moveDelta < maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
     .map(e => e.value)
 
   return {
@@ -205,13 +207,12 @@ function taps (baseInteractions, settings) {
 export function pointerGestures (baseInteractions) {
   const multiClickDelay = 250
   const longPressDelay = 250
-  const minDelta = 25 // max 50 pixels delta
-  const deltaSqr = (minDelta * minDelta)
+  const maxStaticDeltaSqr = 100 // max 100 pixels delta
 
-  const settings = {multiClickDelay, longPressDelay, deltaSqr}
+  const settings = {multiClickDelay, longPressDelay, maxStaticDeltaSqr}
 
   const taps$ = taps(baseInteractions, settings)
-  const dragMoves$ = dragMoves(assign({}, baseInteractions, taps$), settings)
+  const dragMoves$ = dragMoves(baseInteractions, settings)
 
   return {taps: taps$, dragMoves: dragMoves$, zooms: baseInteractions.zooms$}
 }
