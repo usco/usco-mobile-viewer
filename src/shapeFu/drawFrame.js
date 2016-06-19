@@ -3,7 +3,7 @@ var glslify = require('glslify-sync')
 const {frame, buffer, prop} = regl
 
 const drawFrame = regl({
-  frag: glslify(__dirname + '/shaders/rayMarch4.frag'),
+  frag: glslify(__dirname + '/shaders/slicerBaseTest.frag'),
   vert: glslify(__dirname + '/shaders/base.vert'),
 
   attributes: {

@@ -1,9 +1,18 @@
 var regl = require('regl')()
 const {frame} = regl
 import mat4 from 'gl-mat4'
-import { update, params as cameraDefaults } from '../common/controls/orbitControls'
+
+import most from 'most'
+
+import { params as cameraDefaults } from '../common/controls/orbitControls'
+import camera from '../common/camera'
+
 import { sceneData } from '../common/data'
-import controlsLoop from '../common/controls/controlsLoop'
+//import controlsLoop from '../common/controls/controlsLoop'
+import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
+import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
+
+
 import drawFrame from './drawFrame'
 
 // data
@@ -20,7 +29,8 @@ const settings = {
   }
 }
 
-const fullData = Object.assign({}, {scene: sceneData}, {view: cameraDefaults.camera.view}, settings)
+const container = document.querySelectorAll('canvas')[1]
+const fullData = Object.assign({}, {scene: sceneData}, settings)
 
 // main render function: data in, rendered frame out
 function render (data) {
@@ -30,22 +40,27 @@ function render (data) {
   drawFrame(_data)
 }
 
-//alternate to the above
-function render2 (data) {
-  let _data = data
-  let viewMat = data.view
-  _data.view = mat4.invert(viewMat, viewMat)
-  drawFrame(_data)
-}
-
-
 // dynamic drawing
-frame((props, context) => {
+/*frame((props, context) => {
   render2(fullData)
-})
+})*/
 
 // render one frame
- //render2(fullData)
+ //render(fullData)
 
 // render multiple, with controls
 //controlsLoop(cameraDefaults, render, fullData)
+
+// interactions : camera controls
+const baseInteractions$ = interactionsFromEvents(container)
+const gestures = pointerGestures(baseInteractions$)
+
+const camMoves$ = controlsLoop({gestures}, {settings: cameraDefaults, camera}, fullData)
+const heartBeat$ = most.periodic(16)
+
+// merge all the things that should trigger a re-render
+most.merge(
+  camMoves$,
+  heartBeat$.map(x => fullData)
+)
+  .forEach(render)

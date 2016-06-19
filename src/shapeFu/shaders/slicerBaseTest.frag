@@ -49,6 +49,7 @@ float testShape(vec3 pos){
 }
 
 // get distance in the world
+//in this case experiments with shapes and 'pseudo slicing'
 float dist_field( vec3 pos ) {
 
   float varia = iGlobalTime*0.2;
@@ -60,13 +61,6 @@ float dist_field( vec3 pos ) {
   pos = opR(pos,vec3(40.,10.,PI*2.)); //rotate
   pos = pos/scale;//scale
 
-
-  /*float foo0 = sdBox(pos + vec3(0.,0.,0.), vec3(14.,2.,18.));
-  float foo1 = sdConeSection(pos, 4., 14., 14.);
-  foo0 = opS(foo0,foo1);
-  foo0 = foo0 + (sin(0.2*pos.x)); //*cos(iGlobalTime));//*sin(2.*pos.y)*sin(20.*pos.y)
-
-  foo0 = opI(foo0, sdBox(pos+vec3(0,cos(varia)*2.,0),vec3(20,0.1,20)));*/
   float shape = testShape(pos);
 
   //get outlines
@@ -195,8 +189,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 }
 
 void main () {
-
-
 	vec4 color = bgColor;
   mainImage( color, gl_FragCoord.xy );
   color.w = 1.0;
