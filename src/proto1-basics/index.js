@@ -19,6 +19,11 @@ import pickLoop from '../common/picking/pickLoop'
 import boundingBox from '../common/utils/boundingBox'// from 'vertices-bounding-box'
 import mat4 from 'gl-mat4'
 
+import most from 'most'
+
+import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
+
+
 /* --------------------- */
 
 const container = document.querySelector('canvas')
@@ -94,10 +99,21 @@ function render (data) {
 
 // render one frame
 // render(fullData)
-//controlsLoop({cameraDefaults, camera}, render, fullData)
-controlsLoop(container, {settings: cameraDefaults, camera}, fullData)
-  .forEach(render)
 
-//interactions
+// interactions : camera controls
+const baseInteractions$ = interactionsFromEvents(container)
+const gestures = pointerGestures(baseInteractions$)
+//controlsLoop({cameraDefaults, camera}, render, fullData)
+const camMoves$ = controlsLoop({gestures}, {settings: cameraDefaults, camera}, fullData)
+
+// interactions : picking
 //pickLoop(fullData)
-//pickLoop(container, fullData)
+const picks$ = pickLoop({gestures}, fullData)
+  .map(e => fullData)
+
+//merge all the things that should trigger a re-render
+most.merge(
+  camMoves$,
+  picks$
+)
+  .forEach(render)

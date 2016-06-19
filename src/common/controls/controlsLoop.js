@@ -6,16 +6,14 @@ import { interactionsFromEvents, pointerGestures } from '../interactions/pointer
 
 import { model } from '../utils/modelUtils'
 
-export function controlsLoop (targetEl, cameraData, fullData) {
+export function controlsLoop (interactions, cameraData, fullData) {
   const {settings, camera} = cameraData
+  const {gestures} = interactions
 
-  const interactions$ = interactionsFromEvents(targetEl)
-  const gestures = pointerGestures(interactions$)
-  console.log('controlsLoop', cameraData)
   // gestures.taps.taps$.forEach(e=>console.log('taps',e))
-  gestures.taps.shortSingleTaps$.forEach(e => console.log('shortSingleTaps', e))
-  gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
-  gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
+  //gestures.taps.shortSingleTaps$.forEach(e => console.log('shortSingleTaps', e))
+  //gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
+  //gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
   const heartBeat$ = most.periodic(20, 'x')
 
