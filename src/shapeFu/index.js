@@ -42,7 +42,7 @@ function render (data) {
 
 // dynamic drawing
 /*frame((props, context) => {
-  render2(fullData)
+  render(fullData)
 })*/
 
 // render one frame

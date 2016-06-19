@@ -111,7 +111,7 @@ const camMoves$ = controlsLoop({gestures}, {settings: cameraDefaults, camera}, f
 const picks$ = pickLoop({gestures}, fullData)
   .map(e => fullData)
 
-//merge all the things that should trigger a re-render
+// merge all the things that should trigger a re-render
 most.merge(
   camMoves$,
   picks$

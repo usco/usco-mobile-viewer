@@ -35,7 +35,7 @@ export function drawModelCommand (regl, scene, entity) {
       normal = buffer(geometry.normals)
     }
   } else {
-    normal = []
+    normal = undefined
   }
 
   let params = {
@@ -45,13 +45,14 @@ export function drawModelCommand (regl, scene, entity) {
     // more static
     attributes: {
       position: buffer(geometry.positions),
-    normal},
+      //normal
+   },
 
     // more dynamic
     uniforms: {
       model: prop('mat'),
       view: prop('view'),
-      projection: (props, context) => {
+      projection: (context, props) => {
         return perspective([],
           Math.PI / 4,
           context.viewportWidth / context.viewportHeight,
@@ -79,7 +80,7 @@ export function drawModelCommand (regl, scene, entity) {
       color: prop('color'),
       pos: prop('pos'),
       rot: prop('rot'),
-      sca: prop('sca'),
+      sca: prop('sca')
     },
 
     primitive: (entity.visuals && entity.visuals.primitive) ? entity.visuals.primitive : 'triangles',
@@ -99,6 +100,10 @@ export function drawModelCommand (regl, scene, entity) {
     if (entity.visuals.depth) {
       params.depth = entity.visuals.depth
     }
+  }
+
+  if(normal !== undefined){
+    params.attributes.normal = normal
   }
 
   /*formatLightsDataForRender(lights).forEach(function(fields){

@@ -15,13 +15,13 @@ const drawFrame = regl({
 
   uniforms: {
     view: prop('view'),
-    iResolution: (props, {viewportWidth, viewportHeight}) => [viewportWidth, viewportHeight],
+    iResolution: ({viewportWidth, viewportHeight}, props) => [viewportWidth, viewportHeight],
     /*iGlobalTime2: function(props,{count}){
       //(props, {count}) => 0.01 * count + 15
       console.log('count',count, props)
       return 0.01 * count + 15
     },*/
-    iGlobalTime: function(props, context){
+    iGlobalTime: function (context, props) {
       let time = regl.context('time')
       time = 0.1 * time.id + 15
       return time

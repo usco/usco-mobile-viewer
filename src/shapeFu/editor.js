@@ -72,8 +72,8 @@ function makeDrawFrame (data) {
 
     uniforms: {
       view: prop('view'),
-      iResolution: (props, {viewportWidth, viewportHeight}) => [viewportWidth, viewportHeight],
-      iGlobalTime: (props, {count}) => 0.01 * count + 15,
+      iResolution: ({viewportWidth, viewportHeight}, props) => [viewportWidth, viewportHeight],
+      iGlobalTime: ({count}, props) => 0.01 * count + 15,
 
       bgColor: prop('bgColor'),
       toggleSoftShadows: prop('toggleSoftShadows'),
@@ -157,7 +157,7 @@ function render (data) {
 }
 
 // dynamic drawing
-/*frame((props, context) => {
+/*frame((context, props) => {
   render(settings)
 })*/
 

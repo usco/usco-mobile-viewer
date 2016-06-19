@@ -33,7 +33,7 @@
     "ray-aabb-intersection": "^1.0.1",
     "ray-sphere-intersection": "^1.0.0",
     "ray-triangle-intersection": "^1.0.3",
-    "regl": "github:mikolalysenko/regl#gh-pages",
+    "regl": "^0.6.0",
     "vertices-bounding-box": "^1.0.0"
   },
   "devDependencies": {
