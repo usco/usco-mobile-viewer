@@ -8,7 +8,6 @@ import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
 import { sceneData } from '../common/data'
-//import controlsLoop from '../common/controls/controlsLoop'
 import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
 

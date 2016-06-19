@@ -3,10 +3,13 @@ const {frame, buffer, prop} = regl
 var glslify = require('glslify-sync')
 
 import mat4 from 'gl-mat4'
+import most from 'most'
+
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 import { sceneData } from '../common/data'
 import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
+import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
 
 let dynamicCode = ''
 let drawFrame = regl({
@@ -110,7 +113,7 @@ function makeDrawFrame (data) {
 import { exec } from './parsing/parserBase'
 const parser = require('./parsing/openscadParser.js').parser
 
-const drawArea = document.querySelectorAll('canvas')[1]
+const container = document.querySelectorAll('canvas')[1]
 const area = document.querySelector('#typeHere')
 area.addEventListener('input', function (e) {
   const input = e.target.value
@@ -166,5 +169,17 @@ function render (data) {
 
 // render multiple, with controls
 //controlsLoop(cameraDefaults, render, fullData)
-controlsLoop(drawArea, {settings: cameraDefaults, camera}, fullData)
+
+// interactions : camera controls
+const baseInteractions$ = interactionsFromEvents(container)
+const gestures = pointerGestures(baseInteractions$)
+
+const camMoves$ = controlsLoop({gestures}, {settings: cameraDefaults, camera}, fullData)
+const heartBeat$ = most.periodic(16)
+
+// merge all the things that should trigger a re-render
+most.merge(
+  camMoves$,
+  heartBeat$.map(x => fullData)
+)
   .forEach(render)
