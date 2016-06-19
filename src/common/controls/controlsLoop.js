@@ -15,7 +15,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
   //gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
   //gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
-  const heartBeat$ = most.periodic(20, 'x')
+  const heartBeat$ = most.periodic(16, 'x')
 
   const dragMoves$ = gestures.dragMoves
     .loop(function (acc, moveData) {
@@ -55,8 +55,15 @@ export function controlsLoop (interactions, cameraData, fullData) {
     const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: heartBeat$}
 
     const cameraState$ = model(camera, actions, updateFunctions)
+
+    return most.merge(
+      cameraState$.take(2),
+      cameraState$//.throttle(20)
+    )
+
+
      //.map(cameraState => update(settings, cameraState))
-    return cameraState$
+    //return cameraState$
   }
 
   const cameraState$ = makeCameraModel()
