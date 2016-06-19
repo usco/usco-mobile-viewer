@@ -44,8 +44,7 @@ export function drawModelCommand (regl, scene, entity) {
 
     // more static
     attributes: {
-      position: buffer(geometry.positions),
-      //normal
+      position: buffer(geometry.positions)
    },
 
     // more dynamic
@@ -240,7 +239,9 @@ export function draw (regl, hashStore, data) {
   })*/
 
   // more dynamic this can change every frame
-  const dynamicData = data.entities.map(function (entity, index) {
+  const dynamicData = data.entities
+    .filter(entity => entity.visuals.visible !== undefined ? entity.visuals.visible : true)
+    .map(function (entity, index) {
     const {pos, rot, sca} = entity.transforms
     const {modelMat} = entity
     const {scene, camera} = data
@@ -269,5 +270,4 @@ export function draw (regl, hashStore, data) {
   })
 
   return dynamicData
-  //return drawCalls(dynamicData)
 }

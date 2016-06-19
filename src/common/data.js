@@ -70,7 +70,8 @@ const bunnyData2 = {
   },
 
   visuals: {
-    color: [0, 1, 1, 0.5]
+    color: [0, 1, 1, 0.5],
+    visible: true
   },
 
   meta: {
