@@ -17,7 +17,7 @@ export function interactionsFromEvents (targetEl) {
   let mouseDowns$ = fromEvent('mousedown', targetEl)
   let mouseUps$ = fromEvent('mouseup', targetEl)
   let mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
-  let mouseMoves$ = fromEvent('mousemove', targetEl).takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+  let mouseMoves$ = fromEvent('mousemove', targetEl)//.takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
 
   let rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
   let zooms$ = fromEvent('wheel', targetEl).map(normalizeWheel)
@@ -25,6 +25,11 @@ export function interactionsFromEvents (targetEl) {
   let touchStart$ = fromEvent('touchstart', targetEl) // dom.touchstart(window)
   let touchMoves$ = fromEvent('touchmove', targetEl) // dom.touchmove(window)
   let touchEnd$ = fromEvent('touchend', targetEl) // dom.touchend(window)
+
+
+  const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
+  const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
+  const pointerMoves$ = merge(mouseMoves$, touchMoves$)
 
   return {
     mouseDowns$,
@@ -36,7 +41,13 @@ export function interactionsFromEvents (targetEl) {
 
     touchStart$,
     touchMoves$,
-  touchEnd$}
+    touchEnd$,
+
+    pointerDowns$,
+    pointerUps$,
+    pointerMoves$
+
+  }
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
@@ -188,8 +199,8 @@ function taps (baseInteractions, settings) {
     .map(list => ({list: list, nb: list.length}))
     .multicast()
 
-  const shortSingleTaps$ = shortTaps$.filter(x => x.nb === 1).map(e => e.list) // was flatMap
-  const shortDoubleTaps$ = shortTaps$.filter(x => x.nb === 2).map(e => e.list) // .take(1) // .repeat()
+  const shortSingleTaps$ = shortTaps$.filter(x => x.nb === 1).map(e => e.list).map(e => e[0]) // was flatMap
+  const shortDoubleTaps$ = shortTaps$.filter(x => x.nb === 2).map(e => e.list).map(e => e[0]) // .take(1) // .repeat()
 
   // longTaps: either HELD leftmouse/pointer or HELD right click
   const longTaps$ = taps$
@@ -214,5 +225,9 @@ export function pointerGestures (baseInteractions) {
   const taps$ = taps(baseInteractions, settings)
   const dragMoves$ = dragMoves(baseInteractions, settings)
 
-  return {taps: taps$, dragMoves: dragMoves$, zooms: baseInteractions.zooms$}
+  return {
+    taps: taps$,
+    dragMoves: dragMoves$,
+    zooms: baseInteractions.zooms$,
+    pointerMoves: baseInteractions.pointerMoves$}
 }
