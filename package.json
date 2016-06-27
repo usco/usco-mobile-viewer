@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava src/common/bounds --require babel-register --watch",
     "build": "browserify src/shapeFu/editor.js -o dist/shapeFu/editor.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
     "watch": "watchify src/proto1-basics -o dist/index.js -t [ babelify]",
@@ -38,6 +38,7 @@
     "vertices-bounding-box": "^1.0.0"
   },
   "devDependencies": {
+    "ava": "^0.15.2",
     "babel-cli": "^6.6.5",
     "babel-core": "^6.2.1",
     "babel-preset-es2015": "^6.1.18",
