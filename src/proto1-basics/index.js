@@ -16,7 +16,7 @@ const draw = _draw.bind(null, regl)
 import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
 import pickLoop from '../common/picking/pickLoop'
 
-import boundingBox from '../common/utils/boundingBox'// from 'vertices-bounding-box'
+import computeBounds from '../common/bounds/computeBounds'// from 'vertices-bounding-box'
 import mat4 from 'gl-mat4'
 
 import most from 'most'
@@ -51,11 +51,9 @@ let fullData = {
 
 // inject bounding box data
 fullData.entities = fullData.entities.map(function (entity) {
-  const bb = boundingBox(entity.geometry.positions)
-  const bounds = {min: bb[0], max: bb[1]}
-
+  const bounds = computeBounds(entity)
   const result = Object.assign({}, entity, {bounds})
-  console.log('result', result)
+  console.log('data with bounds', result)
   return result
 })
 
