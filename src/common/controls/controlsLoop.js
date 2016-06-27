@@ -18,6 +18,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
   const heartBeat$ = most.periodic(16, 'x')
 
   const dragMoves$ = gestures.dragMoves
+    .throttle(16) // FIXME: not sure, could be optimized some more
     .loop(function (acc, moveData) {
       const delta = !acc ? [0, 0] : [acc.mouseEvent.offsetX - moveData.mouseEvent.offsetX, moveData.mouseEvent.offsetY - acc.mouseEvent.offsetY] // [moveData.delta.left, moveData.delta.top]
       return {seed: moveData, value: delta}

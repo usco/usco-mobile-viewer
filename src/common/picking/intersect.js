@@ -32,7 +32,9 @@ export default function intersect (ray, entity, index) {
       // distance between intersect point and ray origin, in world space
       const distance = vec3.length(vec3.subtract(vec3.create(), hitPoint, ray.ro))
 
-      entity.meta.selected =! entity.meta.selected
+      entity.meta.selected = !entity.meta.selected
+      //entity.visuals.visible = !entity.visuals.visible
+
       return {intersect: {pos: hitPoint, distance}, entity, index}
     }
 
@@ -68,7 +70,9 @@ export default function intersect (ray, entity, index) {
       // distance between intersect point and ray origin, in world space
       const distance = vec3.length(vec3.subtract(vec3.create(), hitPoint, ray.ro))
 
-      entity.meta.selected =! entity.meta.selected
+      entity.meta.selected = ! entity.meta.selected
+      //entity.visuals.visible = !entity.visuals.visible
+
 
       return {intersect: {pos: hitPoint, distance}, entity, index}
     }

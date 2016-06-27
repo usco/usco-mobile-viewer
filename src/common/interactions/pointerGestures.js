@@ -1,5 +1,6 @@
 import most from 'most'
-import { fromEvent, merge, empty, continueWith } from 'most'
+import { map, filter, fromEvent, merge, empty, continueWith } from 'most'
+import { curry2, compose } from '@most/prelude'
 import assign from 'fast.js/object/assign' // faster object.assign
 import { isMoving, normalizeWheel } from './utils'
 
@@ -7,6 +8,13 @@ import { isMoving, normalizeWheel } from './utils'
 const repeat = (n, stream) => n === 0 ? empty()
   : n === 1 ? stream
     : continueWith(() => repeat(n - 1, stream), stream)
+
+// see https://github.com/cujojs/most/issues/20
+
+// Imagine map and filter are curried
+const mapc = curry2(map)
+const filterc = curry2(filter)
+
 
 // this is in another package/module normally
 export function preventDefault (event) {
@@ -51,7 +59,8 @@ export function interactionsFromEvents (targetEl) {
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
-function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250 , maxStaticDeltaSqr) {
+function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250, maxStaticDeltaSqr) {
+
   return mouseDowns$.flatMap(function (md) {
     // calculate offsets when mouse down
     let startX = md.offsetX
@@ -175,6 +184,31 @@ function taps (baseInteractions, settings) {
   return baseBuffer$
     .until(obsEnd)*/
   }
+  /*
+  // exploring of more composition based system : much clearer, but needs work
+
+  const deltaBelowMax = x => x.moveDelta < maxStaticDeltaSqr
+  const intervalBelowLongPress = x => x.interval <= longPressDelay
+  const validButton = event => 'button' in event && event.button === 0
+  const exists = x => x !== undefined
+
+  const pluckValue = x => x.value
+  const pluckList = x => x.list
+  const first = x => x[0]
+
+  const shortTaps = compose(
+    filterc(deltaBelowMax),
+    filterc(intervalBelowLongPress),
+    mapc(pluckValue),
+    filterc(validButton)
+  )
+
+  const firstInList = compose(
+    mapc(pluckList),
+    mapc(first)
+  )
+
+  //const tapsByNumber = tapCount => compose(filterc(x => x.nb === tapCount), firstInList())*/
 
   const shortTaps$ = taps$
     .filter(e => e.interval <= longPressDelay) // any tap shorter than this time is a short one
