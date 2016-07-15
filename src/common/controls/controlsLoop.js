@@ -10,7 +10,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 
-  // gestures.taps.taps$.forEach(e=>console.log('taps',e))
+  //gestures.taps.taps$.forEach(e=>console.log('taps',e))
   //gestures.taps.shortSingleTaps$.forEach(e => console.log('shortSingleTaps', e))
   //gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
   //gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
@@ -61,10 +61,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
       cameraState$.take(2),
       cameraState$//.throttle(20)
     )
-
-
-     //.map(cameraState => update(settings, cameraState))
-    //return cameraState$
+    // .map(cameraState => update(settings, cameraState))
   }
 
   const cameraState$ = makeCameraModel()
@@ -77,29 +74,32 @@ export function controlsLoop (interactions, cameraData, fullData) {
     return data
   }
 
-  // const updateForRender$ = most.sample(updateCompleteState, heartBeat$, cameraState$)
-  // return updateForRender$
-
-  /*const cameraState$ = most.combine(function (angles, zooms) {
-    return {angles, zooms}
-  }, dragMoves$, zooms$)
-    .scan(function (state, current) {
-      const {angles, zooms} = current
-      // console.log('delta', angles)
-
-      let cameraState = update(settings, camera)
-      cameraState = zoom(settings, cameraState, zooms) // mutating, meh
-      cameraState = rotate(settings, cameraState, angles)
-      cameraState = update(settings, cameraState)
-
-      let data = fullData
-      data.camera = cameraState
-      return data
-    }, undefined)
-    .filter(x => x !== undefined)*/
+   /*const updateForRender$ = most.sample(updateCompleteState, heartBeat$, cameraState$)
+     .filter(x => x.changed)
+     .map(updateCompleteState)
+   return updateForRender$*/
 
   return cameraState$
 }
+
+
+/*const cameraState$ = most.combine(function (angles, zooms) {
+  return {angles, zooms}
+}, dragMoves$, zooms$)
+  .scan(function (state, current) {
+    const {angles, zooms} = current
+    // console.log('delta', angles)
+
+    let cameraState = update(settings, camera)
+    cameraState = zoom(settings, cameraState, zooms) // mutating, meh
+    cameraState = rotate(settings, cameraState, angles)
+    cameraState = update(settings, cameraState)
+
+    let data = fullData
+    data.camera = cameraState
+    return data
+  }, undefined)
+  .filter(x => x !== undefined)*/
 
 export function controlsLoopOld (cameraDefaults, render, fullData) {
   const {settings, camera} = cameraDefaults

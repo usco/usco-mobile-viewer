@@ -20,7 +20,7 @@ export const params = {
     panSpeed: 2.0
   },
   autoRotate: {
-    enabled: false,
+    enabled: true,
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
