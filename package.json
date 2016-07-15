@@ -7,13 +7,15 @@
     "test": "ava src/common/ --require babel-register --watch --verbose",
     "build": "browserify src/shapeFu/editor.js -o dist/shapeFu/editor.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
+    "build-proto1": "browserify src/proto1-basics/editor.js -o dist/proto1-basics/editor.js -t [ babelify]",
     "watch": "watchify src/proto1-basics -o dist/index.js -t [ babelify]",
     "start-dev-proto1": "budo src/proto1-basics --port=8080 --live -- -t babelify",
     "start-dev-shapefu": "budo src/shapeFu --port=8080 --live -- -t babelify",
     "test-render": "node src/serverSide/launch.js",
     "test-scadParse": "node src/shapeFu/parsing/launchTestParse.js",
     "test-scadParse2": "jison src/shapeFu/parsing/openscad.jison -m commonjs -o src/shapeFu/parsing/openscadParser.js",
-    "scad-editor": "npm run test-scadParse2 && npm run build && http-server -p 8090"
+    "scad-editor": "npm run test-scadParse2 && npm run build && http-server -p 8090",
+    "host": "http-server -p 8090"
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
