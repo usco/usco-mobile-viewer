@@ -8,7 +8,11 @@ import { drawModel as _drawModel, draw as _draw, makeDrawCalls } from './draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
-const regl = reglM()
+const container = document.querySelector('#drawHere')
+
+const regl = reglM({canvas: container,
+  drawingBufferWidth: container.offsetWidth,
+  drawingBufferHeight: container.offsetHeight})
 const {frame, clear} = regl
 const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
@@ -24,9 +28,6 @@ import most from 'most'
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
 
 /* --------------------- */
-
-const container = document.querySelector('canvas')
-
 
 import makeGrid from './grid'
 import makeTransformGizmo from './transformsGizmo'
@@ -96,6 +97,8 @@ function render (data) {
 
 // render one frame
 // render(fullData)
+
+console.log('container',container)
 
 // interactions : camera controls
 const baseInteractions$ = interactionsFromEvents(container)
