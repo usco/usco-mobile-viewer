@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava src/common/bounds --require babel-register --watch",
+    "test": "ava src/common/ --require babel-register --watch --verbose",
     "build": "browserify src/shapeFu/editor.js -o dist/shapeFu/editor.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
     "watch": "watchify src/proto1-basics -o dist/index.js -t [ babelify]",
