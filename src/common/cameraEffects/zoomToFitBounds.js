@@ -1,6 +1,6 @@
 import vec3 from 'gl-vec3'
 
-export default function zoomToFitBounds (bounds, camera, target) {
+export default function zoomToFitBounds (camera, bounds) {
   /*
   bounds: {
     dia: 40,
@@ -31,7 +31,7 @@ export default function zoomToFitBounds (bounds, camera, target) {
   vec = vec3.normalize(vec, vec)
   vec = vec3.scale(vec, vec, dist)
 
-  camNewPos = vec3.sub(camNewPos, camNewPos, vec)
+  camNewPos = vec3.subtract(camNewPos, camNewPos, vec)
 
   // camera.updateProjectionMatrix()
   return {camera: {

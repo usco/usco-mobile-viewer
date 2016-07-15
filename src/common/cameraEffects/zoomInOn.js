@@ -1,7 +1,6 @@
 import vec3 from 'gl-vec3'
 
-import THREE from 'three'
-import TWEEN from 'tween.js'
+//import TWEEN from 'tween.js'
 import assign from 'fast.js/object/assign' // faster object.assign
 
 export default function zoomInOn (options, camera, targetObject) {
@@ -32,6 +31,7 @@ export default function zoomInOn (options, camera, targetObject) {
 
   // determin camera "look-at" vector
   let camLookatVector = vec3.create(0, 0, 1)
+  let camQuaternion = ''
   camLookatVector = vec3.transformQuat(camLookatVector, camLookatVector, camera.quaternion) // camLookatVector.applyQuaternion(camera.quaternion)
   camLookatVector = vec3.normalize(camLookatVector, camLookatVector)
   camLookatVector = vec3.scale(camLookatVector, distance)
@@ -59,6 +59,8 @@ starts:[camPos,camTgt]//order matters
   }*/
 }
 
+
+/*
 let tween = new TWEEN.Tween(camPos)
   .to(camPosTarget , zoomTime)
   .easing(TWEEN.Easing.Quadratic.In)
@@ -74,3 +76,4 @@ let tween2 = new TWEEN.Tween(camTgt)
     camera.target.copy(camTgt)
   })
   .start()
+*/
