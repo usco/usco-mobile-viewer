@@ -100,11 +100,9 @@ function render (data) {
 // interactions : camera controls
 const baseInteractions$ = interactionsFromEvents(container)
 const gestures = pointerGestures(baseInteractions$)
-//controlsLoop({cameraDefaults, camera}, render, fullData)
 const camMoves$ = controlsLoop({gestures}, {settings: cameraDefaults, camera}, fullData)
 
 // interactions : picking
-//pickLoop(fullData)
 const picks$ = pickLoop({gestures}, fullData)
   .map(e => fullData)
 

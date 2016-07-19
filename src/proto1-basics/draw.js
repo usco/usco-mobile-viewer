@@ -17,11 +17,32 @@ function formatLightsDataForRender (lightsData) {
   return result
 }
 
+  /*formatLightsDataForRender(lights).forEach(function(fields){
+    fields.forEach(function(entry){
+      params.uniforms[entry.name] = entry.value
+    })
+  })
+
+  let formatedLights = formatLightsDataForRender(lights)
+  params.uniforms['lights[0].color']=formatedLights[0][0].value
+  params.uniforms['lights[0].intensity']=formatedLights[0][1].value
+
+  const par1 = [params]
+    .map(function(params){
+      formatLightsDataForRender(lights).forEach(function(fields){
+        fields.forEach(function(entry){
+          return params.uniforms[entry.name] = entry.value
+        })
+      })
+      return params
+    })*/
+
+
 export function drawModelCommand (regl, scene, entity) {
   const {buffer, elements, prop} = regl
 
   // const {positions, cells, mat, color, pos} = data
-  const {geometry, transforms} = entity
+  const {geometry} = entity
 
   const vertShader = entity.visuals && entity.visuals.vert ? entity.visuals.vert : glslify(__dirname + '/shaders/base.vert')
   const fragShader = entity.visuals && entity.visuals.frag ? entity.visuals.frag : glslify(__dirname + '/shaders/base.frag')
@@ -82,8 +103,7 @@ export function drawModelCommand (regl, scene, entity) {
       sca: prop('sca')
     },
 
-    primitive: (entity.visuals && entity.visuals.primitive) ? entity.visuals.primitive : 'triangles',
-
+    primitive: (entity.visuals && entity.visuals.primitive) ? entity.visuals.primitive : 'triangles'
   }
   if (geometry.cells) {
     params.elements = elements(geometry.cells)
@@ -101,29 +121,11 @@ export function drawModelCommand (regl, scene, entity) {
     }
   }
 
-  if(normal !== undefined){
+  if (normal !== undefined) {
     params.attributes.normal = normal
+  }else{
+    params.attributes.normal = regl.buffer([])
   }
-
-  /*formatLightsDataForRender(lights).forEach(function(fields){
-    fields.forEach(function(entry){
-      params.uniforms[entry.name] = entry.value
-    })
-  })
-
-  let formatedLights = formatLightsDataForRender(lights)
-  params.uniforms['lights[0].color']=formatedLights[0][0].value
-  params.uniforms['lights[0].intensity']=formatedLights[0][1].value
-
-  const par1 = [params]
-    .map(function(params){
-      formatLightsDataForRender(lights).forEach(function(fields){
-        fields.forEach(function(entry){
-          return params.uniforms[entry.name] = entry.value
-        })
-      })
-      return params
-    })*/
 
   return regl(params)
 }
@@ -221,23 +223,6 @@ export function makeDrawCalls (regl, data) {
 }
 
 export function draw (regl, hashStore, data) {
-  // console.log('draw',data)
-
-  // makeDrawCalls(regl,data)
-
-  // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
-  /*const drawCalls = data.entities.map(function (entity) {
-    const {scene} = data
-    const cmd = drawModelCommand(regl, scene, entity)
-    // const hash =
-    return cmd
-  })*/
-
-  /*const drawCalls = data.entities.map(function (entity) {
-    const hash = hashEntityForRender(entity)
-    return hashStore[hash]
-  })*/
-
   // more dynamic this can change every frame
   const dynamicData = data.entities
     .filter(entity => entity.visuals.visible !== undefined ? entity.visuals.visible : true)
@@ -266,7 +251,8 @@ export function draw (regl, hashStore, data) {
 
     //return { color, mat: modelMat, scene, view: camera.view }
     //return drawCalls[index]({ color, mat: modelMat, scene, view: camera.view })
-    return hashStore[entity._renderBatchId]({ color, mat: modelMat, scene, view: camera.view })
+    const drawCall = hashStore[entity._renderBatchId]
+    return drawCall({ color, mat: modelMat, scene, view: camera.view})
   })
 
   return dynamicData
