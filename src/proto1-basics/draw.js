@@ -124,7 +124,7 @@ export function drawModelCommand (regl, scene, entity) {
   if (normal !== undefined) {
     params.attributes.normal = normal
   }else{
-    params.attributes.normal = regl.buffer([])
+    params.attributes.normal = regl.buffer([].fill.call({ length: geometry.positions.length }, 0))
   }
 
   return regl(params)
