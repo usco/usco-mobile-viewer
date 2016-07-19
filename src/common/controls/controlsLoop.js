@@ -57,16 +57,13 @@ export function controlsLoop (interactions, cameraData, fullData) {
 
     const cameraState$ = model(camera, actions, updateFunctions)
 
+    return cameraState$
     return most.merge(
       cameraState$.take(2),
-      cameraState$//.throttle(20)
+      cameraState$// .throttle(20)
     )
     // .map(cameraState => update(settings, cameraState))
   }
-
-  const cameraState$ = makeCameraModel()
-    .filter(x => x.changed)
-    .map(updateCompleteState)
 
   function updateCompleteState (cameraState) {
     let data = fullData
@@ -74,12 +71,17 @@ export function controlsLoop (interactions, cameraData, fullData) {
     return data
   }
 
+  const cameraState$ = makeCameraModel()
+
+  return cameraState$
+    .filter(x => x.changed)
+    .merge(cameraState$)
+    .map(updateCompleteState)
+
    /*const updateForRender$ = most.sample(updateCompleteState, heartBeat$, cameraState$)
      .filter(x => x.changed)
      .map(updateCompleteState)
    return updateForRender$*/
-
-  return cameraState$
 }
 
 

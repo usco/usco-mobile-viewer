@@ -110,7 +110,7 @@ const sceneData = {
       }
     }
   ],
-  controls: [
+  controls: [ //not in use !!! see orbitControls.js directly
     {
       up: [0, 0, 1],
       rotateSpeed: 0.2,
