@@ -1,10 +1,12 @@
 import { update, rotate, zoom } from './orbitControls'
 
 import most from 'most'
+import { sample } from 'most'
 import { fromEvent, combineArray, combine, mergeArray } from 'most'
 import { interactionsFromEvents, pointerGestures } from '../interactions/pointerGestures'
 
 import { model } from '../utils/modelUtils'
+import animationFrames from '../utils/animationFrames'
 
 export function controlsLoop (interactions, cameraData, fullData) {
   const {settings, camera} = cameraData
@@ -15,7 +17,9 @@ export function controlsLoop (interactions, cameraData, fullData) {
   //gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
   //gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
-  const heartBeat$ = most.periodic(16, 'x')
+  const rate$ = animationFrames()
+  //const heartBeat$ = most.periodic(16, 'x')
+  //sample(world, rate)
 
   const dragMoves$ = gestures.dragMoves
     .throttle(16) // FIXME: not sure, could be optimized some more
@@ -53,7 +57,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
     }
 
     const updateFunctions = {applyZoom, applyRotation, updateState}
-    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: heartBeat$}
+    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: rate$}
 
     const cameraState$ = model(camera, actions, updateFunctions)
 
@@ -74,9 +78,13 @@ export function controlsLoop (interactions, cameraData, fullData) {
   const cameraState$ = makeCameraModel()
 
   return cameraState$
+    .sample(x=>x, rate$)
     .filter(x => x.changed)
     .merge(cameraState$)
     .map(updateCompleteState)
+    //.tap(e=>console.log('here'))
+
+
 
    /*const updateForRender$ = most.sample(updateCompleteState, heartBeat$, cameraState$)
      .filter(x => x.changed)
