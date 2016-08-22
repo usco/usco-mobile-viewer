@@ -32,8 +32,7 @@ import { interactionsFromEvents, pointerGestures } from '../common/interactions/
 import makeGrid from './grid'
 import makeTransformGizmo from './transformsGizmo'
 
-
-const grid = makeGrid(2000, 1)
+const grid = makeGrid(160, 1)
 const gizmo = makeTransformGizmo()
 
 /* --------------------- */
