@@ -30,7 +30,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
     .filter(x => x !== undefined)
     .map(function (delta) {
       const angle = [Math.PI * delta[0], - Math.PI * delta[1]]
-      console.log('angle', angle)
+      console.log('angle', JSON.stringify(angle))
       return angle
     })
     // .scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
@@ -38,6 +38,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
   const zooms$ = gestures.zooms
     .map(x => -x) // we invert zoom direction
     .startWith(0)
+    .filter(x => !isNaN(x))
 
   function makeCameraModel () {
     function applyRotation (state, angles) {
@@ -47,6 +48,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
     }
 
     function applyZoom (state, zooms) {
+      console.log('applyZoom', zooms)
       state = zoom(settings, state, zooms) // mutating, meh
       state = update(settings, state) // not sure
       return state
