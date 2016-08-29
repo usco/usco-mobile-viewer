@@ -34,6 +34,8 @@ export function interactionsFromEvents (targetEl) {
   let touchMoves$ = fromEvent('touchmove', targetEl) // dom.touchmove(window)
   let touchEnd$ = fromEvent('touchend', targetEl) // dom.touchend(window)
 
+  fromEvent('touchstart', targetEl).forEach(e=>console.log('touchStart',e))
+  fromEvent('touchend', targetEl).forEach(e=>console.log('touchend',e))
 
   const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
@@ -72,7 +74,8 @@ function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250, ma
           left: e.clientX - startX,
           top: e.clientY - startY
         }
-        return {mouseEvent: e, delta}
+        const normalized = {x: e.clientX, y: e.clientY}
+        return {mouseEvent: e, delta, normalized}
       })
       .takeUntil(mouseUps)
   })
@@ -93,10 +96,11 @@ function touchDrags (touchStart$, touchEnd$, touchMove$) {
             left: x,
             top: y,
             x,
-          y}
+            y}
 
           // let output = assign({}, e, {delta})
-          return {mouseEvent: e, delta}
+          const normalized = {x: e.touches[0].pageX, y: e.touches[0].pageY}
+          return {mouseEvent: e, delta, normalized}
         })
         .takeUntil(touchEnd$)
     })
@@ -132,7 +136,7 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
       return merge(
         most.of(downEvent),
         moves$ // Skip if we get a movement before a mouse up
-          .tap(e => console.log('e.delta', e))
+          .tap(e => console.log('e.delta', JSON.stringify(e)))
           .filter(data => isMoving(data.delta, maxStaticDeltaSqr)) // allow for small movement (shaky hands!) FIXME: implement
           .take(1).flatMap(x => empty()).timestamp(),
         ends$.take(1).timestamp()

@@ -24,7 +24,7 @@ export function controlsLoop (interactions, cameraData, fullData) {
   const dragMoves$ = gestures.dragMoves
     .throttle(16) // FIXME: not sure, could be optimized some more
     .loop(function (acc, moveData) {
-      const delta = !acc ? [0, 0] : [acc.mouseEvent.offsetX - moveData.mouseEvent.offsetX, moveData.mouseEvent.offsetY - acc.mouseEvent.offsetY] // [moveData.delta.left, moveData.delta.top]
+      const delta = !acc ? [0, 0] : [acc.normalized.x - moveData.normalized.x, moveData.normalized.y - acc.normalized.y] // [moveData.delta.left, moveData.delta.top]
       return {seed: moveData, value: delta}
     }, undefined).startWith([0, 0])
     .filter(x => x !== undefined)
