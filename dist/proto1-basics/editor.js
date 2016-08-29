@@ -16259,13 +16259,13 @@ function controlsLoop(interactions, cameraData, fullData) {
 
   var dragMoves$ = gestures.dragMoves.throttle(16) // FIXME: not sure, could be optimized some more
   .loop(function (acc, moveData) {
-    var delta = !acc ? [0, 0] : [acc.mouseEvent.offsetX - moveData.mouseEvent.offsetX, moveData.mouseEvent.offsetY - acc.mouseEvent.offsetY]; // [moveData.delta.left, moveData.delta.top]
+    var delta = !acc ? [0, 0] : [acc.normalized.x - moveData.normalized.x, moveData.normalized.y - acc.normalized.y]; // [moveData.delta.left, moveData.delta.top]
     return { seed: moveData, value: delta };
   }, undefined).startWith([0, 0]).filter(function (x) {
     return x !== undefined;
   }).map(function (delta) {
     var angle = [Math.PI * delta[0], -Math.PI * delta[1]];
-    console.log('angle', angle);
+    console.log('angle', JSON.stringify(angle));
     return angle;
   });
   // .scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
@@ -16273,7 +16273,9 @@ function controlsLoop(interactions, cameraData, fullData) {
   var zooms$ = gestures.zooms.map(function (x) {
     return -x;
   }) // we invert zoom direction
-  .startWith(0);
+  .startWith(0).filter(function (x) {
+    return !isNaN(x);
+  });
 
   function makeCameraModel() {
     function applyRotation(state, angles) {
@@ -16283,6 +16285,7 @@ function controlsLoop(interactions, cameraData, fullData) {
     }
 
     function applyZoom(state, zooms) {
+      console.log('applyZoom', zooms);
       state = (0, _orbitControls.zoom)(settings, state, zooms); // mutating, meh
       state = (0, _orbitControls.update)(settings, state); // not sure
       return state;
@@ -16758,6 +16761,13 @@ function interactionsFromEvents(targetEl) {
   var touchMoves$ = (0, _most.fromEvent)('touchmove', targetEl); // dom.touchmove(window)
   var touchEnd$ = (0, _most.fromEvent)('touchend', targetEl); // dom.touchend(window)
 
+  (0, _most.fromEvent)('touchstart', targetEl).forEach(function (e) {
+    return console.log('touchStart', e);
+  });
+  (0, _most.fromEvent)('touchend', targetEl).forEach(function (e) {
+    return console.log('touchend', e);
+  });
+
   var pointerDowns$ = (0, _most.merge)(mouseDowns$, touchStart$); // mouse & touch interactions starts
   var pointerUps$ = (0, _most.merge)(mouseUps$, touchEnd$); // mouse & touch interactions ends
   var pointerMoves$ = (0, _most.merge)(mouseMoves$, touchMoves$);
@@ -16797,7 +16807,8 @@ function mouseDrags(mouseDowns$, mouseUps, mouseMoves) {
         left: e.clientX - startX,
         top: e.clientY - startY
       };
-      return { mouseEvent: e, delta: delta };
+      var normalized = { x: e.clientX, y: e.clientY };
+      return { mouseEvent: e, delta: delta, normalized: normalized };
     }).takeUntil(mouseUps);
   });
 }
@@ -16818,7 +16829,8 @@ function touchDrags(touchStart$, touchEnd$, touchMove$) {
         y: y };
 
       // let output = assign({}, e, {delta})
-      return { mouseEvent: e, delta: delta };
+      var normalized = { x: e.touches[0].pageX, y: e.touches[0].pageY };
+      return { mouseEvent: e, delta: delta, normalized: normalized };
     }).takeUntil(touchEnd$);
   });
 }
@@ -16863,7 +16875,7 @@ function baseTaps(_ref2, settings) {
   return starts$.timestamp().flatMap(function (downEvent) {
     return (0, _most.merge)(_most2.default.of(downEvent), moves$ // Skip if we get a movement before a mouse up
     .tap(function (e) {
-      return console.log('e.delta', e);
+      return console.log('e.delta', JSON.stringify(e));
     }).filter(function (data) {
       return (0, _utils.isMoving)(data.delta, maxStaticDeltaSqr);
     }) // allow for small movement (shaky hands!) FIXME: implement
@@ -17772,7 +17784,7 @@ var draw = _draw2.draw.bind(null, regl); // from 'vertices-bounding-box'
 
 /* --------------------- */
 
-var grid = (0, _grid2.default)(2000, 1);
+var grid = (0, _grid2.default)(160, 1);
 var gizmo = (0, _transformsGizmo2.default)();
 
 /* --------------------- */
