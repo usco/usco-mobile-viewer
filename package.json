@@ -36,7 +36,7 @@
     "ray-aabb-intersection": "^1.0.1",
     "ray-sphere-intersection": "^1.0.0",
     "ray-triangle-intersection": "^1.0.3",
-    "regl": "^0.9.0",
+    "regl": "^1.1.1",
     "vertices-bounding-box": "^1.0.0"
   },
   "devDependencies": {
