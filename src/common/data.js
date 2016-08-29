@@ -25,7 +25,8 @@ const triData = {
   },
 
   visuals: {
-    color: [1, 0, 0, 0.5]
+    color: [1, 0, 0, 0.5],
+    type: 'mesh'
   }
 
 }
@@ -50,7 +51,8 @@ const bunnyData = {
   },
 
   visuals: {
-    color: [1, 1, 0, 0.5]
+    color: [1, 1, 0, 0.5],
+    type: 'mesh'
   },
 
   meta: {
@@ -71,7 +73,8 @@ const bunnyData2 = {
 
   visuals: {
     color: [0, 1, 1, 0.5],
-    visible: true
+    visible: true,
+    type: 'mesh'
   },
 
   meta: {
@@ -89,7 +92,8 @@ const bunnyData3 = {
     sca: [1, 1, 1]
   },
   visuals: {
-    color: [1, 1, 0, 0.5]
+    color: [1, 1, 0, 0.5],
+    type: 'mesh'
   },
 
   meta: {

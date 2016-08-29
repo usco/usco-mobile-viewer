@@ -10,7 +10,7 @@ import camera from '../common/camera'
 
 const regl = reglM()
 const {frame, clear} = regl
-const drawModel = _drawModel.bind(null, regl)
+//const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
 
 import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
