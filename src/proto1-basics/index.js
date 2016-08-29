@@ -17,7 +17,7 @@ import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
 import pickLoop from '../common/picking/pickLoop'
 
 import computeBounds from '../common/bounds/computeBounds'// from 'vertices-bounding-box'
-import mat4 from 'gl-mat4'
+import computeTMatrixFromTransforms from '../common/utils/computeTMatrixFromTransforms'
 
 import most from 'most'
 
@@ -27,10 +27,8 @@ import { interactionsFromEvents, pointerGestures } from '../common/interactions/
 
 const container = document.querySelector('canvas')
 
-
 import makeGrid from './grid'
 import makeTransformGizmo from './transformsGizmo'
-
 
 const grid = makeGrid(160, 1)
 const gizmo = makeTransformGizmo()
@@ -45,7 +43,7 @@ function flatten (arr) {
 
 let fullData = {
   scene: sceneData,
-  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, gizmo])//
+  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, gizmo])
 }
 
 // inject bounding box data
@@ -57,16 +55,8 @@ fullData.entities = fullData.entities.map(function (entity) {
 })
 
 // inject object transformation matrix : costly : only do it when changes happened
-
 fullData.entities = fullData.entities.map(function (entity) {
-  const {pos, rot, sca} = entity.transforms
-  let modelMat = mat4.identity([])
-  mat4.translate(modelMat, modelMat, [pos[0], pos[2], pos[1]]) // z up
-  mat4.rotateX(modelMat, modelMat, rot[0])
-  mat4.rotateY(modelMat, modelMat, rot[2])
-  mat4.rotateZ(modelMat, modelMat, rot[1])
-  mat4.scale(modelMat, modelMat, [sca[0], sca[2], sca[1]])
-
+  const modelMat = computeTMatrixFromTransforms(entity)
   const result = Object.assign({}, entity, {modelMat})
   console.log('result', result)
   return result
@@ -75,7 +65,6 @@ fullData.entities = fullData.entities.map(function (entity) {
 //inject bactching/rendering data
 const {hashStore, entities} = makeDrawCalls(regl, fullData)
 fullData.entities = entities
-
 
 /* ============================================ */
 
