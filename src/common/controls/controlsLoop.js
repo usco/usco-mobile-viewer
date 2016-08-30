@@ -21,16 +21,22 @@ export function controlsLoop (interactions, cameraData, fullData) {
   //const heartBeat$ = most.periodic(16, 'x')
   //sample(world, rate)
 
+  const mobileReductor = 5.0 // how much we want to divide touch deltas to get movements on mobile
+
   const dragMoves$ = gestures.dragMoves
     //.throttle(16) // FIXME: not sure, could be optimized some more
     .filter(x => x !== undefined)
-    .map(x=> [x.delta.x,x.delta.y])
+    .map( function(data) {
+      let delta = [data.delta.x,data.delta.y]
+      if(data.type === 'touch'){
+        delta = delta.map(x=>x/mobileReductor)
+      }
+      return delta
+    })
     .map(function (delta) {
       const angle = [Math.PI * delta[0], - Math.PI * delta[1]]
-      //console.log('angle', JSON.stringify(angle))
       return angle
     })
-    // .scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
 
   const zooms$ = gestures.zooms
     .map(x => -x) // we invert zoom direction
