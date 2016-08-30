@@ -61,19 +61,32 @@ export function interactionsFromEvents (targetEl) {
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
-function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250, maxStaticDeltaSqr) {
-
+function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
+  const {longPressDelay, maxStaticDeltaSqr} = settings
   return mouseDowns$.flatMap(function (md) {
     // calculate offsets when mouse down
     let startX = md.offsetX
     let startY = md.offsetY
     // Calculate delta with mousemove until mouseup
+    let prevX = md.offsetX
+    let prevY = md.offsetY
+
     return mouseMoves
       .map(function (e) {
+
+        let curX = e.clientX
+        let curY = e.clientY
+
         let delta = {
           left: e.clientX - startX,
-          top: e.clientY - startY
+          top: e.clientY - startY,
+          x: prevX - curX,
+          y: curY - prevY
         }
+
+        prevX = curX
+        prevY = curY
+
         const normalized = {x: e.clientX, y: e.clientY}
         return {mouseEvent: e, delta, normalized}
       })
@@ -81,22 +94,33 @@ function mouseDrags (mouseDowns$, mouseUps, mouseMoves, longPressDelay = 250, ma
   })
 }
 
-function touchDrags (touchStart$, touchEnd$, touchMove$) {
+function touchDrags (touchStart$, touchEnd$, touchMove$, settings) {
+  const {mobileReductor} = settings
   return touchStart$
     .flatMap(function (ts) {
       let startX = ts.touches[0].pageX
       let startY = ts.touches[0].pageY
 
+      let prevX = ts.touches[0].pageX
+      let prevY = ts.touches[0].pageY
+
       return touchMove$
         .map(function (e) {
-          let x = (e.touches[0].pageX - startX) / 5.0
-          let y = (e.touches[0].pageY - startY) / 5.0
+          let x = (e.touches[0].pageX - startX)
+          let y = (e.touches[0].pageY - startY)
+
+          let curX = e.touches[0].pageX
+          let curY = e.touches[0].pageY
 
           let delta = {
             left: x,
             top: y,
-            x,
-            y}
+            x: (curX - prevX) / mobileReductor,
+            y: (curY - prevY) / mobileReductor
+          }
+
+          prevX = curX
+          prevY = curY
 
           // let output = assign({}, e, {delta})
           const normalized = {x: e.touches[0].pageX, y: e.touches[0].pageY}
@@ -109,11 +133,13 @@ function touchDrags (touchStart$, touchEnd$, touchMove$) {
 /* drag move interactions press & move(continuously firing)
 */
 function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$, longTaps$, touchMoves$}, settings) {
-  const {longPressDelay, maxStaticDeltaSqr} = settings
   const dragMoves$ = merge(
-    mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, longPressDelay, maxStaticDeltaSqr),
-    touchDrags(touchStart$, touchEnd$, touchMoves$, longPressDelay, maxStaticDeltaSqr)
+    mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, settings),
+    touchDrags(touchStart$, touchEnd$, touchMoves$, settings)
   )
+  //.merge(merge(touchEnd$, mouseUps$).map(undefined))
+  //.tap(e=>console.log('dragMoves',e))
+
   // .takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
 
   return dragMoves$
@@ -257,8 +283,9 @@ export function pointerGestures (baseInteractions) {
   const multiClickDelay = 250
   const longPressDelay = 250
   const maxStaticDeltaSqr = 100 // max 100 pixels delta
+  const mobileReductor = 5.0 // how much we want to divide touch deltas to get movements on mobile
 
-  const settings = {multiClickDelay, longPressDelay, maxStaticDeltaSqr}
+  const settings = {multiClickDelay, longPressDelay, maxStaticDeltaSqr, mobileReductor}
 
   const taps$ = taps(baseInteractions, settings)
   const dragMoves$ = dragMoves(baseInteractions, settings)

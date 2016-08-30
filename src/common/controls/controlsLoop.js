@@ -17,20 +17,17 @@ export function controlsLoop (interactions, cameraData, fullData) {
   //gestures.taps.shortDoubleTaps$.forEach(e => console.log('shortDoubleTaps', e))
   //gestures.taps.longTaps$.forEach(e => console.log('longTaps', e))
 
-  const rate$ = animationFrames()
+  const rate$ = animationFrames() //heartBeat
   //const heartBeat$ = most.periodic(16, 'x')
   //sample(world, rate)
 
   const dragMoves$ = gestures.dragMoves
-    .throttle(16) // FIXME: not sure, could be optimized some more
-    .loop(function (acc, moveData) {
-      const delta = !acc ? [0, 0] : [acc.normalized.x - moveData.normalized.x, moveData.normalized.y - acc.normalized.y] // [moveData.delta.left, moveData.delta.top]
-      return {seed: moveData, value: delta}
-    }, undefined).startWith([0, 0])
+    //.throttle(16) // FIXME: not sure, could be optimized some more
     .filter(x => x !== undefined)
+    .map(x=> [x.delta.x,x.delta.y])
     .map(function (delta) {
       const angle = [Math.PI * delta[0], - Math.PI * delta[1]]
-      console.log('angle', JSON.stringify(angle))
+      //console.log('angle', JSON.stringify(angle))
       return angle
     })
     // .scan((acc, cur) => [cur[0]-acc[0], cur[1]-acc[1]], [0, 0])
