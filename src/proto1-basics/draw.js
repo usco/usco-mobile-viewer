@@ -94,15 +94,14 @@ export function draw (regl, hashStore, data) {
   const dynamicData = data.entities
     .filter(entity => entity.visuals.visible !== undefined ? entity.visuals.visible : true)
     .map(function (entity, index) {
-    const {pos, rot, sca} = entity.transforms
-    const {modelMat} = entity
-    const {scene, camera} = data
+      const {modelMat} = entity
+      const {scene, camera} = data
 
-    // simple hack for selection state
-    const color = entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
+      // simple hack for selection state
+      const color = entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
 
-    const drawCall = hashStore[entity._renderBatchId]
-    return drawCall({ color, mat: modelMat, scene, view: camera.view })
+      const drawCall = hashStore[entity._renderBatchId]
+      return drawCall({ color, mat: modelMat, scene, view: camera.view })
   })
 
   return dynamicData
