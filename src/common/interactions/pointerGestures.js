@@ -34,9 +34,6 @@ export function interactionsFromEvents (targetEl) {
   let touchMoves$ = fromEvent('touchmove', targetEl) // dom.touchmove(window)
   let touchEnd$ = fromEvent('touchend', targetEl) // dom.touchend(window)
 
-  fromEvent('touchstart', targetEl).forEach(e=>console.log('touchStart',e))
-  fromEvent('touchend', targetEl).forEach(e=>console.log('touchend',e))
-
   const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
   const pointerMoves$ = merge(mouseMoves$, touchMoves$)
@@ -115,7 +112,7 @@ function touchDrags (touchStart$, touchEnd$, touchMove$, settings) {
           let delta = {
             left: x,
             top: y,
-            x: (curX - prevX) / mobileReductor,
+            x: (prevX - curX) / mobileReductor,
             y: (curY - prevY) / mobileReductor
           }
 
