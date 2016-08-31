@@ -71,9 +71,10 @@ export function makeDrawCalls (regl, data) {
   // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
   const entitiesWithHash = data.entities.map(function (entity) {
     const {scene} = data
+    const drawData = Object.assign({}, data, {entity})
 
     const drawCmdType = entity.visuals && entity.visuals.type ? entity.visuals.type : undefined
-    const cmd = drawCmds[drawCmdType](regl, scene, entity)
+    const cmd = drawCmds[drawCmdType](regl, drawData)
       //entity.visuals && entity.visuals.type && entity.visuals.type ==='mesh'? makeDrawMeshCommand (regl, scene, entity): makeDrawCommand(regl, scene, entity)
 
     const hash = hashEntityForRender(entity)

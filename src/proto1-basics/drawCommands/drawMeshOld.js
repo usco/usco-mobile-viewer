@@ -1,51 +1,7 @@
-import { identity, perspective, lookAt } from 'gl-mat4'
-import mat4 from 'gl-mat4'
-import normals from 'angle-normals'
-var glslify = require('glslify-sync') // works in client & server
 
-function formatLightsDataForRender (lightsData) {
-  const result = lightsData.map(function (data, index) {
-    return Object.keys(data).map(function (key) {
-      return {name: `'lights[${index}].${key}'`,value: data[key]}
-    })
-  })
-  // console.log('result',result[0])// JSON.stringify(result))
-  // console.log(JSON.stringify(lightsData))
-  return result
-}
+////////
 
-  /*formatLightsDataForRender(lights).forEach(function(fields){
-    fields.forEach(function(entry){
-      params.uniforms[entry.name] = entry.value
-    })
-  })
-
-  let formatedLights = formatLightsDataForRender(lights)
-  params.uniforms['lights[0].color']=formatedLights[0][0].value
-  params.uniforms['lights[0].intensity']=formatedLights[0][1].value
-
-  const par1 = [params]
-    .map(function(params){
-      formatLightsDataForRender(lights).forEach(function(fields){
-        fields.forEach(function(entry){
-          return params.uniforms[entry.name] = entry.value
-        })
-      })
-      return params
-    })*/
-
-
-export function makeDrawCommand (regl, data) {
-  const {scene, entity} = data
-  const {buffer, elements, prop} = regl
-
-  // const {positions, cells, mat, color, pos} = data
-  const {geometry} = entity
-
-  const vertShader = entity.visuals && entity.visuals.vert ? entity.visuals.vert : glslify(__dirname + '/../shaders/base.vert')
-  const fragShader = entity.visuals && entity.visuals.frag ? entity.visuals.frag : glslify(__dirname + '/../shaders/base.frag')
-
-  // const normal_old = buffer( geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) : geometry.normals || [])
+function fetchNormals(buffer, geometry){
   let normal // = geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) :
   if (geometry.cells) {
     if (!geometry.normals) {
@@ -56,6 +12,84 @@ export function makeDrawCommand (regl, data) {
   } else {
     normal = undefined
   }
+
+  // const normal_old = buffer( geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) : geometry.normals || [])
+  return normal
+}
+
+export function _makeDrawMeshCommand (regl, scene, entity) {
+  const {buffer, elements, prop} = regl
+  // const {positions, cells, mat, color, pos} = data
+  const {geometry} = entity
+
+  const vertShader = entity.visuals && entity.visuals.vert ? entity.visuals.vert : glslify(__dirname + '/../shaders/base.vert')
+  const fragShader = entity.visuals && entity.visuals.frag ? entity.visuals.frag : glslify(__dirname + '/../shaders/base.frag')
+
+  const normal = fetchNormals(buffer, geometry)
+
+
+  const fbo = regl.framebuffer({
+    color: regl.texture({
+      width: SHADOW_RES,
+      height: SHADOW_RES,
+      wrap: 'clamp',
+      type: 'float'
+    }),
+    depth: true
+  })
+
+  const wrapperScope = regl({
+    context: {
+      lightDir: [0.39, 0.87, 0.29]
+    },
+    uniforms: {
+      lightDir: regl.context('lightDir'),
+      lightView: (context) => {
+        return mat4.lookAt([], context.lightDir, [0.0, 0.0, 0.0], [0.0, 1.0, 0.0])
+      },
+      lightProjection: mat4.ortho([], -25, 25, -20, 20, -25, 25)
+    }
+  })
+
+  const drawDepth = regl({
+    frag: `
+    precision mediump float;
+    varying vec3 vPosition;
+    void main () {
+      gl_FragColor = vec4(vec3(vPosition.z), 1.0);
+    }`,
+    vert: `
+    precision mediump float;
+    attribute vec3 position;
+    uniform mat4 lightProjection, lightView, model;
+    varying vec3 vPosition;
+    void main() {
+      vec4 p = lightProjection * lightView * model * vec4(position, 1.0);
+      gl_Position = p;
+      vPosition = p.xyz;
+    }`,
+    framebuffer: fbo
+  })
+
+
+
+const drawMesh = regl({
+  uniforms: {
+    model: prop('mat'),
+    ambientLightAmount: 0.3,
+    diffuseLightAmount: 0.7,
+    color: prop('color')
+  },
+  attributes: {
+    position: regl.this('position'),
+    normal: regl.this('normal')
+  },
+  elements: regl.this('elements'),
+  cull: {
+    enable: true
+  }
+})
+
 
   let params = {
     vert: vertShader,
@@ -111,9 +145,6 @@ export function makeDrawCommand (regl, data) {
   }
 
   if (entity.visuals && entity.visuals.lineWidth) {
-    if (entity.visuals.lineWidth) {
-      params.lineWidth = entity.visuals.lineWidth
-    }
     if (entity.visuals.depth) {
       params.depth = entity.visuals.depth
     }
@@ -125,6 +156,7 @@ export function makeDrawCommand (regl, data) {
     params.attributes.normal = regl.buffer([].fill.call({ length: geometry.positions.length }, 0))
   }
 
-  console.log('using old one')
+  console.log('using drawMesh')
   return regl(params)
+  //return drawDepth(params)
 }
