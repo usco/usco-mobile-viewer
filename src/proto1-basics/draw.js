@@ -1,4 +1,4 @@
-import { identity, perspective, lookAt } from 'gl-mat4'
+import { perspective } from 'gl-mat4'
 import mat4 from 'gl-mat4'
 import normals from 'angle-normals'
 
