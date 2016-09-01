@@ -1,22 +1,6 @@
 
 ////////
 
-function fetchNormals(buffer, geometry){
-  let normal // = geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) :
-  if (geometry.cells) {
-    if (!geometry.normals) {
-      normal = buffer(normals(geometry.cells, geometry.positions))
-    } else {
-      normal = buffer(geometry.normals)
-    }
-  } else {
-    normal = undefined
-  }
-
-  // const normal_old = buffer( geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) : geometry.normals || [])
-  return normal
-}
-
 export function _makeDrawMeshCommand (regl, scene, entity) {
   const {buffer, elements, prop} = regl
   // const {positions, cells, mat, color, pos} = data

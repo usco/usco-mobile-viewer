@@ -8,7 +8,10 @@ import { drawModel as _drawModel, draw as _draw, makeDrawCalls } from './draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
-const regl = reglM()
+import normals from 'angle-normals'
+
+
+const regl = reglM({extensions: 'oes_texture_float'})//FIXME: for shadows, is it widely supported
 const {frame, clear} = regl
 //const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
@@ -59,6 +62,15 @@ fullData.entities = fullData.entities.map(function (entity) {
   const modelMat = computeTMatrixFromTransforms(entity)
   const result = Object.assign({}, entity, {modelMat})
   console.log('result', result)
+  return result
+})
+
+// compute normals when needed
+fullData.entities = fullData.entities.map(function (entity) {
+  const buffer = regl.buffer
+  const {geometry} = entity
+  geometry.normals = geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) : geometry.normals
+  const result = Object.assign({}, entity, {geometry})
   return result
 })
 

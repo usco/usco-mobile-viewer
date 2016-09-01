@@ -7,7 +7,7 @@ import normals from 'angle-normals'
 var glslify = require('glslify-sync') // works in client & server
 
 export function makeDrawMeshCommand (regl, data) {
-  const {scene, entity} = data
+  const {entity} = data
   const {buffer, elements, prop} = regl
   const {geometry} = entity
   const SHADOW_RES = 1024
