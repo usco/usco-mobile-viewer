@@ -1,10 +1,12 @@
 import { identity, perspective, lookAt } from 'gl-mat4'
 import mat4 from 'gl-mat4'
-import normals from 'angle-normals'
-
 // import glslify from 'glslify' // does not work
 // var glslify = require('glslify') // works only in browser (browserify transform)
 var glslify = require('glslify-sync') // works in client & server
+
+import drawBase from './drawBase'
+import drawDepth from './drawDepth'
+import drawColor from './drawColor'
 
 export function makeDrawMeshCommand (regl, data) {
   const {entity} = data
@@ -44,35 +46,7 @@ export function makeDrawMeshCommand (regl, data) {
           context.viewportWidth / context.viewportHeight,
           0.01,
           1000)
-      }
-    }
-  })
-
-  const drawMesh = regl({
-    /*frag: `
-    precision mediump float;
-    varying vec3 vPosition;
-    uniform vec3 lightColor;
-    void main () {
-      gl_FragColor = vec4(lightColor.x, lightColor.y, 0., 1.0);
-    }`,
-    vert: `
-    precision mediump float;
-    attribute vec3 position;
-    uniform mat4 lightProjection, lightView, model, projection, view;
-    varying vec3 vPosition;
-    void main() {
-      vec4 p = projection * view * model * vec4(position, 1.0);
-      gl_Position = p;
-      vPosition = p.xyz;
-    }`,*/
-
-    vert: entity.visuals && entity.visuals.vert ? entity.visuals.vert : glslify(__dirname + '/shaders/base.vert'),
-    frag: entity.visuals && entity.visuals.frag ? entity.visuals.frag : glslify(__dirname + '/shaders/base.frag'),
-
-    uniforms: {
-      model: prop('mat'),
-      color: prop('color'),
+      },
       'lights[0].color': prop('scene.lights[0].color'),
       'lights[0].intensity': prop('scene.lights[0].intensity'),
       'lights[0].position': prop('scene.lights[0].position'),
@@ -88,24 +62,21 @@ export function makeDrawMeshCommand (regl, data) {
       'lights[3].color': prop('scene.lights[3].color'),
       'lights[3].intensity': prop('scene.lights[3].intensity'),
       'lights[3].position': prop('scene.lights[3].position')
-    },
-    attributes: {
-      position: buffer(geometry.positions),
-      normal: buffer(geometry.normals)
-    },
-    elements : elements(geometry.cells),
-    cull: {
-      enable: true
-    },
-    //framebuffer: fbo
+    }
   })
 
+  const _drawBase = drawBase(regl, {geometry})
+  const _drawColor = drawColor(regl, {entity})
+  const _drawDepth = drawDepth(regl, {fbo})
+
   function command (props) {
+    var drawMeshes = () => _drawBase(props)
+
     wrapperScope(props, (context) => {
-      //console.log('props', props)
-      //throw new Error("mlk")
-      drawMesh(props)
+      _drawDepth(drawMeshes)
+      _drawColor(drawMeshes)
     })
   }
+
   return command
 }
