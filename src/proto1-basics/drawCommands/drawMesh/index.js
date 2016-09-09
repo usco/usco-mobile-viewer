@@ -39,7 +39,8 @@ export function makeDrawMeshCommand (regl, data) {
         //foo +=0.02
         let res = [props.counter+.39, 0.87, 0.29]
         //console.log('context', res)
-        return res //[0,0,0]
+        //(context, props)=>Math.cos(props.counter/100)*0.2+0.1
+        return [0,Math.sin(props.counter/100),Math.cos(props.counter/100)]
         //return regl.context('lightDir')
       },
       lightColor: [1, 0.8, 0],
