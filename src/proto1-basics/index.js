@@ -29,6 +29,8 @@ import { interactionsFromEvents, pointerGestures } from '../common/interactions/
 /* --------------------- */
 
 const container = document.querySelector('canvas')
+//const container = document.querySelector('#drawHere')
+
 
 import makeGrid from './grid'
 import makeTransformGizmo from './transformsGizmo'
