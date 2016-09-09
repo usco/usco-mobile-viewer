@@ -90,6 +90,7 @@ export function makeDrawCalls (regl, data) {
   return {hashStore, entities: entitiesWithHash}
 }
 
+let counter = 0
 export function draw (regl, hashStore, data) {
   // more dynamic this can change every frame
   const dynamicData = data.entities
@@ -102,7 +103,8 @@ export function draw (regl, hashStore, data) {
       const color = entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
 
       const drawCall = hashStore[entity._renderBatchId]
-      return drawCall({ color, mat: modelMat, scene, view: camera.view })
+      counter += 1
+      return drawCall({ color, mat: modelMat, scene, view: camera.view, counter })
   })
 
   return dynamicData
