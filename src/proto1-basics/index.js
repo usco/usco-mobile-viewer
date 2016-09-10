@@ -12,6 +12,10 @@ import normals from 'angle-normals'
 
 
 const regl = reglM({extensions: 'oes_texture_float'})//FIXME: for shadows, is it widely supported
+/*canvas: container,
+  drawingBufferWidth: container.offsetWidth,
+  drawingBufferHeight: container.offsetHeight})*/ //for editor
+
 const {frame, clear} = regl
 //const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
