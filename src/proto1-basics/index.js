@@ -37,10 +37,13 @@ const container = document.querySelector('canvas')
 
 
 import makeGrid from './grid'
+import makeShadowPlane from './shadowPlane'
 import makeTransformGizmo from './transformsGizmo'
 
 const grid = makeGrid(160, 1)
 const gizmo = makeTransformGizmo()
+const shadowPlane = makeShadowPlane(160)
+
 
 /* --------------------- */
 
@@ -52,7 +55,7 @@ function flatten (arr) {
 
 let fullData = {
   scene: sceneData,
-  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, gizmo])
+  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, gizmo])
 }
 
 // inject bounding box data
@@ -63,7 +66,7 @@ fullData.entities = fullData.entities.map(function (entity) {
   return result
 })
 
-// inject object transformation matrix : costly : only do it when changes happened
+// inject object transformation matrix : costly : only do it when changes happened to objects
 fullData.entities = fullData.entities.map(function (entity) {
   const modelMat = computeTMatrixFromTransforms(entity)
   const result = Object.assign({}, entity, {modelMat})
@@ -71,7 +74,7 @@ fullData.entities = fullData.entities.map(function (entity) {
   return result
 })
 
-// compute normals when needed
+// compute normals when needed : costly : only do it when changes happened to objects
 fullData.entities = fullData.entities.map(function (entity) {
   const buffer = regl.buffer
   const {geometry} = entity
