@@ -93,6 +93,8 @@ export function makeDrawCalls (regl, data) {
 let counter = 0
 export function draw (regl, hashStore, data) {
   // more dynamic this can change every frame
+  //console.log('hashStore', hashStore)
+  let batches2 = {}
   const dynamicData = data.entities
     .filter(entity => entity.visuals.visible !== undefined ? entity.visuals.visible : true)
     .map(function (entity, index) {
@@ -104,8 +106,48 @@ export function draw (regl, hashStore, data) {
 
       const drawCall = hashStore[entity._renderBatchId]
       counter += 1
-      return drawCall({ color, mat: modelMat, scene, view: camera.view, counter })
-  })
 
-  return dynamicData
+      const callData = { color, mat: modelMat, scene, view: camera.view, counter }
+      if(!batches2[entity._renderBatchId]){
+        batches2[entity._renderBatchId] = []
+      }
+      batches2[entity._renderBatchId].push(callData)
+
+      return {drawCall, callData}
+      return drawCall(callData)
+  })
+  //return dynamicData
+
+
+  //console.log('dynamicData', batches2)
+  //throw new Error('mlk')
+  let drawCalls = []
+  /*Object.keys(batches2).map(function(id, index){
+    console.log('kjhjk', id, index)
+    const _data = batches2[id]
+    const _d = dynamicData[index].drawCall
+    const _dcall = _d(_data)
+     drawCalls.push[_dcall]
+  })*/
+  //
+  //return drawCalls
+
+
+  const id = Object.keys(batches2)[0]
+  const id2 = Object.keys(batches2)[1]
+  const id3 = Object.keys(batches2)[2]
+
+  const bunniesData = batches2[id]
+  const data2 = batches2[id2]
+  const shadowPlaneData = batches2[id3]
+  const meshesCallData = bunniesData.concat(shadowPlaneData)
+
+  //console.log('data1', bunniesData, shadowPlaneData)
+  console.log('meshesCallData', meshesCallData)
+  //throw new Error('mlk')
+  const meshesCall =  dynamicData[0].drawCall(meshesCallData)
+  //const gridCall =  dynamicData[3].drawCall(data2)
+  //const fooCall =  dynamicData[0].drawCall(batches2[id3])
+
+  return []//, fooCall]//, gridCall]
 }
