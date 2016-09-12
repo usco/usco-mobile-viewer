@@ -51,12 +51,12 @@ const bunnyData = {
   },
 
   visuals: {
-    color: [1, 1, 0, 0.5],
+    color: [0.02, 0.7, 1, 1], // 07a9ff [1, 1, 0, 0.5],
     type: 'mesh'
   },
 
   meta: {
-    selected: true,
+    selected: false,
     pickable: true
   }
 
@@ -97,7 +97,7 @@ const bunnyData3 = {
   },
 
   meta: {
-    selected: false,
+    selected: true,
     pickable: true
   }
 }
