@@ -19,17 +19,66 @@ export default function makeShadowPlane (size) {
   normals.push([0.0, 1.0, 0.0])
   normals.push([0.0, 1.0, 0.0])
 
+  //custom draw function?
+  function drawFn(regl, params) {
+    const {geometry} = params
+    const {prop, buffer, elements} = regl
+    return regl({
+      uniforms: {
+        model: prop('mat'),
+        color: prop('color')
+      },
+      attributes: {
+        position: buffer(geometry.positions),
+        normal: buffer(geometry.normals)
+      },
+      elements : elements(geometry.cells),
+      depth: {
+        enable: false,
+        mask: true,
+        func: 'less',
+        range: [0, 1]
+      },
+    })
+  }
+
   const data = {
     visuals: {
-      //frag: glslify(__dirname + '/shaders/foggy.frag'),
-      color: [0, 0, 0, 0.8],
-      type: 'mesh'
+      color: [1, 1, 1, 0.8],
+      type: 'mesh',
+      //drawFn,
+      params:{
+        depth: {
+          enable: true,
+          mask: false,
+          func: 'less',
+          range: [0, 1]
+        },
+        cull: {
+          enable: true,
+          face: 'back'
+        },
+        blend: {
+          enable: false,
+          func: {
+            srcRGB: 'src alpha',
+            srcAlpha: 1,
+            dstRGB: 'one minus src alpha',
+            dstAlpha: 1
+          },
+          equation: {
+            rgb: 'add',
+            alpha: 'add'
+          },
+          color: [0, 0, 0, 0]
+        },
+      }
     },
 
     geometry: {
       positions,
       normals,
-      elements,
+      cells: elements,
       id: '-10'
     },
 
