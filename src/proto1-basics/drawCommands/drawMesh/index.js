@@ -11,13 +11,11 @@ import drawColor from './drawColor'
 import drawNormal from './drawNorm'
 
 export function makeDrawMeshCommand (regl, data) {
-  const {entity} = data
   const {buffer, elements, prop} = regl
-  const {geometry} = entity
-  const SHADOW_RES = 1024
-
-  //console.log('normals', geometry)
-  //const norm
+  //const {entity} = data
+  //const {geometry} = entity
+  //const {entryDraw} = entity
+  const SHADOW_RES = 512
 
   const fbo = regl.framebuffer({
     color: regl.texture({
@@ -29,7 +27,6 @@ export function makeDrawMeshCommand (regl, data) {
     depth: true
   })
 
-  let foo = 0
   const wrapperScope = regl({
     context: {
       lightDir: [.39, 0.87, 0.29],
@@ -77,17 +74,33 @@ export function makeDrawMeshCommand (regl, data) {
     }
   })
 
-  const _drawBase = drawBase(regl, {geometry})
-  const _drawColor = drawColor(regl, {entity})
+  //we create any draw commands we need
+  //const _drawBase = entryDraw//drawBase(regl, {geometry})
+
   const _drawDepth = drawDepth(regl, {fbo})
 
   const _drawNorm = drawNormal(regl, {fbo, SHADOW_RES})
+  //const _drawColor = drawColor(regl, {entity})
+
+  const foo = function(props){
+    for(let i=0;i<data.length;i++){
+      data[i].entryDraw(props[i])
+    }
+  }
+//const drawMeshes = drawMeshes? drawMeshes : foo.bind(null, props)
+
+
 
   function command (props) {
-    var drawMeshes = () => _drawBase(props)
+    const drawMeshes = function(){
+      //console.log('props')
+      //throw new Error(',:')
+      for(let i=0;i<props.length;i++){
+        props[i].entryDraw(props[i])
+      }
+    }
 
     wrapperScope(props, (context) => {
-      //console.log(context)
       _drawDepth(drawMeshes)
       _drawNorm(drawMeshes)
       //_drawColor(drawMeshes)

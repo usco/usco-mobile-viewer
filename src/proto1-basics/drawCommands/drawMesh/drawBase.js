@@ -2,7 +2,7 @@
 export default function drawBase(regl, params) {
   const {geometry} = params
   const {prop, buffer, elements} = regl
-  return regl({
+  let commandParams = {
     uniforms: {
       model: prop('mat'),
       color: prop('color')
@@ -12,5 +12,10 @@ export default function drawBase(regl, params) {
       normal: buffer(geometry.normals)
     },
     elements : elements(geometry.cells)
-  })
+  }
+
+  //Splice in any extra params
+  commandParams = Object.assign({}, commandParams, params.extras)
+  console.log('here')
+  return regl(commandParams)
 }

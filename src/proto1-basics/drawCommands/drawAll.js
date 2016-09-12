@@ -101,7 +101,15 @@ export function makeDrawCommand (regl, data) {
       sca: prop('sca')
     },
 
-    primitive: (entity.visuals && entity.visuals.primitive) ? entity.visuals.primitive : 'triangles'
+    primitive: (entity.visuals && entity.visuals.primitive) ? entity.visuals.primitive : 'triangles',
+
+    /*depth: {
+      enable: true,
+      mask: true,
+      func: 'notequal',
+      range: [0, 1]
+    },*/
+
   }
   if (geometry.cells) {
     params.elements = elements(geometry.cells)

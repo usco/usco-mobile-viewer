@@ -5,6 +5,13 @@ import normals from 'angle-normals'
 import {makeDrawMeshCommand} from './drawCommands/drawMesh'
 import {makeDrawCommand} from './drawCommands/drawAll'
 
+/*
+ => draw all things that need to be drawn in style A
+ => draw all things that need to be drawn in style B
+*/
+
+import drawBase from './drawCommands/drawMesh/drawBase'
+
 
 
 /*
@@ -50,6 +57,10 @@ export function hashEntityForRender (entity) {
   return hash
 }
 
+
+let meshSceneItems = []
+let meshSceneCmd
+
 export function makeDrawCalls (regl, data) {
   /*
   Things that need different drawCalls
@@ -64,14 +75,19 @@ export function makeDrawCalls (regl, data) {
 
   //what drawCommands are available
   const drawCmds = {
-    'mesh':makeDrawMeshCommand,
+    'mesh':drawBase,//makeDrawMeshCommand,
     undefined: makeDrawCommand
   }
 
   // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
   const entitiesWithHash = data.entities.map(function (entity) {
     const {scene} = data
-    const drawData = Object.assign({}, data, {entity})
+    let drawData = Object.assign({}, data, {entity}, {geometry: entity.geometry, extras: {}})
+    if(entity.visuals && entity.visuals.params){
+      Object.keys(entity.visuals.params).map(function(key){
+        drawData.extras[key] = entity.visuals.params[key]
+      })
+    }
 
     const drawCmdType = entity.visuals && entity.visuals.type ? entity.visuals.type : undefined
     const cmd = drawCmds[drawCmdType](regl, drawData)
@@ -81,8 +97,16 @@ export function makeDrawCalls (regl, data) {
     hashSet.add(hash)
 
     hashStore[hash] = cmd
-    return Object.assign({}, entity, {_renderBatchId: hash})
+    //const customDrawCmd
+
+    const updatedEntity = Object.assign({}, entity, {_renderBatchId: hash, entryDraw:cmd})
+    if(drawCmdType === 'mesh'){
+      meshSceneItems.push(updatedEntity)
+    }
+    return updatedEntity
   })
+
+  meshSceneCmd = makeDrawMeshCommand(regl, meshSceneItems)
 
   //console.log('hashSet', hashSet)
   //console.log(hashSet.has(JSON.stringify({geom: data.entities[0].geometry.id, fragShader: 'base',vertShader: 'base'})))
@@ -94,12 +118,41 @@ let counter = 0
 export function draw (regl, hashStore, data) {
   // more dynamic this can change every frame
   //console.log('hashStore', hashStore)
+  const _dynamicData = data.entities
+    .filter(entity => entity.visuals && entity.visuals.type && entity.visuals.type ==='mesh')
+    .filter(entity => entity.visuals.visible !== undefined ? entity.visuals.visible : true)
+    .map(function (entity, index) {
+      const {modelMat} = entity
+      const {scene, camera} = data
+
+      // simple hack for selection state
+      //const color = entity.meta.pickable && entity.meta.selected  && ? [1, 0, 0, 1] : entity.visuals.color
+      let color = entity.visuals.color || [1,1,1,1]
+      if(entity.meta.pickable && entity.meta.selected){
+        color = [1,0,0,1]
+      }
+      const entryDraw = entity.entryDraw
+      //counter += 1
+
+      const callData = { color, mat: modelMat, scene, view: camera.view, counter, entryDraw }
+      return callData
+  })
+  meshSceneCmd(_dynamicData)
+
+
   let batches2 = {}
   const dynamicData = data.entities
     .filter(entity => entity.visuals.visible !== undefined ? entity.visuals.visible : true)
     .map(function (entity, index) {
       const {modelMat} = entity
       const {scene, camera} = data
+
+      const drawCmdType = entity.visuals && entity.visuals.type ? entity.visuals.type : undefined
+
+      if(drawCmdType ==='mesh'){
+        return
+      }
+
 
       // simple hack for selection state
       const color = entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
@@ -113,10 +166,10 @@ export function draw (regl, hashStore, data) {
       }
       batches2[entity._renderBatchId].push(callData)
 
-      return {drawCall, callData}
+      //return {drawCall, callData}
       return drawCall(callData)
   })
-  //return dynamicData
+  return dynamicData
 
 
   //console.log('dynamicData', batches2)
@@ -144,7 +197,7 @@ export function draw (regl, hashStore, data) {
 
   //console.log('data1', bunniesData, shadowPlaneData)
   console.log('meshesCallData', meshesCallData)
-  //throw new Error('mlk')
+  throw new Error('mlk')
   const meshesCall =  dynamicData[0].drawCall(meshesCallData)
   //const gridCall =  dynamicData[3].drawCall(data2)
   //const fooCall =  dynamicData[0].drawCall(batches2[id3])
