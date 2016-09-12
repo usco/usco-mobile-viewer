@@ -7,7 +7,6 @@ import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 import { drawModel as _drawModel, draw as _draw, makeDrawCalls } from './draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
-
 import normals from 'angle-normals'
 
 
@@ -47,6 +46,14 @@ const shadowPlane = makeShadowPlane(160)
 
 /* --------------------- */
 
+
+/* Pipeline:
+  - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
+
+  - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
+  - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
+*/
+
 function flatten (arr) {
   return arr.reduce(function (a, b) {
     return a.concat(b)
@@ -55,7 +62,7 @@ function flatten (arr) {
 
 let fullData = {
   scene: sceneData,
-  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, gizmo])
+  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, ])//gizmo])
 }
 
 // inject bounding box data
