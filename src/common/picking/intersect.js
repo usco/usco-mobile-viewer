@@ -24,6 +24,13 @@ export default function intersect (ray, entity, index) {
     const localRayRo = transformMat4(vec3.create(), ray.ro, invModelMat)
     const localRayRd = transformMat4(vec3.create(), ray.rd, invModelMat)
 
+    //FIXME ! this is a hack, just for testing, also , imperative
+
+    function setSelection(entity){
+      entity.meta.selected = !entity.meta.selected
+      //entity.visuals.visible = !entity.visuals.visible
+    }
+
     //if we do not want to go any deeper into the object
     if(entity.meta.pickLimit && entity.meta.pickLimit === 'bounds')
     {
@@ -32,9 +39,7 @@ export default function intersect (ray, entity, index) {
       // distance between intersect point and ray origin, in world space
       const distance = vec3.length(vec3.subtract(vec3.create(), hitPoint, ray.ro))
 
-      entity.meta.selected = !entity.meta.selected
-      //entity.visuals.visible = !entity.visuals.visible
-
+      setSelection(entity)
       return {intersect: {pos: hitPoint, distance}, entity, index}
     }
 
@@ -70,10 +75,8 @@ export default function intersect (ray, entity, index) {
       // distance between intersect point and ray origin, in world space
       const distance = vec3.length(vec3.subtract(vec3.create(), hitPoint, ray.ro))
 
-      entity.meta.selected = ! entity.meta.selected
+      setSelection(entity)
       //entity.visuals.visible = !entity.visuals.visible
-
-
       return {intersect: {pos: hitPoint, distance}, entity, index}
     }
     return null
