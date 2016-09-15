@@ -7,8 +7,6 @@ import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 import { drawModel as _drawModel, draw as _draw, makeDrawCalls } from './draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
-import normals from 'angle-normals'
-
 
 const regl = reglM({extensions: 'oes_texture_float'})//FIXME: for shadows, is it widely supported
 /*canvas: container,
@@ -22,18 +20,14 @@ const draw = _draw.bind(null, regl)
 import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
 import pickLoop from '../common/picking/pickLoop'
 
-import computeBounds from '../common/bounds/computeBounds'// from 'vertices-bounding-box'
-import computeTMatrixFromTransforms from '../common/utils/computeTMatrixFromTransforms'
-
 import most from 'most'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
-
+import {injectNormals, injectTMatrix, injectBounds} from './prepPipeline'
 /* --------------------- */
 
 const container = document.querySelector('canvas')
 //const container = document.querySelector('#drawHere')
-
 
 import makeGrid from './grid'
 import makeShadowPlane from './shadowPlane'
@@ -43,9 +37,7 @@ const grid = makeGrid(160, 1)
 const gizmo = makeTransformGizmo()
 const shadowPlane = makeShadowPlane(160)
 
-
 /* --------------------- */
-
 
 /* Pipeline:
   - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
@@ -65,37 +57,19 @@ let fullData = {
   entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, ])//gizmo])
 }
 
-// inject bounding box data
-fullData.entities = fullData.entities.map(function (entity) {
-  const bounds = computeBounds(entity)
-  const result = Object.assign({}, entity, {bounds})
-  console.log('data with bounds', result)
-  return result
-})
+const fullData$ = ''
 
-// inject object transformation matrix : costly : only do it when changes happened to objects
-fullData.entities = fullData.entities.map(function (entity) {
-  const modelMat = computeTMatrixFromTransforms(entity)
-  const result = Object.assign({}, entity, {modelMat})
-  console.log('result', result)
-  return result
-})
 
-// compute normals when needed : costly : only do it when changes happened to objects
-fullData.entities = fullData.entities.map(function (entity) {
-  const buffer = regl.buffer
-  const {geometry} = entity
-  geometry.normals = geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) : geometry.normals
-  const result = Object.assign({}, entity, {geometry})
-  return result
-})
+// apply all changes
+fullData.entities = fullData.entities
+  .map(injectBounds)
+  .map(injectTMatrix)
+  .map(injectNormals)
 
 //inject bactching/rendering data
 const {hashStore, entities} = makeDrawCalls(regl, fullData)
 fullData.entities = entities
-
 /* ============================================ */
-
 // main render function: data in, rendered frame out
 function render (data) {
   clear({
