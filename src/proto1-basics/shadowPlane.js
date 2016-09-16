@@ -44,7 +44,7 @@ export default function makeShadowPlane (size) {
 
   const data = {
     visuals: {
-      color: [1, 1, 1, 0.8],
+      color: [1, 1, 1, 0.0],
       type: 'mesh',
       //drawFn,
       params:{
@@ -61,16 +61,14 @@ export default function makeShadowPlane (size) {
         blend: {
           enable: false,
           func: {
-            srcRGB: 'src alpha',
-            srcAlpha: 1,
-            dstRGB: 'one minus src alpha',
-            dstAlpha: 'src alpha'
+            src: 'src alpha',
+            dst: 'one minus src alpha'
           },
-          equation: {
+          /*equation: {
             rgb: 'add',
             alpha: 'add'
           },
-          color: [0, 0, 0, 0]
+          color: [0, 0, 0, 0]*/
         },
         stencil: {
           enable: true,

@@ -8,10 +8,13 @@ import { drawModel as _drawModel, draw as _draw, makeDrawCalls } from './draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
+
 const regl = reglM({extensions: 'oes_texture_float'})//FIXME: for shadows, is it widely supported
 /*canvas: container,
   drawingBufferWidth: container.offsetWidth,
   drawingBufferHeight: container.offsetHeight})*/ //for editor
+const container = document.querySelector('canvas')
+//const container = document.querySelector('#drawHere')
 
 const {frame, clear} = regl
 //const drawModel = _drawModel.bind(null, regl)
@@ -25,9 +28,6 @@ import most from 'most'
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
 import {injectNormals, injectTMatrix, injectBounds} from './prepPipeline'
 /* --------------------- */
-
-const container = document.querySelector('canvas')
-//const container = document.querySelector('#drawHere')
 
 import makeGrid from './grid'
 import makeShadowPlane from './shadowPlane'
@@ -72,14 +72,8 @@ function render (data) {
     depth: 1,
     color: [1, 1, 1, 1]
   })
-
   draw(hashStore, data)
 }
-
-// dynamic drawing
-/*frame((props, context) => {
-  render(fullData)
-})*/
 
 // render one frame
 // render(fullData)
@@ -90,9 +84,6 @@ const gestures = pointerGestures(baseInteractions$)
 const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, fullData)
 
 // interactions : picking
-//FIXME ! this is a hack, just for testing, also , imperative
-
-
 const picks$ = pickStream({gestures}, fullData)
   .tap(e=>console.log('picks', e))
 
@@ -114,7 +105,9 @@ function upsertCameraState (cameraState) {
   return data
 }
 
-function setSelection({entity}){
+//FIXME ! this is a hack, just for testing, also , imperative
+
+function setSelection ({entity}) {
   console.log('setting seletion')
   entity.meta.selected = !entity.meta.selected
   return entity

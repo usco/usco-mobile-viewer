@@ -3,7 +3,7 @@ import mat4 from 'gl-mat4'
 import normals from 'angle-normals'
 
 import {makeDrawMeshCommand} from './drawCommands/drawMesh'
-import {makeDrawCommand} from './drawCommands/drawAll'
+import {makeDrawCommand} from './drawCommands/drawBasic'
 
 /*
  => draw all things that need to be drawn in style A
