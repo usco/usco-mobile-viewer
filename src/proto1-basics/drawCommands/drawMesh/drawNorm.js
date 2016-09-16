@@ -1,11 +1,13 @@
+var glslify = require('glslify-sync') // works in client & server
 
-export default function drawNormal(regl, params){
+export default function drawNormal (regl, params) {
   const {fbo, SHADOW_RES} = params
    return regl({
     uniforms: {
       shadowMap: fbo,
       minBias: () => 0.005,
-      maxBias: () => 0.03
+      maxBias: () => 0.03,
+      shadowColor: [1,1,1]
     },
     frag: `
     precision mediump float;
@@ -18,6 +20,8 @@ export default function drawNormal(regl, params){
     uniform vec3 lightDir;
     uniform float minBias;
     uniform float maxBias;
+    uniform vec3 shadowColor;
+    uniform vec3 opactity;
   #define texelSize 1.0 / float(${SHADOW_RES})
     float shadowSample(vec2 co, float z, float bias) {
       float a = texture2D(shadowMap, co).z;
@@ -28,6 +32,7 @@ export default function drawNormal(regl, params){
       vec3 ambient = ambientLightAmount * color.xyz;
       float cosTheta = dot(vNormal, lightDir);
       vec3 diffuse = diffuseLightAmount * color.xyz * clamp(cosTheta , 0.0, 1.0 );
+      
       float v = 1.0; // shadow value
       vec2 co = vShadowCoord.xy * 0.5 + 0.5;// go from range [-1,+1] to range [0,+1]
       // counteract shadow acne.
@@ -44,23 +49,8 @@ export default function drawNormal(regl, params){
       if(co.x < 0.0 || co.x > 1.0 || co.y < 0.0 || co.y > 1.0) {
         v = 1.0;
       }
-      gl_FragColor = vec4((ambient + diffuse * v), 1.0);
+      gl_FragColor = vec4((ambient + diffuse * v), 1.);// color.w);//1.-shadowColor.x
     }`,
-    vert: `
-    precision mediump float;
-    attribute vec3 position;
-    attribute vec3 normal;
-    varying vec3 vPosition;
-    varying vec3 vNormal;
-    varying vec3 vShadowCoord;
-    uniform mat4 projection, view, model;
-    uniform mat4 lightProjection, lightView;
-    void main() {
-      vPosition = position;
-      vNormal = normal;
-      vec4 worldSpacePosition = model * vec4(position, 1);
-      gl_Position = projection * view * worldSpacePosition;
-      vShadowCoord = (lightProjection * lightView * worldSpacePosition).xyz;
-    }`
+    vert: glslify(__dirname + '/shaders/shadowed.vert')
   })
 }

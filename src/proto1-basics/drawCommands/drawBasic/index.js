@@ -42,8 +42,8 @@ export function makeDrawCommand (regl, data) {
   // const {positions, cells, mat, color, pos} = data
   const {geometry} = entity
 
-  const vertShader = entity.visuals && entity.visuals.vert ? entity.visuals.vert : glslify(__dirname + '/../shaders/base.vert')
-  const fragShader = entity.visuals && entity.visuals.frag ? entity.visuals.frag : glslify(__dirname + '/../shaders/base.frag')
+  const vertShader = entity.visuals && entity.visuals.vert ? entity.visuals.vert : glslify(__dirname + '/../../shaders/base.vert')
+  const fragShader = entity.visuals && entity.visuals.frag ? entity.visuals.frag : glslify(__dirname + '/../../shaders/base.frag')
 
   // const normal_old = buffer( geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) : geometry.normals || [])
   let normal // = geometry.cells && !geometry.normals ? normals(geometry.cells, geometry.positions) :
