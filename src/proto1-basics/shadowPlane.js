@@ -64,13 +64,32 @@ export default function makeShadowPlane (size) {
             srcRGB: 'src alpha',
             srcAlpha: 1,
             dstRGB: 'one minus src alpha',
-            dstAlpha: 1
+            dstAlpha: 'src alpha'
           },
           equation: {
             rgb: 'add',
             alpha: 'add'
           },
           color: [0, 0, 0, 0]
+        },
+        stencil: {
+          enable: true,
+          mask: 0x0,
+          func: {
+            cmp: '=',
+            ref: 0,
+            mask: 0x00
+          },
+          opFront: {
+            fail: 'zero',
+            zfail: 'zero',
+            zpass: 'zero'
+          },
+          opBack: {
+            fail: 'invert',
+            zfail: 'zero',
+            zpass: 'zero'
+          }
         },
       }
     },

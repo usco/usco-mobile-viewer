@@ -17,8 +17,8 @@ const {frame, clear} = regl
 //const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
 
-import {controlsLoop as controlsLoop} from '../common/controls/controlsLoop'
-import pickLoop from '../common/picking/pickLoop'
+import controlsStream from '../common/controls/controlsStream'
+import pickStream from '../common/picking/pickStream'
 
 import most from 'most'
 
@@ -41,7 +41,6 @@ const shadowPlane = makeShadowPlane(160)
 
 /* Pipeline:
   - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
-
   - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
   - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
 */
@@ -56,9 +55,6 @@ let fullData = {
   scene: sceneData,
   entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, ])//gizmo])
 }
-
-const fullData$ = ''
-
 
 // apply all changes
 fullData.entities = fullData.entities
@@ -91,15 +87,49 @@ function render (data) {
 // interactions : camera controls
 const baseInteractions$ = interactionsFromEvents(container)
 const gestures = pointerGestures(baseInteractions$)
-const camMoves$ = controlsLoop({gestures}, {settings: cameraDefaults, camera}, fullData)
+const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, fullData)
 
 // interactions : picking
-const picks$ = pickLoop({gestures}, fullData)
+//FIXME ! this is a hack, just for testing, also , imperative
+
+
+const picks$ = pickStream({gestures}, fullData)
+  .tap(e=>console.log('picks', e))
+
+const selections$ = most.just(fullData.entities)
+  .map(function(x){
+    return x.filter(x=>'meta' in x).filter(x=>x.meta.selected)
+  })
+  .startWith([])
+  .merge(picks$)
+  .scan((acc,cur)=>{
+
+  },[])
+  .filter(x=>x !== undefined)
+  .forEach(e=>console.log('selections',e))
+
+function upsertCameraState (cameraState) {
+  let data = fullData
+  data.camera = cameraState
+  return data
+}
+
+function setSelection({entity}){
+  console.log('setting seletion')
+  entity.meta.selected = !entity.meta.selected
+  return entity
+}
+
+const stateWithCameraState$ = camState$
+  .map(upsertCameraState)
+
+const stateWithSelectionState$ = picks$
+  .map(x=>x.map(setSelection))
   .map(e => fullData)
 
 // merge all the things that should trigger a re-render
 most.merge(
-  camMoves$,
-  picks$
+  stateWithCameraState$,
+  stateWithSelectionState$
 )
   .forEach(render)

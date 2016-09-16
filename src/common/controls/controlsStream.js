@@ -8,7 +8,7 @@ import { interactionsFromEvents, pointerGestures } from '../interactions/pointer
 import { model } from '../utils/modelUtils'
 import animationFrames from '../utils/animationFrames'
 
-export function controlsLoop (interactions, cameraData, fullData) {
+export default function controlsStream (interactions, cameraData, fullData) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 
@@ -68,22 +68,10 @@ export function controlsLoop (interactions, cameraData, fullData) {
     )
   }
 
-  function updateCompleteState (cameraState) {
-    let data = fullData
-    data.camera = cameraState
-    return data
-  }
-
   const cameraState$ = makeCameraModel()
 
   return cameraState$
     .sample(x=>x, rate$)
     .filter(x => x.changed)
     .merge(cameraState$)
-    .map(updateCompleteState)
-    //.tap(e=>console.log('here'))
-   /*const updateForRender$ = most.sample(updateCompleteState, heartBeat$, cameraState$)
-     .filter(x => x.changed)
-     .map(updateCompleteState)
-   return updateForRender$*/
 }

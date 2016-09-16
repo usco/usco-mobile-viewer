@@ -5,7 +5,7 @@ import intersect from './intersect'
 
 import {merge } from 'most'
 
-export default function pickLoop (interactions, fullData) {
+export default function pickStream (interactions, data) {
   const {gestures} = interactions
   const viewport = [ 0, 0, window.innerWidth, window.innerHeight ]
 
@@ -17,7 +17,7 @@ export default function pickLoop (interactions, fullData) {
       const pointer = {
         position: [event.offsetX, event.offsetY]
       }
-      return tryToPick(pointer, viewport, fullData)
+      return tryToPick(pointer, viewport, data)
     })
     .tap(e => console.log('picking, single taps', e))
 }
@@ -52,4 +52,5 @@ function tryToPick (pointer, viewport, fullData) {
       return intersect(ray, entity, index)
     })
     .filter(h => h !== null)
+    .concat([])
 }

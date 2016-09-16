@@ -30,7 +30,7 @@ export default function makeGrid (size, ticks = 10) {
     },
 
     transforms: {
-      pos: [0, 0, 0],
+      pos: [0, 0, 0.1],
       rot: [0, 0, 0],
       sca: [1, 1, 1]
     },
