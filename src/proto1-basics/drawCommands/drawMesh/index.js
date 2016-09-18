@@ -93,8 +93,6 @@ export function makeDrawMeshCommand (regl, data) {
 
   function command (props) {
     const drawMeshes = function(){
-      //console.log('props')
-      //throw new Error(',:')
       for(let i=0;i<props.length;i++){
         props[i].entryDraw(props[i])
       }
