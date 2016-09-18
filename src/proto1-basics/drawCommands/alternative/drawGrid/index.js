@@ -42,7 +42,8 @@ export default function drawGrid(regl, params) {
       },
       projection: (context, props) => {
         return mat4.ortho([], -300, 300, 350, -350, 0.01, 1000)
-      }
+      },
+      color: regl.prop('color')
     },
     lineWidth: 1,
     primitive: 'line strip'
