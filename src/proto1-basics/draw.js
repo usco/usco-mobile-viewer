@@ -9,9 +9,7 @@ import {makeDrawCommand} from './drawCommands/drawBasic'
  => draw all things that need to be drawn in style A
  => draw all things that need to be drawn in style B
 */
-
 import drawBase from './drawCommands/drawMesh/drawBase'
-
 
 
 /*
@@ -61,6 +59,7 @@ export function hashEntityForRender (entity) {
 let meshSceneItems = []
 let meshSceneCmd
 
+
 export function makeDrawCalls (regl, data) {
   /*
   Things that need different drawCalls
@@ -69,7 +68,6 @@ export function makeDrawCalls (regl, data) {
     entity.visuals.vert
     entity.visuals.frag
   */
-
   const hashSet = new Set()
   const hashStore = {}
 
@@ -138,7 +136,7 @@ export function draw (regl, hashStore, data) {
       return callData
   })
   meshSceneCmd(_dynamicData)
-
+  return
 
   let batches2 = {}
   const dynamicData = data.entities

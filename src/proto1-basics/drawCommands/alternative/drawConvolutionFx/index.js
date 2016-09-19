@@ -1,12 +1,11 @@
 
 
-export default function drawFx (regl, params) {
-  //const pixels = regl.texture()
-  const {pixels} = params
+export default function drawConvolutionFx (regl, params) {
+  const {texture} = params
 
   let uniforms = {
     tick: regl.prop('tick'),
-    texture: pixels,
+    texture,
     textureSize: regl.prop('textureSize'),
     kernelWeight: 2
   }
@@ -31,10 +30,7 @@ export default function drawFx (regl, params) {
     varying vec2 uv;
 
     void main () {
-      //float size = textureSize(texture);
-      gl_FragColor = vec4(texture2D(texture, uv)).rgba;
-
-      /*vec2 onePixel = vec2(1.0, 1.0) / textureSize;
+      vec2 onePixel = vec2(1.0, 1.0) / textureSize;
       vec4 colorSum =
        texture2D(texture, uv + onePixel * vec2(-1, -1)) * kernel[0] +
        texture2D(texture, uv + onePixel * vec2( 0, -1)) * kernel[1] +
@@ -46,15 +42,8 @@ export default function drawFx (regl, params) {
        texture2D(texture, uv + onePixel * vec2( 0,  1)) * kernel[7] +
        texture2D(texture, uv + onePixel * vec2( 1,  1)) * kernel[8] ;
 
-    vec4 color =   vec4((colorSum / kernelWeight).rgb, 1.0);
-    gl_FragColor = color;*/
-
-    /*  gl_FragColor = (
-       texture2D(texture, uv) +
-       texture2D(texture, uv + vec2(onePixel.x, 0.0)) +
-       texture2D(texture, uv + vec2(-onePixel.x, 0.0))) / 3.0;*/
-
-
+      vec4 color =   vec4((colorSum / kernelWeight).rgb, 1.0);
+      gl_FragColor = color;
     }`,
 
     vert: `
