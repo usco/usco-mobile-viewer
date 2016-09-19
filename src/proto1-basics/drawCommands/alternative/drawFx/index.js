@@ -12,7 +12,7 @@ export default function drawFx (regl, params) {
   }
 
   for (let i = 0; i < 9; ++i) {
-    uniforms[`kernel[${i}]`] = (context,props) => props.kernel[i] }
+    uniforms[`kernel[${i}]`] = (context, props) => props.kernel[i] }
 
   console.log('uniform', uniforms)
 
@@ -32,9 +32,9 @@ export default function drawFx (regl, params) {
 
     void main () {
       //float size = textureSize(texture);
-      //gl_FragColor = vec4(0.8*texture2D(texture, uv)).bgra;
+      gl_FragColor = vec4(texture2D(texture, uv)).rgba;
 
-      vec2 onePixel = vec2(1.0, 1.0) / textureSize;
+      /*vec2 onePixel = vec2(1.0, 1.0) / textureSize;
       vec4 colorSum =
        texture2D(texture, uv + onePixel * vec2(-1, -1)) * kernel[0] +
        texture2D(texture, uv + onePixel * vec2( 0, -1)) * kernel[1] +
@@ -47,7 +47,7 @@ export default function drawFx (regl, params) {
        texture2D(texture, uv + onePixel * vec2( 1,  1)) * kernel[8] ;
 
     vec4 color =   vec4((colorSum / kernelWeight).rgb, 1.0);
-    gl_FragColor = color;
+    gl_FragColor = color;*/
 
     /*  gl_FragColor = (
        texture2D(texture, uv) +

@@ -4,12 +4,19 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import { drawModel as _drawModel, draw as _draw, makeDrawCalls } from './draw'
+import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/draw'//'./draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
 
-const regl = reglM({extensions: 'oes_texture_float'})//FIXME: for shadows, is it widely supported
+const regl = reglM({
+  extensions: [
+    'oes_texture_float',// FIXME: for shadows, is it widely supported ?
+    // 'EXT_disjoint_timer_query'// for gpu benchmarking only
+  ],
+
+  profile: true
+})
 /*canvas: container,
   drawingBufferWidth: container.offsetWidth,
   drawingBufferHeight: container.offsetHeight})*/ //for editor
@@ -68,10 +75,6 @@ fullData.entities = entities
 /* ============================================ */
 // main render function: data in, rendered frame out
 function render (data) {
-  clear({
-    depth: 1,
-    color: [1, 1, 1, 1]
-  })
   draw(hashStore, data)
 }
 
