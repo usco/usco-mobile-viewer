@@ -1,5 +1,5 @@
 export default function drawBlurFx (regl, params) {
-  const {texture, filter_radius} = params
+  const {texture, filter_radius, fbo} = params
 
 
   //this is taken from https://github.com/regl-project/regl/blob/gh-pages/example/blur.js
@@ -18,6 +18,9 @@ export default function drawBlurFx (regl, params) {
           avg += (1.0 / W) * texture2D(texture, uv + vec2(float(x) * wRcp, float(y) * hRcp)).xyz;
         }
       }
+      /*if (avg.rgb == vec3(0.0,0.0,0.0))
+        discard;*/
+
       gl_FragColor = vec4(avg, 1.0);
     }`,
 
@@ -38,7 +41,8 @@ export default function drawBlurFx (regl, params) {
       hRcp: ({viewportHeight}) => 1.0 / viewportHeight
     },
     depth: { enable: false },
-    count: 3
+    count: 3,
+    framebuffer: fbo
   })
   return drawBlur
 }

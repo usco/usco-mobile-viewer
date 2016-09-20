@@ -8,6 +8,7 @@ import wrapperScope from './wrapperScope'
 import drawConvolutionFx from './drawConvolutionFx'
 import drawBlurFx from './drawBlurFx'
 import drawDistortFx from './drawDistortFx'
+import drawCombinerFx from './drawCombinerFx'
 
 import bunny from 'bunny'
 
@@ -35,45 +36,77 @@ export function makeDrawCalls (regl, data) {
     }),
     depth: true
   })
+
+  const blurredFbo = regl.framebuffer({
+    color: regl.texture({
+      width: 1,
+      height: 1,
+      wrap: 'clamp'
+    }),
+    depth: true
+  })
+  const blurPassResMultiplier = 0.25
+
+  const pass2Fbo = regl.framebuffer({
+    color: regl.texture({
+      width: 1,
+      height: 1,
+      wrap: 'clamp'
+    }),
+    depth: true
+  })
+
   const _wrapperScope = wrapperScope(regl, {fbo: pass1Fbo})
+  const _wrapperScope2 = wrapperScope(regl, {fbo: pass2Fbo})
 
   const _drawConvolutionFx = drawConvolutionFx(regl, {texture: pass1Fbo})
   const _drawDistortFx = drawDistortFx(regl, {texture: pass1Fbo})
-  const _drawBlurFx = drawBlurFx(regl, {texture: pass1Fbo, filter_radius: 4})
+  const _drawBlurFx = drawBlurFx(regl, {texture: pass2Fbo, filter_radius: 14, fbo: blurredFbo})
+  const _drawCombinerFx = drawCombinerFx(regl, {diffuseTex: pass1Fbo, glowTex: blurredFbo})
 
   // actual 'main' render command
-  let viewportWidth = 1000 * resolutionScale, viewportHeight = 500 * resolutionScale
+  let viewportWidth = window.innerWidth * resolutionScale
+  let viewportHeight = window.innerHeight * resolutionScale
+  let bg = [0., 0., 0., 1]
   command = (props) => {
     const {camera, view} = props
 
-    /*rootScope(props, (context) => {
-    })*/
     pass1Fbo.resize(viewportWidth, viewportHeight)
+    pass2Fbo.resize(viewportWidth, viewportHeight)
+    blurredFbo.resize(viewportWidth * blurPassResMultiplier, viewportHeight * blurPassResMultiplier)
 
     _wrapperScope(props, (context) => {
       // {viewportWidth, viewportHeight} = context
-      viewportWidth = context.viewportWidth
-      viewportHeight = context.viewportHeight
+      viewportWidth = context.viewportWidth * resolutionScale
+      viewportHeight = context.viewportHeight * resolutionScale
       regl.clear({
-        color: [1, 1, 1, 0],
+        color: bg,
         depth: 1
       })
+      _drawBunny({view, camera, color: [0.7, 1, 0, 1]})
 
-      _drawGrid({view, camera, color: [1, 0, 0]})
-      _drawTri({view, camera, color: [0, 1, 0, 1]})
-      // _drawDynMesh({view, camera, color: [1, 0, 0, 1], positions: bunnyPositionBuffer, cells: bunny.cells})
-      _drawBunny({view, camera, color: [1, 0, 0, 1]})
+    // _drawGrid({view, camera, color: [1, 0, 0]})
+    // _drawTri({view, camera, color: [0, 1, 0, 1]})
+    // _drawDynMesh({view, camera, color: [1, 0, 0, 1], positions: bunnyPositionBuffer, cells: bunny.cells})
     })
-    /*_drawConvolutionFx({
-      tick,
-      textureSize: [texture.width, texture.height],
+
+    _wrapperScope2(props, (context) => {
+      regl.clear({
+        color: bg,
+        depth: 1
+      })
+      _drawBunny({view, camera, color: [0.5, 1, 0.5, 1]})
+    })
+    // post fx
+    /*_drawConvolutionFx({tick, textureSize: [texture.width, texture.height],
       kernel: [//-2
         1, 0, 0,
         0, 1, 0,
         0, 0, 0]
     })*/
-    _drawDistortFx({tick, textureSize: [texture.width, texture.height]})
+    //_drawDistortFx({tick, textureSize: [texture.width, texture.height]})
     _drawBlurFx({tick})
+    _drawCombinerFx()
   }
 
   // fake
