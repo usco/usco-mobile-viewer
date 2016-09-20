@@ -1,5 +1,5 @@
 export default function drawDistortFx (regl, params) {
-  const {texture} = params
+  const {texture, fbo} = params
 
   let uniforms = {
     tick: regl.prop('tick'),
@@ -52,6 +52,7 @@ export default function drawDistortFx (regl, params) {
     },
 
     uniforms,
-    count: 3
+    count: 3,
+    framebuffer: fbo
   })
 }

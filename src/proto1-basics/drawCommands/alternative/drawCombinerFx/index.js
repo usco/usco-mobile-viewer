@@ -1,5 +1,5 @@
 export default function drawCombinerFx (regl, params) {
-  const {diffuseTex, glowTex} = params
+  const {diffuseTex, glowTex, fbo} = params
 
   //blend functions taken from https://github.com/jamieowen/glsl-blend
 
@@ -70,6 +70,7 @@ export default function drawCombinerFx (regl, params) {
       glowTex
     },
     depth: { enable: false },
-    count: 3
+    count: 3,
+    framebuffer: fbo
   })
 }

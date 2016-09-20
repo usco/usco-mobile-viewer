@@ -1,7 +1,7 @@
 
 
 export default function drawConvolutionFx (regl, params) {
-  const {texture} = params
+  const {texture, fbo} = params
 
   let uniforms = {
     tick: regl.prop('tick'),
@@ -63,6 +63,7 @@ export default function drawConvolutionFx (regl, params) {
     },
 
     uniforms,
-    count: 3
+    count: 3,
+    framebuffer: fbo
   })
 }
