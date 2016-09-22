@@ -1,6 +1,6 @@
 import mat4 from 'gl-mat4'
 
-export default function wrapperScope (regl, params) {
+export default function wrapperScope (regl, params={}) {
   const {fbo} = params
   const wrapperScope = regl({
     cull: {
