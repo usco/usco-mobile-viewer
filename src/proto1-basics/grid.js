@@ -4,8 +4,8 @@ export default function makeGrid (params) {
   let {size, ticks} = params
   ticks = ticks || 10
 
-  const width = size
-  const length = size/2
+  const width = size[0]
+  const length = size[1]
 
   let positions = []
   console.log('making grid')
