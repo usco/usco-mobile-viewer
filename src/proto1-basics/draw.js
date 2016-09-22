@@ -136,7 +136,7 @@ export function draw (regl, hashStore, data) {
       return callData
   })
   meshSceneCmd(_dynamicData)
-  return
+  
 
   let batches2 = {}
   const dynamicData = data.entities
