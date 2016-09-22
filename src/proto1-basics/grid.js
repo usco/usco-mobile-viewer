@@ -1,19 +1,25 @@
 var glslify = require('glslify-sync') // works in client & server
 
-export default function makeGrid (size, ticks = 10) {
+export default function makeGrid (params) {
+  let {size, ticks} = params
+  ticks = ticks || 10
+
+  const width = size
+  const length = size/2
+
   let positions = []
   console.log('making grid')
 
-  for (let i = -size;i < size;i += ticks) {
-    positions.push(-size, 0, i)
-    positions.push(size, 0, i)
-    positions.push(-size, 0, i)
+  for (let i = -width;i <= width;i += ticks) {
+    positions.push(-length, 0, i)
+    positions.push(length, 0, i)
+    positions.push(-length, 0, i)
   }
 
-  for (let i = -size;i < size;i += ticks) {
-    positions.push(i, 0, -size)
-    positions.push(i, 0, size)
-    positions.push(i, 0, -size)
+  for (let i = -length;i <= length;i += ticks) {
+    positions.push(i, 0, -width)
+    positions.push(i, 0, width)
+    positions.push(i, 0, -width)
   }
 
   const gridData = {

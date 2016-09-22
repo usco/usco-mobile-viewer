@@ -4,7 +4,12 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/draw'//'./draw'
+
+//import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
+import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
+
+//import { draw as _draw, makeDrawCalls } from './draw'
+
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
@@ -40,7 +45,7 @@ import makeGrid from './grid'
 import makeShadowPlane from './shadowPlane'
 import makeTransformGizmo from './transformsGizmo'
 
-const grid = makeGrid(160, 1)
+const grid = makeGrid({size: [16, 16], ticks: 1})
 const gizmo = makeTransformGizmo()
 const shadowPlane = makeShadowPlane(160)
 
