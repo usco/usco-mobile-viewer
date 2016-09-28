@@ -2,6 +2,7 @@ import mat4 from 'gl-mat4'
 
 import drawGrid from './drawGrid'
 import drawTri from './drawTri'
+import drawCuboid from './drawCuboid'
 import drawDynMesh from './drawDynMesh'
 import drawStaticMesh from './drawStaticMesh'
 
@@ -24,12 +25,29 @@ export function makeDrawCalls (regl, data) {
   const texture = regl.texture()
   const bunnyPositionBuffer = regl.buffer(bunny.positions)
 
-  const _drawGrid = drawGrid(regl)
-  const _drawGridL = drawGrid(regl,{size:[220,200]})
+
+  const gridSize = [220,200]
+  const mGridSize = [21.3,22]
+  const _drawGrid = drawGrid(regl,{size:mGridSize, ticks:4 })
+  const _drawGridL = drawGrid(regl,{size: gridSize})
   let gridOffset = mat4.identity([])
   mat4.translate(gridOffset, gridOffset, [0,-0.1,0]) // z up
 
-  const _drawTri = drawTri(regl)
+  let triMatrix = mat4.identity([])
+  const triSize = {width:5, height:2}
+  let triRot = [0,0,0]
+  mat4.translate(triMatrix, triMatrix, [-triSize.width/2,0.1,mGridSize[0]]) // z up
+  mat4.rotateX(triMatrix, triMatrix, triRot[0])
+  mat4.rotateY(triMatrix, triMatrix, triRot[2])
+  mat4.rotateZ(triMatrix, triMatrix, triRot[1])
+  const _drawTri = drawTri(regl, {width:triSize.width, height: triSize.height})
+
+
+  const containerSize = [mGridSize[1],mGridSize[0],35]
+  let containerCuboidMatrix = mat4.identity([])
+  const _drawCuboid =  drawCuboid(regl, {size: containerSize})
+  mat4.translate(containerCuboidMatrix, containerCuboidMatrix, [0,containerSize[2],0]) // z up
+
 
   const _drawDynMesh = drawDynMesh(regl) // does not require one command per mesh, but is slower
   const _drawBunny = drawStaticMesh(regl, {geometry: bunny}) // one command per mesh, but is faster
@@ -43,31 +61,8 @@ export function makeDrawCalls (regl, data) {
     depth: true
   })
 
-  const blurredFbo = regl.framebuffer({
-    color: regl.texture({
-      width: 1,
-      height: 1,
-      wrap: 'clamp'
-    }),
-    depth: true
-  })
-  const blurPassResMultiplier = 0.25
-
-  const pass2Fbo = regl.framebuffer({
-    color: regl.texture({
-      width: 1,
-      height: 1,
-      wrap: 'clamp'
-    }),
-    depth: true
-  })
 
   const _wrapperScope = wrapperScope(regl)
-
-  const _drawConvolutionFx = drawConvolutionFx(regl, {texture: pass1Fbo})
-  const _drawDistortFx = drawDistortFx(regl, {texture: pass1Fbo})
-  const _drawBlurFx = drawBlurFx(regl, {texture: pass2Fbo, filter_radius: 14, fbo: blurredFbo})
-  const _drawCombinerFx = drawCombinerFx(regl, {diffuseTex: pass1Fbo, glowTex: blurredFbo})
 
   // actual 'main' render command
   let viewportWidth = window.innerWidth * resolutionScale
@@ -75,11 +70,6 @@ export function makeDrawCalls (regl, data) {
   let bg = [1., 1., 1., 1]
   command = (props) => {
     const {camera, view} = props
-
-    pass1Fbo.resize(viewportWidth, viewportHeight)
-    pass2Fbo.resize(viewportWidth, viewportHeight)
-    blurredFbo.resize(viewportWidth * blurPassResMultiplier, viewportHeight * blurPassResMultiplier)
-
     _wrapperScope(props, (context) => {
       // {viewportWidth, viewportHeight} = context
       viewportWidth = context.viewportWidth * resolutionScale
@@ -88,11 +78,12 @@ export function makeDrawCalls (regl, data) {
         color: bg,
         depth: 1
       })
-      _drawBunny({view, camera, color: [0.7, 1, 0, 1]})
+      _drawBunny({view, camera, color: [0.5, 0.5, 0.5, 0.8]})
       _drawGrid({view, camera, color: [0, 0, 0, 1]})
-      _drawGridL({view, camera, color: [0, 0, 0, 0.2], model:gridOffset})
+      _drawGridL({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
 
-    // _drawTri({view, camera, color: [0, 1, 0, 1]})
+      _drawTri({view, camera, color: [0, 0., 0, 0.5], model: triMatrix})
+      _drawCuboid({view, camera, color: [0, 0., 0.0, 0.2], model: containerCuboidMatrix})
     // _drawDynMesh({view, camera, color: [1, 0, 0, 1], positions: bunnyPositionBuffer, cells: bunny.cells})
     })
 

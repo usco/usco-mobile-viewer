@@ -2,7 +2,8 @@ import mat4 from 'gl-mat4'
 
 export default function wrapperScope (regl, params={}) {
   const {fbo} = params
-  const wrapperScope = regl({
+
+  let commandParams = {
     cull: {
       enable: true
     },
@@ -19,6 +20,8 @@ export default function wrapperScope (regl, params={}) {
       }
     },
     framebuffer: fbo
-  })
-  return wrapperScope
+  }
+
+  commandParams = Object.assign({}, commandParams, params.extras)
+  return regl(commandParams)
 }
