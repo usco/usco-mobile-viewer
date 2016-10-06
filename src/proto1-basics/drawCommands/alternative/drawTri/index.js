@@ -10,7 +10,7 @@ export default function drawTri (regl, params) {
 
     attributes: {
       position: [
-        width/2, 0, height,
+        width/2, height, 0,
         0,0,0,
         width, 0,0]
     },
@@ -19,9 +19,10 @@ export default function drawTri (regl, params) {
       model: (context, props) => props.model || mat4.identity([]),
       color: regl.prop('color'),
       angle: ({tick}) => 0.01 * tick
-    },cull:{
-      enable: true,
-      face: 'front'
+    },
+    cull: {
+      enable: false,
+      face: 'back'
     }
   })
 }

@@ -31,12 +31,12 @@ export function makeDrawCalls (regl, data) {
   const _drawGrid = drawGrid(regl,{size:mGridSize, ticks:4 })
   const _drawGridL = drawGrid(regl,{size: gridSize})
   let gridOffset = mat4.identity([])
-  mat4.translate(gridOffset, gridOffset, [0,-0.1,0]) // z up
+  mat4.translate(gridOffset, gridOffset, [0,0,-0.1]) // z up
 
   let triMatrix = mat4.identity([])
   const triSize = {width:5, height:2}
   let triRot = [0,0,0]
-  mat4.translate(triMatrix, triMatrix, [-triSize.width/2,0.1,mGridSize[0]]) // z up
+  mat4.translate(triMatrix, triMatrix, [-triSize.width/2,mGridSize[0],0.1]) // z up
   mat4.rotateX(triMatrix, triMatrix, triRot[0])
   mat4.rotateY(triMatrix, triMatrix, triRot[2])
   mat4.rotateZ(triMatrix, triMatrix, triRot[1])
@@ -46,7 +46,7 @@ export function makeDrawCalls (regl, data) {
   const containerSize = [mGridSize[1],mGridSize[0],35]
   let containerCuboidMatrix = mat4.identity([])
   const _drawCuboid =  drawCuboid(regl, {size: containerSize})
-  mat4.translate(containerCuboidMatrix, containerCuboidMatrix, [0,containerSize[2],0]) // z up
+  mat4.translate(containerCuboidMatrix, containerCuboidMatrix, [0,0,containerSize[2]]) // z up
 
 
   const _drawDynMesh = drawDynMesh(regl) // does not require one command per mesh, but is slower
@@ -86,10 +86,6 @@ export function makeDrawCalls (regl, data) {
       _drawCuboid({view, camera, color: [0, 0., 0.0, 0.2], model: containerCuboidMatrix})
     // _drawDynMesh({view, camera, color: [1, 0, 0, 1], positions: bunnyPositionBuffer, cells: bunny.cells})
     })
-
-    // post fx
-    //_drawBlurFx({tick})
-    //_drawCombinerFx()
   }
 
   // fake

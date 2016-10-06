@@ -5,16 +5,17 @@ import mat4 from 'gl-mat4'
 export default function drawCuboid (regl, params) {
   const {size} = params
   const [width, length, height] = size
+  console.log('size', width, length, height)
   const position = [
-    -width, -height, -length,
-    width, -height, -length,
-    width, -height, length,
-    -width, -height, length,
+    -width, -length, -height,
+    width, -length, -height,
+    width, length, -height,
+    -width, length, -height,
 
-    -width, height, -length,
-    width, height, -length,
-    width, height, length,
-    -width, height, length
+    -width, -length, height,
+    width, -length, height,
+    width, length, height,
+    -width, length, height
   ]
 
   // use this one for clean cube wireframe outline
