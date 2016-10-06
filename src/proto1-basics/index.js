@@ -13,6 +13,29 @@ import { draw as _draw, makeDrawCalls } from './draw'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
+import concat from 'concat-stream'
+import loadTest from './loader'
+
+import create from '@most/create'
+
+const parsedSTLStream = create((add, end, error) => {
+
+  loadTest()
+    .pipe(concat(function (data) {
+      let positions = data.slice(0, data.length / 2)
+      let normals = data.slice(data.length / 2)
+
+      positions = new Float32Array(positions.buffer.slice(positions.byteOffset, positions.byteOffset + positions.byteLength)) //
+      normals = new Float32Array(normals.buffer.slice(normals.byteOffset, normals.byteOffset + normals.byteLength))
+      const parsedSTL = {
+        positions: positions,
+        normals: normals
+      }
+      //console.log('done with stl', data)
+      add(parsedSTL)
+    }))
+})
+
 
 const regl = reglM({
   extensions: [
@@ -35,7 +58,7 @@ const draw = _draw.bind(null, regl)
 import controlsStream from '../common/controls/controlsStream'
 import pickStream from '../common/picking/pickStream'
 
-import most from 'most'
+import {just, merge} from 'most'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
 import {injectNormals, injectTMatrix, injectBounds} from './prepPipeline'
@@ -95,7 +118,7 @@ const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera},
 const picks$ = pickStream({gestures}, fullData)
   .tap(e=>console.log('picks', e))
 
-const selections$ = most.just(fullData.entities)
+const selections$ = just(fullData.entities)
   .map(function(x){
     return x.filter(x=>'meta' in x).filter(x=>x.meta.selected)
   })
@@ -129,8 +152,15 @@ const stateWithSelectionState$ = picks$
   .map(e => fullData)
 
 // merge all the things that should trigger a re-render
-most.merge(
+merge(
   stateWithCameraState$,
   stateWithSelectionState$
 )
   .forEach(render)
+
+parsedSTLStream
+  .map(geometry => ({geometry}))
+  .map(injectBounds)
+  .map(injectTMatrix)
+  .map(injectNormals)
+  .forEach(x=>console.log('loaded stl',x))
