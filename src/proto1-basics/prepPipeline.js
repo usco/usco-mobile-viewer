@@ -12,7 +12,7 @@ export function injectBounds (entity) {
 
 // inject object transformation matrix : costly : only do it when changes happened to objects
 export function injectTMatrix (entity) {
-  const modelMat = computeTMatrixFromTransforms(entity)
+  const modelMat = computeTMatrixFromTransforms(entity.transforms)
   const result = Object.assign({}, entity, {modelMat})
   console.log('result', result)
   return result
