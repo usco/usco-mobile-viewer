@@ -37,6 +37,7 @@ export default function controlsStream (interactions, cameraData, fullData) {
     .map(x => -x) // we invert zoom direction
     .startWith(0)
     .filter(x => !isNaN(x))
+    .throttle(10)
 
   function makeCameraModel () {
     function applyRotation (state, angles) {
