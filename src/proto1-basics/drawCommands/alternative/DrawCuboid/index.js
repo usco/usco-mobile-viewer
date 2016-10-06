@@ -1,11 +1,9 @@
 var glslify = require('glslify-sync') // works in client & server
 import mat4 from 'gl-mat4'
 
-
 export default function drawCuboid (regl, params) {
   const {size} = params
   const [width, length, height] = size
-  console.log('size', width, length, height)
   const position = [
     -width, -length, -height,
     width, -length, -height,

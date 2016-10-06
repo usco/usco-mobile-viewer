@@ -13,6 +13,8 @@ import drawBlurFx from './drawBlurFx'
 import drawDistortFx from './drawDistortFx'
 import drawCombinerFx from './drawCombinerFx'
 
+import { default as model } from '../../../common/utils/computeTMatrixFromTransforms'
+
 import bunny from 'bunny'
 
 // for testing only
@@ -22,32 +24,19 @@ let command
 export function makeDrawCalls (regl, data) {
   const resolutionScale = 1
 
-  const texture = regl.texture()
-  const bunnyPositionBuffer = regl.buffer(bunny.positions)
+  const gridSize = [220, 200]
+  const mGridSize = [21.3, 22]
+  const _drawGrid = drawGrid(regl, { size: mGridSize, ticks: 4 })
+  const _drawInfiniGrid = drawGrid(regl, {size: gridSize, ticks: 1})
+  const gridOffset = model({pos: [0, 0, 0.001]})
 
+  const triSize = {width: 5, height: 2}
+  const _drawTri = drawTri(regl, {width: triSize.width, height: triSize.height})
+  const triMatrix = model({ pos: [-triSize.width / 2, mGridSize[0], 0.001] })
 
-  const gridSize = [220,200]
-  const mGridSize = [21.3,22]
-  const _drawGrid = drawGrid(regl,{size:mGridSize, ticks:4 })
-  const _drawGridL = drawGrid(regl,{size: gridSize})
-  let gridOffset = mat4.identity([])
-  mat4.translate(gridOffset, gridOffset, [0,0,-0.1]) // z up
-
-  let triMatrix = mat4.identity([])
-  const triSize = {width:5, height:2}
-  let triRot = [0,0,0]
-  mat4.translate(triMatrix, triMatrix, [-triSize.width/2,mGridSize[0],0.1]) // z up
-  mat4.rotateX(triMatrix, triMatrix, triRot[0])
-  mat4.rotateY(triMatrix, triMatrix, triRot[2])
-  mat4.rotateZ(triMatrix, triMatrix, triRot[1])
-  const _drawTri = drawTri(regl, {width:triSize.width, height: triSize.height})
-
-
-  const containerSize = [mGridSize[1],mGridSize[0],35]
-  let containerCuboidMatrix = mat4.identity([])
-  const _drawCuboid =  drawCuboid(regl, {size: containerSize})
-  mat4.translate(containerCuboidMatrix, containerCuboidMatrix, [0,0,containerSize[2]]) // z up
-
+  const containerSize = [mGridSize[1], mGridSize[0], 35]
+  const _drawCuboid = drawCuboid(regl, {size: containerSize})
+  const containerCuboidMatrix = model({ pos: [0, 0, containerSize[2]] })
 
   const _drawDynMesh = drawDynMesh(regl) // does not require one command per mesh, but is slower
   const _drawBunny = drawStaticMesh(regl, {geometry: bunny}) // one command per mesh, but is faster
@@ -60,7 +49,6 @@ export function makeDrawCalls (regl, data) {
     }),
     depth: true
   })
-
 
   const _wrapperScope = wrapperScope(regl)
 
@@ -80,7 +68,7 @@ export function makeDrawCalls (regl, data) {
       })
       _drawBunny({view, camera, color: [0.5, 0.5, 0.5, 0.8]})
       _drawGrid({view, camera, color: [0, 0, 0, 1]})
-      _drawGridL({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
+      _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.5], model: gridOffset})
 
       _drawTri({view, camera, color: [0, 0., 0, 0.5], model: triMatrix})
       _drawCuboid({view, camera, color: [0, 0., 0.0, 0.2], model: containerCuboidMatrix})
