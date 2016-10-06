@@ -1,5 +1,4 @@
-import most from 'most'
-import { fromEvent, combineArray, combine, mergeArray } from 'most'
+import { fromEvent, combineArray, combine, mergeArray, just } from 'most'
 
 function stateHelper (actions, updateFunctions) {
   let modifiers$ = Object.keys(actions).map(function (key) {
@@ -35,7 +34,7 @@ function smartStateFold (prev, curr) {
 }
 
 export function model (defaults, actions, updateFunctions) {
-  const source$ = most.just(defaults)
+  const source$ = just(defaults)
   const modifications$ = stateHelper(actions, updateFunctions)
   return modifications$
     .merge(source$)

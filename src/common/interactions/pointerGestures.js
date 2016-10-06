@@ -1,5 +1,4 @@
-import most from 'most'
-import { map, filter, fromEvent, merge, empty, continueWith } from 'most'
+import { just, map, filter, fromEvent, merge, empty, continueWith } from 'most'
 import { curry2, compose } from '@most/prelude'
 import assign from 'fast.js/object/assign' // faster object.assign
 import { isMoving, normalizeWheel } from './utils'
@@ -156,7 +155,7 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
     .timestamp()
     .flatMap(function (downEvent) {
       return merge(
-        most.of(downEvent),
+        just(downEvent),
         moves$ // Skip if we get a movement before a mouse up
           .tap(e => console.log('e.delta', JSON.stringify(e)))
           .filter(data => isMoving(data.delta, maxStaticDeltaSqr)) // allow for small movement (shaky hands!) FIXME: implement
