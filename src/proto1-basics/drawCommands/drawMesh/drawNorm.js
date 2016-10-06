@@ -22,17 +22,19 @@ export default function drawNormal (regl, params) {
     uniform float maxBias;
     uniform vec3 shadowColor;
     uniform vec3 opactity;
-  #define texelSize 1.0 / float(${SHADOW_RES})
+
+    #define texelSize 1.0 / float(${SHADOW_RES})
+
     float shadowSample(vec2 co, float z, float bias) {
       float a = texture2D(shadowMap, co).z;
       float b = vShadowCoord.z;
       return step(b-bias, a);
     }
     void main () {
-      vec3 ambient = ambientLightAmount * color.xyz;
+      vec3 ambient = ambientLightAmount * color.rgb;
       float cosTheta = dot(vNormal, lightDir);
-      vec3 diffuse = diffuseLightAmount * color.xyz * clamp(cosTheta , 0.0, 1.0 );
-      
+      vec3 diffuse = diffuseLightAmount * color.rgb * clamp(cosTheta , 0.0, 1.0 );
+
       float v = 1.0; // shadow value
       vec2 co = vShadowCoord.xy * 0.5 + 0.5;// go from range [-1,+1] to range [0,+1]
       // counteract shadow acne.

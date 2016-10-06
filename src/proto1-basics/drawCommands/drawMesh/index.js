@@ -12,9 +12,9 @@ import drawNormal from './drawNorm'
 
 export function makeDrawMeshCommand (regl, data) {
   const {buffer, elements, prop} = regl
-  //const {entity} = data
-  //const {geometry} = entity
-  //const {entryDraw} = entity
+  // const {entity} = data
+  // const {geometry} = entity
+  // const {entryDraw} = entity
   const SHADOW_RES = 512
 
   const fbo = regl.framebuffer({
@@ -29,20 +29,20 @@ export function makeDrawMeshCommand (regl, data) {
 
   const wrapperScope = regl({
     context: {
-      lightDir: [.39, 0.87, 0.29],
+      lightDir: [0.1, 0.1, 0.9], // [.39, 0.87, 0.29, ],
     },
     uniforms: {
-      lightDir_: (context, props)=>{
-        //foo +=0.02
-        let res = [props.counter+.39, 0.87, 0.29]
-        //console.log('context', res)
-        //(context, props)=>Math.cos(props.counter/100)*0.2+0.1
-        return [0,Math.sin(props.counter/100),Math.cos(props.counter/100)]
+      lightDir: (context, props) => {
+        // foo +=0.02
+        let res = [props.counter + .39, 0.87, 0.29]
+        // console.log('context', res)
+        // (context, props)=>Math.cos(props.counter/100)*0.2+0.1
+        return [Math.sin(props.counter / 10), Math.cos(props.counter / 10),0.9]
       },
-      lightDir: regl.context('lightDir'),
+      //lightDir: regl.context('lightDir'),
       lightColor: [1, 0.8, 0],
       lightView: (context) => {
-        return mat4.lookAt([], context.lightDir, [0.0, 0.0, 0.0], [0.0, 1.0, 0.0])
+        return mat4.lookAt([], context.lightDir, [0.0, 0.0, 0.0], [0.0, 0.0, 1.0])
       },
       lightProjection: mat4.ortho([], -25, 25, -20, 20, -25, 25),
       ambientLightAmount: 0.8,
@@ -74,26 +74,24 @@ export function makeDrawMeshCommand (regl, data) {
     }
   })
 
-  //we create any draw commands we need
-  //const _drawBase = entryDraw//drawBase(regl, {geometry})
+  // we create any draw commands we need
+  // const _drawBase = entryDraw//drawBase(regl, {geometry})
 
   const _drawDepth = drawDepth(regl, {fbo})
 
   const _drawNorm = drawNormal(regl, {fbo, SHADOW_RES})
-  //const _drawColor = drawColor(regl, {entity})
+  // const _drawColor = drawColor(regl, {entity})
 
-  const foo = function(props){
-    for(let i=0;i<data.length;i++){
+  const foo = function (props) {
+    for (let i = 0;i < data.length;i++) {
       data[i].entryDraw(props[i])
     }
   }
-//const drawMeshes = drawMeshes? drawMeshes : foo.bind(null, props)
-
-
+  // const drawMeshes = drawMeshes? drawMeshes : foo.bind(null, props)
 
   function command (props) {
-    const drawMeshes = function(){
-      for(let i=0;i<props.length;i++){
+    const drawMeshes = function () {
+      for (let i = 0;i < props.length;i++) {
         props[i].entryDraw(props[i])
       }
     }
@@ -101,7 +99,7 @@ export function makeDrawMeshCommand (regl, data) {
     wrapperScope(props, (context) => {
       _drawDepth(drawMeshes)
       _drawNorm(drawMeshes)
-      //_drawColor(drawMeshes)
+    // _drawColor(drawMeshes)
     })
   }
 

@@ -11,15 +11,15 @@ export default function makeGrid (params) {
   console.log('making grid')
 
   for (let i = -width;i <= width;i += ticks) {
-    positions.push(-length, 0, i)
-    positions.push(length, 0, i)
-    positions.push(-length, 0, i)
+    positions.push(-length, i, 0)
+    positions.push(length, i, 0)
+    positions.push(-length, i, 0)
   }
 
   for (let i = -length;i <= length;i += ticks) {
-    positions.push(i, 0, -width)
-    positions.push(i, 0, width)
-    positions.push(i, 0, -width)
+    positions.push(i, -width, 0)
+    positions.push(i, width, 0)
+    positions.push(i, -width, 0)
   }
 
   const gridData = {

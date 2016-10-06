@@ -6,9 +6,9 @@ const reglM = require('regl')
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 
 //import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
-import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
+//import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
 
-//import { draw as _draw, makeDrawCalls } from './draw'
+import { draw as _draw, makeDrawCalls } from './draw'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'

@@ -9,15 +9,15 @@ export default function makeShadowPlane (size) {
   const negHalfSize = -size / 2
   const posHalfSize = size / 2
 
-  positions.push([negHalfSize, 0.0, negHalfSize])
-  positions.push([posHalfSize, 0.0, negHalfSize])
-  positions.push([negHalfSize, 0.0, posHalfSize])
-  positions.push([posHalfSize, 0.0, posHalfSize])
+  positions.push([negHalfSize, negHalfSize, 0.0])
+  positions.push([posHalfSize, negHalfSize, 0.0])
+  positions.push([negHalfSize, posHalfSize, 0.0])
+  positions.push([posHalfSize, posHalfSize, 0.0])
 
-  normals.push([0.0, 1.0, 0.0])
-  normals.push([0.0, 1.0, 0.0])
-  normals.push([0.0, 1.0, 0.0])
-  normals.push([0.0, 1.0, 0.0])
+  normals.push([0.0, 0.0, 1.0])
+  normals.push([0.0, 0.0, 1.0])
+  normals.push([0.0, 0.0, 1.0])
+  normals.push([0.0, 0.0, 1.0])
 
   //custom draw function?
   function drawFn(regl, params) {
@@ -47,49 +47,13 @@ export default function makeShadowPlane (size) {
       color: [1, 1, 1, 0.0],
       type: 'mesh',
       //drawFn,
-      params:{
-        depth: {
-          enable: true,
-          mask: false,
-          func: 'less',
-          range: [0, 1]
-        },
+      params: {
         cull: {
           enable: true,
-          face: 'back'
-        },
-        blend: {
-          enable: false,
-          func: {
-            src: 'src alpha',
-            dst: 'one minus src alpha'
-          },
-          /*equation: {
-            rgb: 'add',
-            alpha: 'add'
-          },
-          color: [0, 0, 0, 0]*/
-        },
-        stencil: {
-          enable: true,
-          mask: 0x0,
-          func: {
-            cmp: '=',
-            ref: 0,
-            mask: 0x00
-          },
-          opFront: {
-            fail: 'zero',
-            zfail: 'zero',
-            zpass: 'zero'
-          },
-          opBack: {
-            fail: 'invert',
-            zfail: 'zero',
-            zpass: 'zero'
-          }
-        },
+          face: 'front'
+        }
       }
+
     },
 
     geometry: {
@@ -113,3 +77,38 @@ export default function makeShadowPlane (size) {
 
   return data
 }
+
+/*depth: {
+  enable: true,
+  mask: false,
+  func: 'less',
+  range: [0, 1]
+},
+
+blend: {
+  enable: false,
+  func: {
+    src: 'src alpha',
+    dst: 'one minus src alpha'
+  },
+
+},
+stencil: {
+  enable: true,
+  mask: 0x0,
+  func: {
+    cmp: '=',
+    ref: 0,
+    mask: 0x00
+  },
+  opFront: {
+    fail: 'zero',
+    zfail: 'zero',
+    zpass: 'zero'
+  },
+  opBack: {
+    fail: 'invert',
+    zfail: 'zero',
+    zpass: 'zero'
+  }
+},}*/

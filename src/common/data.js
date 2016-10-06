@@ -45,8 +45,8 @@ const bunnyData = {
   },
 
   transforms: {
-    pos: [0, 0, 0],
-    rot: [0, 0, 0],
+    pos: [5, 10, 0],
+    rot: [Math.PI / 2, 0, 0],
     sca: [1, 1, 1]
   },
 
@@ -67,7 +67,7 @@ const bunnyData2 = {
   geometry: bunnyGeom,
   transforms: {
     pos: [0, 0, 0],
-    rot: [0, 0, 0],
+    rot: [Math.PI/2, 0, 0],
     sca: [1, 1, -1]
   },
 
@@ -88,7 +88,7 @@ const bunnyData3 = {
   geometry: bunnyGeom,
   transforms: {
     pos: [10, -12.989, 3],
-    rot: [0, 0, 0],
+    rot: [Math.PI/2, 0, 0],
     sca: [1, 1, 1]
   },
   visuals: {
@@ -114,7 +114,7 @@ const sceneData = {
       }
     }
   ],
-  controls: [ //not in use !!! see orbitControls.js directly
+  controls: [ // not in use !!! see orbitControls.js directly
     {
       up: [0, 0, 1],
       rotateSpeed: 0.2,
