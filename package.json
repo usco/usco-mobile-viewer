@@ -27,6 +27,7 @@
     "camera-picking-ray": "^1.0.1",
     "concat-stream": "^1.5.2",
     "fast.js": "^0.1.1",
+    "fetch-readablestream": "^0.1.0",
     "gl": "^4.0.0",
     "gl-mat4": "^1.1.4",
     "glslify": "^5.0.2",
@@ -40,6 +41,7 @@
     "ray-sphere-intersection": "^1.0.0",
     "ray-triangle-intersection": "^1.0.3",
     "regl": "^1.1.1",
+    "stream-http": "^2.4.0",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
     "vertices-bounding-box": "^1.0.0",
     "xhr-stream": "^1.1.0"
