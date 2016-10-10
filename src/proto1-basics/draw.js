@@ -2,15 +2,14 @@ import { perspective } from 'gl-mat4'
 import mat4 from 'gl-mat4'
 import normals from 'angle-normals'
 
-import {makeDrawMeshCommand} from './drawCommands/drawMesh'
-import {makeDrawCommand} from './drawCommands/drawBasic'
+import { makeDrawMeshCommand } from './drawCommands/drawMesh'
+import { makeDrawCommand } from './drawCommands/drawBasic'
 
 /*
  => draw all things that need to be drawn in style A
  => draw all things that need to be drawn in style B
 */
 import drawBase from './drawCommands/drawMesh/drawBase'
-
 
 /*
 * memoize.js
@@ -55,10 +54,30 @@ export function hashEntityForRender (entity) {
   return hash
 }
 
-
 let meshSceneItems = []
 let meshSceneCmd
 
+export function generateDrawFnForEntity (regl, data, entity) {
+  // what drawCommands are available
+  const drawCmds = {
+    'mesh': drawBase, // makeDrawMeshCommand,
+    undefined: makeDrawCommand
+  }
+
+  let drawData = Object.assign({}, data, {entity}, {geometry: entity.geometry, extras: {}})
+  if (entity.visuals && entity.visuals.params) {
+    Object.keys(entity.visuals.params).map(function (key) {
+      drawData.extras[key] = entity.visuals.params[key]
+    })
+  }
+
+  const drawCmdType = entity.visuals && entity.visuals.type ? entity.visuals.type : undefined
+  const cmd = drawCmds[drawCmdType](regl, drawData)
+
+  const hash = hashEntityForRender(entity)
+
+  return {hash, cmd, drawCmdType}
+}
 
 export function makeDrawCalls (regl, data) {
   /*
@@ -71,34 +90,15 @@ export function makeDrawCalls (regl, data) {
   const hashSet = new Set()
   const hashStore = {}
 
-  //what drawCommands are available
-  const drawCmds = {
-    'mesh':drawBase,//makeDrawMeshCommand,
-    undefined: makeDrawCommand
-  }
-
   // this needs to change everytime geometry and OR shaders changes: determines drawCalls, rarely changes /triggered
   const entitiesWithHash = data.entities.map(function (entity) {
-    const {scene} = data
-    let drawData = Object.assign({}, data, {entity}, {geometry: entity.geometry, extras: {}})
-    if(entity.visuals && entity.visuals.params){
-      Object.keys(entity.visuals.params).map(function(key){
-        drawData.extras[key] = entity.visuals.params[key]
-      })
-    }
+    const {hash, cmd, drawCmdType} = generateDrawFnForEntity(regl, data, entity)
 
-    const drawCmdType = entity.visuals && entity.visuals.type ? entity.visuals.type : undefined
-    const cmd = drawCmds[drawCmdType](regl, drawData)
-      //entity.visuals && entity.visuals.type && entity.visuals.type ==='mesh'? makeDrawMeshCommand (regl, scene, entity): makeDrawCommand(regl, scene, entity)
-
-    const hash = hashEntityForRender(entity)
     hashSet.add(hash)
-
     hashStore[hash] = cmd
-    //const customDrawCmd
 
-    const updatedEntity = Object.assign({}, entity, {_renderBatchId: hash, entryDraw:cmd})
-    if(drawCmdType === 'mesh'){
+    const updatedEntity = Object.assign({}, entity, {_renderBatchId: hash, entryDraw: cmd})
+    if (drawCmdType === 'mesh') {
       meshSceneItems.push(updatedEntity)
     }
     return updatedEntity
@@ -106,37 +106,41 @@ export function makeDrawCalls (regl, data) {
 
   meshSceneCmd = makeDrawMeshCommand(regl, meshSceneItems)
 
-  //console.log('hashSet', hashSet)
-  //console.log(hashSet.has(JSON.stringify({geom: data.entities[0].geometry.id, fragShader: 'base',vertShader: 'base'})))
-  //console.log(hashSet.has('foo'))
+  // console.log('hashSet', hashSet)
+  // console.log(hashSet.has(JSON.stringify({geom: data.entities[0].geometry.id, fragShader: 'base',vertShader: 'base'})))
+  // console.log(hashSet.has('foo'))
   return {hashStore, entities: entitiesWithHash}
 }
 
 let counter = 0
 export function draw (regl, hashStore, data) {
   // more dynamic this can change every frame
-  //console.log('hashStore', hashStore)
   const _dynamicData = data.entities
-    .filter(entity => entity.visuals && entity.visuals.type && entity.visuals.type ==='mesh')
+    .filter(entity => entity.visuals && entity.visuals.type && entity.visuals.type === 'mesh')
     .filter(entity => entity.visuals.visible !== undefined ? entity.visuals.visible : true)
     .map(function (entity, index) {
+      //console.log('entity',entity)
       const {modelMat} = entity
       const {scene, camera} = data
 
       // simple hack for selection state
-      //const color = entity.meta.pickable && entity.meta.selected  && ? [1, 0, 0, 1] : entity.visuals.color
-      let color = entity.visuals.color || [1,1,1,1]
-      if(entity.meta.pickable && entity.meta.selected){
-        color = [1,0,0,1]
+      // const color = entity.meta.pickable && entity.meta.selected  && ? [1, 0, 0, 1] : entity.visuals.color
+      let color = entity.visuals.color || [1, 1, 1, 1]
+      if (entity.meta && entity.meta.pickable && entity.meta.selected) {
+        color = [1, 0, 0, 1]
       }
       const entryDraw = entity.entryDraw
-      //counter += 1
+      // counter += 1
 
-      const callData = { color, mat: modelMat, scene, view: camera.view, counter, entryDraw }
+      const callData = { color, mat: modelMat, scene, view: camera.view, counter, entryDraw}
+
+      //FIXME : HACK !!!
+      //meshSceneItems=[entity]
+      //meshSceneCmd = makeDrawMeshCommand(regl, meshSceneItems)
+
       return callData
-  })
+    })
   meshSceneCmd(_dynamicData)
-  
 
   let batches2 = {}
   const dynamicData = data.entities
@@ -147,31 +151,29 @@ export function draw (regl, hashStore, data) {
 
       const drawCmdType = entity.visuals && entity.visuals.type ? entity.visuals.type : undefined
 
-      if(drawCmdType ==='mesh'){
+      if (drawCmdType === 'mesh') {
         return
       }
 
-
       // simple hack for selection state
-      const color = entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
+      const color = entity.meta && entity.meta.selected ? [1, 0, 0, 1] : entity.visuals.color
 
       const drawCall = hashStore[entity._renderBatchId]
       counter += 1
 
-      const callData = { color, mat: modelMat, scene, view: camera.view, counter }
-      if(!batches2[entity._renderBatchId]){
+      const callData = { color, mat: modelMat, scene, view: camera.view, counter}
+      if (!batches2[entity._renderBatchId]) {
         batches2[entity._renderBatchId] = []
       }
       batches2[entity._renderBatchId].push(callData)
 
-      //return {drawCall, callData}
+      // return {drawCall, callData}
       return drawCall(callData)
-  })
+    })
   return dynamicData
 
-
-  //console.log('dynamicData', batches2)
-  //throw new Error('mlk')
+  // console.log('dynamicData', batches2)
+  // throw new Error('mlk')
   let drawCalls = []
   /*Object.keys(batches2).map(function(id, index){
     console.log('kjhjk', id, index)
@@ -181,8 +183,7 @@ export function draw (regl, hashStore, data) {
      drawCalls.push[_dcall]
   })*/
   //
-  //return drawCalls
-
+  // return drawCalls
 
   const id = Object.keys(batches2)[0]
   const id2 = Object.keys(batches2)[1]
@@ -193,12 +194,12 @@ export function draw (regl, hashStore, data) {
   const shadowPlaneData = batches2[id3]
   const meshesCallData = bunniesData.concat(shadowPlaneData)
 
-  //console.log('data1', bunniesData, shadowPlaneData)
+  // console.log('data1', bunniesData, shadowPlaneData)
   console.log('meshesCallData', meshesCallData)
   throw new Error('mlk')
-  const meshesCall =  dynamicData[0].drawCall(meshesCallData)
-  //const gridCall =  dynamicData[3].drawCall(data2)
-  //const fooCall =  dynamicData[0].drawCall(batches2[id3])
+  const meshesCall = dynamicData[0].drawCall(meshesCallData)
+  // const gridCall =  dynamicData[3].drawCall(data2)
+  // const fooCall =  dynamicData[0].drawCall(batches2[id3])
 
-  return []//, fooCall]//, gridCall]
+  return [] // , fooCall]//, gridCall]
 }
