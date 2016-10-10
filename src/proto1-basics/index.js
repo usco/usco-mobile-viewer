@@ -5,63 +5,74 @@ const reglM = require('regl')
 // var regl = require('regl')(canvasOrElement)
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 
-//import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
-//import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
+// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
+// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
+import { draw as _draw, makeDrawCalls, generateDrawFnForEntity } from './draw'
 
-import { draw as _draw, makeDrawCalls } from './draw'
+import drawStaticMesh from './drawCommands/alternative/drawStaticMesh2'
+import prepareRenderAlt from './drawCommands/alternative/main'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
-import concat from 'concat-stream'
-import loadTest from './loader'
-
 import create from '@most/create'
+import { combine } from 'most'
 
-const parsedSTLStream = create((add, end, error) => {
+import loadAsStream from './loader'
+import { concatStream } from 'usco-stl-parser'
 
-  loadTest()
-    .pipe(concat(function (data) {
-      let positions = data.slice(0, data.length / 2)
-      let normals = data.slice(data.length / 2)
+// this is a pseudo cycle.js driver of course
+const adressBarDriver = create((add, end, error) => {
+  const url = window.location.href
 
-      positions = new Float32Array(positions.buffer.slice(positions.byteOffset, positions.byteOffset + positions.byteLength)) //
-      normals = new Float32Array(normals.buffer.slice(normals.byteOffset, normals.byteOffset + normals.byteLength))
-      const parsedSTL = {
-        positions: positions,
-        normals: normals
-      }
-      //console.log('done with stl', data)
-      add(parsedSTL)
-    }))
+  function getParam (name, url) {
+    if (!url) url = location.href
+    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]')
+    var regexS = '[\\?&]' + name + '=([^&#]*)'
+    var regex = new RegExp(regexS)
+    var results = regex.exec(url)
+    return results == null ? null : results[1]
+  }
+  add(getParam('modelUrl', url))
 })
 
+const parsedSTLStream = adressBarDriver
+  .flatMap(function (url) {
+    return create((add, end, error) => {
+      loadAsStream(url).pipe(concatStream(data => add(data)))
+    })
+  })
+  .flatMapError(function (error) {
+    console.error('ERROR !!', error)
+    return undefined
+  })
+  .filter(x => x !== undefined)
 
 const regl = reglM({
   extensions: [
-    'oes_texture_float',// FIXME: for shadows, is it widely supported ?
-    // 'EXT_disjoint_timer_query'// for gpu benchmarking only
+    'oes_texture_float', // FIXME: for shadows, is it widely supported ?
+  // 'EXT_disjoint_timer_query'// for gpu benchmarking only
   ],
 
   profile: true
 })
 /*canvas: container,
   drawingBufferWidth: container.offsetWidth,
-  drawingBufferHeight: container.offsetHeight})*/ //for editor
+  drawingBufferHeight: container.offsetHeight})*/ // for editor
 const container = document.querySelector('canvas')
-//const container = document.querySelector('#drawHere')
+// const container = document.querySelector('#drawHere')
 
 const {frame, clear} = regl
-//const drawModel = _drawModel.bind(null, regl)
+// const drawModel = _drawModel.bind(null, regl)
 const draw = _draw.bind(null, regl)
 
 import controlsStream from '../common/controls/controlsStream'
 import pickStream from '../common/picking/pickStream'
 
-import {just, merge} from 'most'
+import { just, merge } from 'most'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
-import {injectNormals, injectTMatrix, injectBounds} from './prepPipeline'
+import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 /* --------------------- */
 
 import makeGrid from './grid'
@@ -88,7 +99,7 @@ function flatten (arr) {
 
 let fullData = {
   scene: sceneData,
-  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, ])//gizmo])
+  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, ]) // gizmo])
 }
 
 // apply all changes
@@ -97,7 +108,7 @@ fullData.entities = fullData.entities
   .map(injectTMatrix)
   .map(injectNormals)
 
-//inject bactching/rendering data
+// inject bactching/rendering data
 const {hashStore, entities} = makeDrawCalls(regl, fullData)
 fullData.entities = entities
 /* ============================================ */
@@ -116,19 +127,18 @@ const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera},
 
 // interactions : picking
 const picks$ = pickStream({gestures}, fullData)
-  .tap(e=>console.log('picks', e))
+  .tap(e => console.log('picks', e))
 
 const selections$ = just(fullData.entities)
-  .map(function(x){
-    return x.filter(x=>'meta' in x).filter(x=>x.meta.selected)
+  .map(function (x) {
+    return x.filter(x => 'meta' in x).filter(x => x.meta.selected)
   })
   .startWith([])
   .merge(picks$)
-  .scan((acc,cur)=>{
-
-  },[])
-  .filter(x=>x !== undefined)
-  .forEach(e=>console.log('selections',e))
+  .scan((acc, cur) => {
+  }, [])
+  .filter(x => x !== undefined)
+  .forEach(e => console.log('selections', e))
 
 function upsertCameraState (cameraState) {
   let data = fullData
@@ -136,7 +146,7 @@ function upsertCameraState (cameraState) {
   return data
 }
 
-//FIXME ! this is a hack, just for testing, also , imperative
+// FIXME ! this is a hack, just for testing, also , imperative
 
 function setSelection ({entity}) {
   console.log('setting seletion')
@@ -148,19 +158,37 @@ const stateWithCameraState$ = camState$
   .map(upsertCameraState)
 
 const stateWithSelectionState$ = picks$
-  .map(x=>x.map(setSelection))
+  .map(x => x.map(setSelection))
   .map(e => fullData)
 
 // merge all the things that should trigger a re-render
 merge(
-  stateWithCameraState$,
-  stateWithSelectionState$
-)
-  .forEach(render)
+    stateWithCameraState$,
+    stateWithSelectionState$
+  )
+  //.forEach(render)
 
-parsedSTLStream
-  .map(geometry => ({geometry}))
+//
+let drawCalls = {}
+
+const renderAlt = prepareRenderAlt(regl)
+
+const addedEntities$ = parsedSTLStream
+  .map(geometry => ({geometry, visuals: {type: 'mesh', visible: true}, meta: {id: 'FOOO'}}))
   .map(injectBounds)
   .map(injectTMatrix)
   .map(injectNormals)
-  .forEach(x=>console.log('loaded stl',x))
+  .map(function (data) {
+    // console.log('preping drawCall')
+    const draw = drawStaticMesh(regl, {geometry: data.geometry}) // one command per mesh, but is faster
+    const visuals = Object.assign({}, data.visuals, {draw})
+    const entity = Object.assign({}, data, {visuals}) // Object.assign({}, data, {visuals: {draw}})
+    return entity
+  })
+  .tap(entity => console.log('addedEntity done processing', entity))
+
+combine(function (camera, entity) {
+  // console.log('camera', camera, 'fullData', entity)
+  return {entities: [entity], camera}
+}, camState$, addedEntities$)
+  .forEach(x => renderAlt(x))
