@@ -8,7 +8,7 @@ export default function prepareRenderAlt (regl) {
   const _wrapperScope = wrapperScope(regl)
 
   const bg = [1, 1, 1, 1]
-  const model = modelM({sca: [0.5, 0.5, 0.5]})
+  //const model = modelM({sca: [0.5, 0.5, 0.5]})
 
   let drawEncl = makeDrawEncl(regl)
 
@@ -19,7 +19,7 @@ export default function prepareRenderAlt (regl) {
         color: bg,
         depth: 1
       })
-      entities.map(e => e.visuals.draw({view, camera, color: e.visuals.color, model}))
+      entities.map(e => e.visuals.draw({view, camera, color: e.visuals.color, model: e.modelMat}))
       drawEncl(props)
     })
   }
