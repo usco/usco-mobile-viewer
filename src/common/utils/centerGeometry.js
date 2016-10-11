@@ -1,28 +1,35 @@
 import mat4 from 'gl-mat4'
+import vec3 from 'gl-vec3'
 
-export default function centerGeometry(geometry, boundingBox){
+//helper function to center the geometry of an object
+export default function centerGeometry (geometry, bounds, axes = [1, 1, 0]) {
   const translation = [
-    -0.5 * (boundingBox[0][0] + boundingBox[1][0]),
-    -0.5 * (boundingBox[0][1] + boundingBox[1][1]),
-    -0.5 * (boundingBox[0][2] + boundingBox[1][2])
+    -0.5 * (bounds.min[0] + bounds.max[0]) * axes[0],
+    -0.5 * (bounds.min[1] + bounds.max[1]) * axes[1],
+    -0.5 * (bounds.min[2] + bounds.max[2]) * axes[2]
   ]
-  let translate = mat4.create()
-  translate = mat4.translate(translate, translate, translation)
+  let translateMat = mat4.create()
+  translateMat = mat4.translate(translateMat, translateMat, translation)
 
-  //taken almost verbatim from https://github.com/wwwtyro/geo-3d-transform-mat4/blob/master/index.js
-  function transform(positions){
-    for (var i = 0; i < positions.length; i+=3) {
-        vec3.transformMat4(newpos[i], newpos[i], m)
+  // taken almost verbatim from https://github.com/wwwtyro/geo-3d-transform-mat4/blob/master/index.js
+  function transform (positions, translateMat) {
+    for (var i = 0; i < positions.length; i += 3) {
+      let newPos = vec3.fromValues(positions[i], positions[i + 1], positions[i + 2])
+      vec3.transformMat4(newPos, newPos, translateMat)
+      positions[i] = newPos[0]
+      positions[i + 1] = newPos[1]
+      positions[i + 2] = newPos[2]
     }
-    /*var oldfmt = geoid.identify(positions)
-     var newpos = geoconv.convert(positions, geoid.ARRAY_OF_ARRAYS, 3)
-     for (var i = 0; i < newpos.length; i++) {
-         vec3.transformMat4(newpos[i], newpos[i], m)
-     }
-     newpos = geoconv.convert(newpos, oldfmt, 3)
-     return newpos*/
+  /*var oldfmt = geoid.identify(positions)
+   var newpos = geoconv.convert(positions, geoid.ARRAY_OF_ARRAYS, 3)
+   for (var i = 0; i < newpos.length; i++) {
+       vec3.transformMat4(newpos[i], newpos[i], m)
+   }
+   newpos = geoconv.convert(newpos, oldfmt, 3)
+   return newpos*/
   }
 
-  const centered = transform(geometry.positions, translate)
-  return centered
+  //const centered =
+  transform(geometry.positions, translateMat)
+  return geometry
 }
