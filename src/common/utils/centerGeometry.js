@@ -1,8 +1,15 @@
 import mat4 from 'gl-mat4'
 import vec3 from 'gl-vec3'
 
-//helper function to center the geometry of an object
-export default function centerGeometry (geometry, bounds, axes = [1, 1, 0]) {
+/**
+ * center the geometry of an object around the zero of the given axes
+ * WARNING ! this mutates the original geometric data !
+ * @param  {Object} geometry object containing positions data (flat array, flat typed array)
+ * @param  {String} bounds the current bounds of the entity
+ * @param  {String} axes on which axes to apply the transformation (default: [0, 0, 1])
+ * @return {Object}      the modified geometry, centered
+ */
+export default function centerGeometry (geometry, bounds, axes = [1, 1, 1]) {
   const translation = [
     -0.5 * (bounds.min[0] + bounds.max[0]) * axes[0],
     -0.5 * (bounds.min[1] + bounds.max[1]) * axes[1],
