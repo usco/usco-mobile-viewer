@@ -21,6 +21,8 @@ import { combine } from 'most'
 import loadAsStream from './loader'
 import { concatStream } from 'usco-stl-parser'
 
+import centerGeometry from '../common/utils/centerGeometry'
+
 // this is a pseudo cycle.js driver of course
 const adressBarDriver = create((add, end, error) => {
   const url = window.location.href
@@ -37,6 +39,7 @@ const adressBarDriver = create((add, end, error) => {
 })
 
 const parsedSTLStream = adressBarDriver
+  .delay(200)
   .flatMap(function (url) {
     return create((add, end, error) => {
       loadAsStream(url).pipe(concatStream(data => add(data)))
@@ -163,10 +166,10 @@ const stateWithSelectionState$ = picks$
 
 // merge all the things that should trigger a re-render
 merge(
-    stateWithCameraState$,
-    stateWithSelectionState$
-  )
-  //.forEach(render)
+  stateWithCameraState$,
+  stateWithSelectionState$
+)
+// .forEach(render)
 
 //
 let drawCalls = {}
@@ -174,21 +177,33 @@ let drawCalls = {}
 const renderAlt = prepareRenderAlt(regl)
 
 const addedEntities$ = parsedSTLStream
-  .map(geometry => ({geometry, visuals: {type: 'mesh', visible: true}, meta: {id: 'FOOO'}}))
+  .map(geometry => ({
+    geometry,
+    visuals: {
+      type: 'mesh',
+      visible: true,
+      color: [0.02, 0.7, 1, 1], // 07a9ff [1, 1, 0, 0.5],
+    },
+  meta: {id: 'FOOO'}})
+)
   .map(injectBounds)
   .map(injectTMatrix)
   .map(injectNormals)
   .map(function (data) {
     // console.log('preping drawCall')
-    const draw = drawStaticMesh(regl, {geometry: data.geometry}) // one command per mesh, but is faster
+    const geometry = centerGeometry(data.geometry, data.bounds)
+    console.log('geometry', geometry)
+    const draw = drawStaticMesh(regl, {geometry:geometry}) // one command per mesh, but is faster
     const visuals = Object.assign({}, data.visuals, {draw})
     const entity = Object.assign({}, data, {visuals}) // Object.assign({}, data, {visuals: {draw}})
     return entity
   })
   .tap(entity => console.log('addedEntity done processing', entity))
 
-combine(function (camera, entity) {
-  // console.log('camera', camera, 'fullData', entity)
-  return {entities: [entity], camera}
-}, camState$, addedEntities$)
+camState$.map(camera => ({entities: [], camera})) // initial / empty state
+  .merge(
+    combine(function (camera, entity) {
+      return {entities: [entity], camera}
+    }, camState$, addedEntities$)
+)
   .forEach(x => renderAlt(x))
