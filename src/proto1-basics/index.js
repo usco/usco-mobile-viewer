@@ -21,7 +21,9 @@ import { combine } from 'most'
 import loadAsStream from './loader'
 import { concatStream } from 'usco-stl-parser'
 
+// helpers
 import centerGeometry from '../common/utils/centerGeometry'
+import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
 
 // this is a pseudo cycle.js driver of course
 const adressBarDriver = create((add, end, error) => {
@@ -178,22 +180,29 @@ const renderAlt = prepareRenderAlt(regl)
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]},
     geometry,
     visuals: {
       type: 'mesh',
       visible: true,
-      color: [0.02, 0.7, 1, 1], // 07a9ff [1, 1, 0, 0.5],
+      color: [0.02, 0.7, 1, 1] // 07a9ff [1, 1, 0, 0.5],
     },
   meta: {id: 'FOOO'}})
 )
   .map(injectBounds)
+  .map(function (data) {
+    console.log('offseting',data.transforms.pos)
+    let transforms = Object.assign({}, data.transforms, offsetTransformsByBounds(data.transforms, data.bounds))
+    console.log('offseting done ',transforms.pos)
+    const entity = Object.assign({}, data, {transforms})
+    return entity
+  })
   .map(injectTMatrix)
   .map(injectNormals)
   .map(function (data) {
     // console.log('preping drawCall')
     const geometry = centerGeometry(data.geometry, data.bounds)
-    console.log('geometry', geometry)
-    const draw = drawStaticMesh(regl, {geometry:geometry}) // one command per mesh, but is faster
+    const draw = drawStaticMesh(regl, {geometry: geometry}) // one command per mesh, but is faster
     const visuals = Object.assign({}, data.visuals, {draw})
     const entity = Object.assign({}, data, {visuals}) // Object.assign({}, data, {visuals: {draw}})
     return entity
