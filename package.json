@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava src/common/ --require babel-register --watch --verbose",
+    "testOld": "ava src/common/ --require babel-register --watch --verbose",
+    "test": "ava './src/common/**/*.test.js' --require babel-register --verbose",
     "build": "browserify src/shapeFu/editor.js -o dist/shapeFu/editor.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
     "build-proto1": "browserify src/proto1-basics/editor.js -o dist/proto1-basics/editor.js -t [ babelify browserify]",
