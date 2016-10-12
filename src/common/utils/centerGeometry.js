@@ -9,11 +9,11 @@ import vec3 from 'gl-vec3'
  * @param  {String} axes on which axes to apply the transformation (default: [0, 0, 1])
  * @return {Object}      the modified geometry, centered
  */
-export default function centerGeometry (geometry, bounds, axes = [1, 1, 1]) {
+export default function centerGeometry (geometry, bounds, transforms, axes = [1, 1, 1]) {
   const translation = [
-    -0.5 * (bounds.min[0] + bounds.max[0]) * axes[0],
-    -0.5 * (bounds.min[1] + bounds.max[1]) * axes[1],
-    -0.5 * (bounds.min[2] + bounds.max[2]) * axes[2]
+    -0.5 * (bounds.min[0] / transforms.sca[0] + bounds.max[0] / transforms.sca[0]) * axes[0],
+    -0.5 * (bounds.min[1] / transforms.sca[1] + bounds.max[1] / transforms.sca[1]) * axes[1],
+    -0.5 * (bounds.min[2] / transforms.sca[2] + bounds.max[2] / transforms.sca[2]) * axes[2]
   ]
   let translateMat = mat4.create()
   translateMat = mat4.translate(translateMat, translateMat, translation)
@@ -36,7 +36,6 @@ export default function centerGeometry (geometry, bounds, axes = [1, 1, 1]) {
    return newpos*/
   }
 
-  //const centered =
   transform(geometry.positions, translateMat)
   return geometry
 }
