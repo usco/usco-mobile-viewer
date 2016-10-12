@@ -7,16 +7,13 @@ let tick = 0
 export default function prepareRenderAlt (regl) {
   const _wrapperScope = wrapperScope(regl)
 
-  const bg = [1, 1, 1, 1]
-  //const model = modelM({sca: [0.5, 0.5, 0.5]})
-
-  let drawEncl = makeDrawEncl(regl)
+  const drawEncl = makeDrawEncl(regl)
 
   let command = (props) => {
-    const {camera, view, entities} = props
+    const {camera, view, entities, background} = props
     _wrapperScope(props, (context) => {
       regl.clear({
-        color: bg,
+        color: background,
         depth: 1
       })
       entities.map(e => e.visuals.draw({view, camera, color: e.visuals.color, model: e.modelMat}))
@@ -25,10 +22,10 @@ export default function prepareRenderAlt (regl) {
   }
 
   return function renderAlt (data) {
-    const {camera, entities} = data
+    const {camera, entities, background} = data
     const {view} = camera
 
-    command({camera, view, entities})
+    command({camera, view, entities, background})
 
     // boilerplate etc
     tick += 0.01
