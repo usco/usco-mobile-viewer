@@ -180,7 +180,7 @@ const renderAlt = prepareRenderAlt(regl)
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]},
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
@@ -189,30 +189,28 @@ const addedEntities$ = parsedSTLStream
     },
   meta: {id: 'FOOO'}})
 )
+  .map(injectNormals)
   .map(injectBounds)
   .map(function (data) {
-    console.log('offseting',data.transforms.pos)
-    let transforms = Object.assign({}, data.transforms, offsetTransformsByBounds(data.transforms, data.bounds))
-    console.log('offseting done ',transforms.pos)
-    const entity = Object.assign({}, data, {transforms})
-    return entity
-  })
-  .map(injectTMatrix)
-  .map(injectNormals)
-  .map(function (data) {
     // console.log('preping drawCall')
-    const geometry = centerGeometry(data.geometry, data.bounds)
+    const geometry = centerGeometry(data.geometry, data.bounds, data.transforms)
     const draw = drawStaticMesh(regl, {geometry: geometry}) // one command per mesh, but is faster
     const visuals = Object.assign({}, data.visuals, {draw})
     const entity = Object.assign({}, data, {visuals}) // Object.assign({}, data, {visuals: {draw}})
     return entity
   })
+  .map(function (data) {
+    let transforms = Object.assign({}, data.transforms, offsetTransformsByBounds(data.transforms, data.bounds))
+    const entity = Object.assign({}, data, {transforms})
+    return entity
+  })
+  .map(injectTMatrix)
   .tap(entity => console.log('addedEntity done processing', entity))
 
-camState$.map(camera => ({entities: [], camera})) // initial / empty state
+camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
     combine(function (camera, entity) {
-      return {entities: [entity], camera}
+      return {entities: [entity], camera, background: [1, 1, 1, 1]}
     }, camState$, addedEntities$)
 )
   .forEach(x => renderAlt(x))
