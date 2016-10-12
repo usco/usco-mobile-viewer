@@ -2,21 +2,38 @@ import vec3 from 'gl-vec3'
 
 import boundingBox from './boundingBox'
 import boundingSphere from './boundingSphere'
-/* function to compute all bounding data given geometry data + position
 
-returns an object in this form:
-bounds: {
-  dia: 40,
-  center: [0,20,8],
-  min: [9, 10, 0],
-  max: [15, 10, 4]
-}
-
-*/
+/**
+ * compute all bounding data given geometry data + position
+ * @param  {Object} transforms the initial transforms ie {pos:[x, x, x], rot:[x, x, x], sca:[x, x, x]}.
+ * @param  {String} bounds the current bounds of the entity
+ * @param  {String} axes on which axes to apply the transformation (default: [0, 0, 1])
+ * @return {Object}      a new transforms object, with offset position
+ * returns an object in this form:
+ * bounds: {
+ *  dia: 40,
+ *   center: [0,20,8],
+ *   min: [9, 10, 0],
+ *   max: [15, 10, 4]
+ *}
+ */
 export default function computeBounds (object) {
-  const bbox = boundingBox(object.geometry.positions)
+  const scale = object.transforms.sca
+  let bbox = boundingBox(object.geometry.positions)
+  bbox[0] = bbox[0].map((x, i) => x * scale[i])
+  bbox[1] = bbox[1].map((x, i) => x * scale[i])
+
+
+  /*console.log(JSON.stringify(bbox))*/
   const center = vec3.scale(vec3.create(), vec3.add(vec3.create(), bbox[0], bbox[1]), 0.5)
-  const bsph = boundingSphere(center, object.geometry.positions)
+
+  /*console.log(JSON.stringify(center))
+  let bbox2 = boundingBox(object.geometry.positions)
+  const center2 = vec3.scale(vec3.create(), vec3.add(vec3.create(), bbox2[0], bbox2[1]), 0.5)
+  console.log(JSON.stringify(center2))*/
+
+
+  const bsph = boundingSphere(center, object.geometry.positions) * Math.max(...scale)
 
   return {
     dia: bsph,
