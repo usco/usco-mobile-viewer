@@ -1,6 +1,6 @@
-import drawGrid from './drawGrid'
-import drawTri from './drawTri'
-import drawCuboid from './drawCuboid'
+import drawGrid from './drawGrid/index'
+import drawTri from './drawTri/index'
+import drawCuboid from './drawCuboid/index'
 import { default as model } from '../../../common/utils/computeTMatrixFromTransforms'
 
 export default function Encl (regl, params) {

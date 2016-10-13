@@ -16,6 +16,10 @@ export default function drawMesh(regl, params={extras:{}}) {
       position: buffer(geometry.positions)
     },
     //elements: geometry.cells
+    cull: {
+      enable: true,
+      face: 'back'
+    }
   }
   if(geometry.cells)
   {
