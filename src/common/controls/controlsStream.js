@@ -29,7 +29,7 @@ export default function controlsStream (interactions, cameraData) {
       return delta
     })
     .map(function (delta) {
-      const angle = [Math.PI * delta[0], - Math.PI * delta[1]]
+      const angle = [- Math.PI * delta[0],  - Math.PI * delta[1]]
       return angle
     })
 
