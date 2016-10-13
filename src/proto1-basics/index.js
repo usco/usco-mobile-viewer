@@ -3,13 +3,8 @@ const reglM = require('regl')
 // const regl = require('regl')(require('gl')(256, 256))
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
-import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
 
-// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
-// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
-import { draw as _draw, makeDrawCalls, generateDrawFnForEntity } from './draw'
-
-import drawStaticMesh from './drawCommands/alternative/drawStaticMesh2'
+import drawStaticMesh from './drawCommands/alternative/drawStaticMesh2/index'
 import prepareRenderAlt from './drawCommands/alternative/main'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
@@ -24,6 +19,17 @@ import { concatStream } from 'usco-stl-parser'
 // helpers
 import centerGeometry from '../common/utils/centerGeometry'
 import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
+
+import controlsStream from '../common/controls/controlsStream'
+//import pickStream from '../common/picking/pickStream'
+
+import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
+import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
+/* --------------------- */
+
+import makeGrid from './grid'
+import makeShadowPlane from './shadowPlane'
+import makeTransformGizmo from './transformsGizmo'
 
 // this is a pseudo cycle.js driver of course
 const adressBarDriver = create((add, end, error) => {
@@ -48,7 +54,7 @@ const parsedSTLStream = adressBarDriver
     })
   })
   .flatMapError(function (error) {
-    console.error('ERROR !!', error)
+    console.error('ERROR in loading mesh file !!', error)
     return undefined
   })
   .filter(x => x !== undefined)
@@ -68,21 +74,6 @@ const container = document.querySelector('canvas')
 // const container = document.querySelector('#drawHere')
 
 const {frame, clear} = regl
-// const drawModel = _drawModel.bind(null, regl)
-const draw = _draw.bind(null, regl)
-
-import controlsStream from '../common/controls/controlsStream'
-import pickStream from '../common/picking/pickStream'
-
-import { just, merge } from 'most'
-
-import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
-import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
-/* --------------------- */
-
-import makeGrid from './grid'
-import makeShadowPlane from './shadowPlane'
-import makeTransformGizmo from './transformsGizmo'
 
 const grid = makeGrid({size: [16, 16], ticks: 1})
 const gizmo = makeTransformGizmo()
@@ -95,6 +86,12 @@ const shadowPlane = makeShadowPlane(160)
   - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
   - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
 */
+/*
+import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
+
+// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
+// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
+//import { draw as _draw, makeDrawCalls, generateDrawFnForEntity } from './draw'
 
 function flatten (arr) {
   return arr.reduce(function (a, b) {
@@ -116,19 +113,18 @@ fullData.entities = fullData.entities
 // inject bactching/rendering data
 const {hashStore, entities} = makeDrawCalls(regl, fullData)
 fullData.entities = entities
-/* ============================================ */
+
+// const drawModel = _drawModel.bind(null, regl)
+//const draw = _draw.bind(null, regl)
+// ============================================
 // main render function: data in, rendered frame out
 function render (data) {
-  draw(hashStore, data)
+  //draw(hashStore, data)
 }
 
 // render one frame
 // render(fullData)
 
-// interactions : camera controls
-const baseInteractions$ = interactionsFromEvents(container)
-const gestures = pointerGestures(baseInteractions$)
-const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, fullData)
 
 // interactions : picking
 const picks$ = pickStream({gestures}, fullData)
@@ -172,15 +168,20 @@ merge(
   stateWithSelectionState$
 )
 // .forEach(render)
+*/
 
-//
+// interactions : camera controls
+const baseInteractions$ = interactionsFromEvents(container)
+const gestures = pointerGestures(baseInteractions$)
+const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
+
 let drawCalls = {}
 
 const renderAlt = prepareRenderAlt(regl)
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [0.2, 1.125, 1.125]},
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [0.5, 0.5, 0.5]},//[0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
@@ -205,7 +206,7 @@ const addedEntities$ = parsedSTLStream
     return entity
   })
   .map(injectTMatrix)
-  .tap(entity => console.log('addedEntity done processing', entity))
+  //.tap(entity => console.log('entity done processing', entity))
 
 camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
