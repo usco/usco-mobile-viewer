@@ -6,6 +6,7 @@ import normals from 'angle-normals'
 export default function drawGrid (regl, params = {}) {
   let positions = []
   console.log('making grid')
+  const infinite = params.infinite || false
 
   let {size, ticks} = params
   ticks = ticks || 1
@@ -14,21 +15,23 @@ export default function drawGrid (regl, params = {}) {
   const width = size[0]
   const length = size[1]
 
-  for (let i = -width;i <= width;i += ticks) {
+  for (let i = -width; i <= width; i += ticks) {
     positions.push(-length, i, 0)
     positions.push(length, i, 0)
     positions.push(-length, i, 0)
   }
 
-  for (let i = -length;i <= length;i += ticks) {
+  for (let i = -length; i <= length; i += ticks) {
     positions.push(i, -width, 0)
     positions.push(i, width, 0)
     positions.push(i, -width, 0)
   }
 
+  const frag = infinite ? glslify(__dirname + '/shaders/foggy.frag') : glslify(__dirname + '/shaders/grid.frag')
+
   return regl({
     vert: glslify(__dirname + '/shaders/grid.vert'),
-    frag: glslify(__dirname + '/shaders/foggy.frag'),
+    frag,
 
     attributes: {
       position: regl.buffer(positions)
@@ -42,14 +45,14 @@ export default function drawGrid (regl, params = {}) {
       },
       color: regl.prop('color')
     },
-    lineWidth: 1,
+    lineWidth: 2,
     primitive: 'line strip',
     cull: {
       enable: true,
-      face: 'back'
+      face: 'front'
     },
     polygonOffset: {
-      enable: true,
+      enable: false,
       offset: {
         factor: 1,
         units: Math.random()

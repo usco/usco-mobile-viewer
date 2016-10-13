@@ -1,9 +1,10 @@
 import { squaredDistance, vec3 } from 'gl-vec3'
 
-/* compute boundingSphere
-  @param {array} center the center to use (optional).
-  @param {array} positions the array/typed array of positions.
-  for now loosely based on three.js implementation
+/**
+  * compute boundingSphere, given positions
+  * @param {array} center the center to use (optional).
+  * @param {array} positions the array/typed array of positions.
+  * for now loosely based on three.js implementation
 */
 export default function boundingSphere (center = [0, 0, 0] , positions) {
   if (positions.length === 0) {

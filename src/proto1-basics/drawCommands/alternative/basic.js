@@ -7,12 +7,6 @@ import drawDynMesh from './drawDynMesh'
 import drawStaticMesh from './drawStaticMesh'
 
 import wrapperScope from './wrapperScope'
-// 'special effects'
-import drawConvolutionFx from './drawConvolutionFx'
-import drawBlurFx from './drawBlurFx'
-import drawDistortFx from './drawDistortFx'
-import drawCombinerFx from './drawCombinerFx'
-
 import { default as model } from '../../../common/utils/computeTMatrixFromTransforms'
 
 import bunny from 'bunny'

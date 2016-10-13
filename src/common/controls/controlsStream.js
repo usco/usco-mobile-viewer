@@ -8,7 +8,7 @@ import { interactionsFromEvents, pointerGestures } from '../interactions/pointer
 import { model } from '../utils/modelUtils'
 import animationFrames from '../utils/animationFrames'
 
-export default function controlsStream (interactions, cameraData, fullData) {
+export default function controlsStream (interactions, cameraData) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 

@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava src/common/ --require babel-register --watch --verbose",
+    "testOld": "ava src/common/ --require babel-register --watch --verbose",
+    "test": "ava './src/common/**/*.test.js' --require babel-register --verbose",
     "build": "browserify src/shapeFu/editor.js -o dist/shapeFu/editor.js -t [ babelify]",
     "build-srv": "babel src/ -d dist",
-    "build-proto1": "browserify src/proto1-basics/editor.js -o dist/proto1-basics/editor.js -t [ babelify browserify]",
+    "build-proto1": "browserify src/proto1-basics/index.js -o dist/proto1-basics/editor.js -t [babelify browserify minifyify ]",
     "watch": "watchify src/proto1-basics -o dist/index.js -t [ babelify]",
-    "start-dev-proto1": "budo src/proto1-basics --port=8080 --live -- -t babelify",
+    "start-dev-proto1": "budo src/proto1-basics:dist/bundle.js --port=8080 --live -- -t babelify",
     "start-dev-shapefu": "budo src/shapeFu --port=8080 --live -- -t babelify",
     "test-render": "node src/serverSide/launch.js",
     "test-scadParse": "node src/shapeFu/parsing/launchTestParse.js",
@@ -27,6 +28,7 @@
     "camera-picking-ray": "^1.0.1",
     "concat-stream": "^1.5.2",
     "fast.js": "^0.1.1",
+    "fetch-readablestream": "^0.1.0",
     "gl": "^4.0.0",
     "gl-mat4": "^1.1.4",
     "glslify": "^5.0.2",
@@ -40,8 +42,11 @@
     "ray-sphere-intersection": "^1.0.0",
     "ray-triangle-intersection": "^1.0.3",
     "regl": "^1.1.1",
+    "stream-http": "^2.4.0",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
     "vertices-bounding-box": "^1.0.0",
+    "web-streams-polyfill": "github:creatorrr/web-streams-polyfill",
+    "whatwg-fetch": "^1.0.0",
     "xhr-stream": "^1.1.0"
   },
   "devDependencies": {
@@ -52,11 +57,14 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "budo": "^8.3.0",
+    "minifyify": "^7.3.3",
+    "rollupify": "^0.3.4",
     "watchify": "^3.7.0"
   },
   "browserify": {
     "transform": [
-      "glslify-sync/transform"
+      "glslify-sync/transform",
+      "rollupify"
     ]
   }
 }
