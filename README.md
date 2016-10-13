@@ -50,7 +50,7 @@ This is the mobile app component for Jam/usco : minimal renderer + loading (stl 
 - small-ish size
 
 
-## Install
+## Installation
 
 
 ```
