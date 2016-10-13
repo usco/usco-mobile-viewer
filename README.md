@@ -1,47 +1,90 @@
-## shader-fu
+# usco-mobile
 
-What' this then ?
+![banner]()
 
-I have wanted to REALLY learn glsl / shaders and the related maths etc for years now.
-Now I am actually learning.
-One mistake and half baked experiment at a time.
+![badge]()
+![badge]()
 
-This means a mix and match of code taken from fantastic sources such as [Shadertoy](https://www.shadertoy.com/)
-and from [The book of shaders](http://patriciogonzalezvivo.com/2015/thebookofshaders/08/)
-and smashed together, commented to oblivion to gain understanding etc.
+> Mobile app components for usco project
 
-I don't claim to understand everything, or that all code comes from me, I am just a humble
-beginner standing on the shoulder of giants, greatfully.
+This is the mobile app component for Jam/usco : minimal renderer + loading (stl only for now)
 
+## Table of Contents
 
-## General information
+- [Background](#background)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API](#api)
+- [Contribute](#contribute)
+- [License](#license)
 
+## Background
 
- - for fun and learning
- - I might structure this better at some point, but my focus for now is to learn, have fun
- experiment, and share it if it can help anyone
- - uses a bit of [glsify(https://github.com/stackgl/glslify) for some experiments
- - the potentially fantastic [regl](https://github.com/mikolalysenko/regl) (declarative stateless rendering)
-
-
-## What are you trying to learn exactly ?
-
-- glsl in general
-- shaders basics and tricks
-- improving my math : gain a thorough understanding of transforms , matrix operations, etc
-- basics of lighting (reimplimenting basic and less basic lighting systems, 'manually', and
-gaining an **understanding** of various lighting models , not just copy & pasting code )
-- signed distance function and ray-marching
-- ???
-
-## OK I'm sold (really ????) where are the goods
-
-- they are not good, but they are [here](https://github.com/kaosat-dev/shader-fu/tree/master/src/shaders)
+- uses the fantastic [regl](https://github.com/mikolalysenko/regl) (declarative stateless rendering)
+- uses the also great [glsify(https://github.com/stackgl/glslify)
+- and let us not forget [most]()
 
 
-## LICENSE
+### This needs to be able to
+
+- displays meshes, from raw hashes of Float32Array (positions, normals) => DONE
+- display meshes given lots of 'meta' data : ie json object containing transforms, colors, etc IN , render OUT => DONE
+- have identical controls (camera controls) *MEDIUM* => DONE
+- replicate (need not match 100%) the 'grid' *MEDIUM* => DONE
+- do 'picking' *MEDIUM* => DONE
+- work server side  *EASY* => DONE, IN COLOR
+- lines (for gcode etc) *TRIVIAL* : just use primitive:'lines' when rendering => DONE
+- handle object hiearchies (ie transform hierarchies) at least in a basic manner *MEDIUM*
+- replicate (need not match 100%) object transform controls  *VERY HARD*
+- object outlines (hopefully BETTER than the current ones) *HARD*
+- shadows (less important, waaay harder than all the rest ?) *HARD* => DONE
+- shading /visual quality *MEDIUM*  
+- what to do with all 'visual helpers' ? *HARD*
+
+###extras infos:
+- good performance (hopefully !)
+- functional
+- data driven
+- close to the metal : no more going through hoops (three.js)
+- makes it easier to implement advanced rendering (npr, pbr)
+- small-ish size
+
+
+## Install
+
+
+```
+npm install
+```
+
+### build distributable
+
+```
+npm run build
+```
+
+### launch dev server
+
+```
+npm run start-dev
+```
+
+
+
+
+## Usage
+
+```
+```
+
+## Contribute
+
+PRs accepted.
+
+Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
+
+## License
 
 [The MIT License (MIT)](https://github.com/kaosat-dev/shader-fu/blob/master/LICENSE)
 (unless specified otherwise)
-
-- - -
