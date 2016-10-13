@@ -4,10 +4,9 @@
   "description": "",
   "main": "src/main/index.js",
   "scripts": {
-    "testOld": "ava src/common/ --require babel-register --watch --verbose",
     "test": "ava './src/common/**/*.test.js' --require babel-register --verbose",
     "build-srv": "babel src/ -d dist",
-    "build-proto1": "browserify src/main/index.js -o dist/main/editor.js -t [babelify browserify minifyify ]",
+    "build": "browserify src/main/index.js -o dist/main/editor.js -t [babelify browserify minifyify ]",
     "watch": "watchify src/main -o dist/index.js -t [ babelify]",
     "start-dev": "budo src/main:dist/bundle.js --port=8080 --live -- -t babelify",
     "test-render": "node src/serverSide/launch.js",
