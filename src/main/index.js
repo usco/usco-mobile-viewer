@@ -181,7 +181,7 @@ const renderAlt = prepareRenderAlt(regl)
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [0.5, 0.5, 0.5]},//[0.2, 1.125, 1.125]},
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]},//[0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
