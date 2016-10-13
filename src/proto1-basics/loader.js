@@ -1,20 +1,21 @@
-import XhrStream from 'xhr-stream'
+//import XhrStream from 'xhr-stream'
 import makeStlStream from 'usco-stl-parser'
 //require("web-streams-polyfill/dist/polyfill.min.js")
-
+//import 'whatwg-fetch'
+//import { ReadableStream } from "web-streams-polyfill"
 import fetchStream from 'fetch-readablestream'
-
 
 const Duplex = require('stream').Duplex
 const Readable = require('stream').Readable
 
 export default function loadTest (uri) {
   console.log('trying to load')
-  const xhr = new XMLHttpRequest()
+  /*const xhr = new XMLHttpRequest()
   // xhr.responseType = 'arraybuffer'
   xhr.open('GET', uri, true)
+  const xhrStream = new XhrStream(xhr)*/
 
-  const xhrStream = new XhrStream(xhr)
+
   const stlStream = makeStlStream({useWorker: true})
 
   const foo = new Duplex({
@@ -55,20 +56,10 @@ export default function loadTest (uri) {
     // if (!this.push(chunk)){
     // }
     }
-
     _read (size) {
       //console.log('_read')
       //signal the source that it can start again
     }
   }
-
  return new HttpSourceStream(uri).pipe(makeStlStream({useWorker: true}))
-
- //return (xhrStream.pipe(stlStream))
 }
-
-/*  var oReq = new XMLHttpRequest()
-  oReq.responseType = 'arraybuffer'
-  oReq.addEventListener('load', reqListener)
-  oReq.open('GET', testFile)
-  oReq.send()*/
