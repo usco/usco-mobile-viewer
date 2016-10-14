@@ -9,7 +9,7 @@ varying vec3 fragNormal, fragPosition;
 
 void main() {
   float fogDistance = gl_FragCoord.z / gl_FragCoord.w;
-  float fogAmount = fog_exp(fogDistance, FOG_DENSITY);
+  float fogAmount = fog_exp(fogDistance * 0.1, FOG_DENSITY);
   const vec4 fogColor = vec4(1.0); // white
 
   //vec4 mainColor = mix( vec4(light, 1), color, 0.6);
