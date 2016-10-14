@@ -24,8 +24,8 @@ export const params = {
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
-    minDistance: 0.2,
-    maxDistance: 400
+    minDistance: 2,
+    maxDistance: 4000
   },
   EPS: 0.000001,
   drag: 0.47, // Decrease the momentum by 1% each iteration

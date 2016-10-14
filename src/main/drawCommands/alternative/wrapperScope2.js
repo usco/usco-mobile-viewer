@@ -26,8 +26,8 @@ export default function wrapperScope (regl, params={}) {
         return mat4.perspective([],
           Math.PI / 4,
           context.viewportWidth / context.viewportHeight,
-          0.01,
-          1000)
+          0.1,
+          10000)
       }
     },
     framebuffer: fbo
