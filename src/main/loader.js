@@ -33,11 +33,16 @@ export default function loadTest (uri) {
       super()
 
       let reader
-      const finish = () => { this.emit('finish')}
-      const end = () => { this.emit('end')}
+      let self = this
+      const finish = () => { self.emit('finish')}
+      const end = () => { self.emit('end')}
+      //const push = (data) => self.push(data)
+      const push = this.push.bind(this)
+      //const finish = this.emit.bind(this)
 
-      const push = (data) => this.push(data)
-
+      //console.log('push', push)
+      //console.log('end', end)
+      //console.log('finish', finish)
       const process = (data) => {
         const { value, done } = data
         //console.log('SOURCE chunk', data , value, done)

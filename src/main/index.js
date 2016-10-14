@@ -27,9 +27,7 @@ import { interactionsFromEvents, pointerGestures } from '../common/interactions/
 import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 /* --------------------- */
 
-import makeGrid from './grid'
-import makeShadowPlane from './shadowPlane'
-import makeTransformGizmo from './transformsGizmo'
+
 
 // this is a pseudo cycle.js driver of course
 const adressBarDriver = create((add, end, error) => {
@@ -75,10 +73,6 @@ const container = document.querySelector('canvas')
 
 const {frame, clear} = regl
 
-const grid = makeGrid({size: [16, 16], ticks: 1})
-const gizmo = makeTransformGizmo()
-const shadowPlane = makeShadowPlane(160)
-
 /* --------------------- */
 
 /* Pipeline:
@@ -88,10 +82,16 @@ const shadowPlane = makeShadowPlane(160)
 */
 /*
 import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-
+import makeGrid from './grid'
+import makeShadowPlane from './shadowPlane'
+import makeTransformGizmo from './transformsGizmo'
 // import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
 // import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
 //import { draw as _draw, makeDrawCalls, generateDrawFnForEntity } from './draw'
+
+const grid = makeGrid({size: [16, 16], ticks: 1})
+const gizmo = makeTransformGizmo()
+const shadowPlane = makeShadowPlane(160)
 
 function flatten (arr) {
   return arr.reduce(function (a, b) {
@@ -181,7 +181,7 @@ const renderAlt = prepareRenderAlt(regl)
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [0.5, 0.5, 0.5]},//[0.2, 1.125, 1.125]},
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]},//[0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
