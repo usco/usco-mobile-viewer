@@ -16637,7 +16637,7 @@ function controlsStream(interactions, cameraData) {
     }
     return delta;
   }).map(function (delta) {
-    var angle = [Math.PI * delta[0], -Math.PI * delta[1]];
+    var angle = [-Math.PI * delta[0], -Math.PI * delta[1]];
     return angle;
   });
 
@@ -18057,7 +18057,7 @@ var renderAlt = (0, _main2.default)(regl);
 
 var addedEntities$ = parsedSTLStream.map(function (geometry) {
   return {
-    transforms: { pos: [0, 0, 0], rot: [0, 0, 0], sca: [0.5, 0.5, 0.5] }, //[0.2, 1.125, 1.125]},
+    transforms: { pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1] }, //[0.2, 1.125, 1.125]},
     geometry: geometry,
     visuals: {
       type: 'mesh',
@@ -18151,17 +18151,20 @@ function loadTest(uri) {
       var _this = _possibleConstructorReturn(this, (HttpSourceStream.__proto__ || Object.getPrototypeOf(HttpSourceStream)).call(this));
 
       var reader = void 0;
+      var self = _this;
       var finish = function finish() {
-        _this.emit('finish');
+        self.emit('finish');
       };
       var end = function end() {
-        _this.emit('end');
+        self.emit('end');
       };
+      //const push = (data) => self.push(data)
+      var push = _this.push.bind(_this);
+      //const finish = this.emit.bind(this)
 
-      var push = function push(data) {
-        return _this.push(data);
-      };
-
+      //console.log('push', push)
+      //console.log('end', end)
+      //console.log('finish', finish)
       var process = function process(data) {
         var value = data.value;
         var done = data.done;
