@@ -4,16 +4,20 @@ import mat4 from 'gl-mat4'
 export default function drawCuboid (regl, params) {
   const {size} = params
   const [width, length, height] = size
+  const halfWidth = width * 0.5
+  const halfLength = length * 0.5
+  const halfHeight = height * 0.5
+  
   const position = [
-    -width, -length, -height,
-    width, -length, -height,
-    width, length, -height,
-    -width, length, -height,
+    -halfWidth, -halfLength, -halfHeight,
+    halfWidth, -halfLength, -halfHeight,
+    halfWidth, halfLength, -halfHeight,
+    -halfWidth, halfLength, -halfHeight,
 
-    -width, -length, height,
-    width, -length, height,
-    width, length, height,
-    -width, length, height
+    -halfWidth, -halfLength, halfHeight,
+    halfWidth, -halfLength, halfHeight,
+    halfWidth, halfLength, halfHeight,
+    -halfWidth, halfLength, halfHeight
   ]
 
   // use this one for clean cube wireframe outline
@@ -31,8 +35,7 @@ export default function drawCuboid (regl, params) {
 
     attributes: {
       position,
-      normal
-    },
+    normal},
     elements: cells,
     uniforms: {
       model: (context, props) => props.model || mat4.identity([]),
