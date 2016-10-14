@@ -20,12 +20,12 @@ export default function Encl (regl, params) {
   const machine_volume = [213, 220, 350]
 
   // const mGridSize = [21.3, 22]
-  const _drawGrid = drawGrid(regl, { size: machine_volume, ticks: 40 })
+  const _drawGrid = drawGrid(regl, { size: machine_volume, ticks: 50, centered: true })
 
   // infinite grid
   const gridSize = [2200, 2000] // size of 'infinite grid'
   const _drawInfiniGrid = drawGrid(regl, {size: gridSize, ticks: 10, infinite: true})
-  const gridOffset = model({pos: [0, 0, -0.3]})
+  const gridOffset = model({pos: [0, 0, -1.4]})
 
   const triSize = {width: 50, height: 20}
   const _drawTri = drawTri(regl, {width: triSize.width, height: triSize.height})
@@ -36,19 +36,17 @@ export default function Encl (regl, params) {
   const containerCuboidMatrix = model({ pos: [0, 0, machine_volume[2] * 0.5] })
 
   const dissalowedVolumes = machine_disallowed_areas
-    .map(function (area) {
-      console.log('area', area)
-      const drawFn = drawCuboidFromCoords(regl, {height: 350, coords: area})
-      return drawFn
-    })
+    .map((area) => drawCuboidFromCoords(regl, {height: 350, coords: area}))
 
   return ({view, camera}) => {
-    _drawGrid({view, camera, color: [0, 0, 0, 0.5]})
-    _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
+    _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: gridOffset})
+
+    _drawGrid({view, camera, color: [0, 0, 0, 0.2]})
+
 
     _drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
     _drawCuboid({view, camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix})
 
-    dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
+    //dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
   }
 }
