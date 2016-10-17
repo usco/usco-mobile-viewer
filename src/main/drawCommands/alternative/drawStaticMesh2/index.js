@@ -1,7 +1,7 @@
 var glslify = require('glslify-sync') // works in client & server
 import mat4 from 'gl-mat4'
 
-export default function drawMesh(regl, params={extras:{}}) {
+export default function drawMesh (regl, params = {extras: {}}) {
   const {prop, buffer} = regl
   const {geometry} = params
   let commandParams = {
@@ -15,21 +15,19 @@ export default function drawMesh(regl, params={extras:{}}) {
     attributes: {
       position: buffer(geometry.positions)
     },
-    //elements: geometry.cells
+    // elements: geometry.cells
     cull: {
       enable: true,
       face: 'back'
     }
   }
-  if(geometry.cells)
-  {
+  if (geometry.cells) {
     commandParams.elements = geometry.cells
-  }
-  else{
-    commandParams.count = geometry.positions.length/3
+  } else {
+    commandParams.count = geometry.positions.length / 3
   }
 
-  if(geometry.normals){
+  if (geometry.normals) {
     commandParams.attributes.normal = buffer(geometry.normals)
   }
   // Splice in any extra params

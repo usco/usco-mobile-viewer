@@ -5,7 +5,6 @@ import normals from 'angle-normals'
 
 export default function drawGrid (regl, params = {}) {
   let positions = []
-  console.log('making grid')
   const infinite = params.infinite || false
   const centered = params.centered || false
 
@@ -20,7 +19,6 @@ export default function drawGrid (regl, params = {}) {
     const halfWidth = width * 0.5
     const halfLength = length * 0.5
 
-    // const foo = halfWidth/ticks
     const remWidth = halfWidth % ticks
     const widthStart = -halfWidth + remWidth
     const widthEnd = - widthStart
@@ -28,7 +26,6 @@ export default function drawGrid (regl, params = {}) {
     const remLength = halfLength % ticks
     const lengthStart = -halfLength + remLength
     const lengthEnd = -lengthStart
-    console.log('remWidth', remWidth)
 
     for (let i = widthStart; i <= widthEnd; i += ticks) {
       positions.push(lengthStart, i, 0)

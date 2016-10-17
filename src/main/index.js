@@ -20,31 +20,17 @@ import { concatStream } from 'usco-stl-parser'
 import centerGeometry from '../common/utils/centerGeometry'
 import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
 
+//interactions
 import controlsStream from '../common/controls/controlsStream'
 //import pickStream from '../common/picking/pickStream'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
 import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 /* --------------------- */
-
-
-
-// this is a pseudo cycle.js driver of course
-const adressBarDriver = create((add, end, error) => {
-  const url = window.location.href
-
-  function getParam (name, url) {
-    if (!url) url = location.href
-    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]')
-    var regexS = '[\\?&]' + name + '=([^&#]*)'
-    var regex = new RegExp(regexS)
-    var results = regex.exec(url)
-    return results == null ? null : results[1]
-  }
-  add(getParam('modelUrl', url))
-})
+import adressBarDriver from './sideEffects/adressBarDriver'
 
 const parsedSTLStream = adressBarDriver
+  .filter(x => x !== null)
   .delay(200)
   .flatMap(function (url) {
     return create((add, end, error) => {
@@ -80,115 +66,24 @@ const {frame, clear} = regl
   - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
   - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
 */
-/*
-import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import makeGrid from './grid'
-import makeShadowPlane from './shadowPlane'
-import makeTransformGizmo from './transformsGizmo'
-// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
-// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
-//import { draw as _draw, makeDrawCalls, generateDrawFnForEntity } from './draw'
-
-const grid = makeGrid({size: [16, 16], ticks: 1})
-const gizmo = makeTransformGizmo()
-const shadowPlane = makeShadowPlane(160)
-
-function flatten (arr) {
-  return arr.reduce(function (a, b) {
-    return a.concat(b)
-  }, [])
-}
-
-let fullData = {
-  scene: sceneData,
-  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, ]) // gizmo])
-}
-
-// apply all changes
-fullData.entities = fullData.entities
-  .map(injectBounds)
-  .map(injectTMatrix)
-  .map(injectNormals)
-
-// inject bactching/rendering data
-const {hashStore, entities} = makeDrawCalls(regl, fullData)
-fullData.entities = entities
-
-// const drawModel = _drawModel.bind(null, regl)
-//const draw = _draw.bind(null, regl)
-// ============================================
-// main render function: data in, rendered frame out
-function render (data) {
-  //draw(hashStore, data)
-}
-
-// render one frame
-// render(fullData)
-
-
-// interactions : picking
-const picks$ = pickStream({gestures}, fullData)
-  .tap(e => console.log('picks', e))
-
-const selections$ = just(fullData.entities)
-  .map(function (x) {
-    return x.filter(x => 'meta' in x).filter(x => x.meta.selected)
-  })
-  .startWith([])
-  .merge(picks$)
-  .scan((acc, cur) => {
-  }, [])
-  .filter(x => x !== undefined)
-  .forEach(e => console.log('selections', e))
-
-function upsertCameraState (cameraState) {
-  let data = fullData
-  data.camera = cameraState
-  return data
-}
-
-// FIXME ! this is a hack, just for testing, also , imperative
-
-function setSelection ({entity}) {
-  console.log('setting seletion')
-  entity.meta.selected = !entity.meta.selected
-  return entity
-}
-
-const stateWithCameraState$ = camState$
-  .map(upsertCameraState)
-
-const stateWithSelectionState$ = picks$
-  .map(x => x.map(setSelection))
-  .map(e => fullData)
-
-// merge all the things that should trigger a re-render
-merge(
-  stateWithCameraState$,
-  stateWithSelectionState$
-)
-// .forEach(render)
-*/
 
 // interactions : camera controls
 const baseInteractions$ = interactionsFromEvents(container)
 const gestures = pointerGestures(baseInteractions$)
 const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
 
-let drawCalls = {}
-
 const renderAlt = prepareRenderAlt(regl)
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]},//[0.2, 1.125, 1.125]},
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]},// [0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
       visible: true,
       color: [0.02, 0.7, 1, 1] // 07a9ff [1, 1, 0, 0.5],
     },
-  meta: {id: 'FOOO'}})
+    meta: {id: 0}})
 )
   .map(injectNormals)
   .map(injectBounds)

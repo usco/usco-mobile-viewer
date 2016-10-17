@@ -1,23 +1,21 @@
-import wrapperScope from './wrapperScope2'
-import makeDrawEncl from './drawEncl'
-
-let tick = 0
+import makeWrapperScope from './wrapperScope'
+import makeDrawEnclosure from './drawEnclosure'
 
 export default function prepareRenderAlt (regl) {
-  const _wrapperScope = wrapperScope(regl)
-
-  const drawEncl = makeDrawEncl(regl)
+  const wrapperScope = makeWrapperScope(regl)
+  const drawEnclosure = makeDrawEnclosure(regl)
+  let tick = 0
 
   let command = (props) => {
     const {camera, view, entities, background} = props
 
-    _wrapperScope(props, (context) => {
+    wrapperScope(props, (context) => {
       regl.clear({
         color: background,
         depth: 1
       })
       entities.map(e => e.visuals.draw({view, camera, color: e.visuals.color, model: e.modelMat}))
-      drawEncl(props)
+      drawEnclosure(props)
     })
   }
 

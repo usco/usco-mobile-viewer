@@ -20,9 +20,9 @@ uniform vec3 lightDir;
 uniform vec3 opacity;
 
 void main () {
-  vec2 foo[1] ;
-  foo[0] = vec2(0.,1.);
-  foo[1] = vec2(1.,0.);
+  //vec2 foo[1] ;
+  //foo[0] = vec2(0.,1.);
+  //foo[1] = vec2(1.,0.);
 
   vec3 ambient = ambientLightAmount * color.rgb;
   float cosTheta = dot(fragNormal, lightDir);
