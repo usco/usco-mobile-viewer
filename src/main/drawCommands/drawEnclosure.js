@@ -3,7 +3,7 @@ import drawTri from './drawTri/index'
 import drawCuboid from './drawCuboid/index'
 import drawCuboidFromCoords from './drawCuboidFromCoords/index'
 
-import { default as model } from '../../../common/utils/computeTMatrixFromTransforms'
+import { default as model } from '../../common/utils/computeTMatrixFromTransforms'
 
 export default function Encl (regl, params) {
   const machine_disallowed_areas = [

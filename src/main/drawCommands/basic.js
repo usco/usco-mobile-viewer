@@ -7,7 +7,7 @@ import drawDynMesh from './drawDynMesh'
 import drawStaticMesh from './drawStaticMesh'
 
 import wrapperScope from './wrapperScope'
-import { default as model } from '../../../common/utils/computeTMatrixFromTransforms'
+import { default as model } from '../../common/utils/computeTMatrixFromTransforms'
 
 import bunny from 'bunny'
 

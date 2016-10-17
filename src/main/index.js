@@ -4,8 +4,8 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 
-import drawStaticMesh from './drawCommands/alternative/drawStaticMesh2/index'
-import prepareRenderAlt from './drawCommands/alternative/main'
+import drawStaticMesh from './drawCommands/drawStaticMesh2/index'
+import prepareRenderAlt from './drawCommands/main'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
