@@ -16577,7 +16577,7 @@ var camera = {
   phiDelta: 0,
   scale: 1,
 
-  position: [45, 30, 20],
+  position: [450, 300, 200],
   target: [0, 0, 0]
 };
 
@@ -16651,12 +16651,12 @@ function controlsStream(interactions, cameraData) {
   function makeCameraModel() {
     function applyRotation(state, angles) {
       state = (0, _orbitControls.rotate)(settings, state, angles); // mutating, meh
-      state = (0, _orbitControls.update)(settings, state); // not sure
+      //state = update(settings, state) // not sure
       return state;
     }
 
     function applyZoom(state, zooms) {
-      console.log('applyZoom', zooms);
+      //console.log('applyZoom', zooms)
       state = (0, _orbitControls.zoom)(settings, state, zooms); // mutating, meh
       state = (0, _orbitControls.update)(settings, state); // not sure
       return state;
@@ -16725,8 +16725,8 @@ var params = exports.params = {
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
-    minDistance: 0.2,
-    maxDistance: 400
+    minDistance: 2,
+    maxDistance: 4000
   },
   EPS: 0.000001,
   drag: 0.47, // Decrease the momentum by 1% each iteration
@@ -17460,7 +17460,11 @@ function drawCuboid(regl, params) {
   var length = _size[1];
   var height = _size[2];
 
-  var position = [-width, -length, -height, width, -length, -height, width, length, -height, -width, length, -height, -width, -length, height, width, -length, height, width, length, height, -width, length, height];
+  var halfWidth = width * 0.5;
+  var halfLength = length * 0.5;
+  var halfHeight = height * 0.5;
+
+  var position = [-halfWidth, -halfLength, -halfHeight, halfWidth, -halfLength, -halfHeight, halfWidth, halfLength, -halfHeight, -halfWidth, halfLength, -halfHeight, -halfWidth, -halfLength, halfHeight, halfWidth, -halfLength, halfHeight, halfWidth, halfLength, halfHeight, -halfWidth, halfLength, halfHeight];
 
   // use this one for clean cube wireframe outline
   var cells = [0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 5, 1, 2, 6, 7, 3];
@@ -17475,8 +17479,7 @@ function drawCuboid(regl, params) {
 
     attributes: {
       position: position,
-      normal: normal
-    },
+      normal: normal },
     elements: cells,
     uniforms: {
       model: function model(context, props) {
@@ -17505,6 +17508,70 @@ function drawCuboid(regl, params) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = drawCuboidFromCoords;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+ // works in client & server
+function drawCuboidFromCoords(regl, params) {
+  var coords = params.coords;
+  var height = params.height;
+
+
+  var position = coords.map(function (x) {
+    return [].concat(_toConsumableArray(x), [0]);
+  }).concat(coords.map(function (x) {
+    return [].concat(_toConsumableArray(x), [height]);
+  }));
+
+  // use this one for clean cube wireframe outline
+  var cells = [0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 5, 1, 2, 6, 7, 3];
+
+  var normal = position.map(function (p) {
+    return 1;
+  });
+
+  return regl({
+    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n //fragNormal = normal;\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    attributes: {
+      position: position,
+      normal: normal },
+    elements: cells,
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: regl.prop('color'),
+      angle: function angle(_ref) {
+        var tick = _ref.tick;
+        return 0.01 * tick;
+      }
+    },
+    primitive: 'line strip',
+    lineWidth: 3,
+
+    depth: {
+      enable: true,
+      mask: false,
+      func: 'less',
+      range: [0, 1]
+    }
+  });
+}
+},{"gl-mat4":30}],201:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = Encl;
 
 var _index = require('./drawGrid/index');
@@ -17519,6 +17586,10 @@ var _index5 = require('./drawCuboid/index');
 
 var _index6 = _interopRequireDefault(_index5);
 
+var _index7 = require('./drawCuboidFromCoords/index');
+
+var _index8 = _interopRequireDefault(_index7);
+
 var _computeTMatrixFromTransforms = require('../../../common/utils/computeTMatrixFromTransforms');
 
 var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
@@ -17526,34 +17597,53 @@ var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromT
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Encl(regl, params) {
-  var gridSize = [220, 200];
-  var mGridSize = [21.3, 22];
-  var _drawGrid = (0, _index2.default)(regl, { size: mGridSize, ticks: 4 });
+  var machine_disallowed_areas = [[[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]], [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]], [[-94.5, 104.6], [-115, 104.6], [-115, 105.5], [-94.5, 105.5]], [[-91.4, 105.5], [-115, 105.5], [-115, 115], [-91.4, 115]], [[77.3, -115], [77.3, -98.6], [115, -98.6], [115, -115]], [[97.2, -98.6], [97.2, -54.5], [113, -54.5], [113, -98.6]], [[100.5, -54.5], [100.5, 99.3], [115, 99.3], [115, -54.5]], [[77, 99.3], [77, 115], [115, 115], [115, 99.3]]];
+  var machine_volume = [213, 220, 350];
+
+  // generate a dynamic uniform from the data above
+  var dynDisalowerAreasUniform = machine_disallowed_areas.map(function (area) {
+    return '[' + area.map(function (a) {
+      return 'vec2(' + a[0] + ', ' + a[1] + ')';
+    }).join(',') + ']';
+  });
+  console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform);
+  // ``
+
+  // const mGridSize = [21.3, 22]
+  var _drawGrid = (0, _index2.default)(regl, { size: machine_volume, ticks: 50, centered: true });
 
   // infinite grid
-  var _drawInfiniGrid = (0, _index2.default)(regl, { size: gridSize, ticks: 1, infinite: true });
-  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.0] });
+  var gridSize = [2200, 2000]; // size of 'infinite grid'
+  var _drawInfiniGrid = (0, _index2.default)(regl, { size: gridSize, ticks: 10, infinite: true });
+  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -1.4] });
 
-  var triSize = { width: 5, height: 2 };
+  var triSize = { width: 50, height: 20 };
   var _drawTri = (0, _index4.default)(regl, { width: triSize.width, height: triSize.height });
-  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, mGridSize[0], 0.1] });
+  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, machine_volume[0] * 0.5, 0.5] });
 
-  var containerSize = [mGridSize[1], mGridSize[0], 35];
+  var containerSize = [machine_volume[1], machine_volume[0], machine_volume[2]];
   var _drawCuboid = (0, _index6.default)(regl, { size: containerSize });
-  var containerCuboidMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, containerSize[2]] });
+  var containerCuboidMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, machine_volume[2] * 0.5] });
+
+  var dissalowedVolumes = machine_disallowed_areas.map(function (area) {
+    return (0, _index8.default)(regl, { height: 350, coords: area });
+  });
 
   return function (_ref) {
     var view = _ref.view;
     var camera = _ref.camera;
 
-    _drawGrid({ view: view, camera: camera, color: [0, 0, 0, 0.3] });
-    _drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: gridOffset });
+    _drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1], model: gridOffset });
+
+    _drawGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1] });
 
     _drawTri({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: triMatrix });
-    _drawCuboid({ view: view, camera: camera, color: [0, 0, 0.0, 0.2], model: containerCuboidMatrix });
+    _drawCuboid({ view: view, camera: camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix });
+
+    // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
   };
 }
-},{"../../../common/utils/computeTMatrixFromTransforms":196,"./drawCuboid/index":199,"./drawGrid/index":201,"./drawTri/index":203}],201:[function(require,module,exports){
+},{"../../../common/utils/computeTMatrixFromTransforms":196,"./drawCuboid/index":199,"./drawCuboidFromCoords/index":200,"./drawGrid/index":202,"./drawTri/index":204}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17578,6 +17668,7 @@ function drawGrid(regl) {
   var positions = [];
   console.log('making grid');
   var infinite = params.infinite || false;
+  var centered = params.centered || false;
 
   var size = params.size;
   var ticks = params.ticks;
@@ -17588,19 +17679,46 @@ function drawGrid(regl) {
   var width = size[0];
   var length = size[1];
 
-  for (var i = -width; i <= width; i += ticks) {
-    positions.push(-length, i, 0);
-    positions.push(length, i, 0);
-    positions.push(-length, i, 0);
+  if (centered) {
+    var halfWidth = width * 0.5;
+    var halfLength = length * 0.5;
+
+    // const foo = halfWidth/ticks
+    var remWidth = halfWidth % ticks;
+    var widthStart = -halfWidth + remWidth;
+    var widthEnd = -widthStart;
+
+    var remLength = halfLength % ticks;
+    var lengthStart = -halfLength + remLength;
+    var lengthEnd = -lengthStart;
+    console.log('remWidth', remWidth);
+
+    for (var i = widthStart; i <= widthEnd; i += ticks) {
+      positions.push(lengthStart, i, 0);
+      positions.push(lengthEnd, i, 0);
+      positions.push(lengthStart, i, 0);
+    }
+
+    for (var _i = lengthStart; _i <= lengthEnd; _i += ticks) {
+      positions.push(_i, widthStart, 0);
+      positions.push(_i, widthEnd, 0);
+      positions.push(_i, widthStart, 0);
+    }
+  } else {
+    for (var _i2 = -width * 0.5; _i2 <= width * 0.5; _i2 += ticks) {
+      positions.push(-length * 0.5, _i2, 0);
+      positions.push(length * 0.5, _i2, 0);
+      positions.push(-length * 0.5, _i2, 0);
+    }
+
+    for (var _i3 = -length * 0.5; _i3 <= length * 0.5; _i3 += ticks) {
+      positions.push(_i3, -width * 0.5, 0);
+      positions.push(_i3, width * 0.5, 0);
+      positions.push(_i3, -width * 0.5, 0);
+    }
   }
 
-  for (var _i = -length; _i <= length; _i += ticks) {
-    positions.push(_i, -width, 0);
-    positions.push(_i, width, 0);
-    positions.push(_i, -width, 0);
-  }
-
-  var frag = infinite ? "precision mediump float;\n#define GLSLIFY 1\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\n#define FOG_DENSITY 0.03\nfloat fogFactorExp2(\n  const float dist,\n  const float density\n) {\n  const float LOG2 = -1.442695;\n  float d = density * dist;\n  return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);\n}\n\nfloat fogFactorExp(\n  const float dist,\n  const float density\n) {\n  return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);\n}\n\nvoid main() {\n  float fogDistance = gl_FragCoord.z / gl_FragCoord.w;\n  float fogAmount = fogFactorExp(fogDistance, FOG_DENSITY);\n  const vec4 fogColor = vec4(1.0); // white\n\n  //vec4 mainColor = mix( vec4(light, 1), color, 0.6);\n  vec4 mainColor = color;\n  gl_FragColor = mix(mainColor, fogColor, fogAmount);\n}\n" : "precision mediump float;\n#define GLSLIFY 1\nvarying vec3  fragPosition;\nuniform vec4 color;\nvoid main() {\n  gl_FragColor = color;\n}\n";
+  var frag = infinite ? "precision mediump float;\n#define GLSLIFY 1\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\n#define FOG_DENSITY 0.03\nfloat fogFactorExp2(\n  const float dist,\n  const float density\n) {\n  const float LOG2 = -1.442695;\n  float d = density * dist;\n  return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);\n}\n\nfloat fogFactorExp(\n  const float dist,\n  const float density\n) {\n  return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);\n}\n\nvoid main() {\n  float fogDistance = gl_FragCoord.z / gl_FragCoord.w;\n  float fogAmount = fogFactorExp(fogDistance * 0.1, FOG_DENSITY);\n  const vec4 fogColor = vec4(1.0); // white\n\n  //vec4 mainColor = mix( vec4(light, 1), color, 0.6);\n  vec4 mainColor = color;\n  gl_FragColor = mix(mainColor, fogColor, fogAmount);\n}\n" : "precision mediump float;\n#define GLSLIFY 1\nvarying vec3  fragPosition;\nuniform vec4 color;\nvoid main() {\n  gl_FragColor = color;\n}\n";
 
   return regl({
     vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nuniform mat4 model, view, projection;\nvarying vec3 fragPosition;\n\nvoid main() {\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
@@ -17638,7 +17756,7 @@ function drawGrid(regl) {
 
   });
 }
-},{"angle-normals":5,"gl-mat4":30}],202:[function(require,module,exports){
+},{"angle-normals":5,"gl-mat4":30}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17661,7 +17779,7 @@ function drawMesh(regl) {
 
   var commandParams = {
     vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position, normal;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  gl_Position = projection * view * worldSpacePosition;\n}\n",
-    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvoid main () {\n  vec3 ambient = ambientLightAmount * color.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * color.rgb * clamp(cosTheta , 0.0, 1.0 );\n\n  float v = 0.8; // shadow value\n  gl_FragColor = vec4((ambient + diffuse * v), 1.);\n}\n",
+    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvoid main () {\n  //vec2 foo[1] ;\n  //foo[0] = vec2(0.,1.);\n  //foo[1] = vec2(1.,0.);\n\n  vec3 ambient = ambientLightAmount * color.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * color.rgb * clamp(cosTheta , 0.0, 1.0 );\n\n  float v = 0.8; // shadow value\n  gl_FragColor = vec4((ambient + diffuse * v), 1.);\n}\n",
 
     uniforms: {
       model: function model(context, props) {
@@ -17672,7 +17790,7 @@ function drawMesh(regl) {
     attributes: {
       position: buffer(geometry.positions)
     },
-    //elements: geometry.cells
+    // elements: geometry.cells
     cull: {
       enable: true,
       face: 'back'
@@ -17687,12 +17805,12 @@ function drawMesh(regl) {
   if (geometry.normals) {
     commandParams.attributes.normal = buffer(geometry.normals);
   }
-
   // Splice in any extra params
   commandParams = Object.assign({}, commandParams, params.extras);
+  console.log('commandParams', commandParams);
   return regl(commandParams);
 }
-},{"gl-mat4":30}],203:[function(require,module,exports){
+},{"gl-mat4":30}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17735,7 +17853,7 @@ function drawTri(regl, params) {
     }
   });
 }
-},{"gl-mat4":30}],204:[function(require,module,exports){
+},{"gl-mat4":30}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17746,10 +17864,6 @@ exports.default = prepareRenderAlt;
 var _wrapperScope2 = require('./wrapperScope2');
 
 var _wrapperScope3 = _interopRequireDefault(_wrapperScope2);
-
-var _computeTMatrixFromTransforms = require('../../../common/utils/computeTMatrixFromTransforms');
-
-var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
 
 var _drawEncl = require('./drawEncl');
 
@@ -17769,6 +17883,7 @@ function prepareRenderAlt(regl) {
     var view = props.view;
     var entities = props.entities;
     var background = props.background;
+
 
     _wrapperScope(props, function (context) {
       regl.clear({
@@ -17798,7 +17913,7 @@ function prepareRenderAlt(regl) {
     return;
   };
 }
-},{"../../../common/utils/computeTMatrixFromTransforms":196,"./drawEncl":200,"./wrapperScope2":205}],205:[function(require,module,exports){
+},{"./drawEncl":201,"./wrapperScope2":206}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17840,7 +17955,7 @@ function wrapperScope(regl) {
         return props.view;
       },
       projection: function projection(context, props) {
-        return _glMat2.default.perspective([], Math.PI / 4, context.viewportWidth / context.viewportHeight, 0.01, 1000);
+        return _glMat2.default.perspective([], Math.PI / 4, context.viewportWidth / context.viewportHeight, 0.1, 10000);
       }
     },
     framebuffer: fbo
@@ -17849,7 +17964,7 @@ function wrapperScope(regl) {
   commandParams = Object.assign({}, commandParams, params.extras);
   return regl(commandParams);
 }
-},{"gl-mat4":30}],206:[function(require,module,exports){
+},{"gl-mat4":30}],207:[function(require,module,exports){
 'use strict';
 
 var _index = require('./drawCommands/alternative/drawStaticMesh2/index');
@@ -17908,6 +18023,8 @@ var reglM = require('regl');
 
 /* --------------------- */
 
+console.log('here');
+
 // this is a pseudo cycle.js driver of course
 var adressBarDriver = (0, _create2.default)(function (add, end, error) {
   var url = window.location.href;
@@ -17920,10 +18037,13 @@ var adressBarDriver = (0, _create2.default)(function (add, end, error) {
     var results = regex.exec(url);
     return results == null ? null : results[1];
   }
-  add(getParam('modelUrl', url));
+  var params = getParam('modelUrl', url);
+  add(params);
 });
 
-var parsedSTLStream = adressBarDriver.delay(200).flatMap(function (url) {
+var parsedSTLStream = adressBarDriver.filter(function (x) {
+  return x !== null;
+}).delay(200).flatMap(function (url) {
   return (0, _create2.default)(function (add, end, error) {
     (0, _loader2.default)(url).pipe((0, _uscoStlParser.concatStream)(function (data) {
       return add(data);
@@ -18078,7 +18198,6 @@ var addedEntities$ = parsedSTLStream.map(function (geometry) {
   return entity;
 }).map(_prepPipeline.injectTMatrix);
 //.tap(entity => console.log('entity done processing', entity))
-
 camState$.map(function (camera) {
   return { entities: [], camera: camera, background: [1, 1, 1, 1] };
 }) // initial / empty state
@@ -18087,7 +18206,7 @@ camState$.map(function (camera) {
 }, camState$, addedEntities$)).forEach(function (x) {
   return renderAlt(x);
 });
-},{"../common/camera":189,"../common/controls/controlsStream":190,"../common/controls/orbitControls":191,"../common/interactions/pointerGestures":192,"../common/utils/centerGeometry":195,"../common/utils/offsetTransformsByBounds":198,"./drawCommands/alternative/drawStaticMesh2/index":202,"./drawCommands/alternative/main":204,"./loader":207,"./prepPipeline":208,"@most/create":1,"most":117,"regl":149,"usco-stl-parser":176}],207:[function(require,module,exports){
+},{"../common/camera":189,"../common/controls/controlsStream":190,"../common/controls/orbitControls":191,"../common/interactions/pointerGestures":192,"../common/utils/centerGeometry":195,"../common/utils/offsetTransformsByBounds":198,"./drawCommands/alternative/drawStaticMesh2/index":203,"./drawCommands/alternative/main":205,"./loader":208,"./prepPipeline":209,"@most/create":1,"most":117,"regl":149,"usco-stl-parser":176}],208:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -18203,7 +18322,7 @@ function loadTest(uri) {
   return new HttpSourceStream(uri).pipe((0, _uscoStlParser2.default)({ useWorker: true }));
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":9,"fetch-readablestream":16,"stream":150,"usco-stl-parser":176}],208:[function(require,module,exports){
+},{"buffer":9,"fetch-readablestream":16,"stream":150,"usco-stl-parser":176}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18251,4 +18370,4 @@ function injectNormals(entity) {
   var result = Object.assign({}, entity, { geometry: geometry });
   return result;
 }
-},{"../common/bounds/computeBounds":188,"../common/utils/computeTMatrixFromTransforms":196,"angle-normals":5}]},{},[206]);
+},{"../common/bounds/computeBounds":188,"../common/utils/computeTMatrixFromTransforms":196,"angle-normals":5}]},{},[207]);
