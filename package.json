@@ -33,9 +33,7 @@
     "ray-triangle-intersection": "^1.0.3",
     "regl": "^1.1.1",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
-    "vertices-bounding-box": "^1.0.0",
-    "web-streams-polyfill": "github:creatorrr/web-streams-polyfill",
-    "whatwg-fetch": "^1.0.0"
+    "vertices-bounding-box": "^1.0.0"
   },
   "devDependencies": {
     "ava": "^0.15.2",
