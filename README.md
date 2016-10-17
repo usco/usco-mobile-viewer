@@ -22,7 +22,8 @@ This is the mobile app component for Jam/usco : minimal renderer + loading (stl 
 
 - uses the fantastic [regl](https://github.com/mikolalysenko/regl) (declarative stateless rendering)
 - uses the also great [glsify(https://github.com/stackgl/glslify)
-- and let us not forget [most]()
+- and let us not forget [most](https://github.com/cujojs/most) for observables
+- and many more
 
 
 ### This needs to be able to
@@ -70,12 +71,17 @@ npm run start-dev
 ```
 
 
-
-
 ## Usage
 
 ```
 ```
+
+Because of the dependency on fetch + readeable streams , if not running this in
+a recent Chrome/Chromium you will need a few polyfills :
+these are also provided in the dist folder
+- https://github.com/inexorabletash/text-encoding
+- https://github.com/creatorrr/web-streams-polyfill
+
 
 ## Contribute
 
