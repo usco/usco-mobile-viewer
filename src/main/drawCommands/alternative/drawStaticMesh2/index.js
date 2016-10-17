@@ -31,10 +31,9 @@ export default function drawMesh(regl, params={extras:{}}) {
 
   if(geometry.normals){
     commandParams.attributes.normal = buffer(geometry.normals)
-
   }
-
   // Splice in any extra params
   commandParams = Object.assign({}, commandParams, params.extras)
+  console.log('commandParams', commandParams)
   return regl(commandParams)
 }

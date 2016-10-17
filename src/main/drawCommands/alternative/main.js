@@ -1,5 +1,4 @@
 import wrapperScope from './wrapperScope2'
-import { default as modelM } from '../../../common/utils/computeTMatrixFromTransforms'
 import makeDrawEncl from './drawEncl'
 
 let tick = 0
@@ -11,6 +10,7 @@ export default function prepareRenderAlt (regl) {
 
   let command = (props) => {
     const {camera, view, entities, background} = props
+
     _wrapperScope(props, (context) => {
       regl.clear({
         color: background,

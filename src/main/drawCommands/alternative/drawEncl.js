@@ -19,6 +19,13 @@ export default function Encl (regl, params) {
   ]
   const machine_volume = [213, 220, 350]
 
+  // generate a dynamic uniform from the data above
+  const dynDisalowerAreasUniform = machine_disallowed_areas.map((area) => {
+    return '[' + area.map(a => `vec2(${a[0]}, ${a[1]})`).join(',') + ']'
+  })
+  console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform)
+  // ``
+
   // const mGridSize = [21.3, 22]
   const _drawGrid = drawGrid(regl, { size: machine_volume, ticks: 50, centered: true })
 
@@ -41,12 +48,11 @@ export default function Encl (regl, params) {
   return ({view, camera}) => {
     _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: gridOffset})
 
-    _drawGrid({view, camera, color: [0, 0, 0, 0.2]})
-
+    _drawGrid({view, camera, color: [0, 0, 0, 0.1]})
 
     _drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
     _drawCuboid({view, camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix})
 
-    //dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
+  // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
   }
 }
