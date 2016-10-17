@@ -42,12 +42,12 @@ export default function controlsStream (interactions, cameraData) {
   function makeCameraModel () {
     function applyRotation (state, angles) {
       state = rotate(settings, state, angles) // mutating, meh
-      state = update(settings, state) // not sure
+      //state = update(settings, state) // not sure
       return state
     }
 
     function applyZoom (state, zooms) {
-      console.log('applyZoom', zooms)
+      //console.log('applyZoom', zooms)
       state = zoom(settings, state, zooms) // mutating, meh
       state = update(settings, state) // not sure
       return state
