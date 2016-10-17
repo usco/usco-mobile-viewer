@@ -15,16 +15,16 @@ export default function drawGrid (regl, params = {}) {
   const width = size[0]
   const length = size[1]
 
-  for (let i = -width; i <= width; i += ticks) {
-    positions.push(-length, i, 0)
-    positions.push(length, i, 0)
-    positions.push(-length, i, 0)
+  for (let i = -width * 0.5; i <= width * 0.5; i += ticks) {
+    positions.push(-length * 0.5, i, 0)
+    positions.push(length * 0.5, i, 0)
+    positions.push(-length * 0.5, i, 0)
   }
 
-  for (let i = -length; i <= length; i += ticks) {
-    positions.push(i, -width, 0)
-    positions.push(i, width, 0)
-    positions.push(i, -width, 0)
+  for (let i = -length * 0.5; i <= length * 0.5; i += ticks) {
+    positions.push(i, -width * 0.5, 0)
+    positions.push(i, width * 0.5, 0)
+    positions.push(i, -width * 0.5, 0)
   }
 
   const frag = infinite ? glslify(__dirname + '/shaders/foggy.frag') : glslify(__dirname + '/shaders/grid.frag')

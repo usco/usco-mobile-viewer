@@ -1,24 +1,12 @@
 var glslify = require('glslify-sync') // works in client & server
 import mat4 from 'gl-mat4'
 
-export default function drawCuboid (regl, params) {
-  const {size} = params
-  const [width, length, height] = size
-  const halfWidth = width * 0.5
-  const halfLength = length * 0.5
-  const halfHeight = height * 0.5
-  
-  const position = [
-    -halfWidth, -halfLength, -halfHeight,
-    halfWidth, -halfLength, -halfHeight,
-    halfWidth, halfLength, -halfHeight,
-    -halfWidth, halfLength, -halfHeight,
+export default function drawCuboidFromCoords (regl, params) {
+  const {coords, height} = params
 
-    -halfWidth, -halfLength, halfHeight,
-    halfWidth, -halfLength, halfHeight,
-    halfWidth, halfLength, halfHeight,
-    -halfWidth, halfLength, halfHeight
-  ]
+  const position = coords
+    .map(x => [...x, 0])
+    .concat(coords.map(x => [...x, height]))
 
   // use this one for clean cube wireframe outline
   const cells = [
@@ -27,7 +15,7 @@ export default function drawCuboid (regl, params) {
     5, 1, 2, 6, 7, 3
   ]
 
-  const normal = position.map(p => p / size)
+  const normal = position.map(p => 1)
 
   return regl({
     vert: glslify(__dirname + '/shaders/mesh.vert'),
@@ -43,7 +31,7 @@ export default function drawCuboid (regl, params) {
       angle: ({tick}) => 0.01 * tick
     },
     primitive: 'line strip',
-    lineWidth: 2,
+    lineWidth: 3,
 
     depth: {
       enable: true,
