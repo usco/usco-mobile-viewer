@@ -9,7 +9,8 @@
 
 > Mobile app components for usco project
 
-This is the mobile app component for Jam/usco : minimal renderer + loading (stl only for now)
+This is a small-ish (700 kb minified) mobile 3d file viewer component : minimal renderer + loading (stl only for now)
+(Ios/Android)
 
 ## Table of Contents
 
@@ -23,7 +24,7 @@ This is the mobile app component for Jam/usco : minimal renderer + loading (stl 
 ## Background
 
 - uses the fantastic [regl](https://github.com/mikolalysenko/regl) (declarative stateless rendering)
-- uses the also great [glsify(https://github.com/stackgl/glslify)
+- uses the also great [glsify](https://github.com/stackgl/glslify)
 - and let us not forget [most](https://github.com/cujojs/most) for observables
 - and many more
 
