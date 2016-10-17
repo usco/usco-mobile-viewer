@@ -12,6 +12,11 @@
 This is a small-ish (700 kb minified) mobile 3d file viewer component : minimal renderer + loading (stl only for now)
 (Ios/Android)
 
+- coded in es6
+- uses streaming (node.js streams) to minimize memory consumption
+- functional/ FRP oriented
+- uses regl as functional WebGL framework
+
 ## Table of Contents
 
 - [Background](#background)
