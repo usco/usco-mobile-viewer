@@ -5,26 +5,19 @@ import drawCuboidFromCoords from './drawCuboidFromCoords/index'
 
 import { default as model } from '../../common/utils/computeTMatrixFromTransforms'
 
-export default function Encl (regl, params) {
-  const machine_disallowed_areas = [
-    [[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]],
-    [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]],
-    [[-94.5, 104.6], [-115, 104.6], [-115, 105.5], [-94.5, 105.5]],
-    [[-91.4, 105.5], [-115, 105.5], [-115, 115], [-91.4, 115]],
-
-    [[77.3, -115], [77.3, -98.6], [115, -98.6], [115, -115]],
-    [[97.2, -98.6], [97.2, -54.5], [113, -54.5], [113, -98.6]],
-    [[100.5, -54.5], [100.5, 99.3], [115, 99.3], [115, -54.5]],
-    [[77, 99.3], [77, 115], [115, 115], [115, 99.3]]
-  ]
-  const machine_volume = [213, 220, 350]
+export default function makeDrawEnclosure (regl, params) {
+  const {machine_disallowed_areas, machine_volume} = params
 
   // generate a dynamic uniform from the data above
-  const dynDisalowerAreasUniform = machine_disallowed_areas.map((area) => {
-    return '[' + area.map(a => `vec2(${a[0]}, ${a[1]})`).join(',') + ']'
+  const dynDisalowerAreasUniform = machine_disallowed_areas.map((area, index) => {
+    const def = `vec2 disArea_${index}[${area.length}];\n`
+    const asgnments =  area.map((a,i) => `disArea_${index}[${i}] = vec2(${a[0]}, ${a[1]});\n`)  //'[' + area.map(a => `vec2(${a[0]}, ${a[1]})`).join(',') + ']'
+    return def + asgnments
   })
-  console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform)
-  // ``
+  //console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform)
+  //vec2 foo[1] ;
+  //foo[0] = vec2(0.,1.);
+  //foo[1] = vec2(1.,0.);
 
   // const mGridSize = [21.3, 22]
   const _drawGrid = drawGrid(regl, { size: machine_volume, ticks: 50, centered: true })

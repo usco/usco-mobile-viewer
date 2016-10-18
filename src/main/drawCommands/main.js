@@ -1,9 +1,9 @@
 import makeWrapperScope from './wrapperScope'
 import makeDrawEnclosure from './drawEnclosure'
 
-export default function prepareRenderAlt (regl) {
+export default function prepareRenderAlt (regl, params) {
   const wrapperScope = makeWrapperScope(regl)
-  const drawEnclosure = makeDrawEnclosure(regl)
+  const drawEnclosure = makeDrawEnclosure(regl, params.machineParams)
   let tick = 0
 
   let command = (props) => {
