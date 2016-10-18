@@ -16,7 +16,5 @@ export function normalizeWheel (event) {
     delta = -event.deltaY
   }
   delta = delta >= 0 ? 1 : -1
-  console.log('detla', delta)
- //var direction = (evt.detail<0 || evt.wheelDelta>0) ? 1 : -1;
   return delta
 }
