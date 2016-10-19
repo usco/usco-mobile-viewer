@@ -57,7 +57,7 @@ export default function loadTest (uri) {
       // console.log('finish', finish)
       const process = (data) => {
         const { value, done } = data
-         console.log('SOURCE chunk', data , value, done)
+        // console.log('SOURCE chunk', data , value, done)
         if (done) {
           // finish()
           end()
@@ -77,9 +77,9 @@ export default function loadTest (uri) {
         function onLoad (e) {
           // console.log('done', e)
           let value = e.target.response
-          console.log('SOURCE chunk',value, value[0])
+          // console.log('SOURCE chunk',value, value[0])
           push(Buffer(value))
-          end()
+          setTimeout(end, 0.0001) // don't call end directly !
         }
 
         const xhr = new XMLHttpRequest()
