@@ -12,6 +12,7 @@ import camera from '../common/camera'
 
 import create from '@most/create'
 import { combine } from 'most'
+import limitFlow from '../common/utils/limitFlow'
 
 import loadAsStream from './loader'
 import { concatStream } from 'usco-stl-parser'
@@ -37,6 +38,7 @@ const parsedSTLStream = adressBarDriver
       loadAsStream(url).pipe(concatStream(data => add(data)))
     })
   })
+  .tap(e=>console.log('done loading'))
   .flatMapError(function (error) {
     console.error('ERROR in loading mesh file !!', error)
     return undefined
@@ -126,4 +128,5 @@ camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // i
       return {entities: [entity], camera, background: [1, 1, 1, 1]}
     }, camState$, addedEntities$)
 )
-  .forEach(x => renderAlt(x))
+.thru(limitFlow(33))
+.forEach(x => renderAlt(x))
