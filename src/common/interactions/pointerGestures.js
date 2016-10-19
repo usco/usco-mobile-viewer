@@ -14,7 +14,6 @@ const repeat = (n, stream) => n === 0 ? empty()
 const mapc = curry2(map)
 const filterc = curry2(filter)
 
-
 // this is in another package/module normally
 export function preventDefault (event) {
   event.preventDefault()
@@ -24,10 +23,14 @@ export function interactionsFromEvents (targetEl) {
   let mouseDowns$ = fromEvent('mousedown', targetEl)
   let mouseUps$ = fromEvent('mouseup', targetEl)
   let mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
-  let mouseMoves$ = fromEvent('mousemove', targetEl)//.takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+  let mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
 
   let rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
-  let zooms$ = fromEvent('wheel', targetEl).map(normalizeWheel)
+  let zooms$ = merge(
+    fromEvent('wheel', targetEl),
+    fromEvent('DOMMouseScroll', targetEl),
+    fromEvent('mousewheel', targetEl)
+  ).map(normalizeWheel)
 
   let touchStart$ = fromEvent('touchstart', targetEl) // dom.touchstart(window)
   let touchMoves$ = fromEvent('touchmove', targetEl) // dom.touchmove(window)
@@ -36,6 +39,13 @@ export function interactionsFromEvents (targetEl) {
   const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
   const pointerMoves$ = merge(mouseMoves$, touchMoves$)
+
+  function preventScroll (targetEl) {
+    fromEvent('mousewheel', targetEl).forEach(preventDefault)
+    fromEvent('DOMMouseScroll', targetEl).forEach(preventDefault)
+    fromEvent('wheel', targetEl).forEach(preventDefault)
+  }
+  preventScroll(targetEl)
 
   return {
     mouseDowns$,
@@ -52,7 +62,6 @@ export function interactionsFromEvents (targetEl) {
     pointerDowns$,
     pointerUps$,
     pointerMoves$
-
   }
 }
 
@@ -69,7 +78,6 @@ function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
 
     return mouseMoves
       .map(function (e) {
-
         let curX = e.clientX
         let curY = e.clientY
 
@@ -132,8 +140,8 @@ function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$
     mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, settings),
     touchDrags(touchStart$, touchEnd$, touchMoves$, settings)
   )
-  //.merge(merge(touchEnd$, mouseUps$).map(undefined))
-  //.tap(e=>console.log('dragMoves',e))
+  // .merge(merge(touchEnd$, mouseUps$).map(undefined))
+  // .tap(e=>console.log('dragMoves',e))
 
   // .takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
 
@@ -278,6 +286,7 @@ export function pointerGestures (baseInteractions) {
   const multiClickDelay = 250
   const longPressDelay = 250
   const maxStaticDeltaSqr = 100 // max 100 pixels delta
+  const zoomMultiplier = 200 // zoomFactor for normalized interactions across browsers
 
   const settings = {multiClickDelay, longPressDelay, maxStaticDeltaSqr}
 
@@ -287,6 +296,7 @@ export function pointerGestures (baseInteractions) {
   return {
     taps: taps$,
     dragMoves: dragMoves$,
-    zooms: baseInteractions.zooms$,
-    pointerMoves: baseInteractions.pointerMoves$}
+    zooms: baseInteractions.zooms$.map(x => x * zoomMultiplier),
+    pointerMoves: baseInteractions.pointerMoves$
+  }
 }

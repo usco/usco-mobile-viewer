@@ -1,13 +1,21 @@
 # usco-mobile
 
-![banner]()
+[![GitHub version](https://badge.fury.io/gh/usco%2Fusco-mobile.svg)](https://badge.fury.io/gh/usco%2Fusco-mobile)
+[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+[![Build Status](https://travis-ci.org/usco/usco-mobile.svg)](https://travis-ci.org/usco/usco-mobile)
+[![Dependency Status](https://david-dm.org/usco/usco-mobile.svg)](https://david-dm.org/usco/usco-mobile)
+[![devDependency Status](https://david-dm.org/usco/usco-mobile/dev-status.svg)](https://david-dm.org/usco/usco-mobile#info=devDependencies)
 
-![badge]()
-![badge]()
 
 > Mobile app components for usco project
 
-This is the mobile app component for Jam/usco : minimal renderer + loading (stl only for now)
+This is a small-ish (700 kb minified) mobile 3d file viewer component : minimal renderer + loading (stl only for now)
+(Ios/Android)
+
+- coded in es6
+- uses streaming (node.js streams) to minimize memory consumption
+- functional/ FRP oriented
+- uses regl as functional WebGL framework
 
 ## Table of Contents
 
@@ -21,8 +29,9 @@ This is the mobile app component for Jam/usco : minimal renderer + loading (stl 
 ## Background
 
 - uses the fantastic [regl](https://github.com/mikolalysenko/regl) (declarative stateless rendering)
-- uses the also great [glsify(https://github.com/stackgl/glslify)
-- and let us not forget [most]()
+- uses the also great [glsify](https://github.com/stackgl/glslify)
+- and let us not forget [most](https://github.com/cujojs/most) for observables
+- and many more
 
 
 ### This needs to be able to
@@ -70,12 +79,17 @@ npm run start-dev
 ```
 
 
-
-
 ## Usage
 
 ```
 ```
+
+Because of the dependency on fetch + readeable streams , if not running this in
+a recent Chrome/Chromium you will need a few polyfills :
+these are also provided in the dist folder
+- https://github.com/inexorabletash/text-encoding
+- https://github.com/creatorrr/web-streams-polyfill
+
 
 ## Contribute
 
@@ -86,5 +100,5 @@ Small note: If editing the Readme, please conform to the [standard-readme](https
 
 ## License
 
-[The MIT License (MIT)](https://github.com/kaosat-dev/shader-fu/blob/master/LICENSE)
+[The MIT License (MIT)](https://github.com/usco/usco-mobile/blob/master/LICENSE)
 (unless specified otherwise)

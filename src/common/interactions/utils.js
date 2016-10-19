@@ -1,9 +1,9 @@
 export function isMoving (moveDelta, deltaSqr) {
   return true
-  /* let distSqr = (moveDelta.x * moveDelta.x + moveDelta.y * moveDelta.y)
-  let isMoving = (distSqr > deltaSqr)
-  // console.log("moving",isMoving)
-  return isMoving*/
+/* let distSqr = (moveDelta.x * moveDelta.x + moveDelta.y * moveDelta.y)
+let isMoving = (distSqr > deltaSqr)
+// console.log("moving",isMoving)
+return isMoving*/
 }
 
 export function normalizeWheel (event) {
@@ -15,6 +15,6 @@ export function normalizeWheel (event) {
   }else if (event.deltaY) { // Firefox
     delta = -event.deltaY
   }
-
+  delta = delta >= 0 ? 1 : -1
   return delta
 }

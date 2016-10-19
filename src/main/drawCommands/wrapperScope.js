@@ -1,6 +1,6 @@
 import mat4 from 'gl-mat4'
 
-export default function wrapperScope (regl, params={}) {
+export default function wrapperScope (regl, params = {}) {
   const {fbo} = params
 
   let commandParams = {
@@ -17,7 +17,6 @@ export default function wrapperScope (regl, params={}) {
         return mat4.lookAt([], context.lightDir, [0.0, 0.0, 0.0], [0.0, 0.0, 1.0])
       },
       lightProjection: mat4.ortho([], -25, 25, -20, 20, -25, 25),
-
 
       ambientLightAmount: 0.8,
       diffuseLightAmount: 0.9,
