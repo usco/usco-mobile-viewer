@@ -6,7 +6,7 @@ const camera = {
   phiDelta: 0,
   scale: 1,
 
-  position: [450, 300, 200],
+  position: [150, 250, 200],
   target: [0, 0, 0]
 }
 
