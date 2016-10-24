@@ -31,7 +31,7 @@ import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 import adressBarDriver from './sideEffects/adressBarDriver'
 
 // basic api
-import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/android/androidInterface'
+import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/mobilePlatforms/androidInterface'
 
 const parsedSTLStream = adressBarDriver
   .filter(x => x !== null)
