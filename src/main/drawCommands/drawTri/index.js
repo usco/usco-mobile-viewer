@@ -16,8 +16,7 @@ export default function drawTri (regl, params) {
     count: 3,
     uniforms: {
       model: (context, props) => props.model || mat4.identity([]),
-      color: regl.prop('color'),
-      angle: ({tick}) => 0.01 * tick
+      color: regl.prop('color')
     },
     cull: {
       enable: false,
