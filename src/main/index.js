@@ -30,6 +30,8 @@ import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 /* --------------------- */
 import adressBarDriver from './sideEffects/adressBarDriver'
 
+import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
+
 // basic api
 import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/mobilePlatforms/androidInterface'
 
@@ -104,7 +106,7 @@ const addedEntities$ = parsedSTLStream
       visible: true,
       color: [0.02, 0.7, 1, 1] // 07a9ff [1, 1, 0, 0.5],
     },
-    meta: {id: 0}})
+  meta: {id: 0}})
 )
   .map(injectNormals)
   .map(injectBounds)
@@ -125,13 +127,21 @@ const addedEntities$ = parsedSTLStream
   .tap(m => onLoadModelSuccess()) // side effect => dispatch to callback
   // .tap(entity => console.log('entity done processing', entity))
 
+addedEntities$
+  .map(function (entity) {
+    return isObjectOutsideBounds(machineParams, entity)
+  })
+  .tap(e => console.log('outOfBounds??', e))
+  .filter(x => x === true)
+  .forEach(onBoundsExceeded) // dispatch message to signify out of bounds
+
 camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
     combine(function (camera, entity) {
       return {entities: [entity], camera, background: [1, 1, 1, 1]}
     }, camState$, addedEntities$)
 )
-  //.merge( containerResizes$.map)
+  // .merge( containerResizes$.map)
   .thru(limitFlow(33))
   .tap(x => regl.poll())
   .forEach(x => renderAlt(x))
