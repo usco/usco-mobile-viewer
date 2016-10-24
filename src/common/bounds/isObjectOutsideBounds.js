@@ -1,5 +1,29 @@
 // import boundingBox from './boundingBox'
 
+function computeMinMaxOfPoints (data) {
+  let max = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY]
+  let min = [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]
+  data.forEach(function (coords) {
+    min[0] = coords[0] < min[0] ? coords[0] : min[0]
+    min[1] = coords[1] < min[1] ? coords[1] : min[1]
+    max[0] = coords[0] > max[0] ? coords[0] : max[0]
+    max[1] = coords[1] > max[1] ? coords[1] : max[1]
+  })
+  return {min, max}
+}
+
+function computeSizeOfPoints (data) {
+  let max = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY]
+  let min = [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]
+  data.forEach(function (coords) {
+    min[0] = coords[0] < min[0] ? coords[0] : min[0]
+    min[1] = coords[1] < min[1] ? coords[1] : min[1]
+    max[0] = coords[0] > max[0] ? coords[0] : max[0]
+    max[1] = coords[1] > max[1] ? coords[1] : max[1]
+  })
+  return [max[0] - min[0], max[1] - min[1], 0]
+}
+
 function adjustedMachineVolumeByDissallowerAreas (machine) {
   const {machine_volume, machine_disallowed_areas} = machine
 
@@ -47,18 +71,30 @@ function adjustedMachineVolumeByDissallowerAreas (machine) {
 export default function isObjectOutsideBounds (machine, entity) {
   const {bounds, transforms} = entity
   const {pos} = transforms
-  const {machine_volume} = machine // machine volume assumed to be centered around [0,0,0]
+  const {machine_volume, machine_head_with_fans_polygon} = machine // machine volume assumed to be centered around [0,0,0]
+
+  const headSize = computeSizeOfPoints(machine_head_with_fans_polygon)
+  console.log('headSize', headSize)
 
   const adjustedVolume = adjustedMachineVolumeByDissallowerAreas(machine)
-  //console.log('machine_volume', machine_volume, 'adjustedVolume', adjustedVolume)
-
+  // console.log('machine_volume', machine_volume, 'adjustedVolume', adjustedVolume)
   const halfVolume = adjustedVolume.map(x => x * 0.5)
-
-  // const halfOut = (pos, bounds, idx) => pos[idx] + bounds.min[idx] <= -halfVolume[idx] || pos[idx] + bounds.max[idx] >= halfVolume[idx]
-  // const aabbout = halfOut(pos, bounds, 0) || halfOut(pos, bounds, 1) || halfOut(pos, bounds, 2)
   // basic check based on machn dimensions
   const aabbout = pos.reduce(function (acc, val, idx) {
-    let cur = val + bounds.min[idx] <= -halfVolume[idx] || val + bounds.max[idx] >= halfVolume[idx]
+    //const printHeadOffset = headSize[idx] * 0.75
+    const printHeadOffset = 0
+    let cur = (val + bounds.min[idx] - printHeadOffset) <= -halfVolume[idx] || val + bounds.max[idx] + printHeadOffset >= halfVolume[idx]
+
+    const objOffsetMin = val + bounds.min[idx] - printHeadOffset
+    const halfVol = -halfVolume[idx]
+    const result = objOffsetMin <= halfVol
+    console.log('min', objOffsetMin, halfVol, result)
+
+    const objOffsetMax = val + bounds.max[idx] + printHeadOffset
+    const halfVol2 = halfVolume[idx]
+    const result2 = objOffsetMax >= halfVol2
+    console.log('max', objOffsetMax, halfVol2, result2)
+
     return acc || cur
   }, false)
 
