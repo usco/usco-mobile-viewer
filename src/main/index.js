@@ -50,6 +50,7 @@ const parsedSTLStream = adressBarDriver
     return undefined
   })
   .filter(x => x !== undefined)
+  .multicast()
 
 const regl = reglM({
   extensions: [
@@ -92,14 +93,21 @@ const machineParams = {
     [[97.2, -98.6], [97.2, -54.5], [113, -54.5], [113, -98.6]],
     [[100.5, -54.5], [100.5, 99.3], [115, 99.3], [115, -54.5]],
     [[77, 99.3], [77, 115], [115, 115], [115, 99.3]]
+  ],
+  machine_head_with_fans_polygon: [
+    [ -40, 10 ],
+    [ -40, -30 ],
+    [ 60, 10 ],
+    [ 60, -30 ]
   ]
+
 }
 
 const renderAlt = prepareRenderAlt(regl, {machineParams})
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
+    transforms: {pos: [65, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
@@ -123,17 +131,11 @@ const addedEntities$ = parsedSTLStream
     const entity = Object.assign({}, data, {transforms})
     return entity
   })
+  .map(injectBounds)// we need to recompute bounds based on changes above
   .map(injectTMatrix)
   .tap(m => onLoadModelSuccess()) // side effect => dispatch to callback
+  .multicast()
   // .tap(entity => console.log('entity done processing', entity))
-
-addedEntities$
-  .map(function (entity) {
-    return isObjectOutsideBounds(machineParams, entity)
-  })
-  .tap(e => console.log('outOfBounds??', e))
-  .filter(x => x === true)
-  .forEach(onBoundsExceeded) // dispatch message to signify out of bounds
 
 camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
@@ -145,3 +147,13 @@ camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // i
   .thru(limitFlow(33))
   .tap(x => regl.poll())
   .forEach(x => renderAlt(x))
+
+
+const boundsExceeded$ = addedEntities$
+  .map(function (entity) {
+    return isObjectOutsideBounds(machineParams, entity)
+  })
+  .tap(e => console.log('outOfBounds??', e))
+  .filter(x => x === true)
+
+boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of bounds
