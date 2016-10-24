@@ -26,24 +26,34 @@ export function interactionsFromEvents (targetEl) {
   let mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
 
   let rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
-  let zooms$ = merge(
-    fromEvent('wheel', targetEl),
-    fromEvent('DOMMouseScroll', targetEl),
-    fromEvent('mousewheel', targetEl)
-  ).map(normalizeWheel)
 
-  let touchStart$ = fromEvent('touchstart', targetEl) // dom.touchstart(window)
-  let touchMoves$ = fromEvent('touchmove', targetEl) // dom.touchmove(window)
-  let touchEnd$ = fromEvent('touchend', targetEl) // dom.touchend(window)
+
+  const touchStart$ = fromEvent('touchstart', targetEl).filter(t => t.touches.length === 1)
+  const touchMoves$ = fromEvent('touchmove', targetEl).filter(t => t.touches.length === 1)
+  const touchEnd$ = fromEvent('touchend', targetEl).filter(t => t.touches.length === 1)
+
+  const gestureChange$ = fromEvent('gesturechange', targetEl)
+  const gestureStart$ = fromEvent('gesturestart', targetEl)
+  const gestureEnd$ = fromEvent('gestureend', targetEl)
 
   const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
   const pointerMoves$ = merge(mouseMoves$, touchMoves$)
 
+  const zooms$ = merge(
+    pinchZooms(gestureChange$, gestureStart$, gestureEnd$),
+      merge(
+        fromEvent('wheel', targetEl),
+        fromEvent('DOMMouseScroll', targetEl),
+        fromEvent('mousewheel', targetEl)
+      ).map(normalizeWheel)
+  )
+
   function preventScroll (targetEl) {
     fromEvent('mousewheel', targetEl).forEach(preventDefault)
     fromEvent('DOMMouseScroll', targetEl).forEach(preventDefault)
     fromEvent('wheel', targetEl).forEach(preventDefault)
+    fromEvent('touchmove', targetEl).forEach(preventDefault)
   }
   preventScroll(targetEl)
 
@@ -61,8 +71,7 @@ export function interactionsFromEvents (targetEl) {
 
     pointerDowns$,
     pointerUps$,
-    pointerMoves$
-  }
+  pointerMoves$}
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
@@ -130,6 +139,19 @@ function touchDrags (touchStart$, touchEnd$, touchMove$, settings) {
           return {mouseEvent: e, delta, normalized, type: 'touch'}
         })
         .takeUntil(touchEnd$)
+    })
+}
+
+function pinchZooms(gestureChange$, gestureStart$, gestureEnd$){
+  return gestureStart$
+    .flatMap(function (gs) {
+      return gestureChange$
+        .map(x => x.scale)
+        .loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
+        .filter(x => x !== undefined)
+        .map(x => x * 5)
+        //.tap(e => console.log('pinchZoom:' + e))
+        .takeUntil(gestureEnd$)
     })
 }
 
