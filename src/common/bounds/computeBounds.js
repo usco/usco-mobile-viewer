@@ -23,16 +23,7 @@ export default function computeBounds (object) {
   bbox[0] = bbox[0].map((x, i) => x * scale[i])
   bbox[1] = bbox[1].map((x, i) => x * scale[i])
 
-
-  /*console.log(JSON.stringify(bbox))*/
   const center = vec3.scale(vec3.create(), vec3.add(vec3.create(), bbox[0], bbox[1]), 0.5)
-
-  /*console.log(JSON.stringify(center))
-  let bbox2 = boundingBox(object.geometry.positions)
-  const center2 = vec3.scale(vec3.create(), vec3.add(vec3.create(), bbox2[0], bbox2[1]), 0.5)
-  console.log(JSON.stringify(center2))*/
-
-
   const bsph = boundingSphere(center, object.geometry.positions) * Math.max(...scale)
 
   return {
