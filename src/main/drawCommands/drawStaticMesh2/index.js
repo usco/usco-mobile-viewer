@@ -32,6 +32,5 @@ export default function drawMesh (regl, params = {extras: {}}) {
   }
   // Splice in any extra params
   commandParams = Object.assign({}, commandParams, params.extras)
-  console.log('commandParams', commandParams)
   return regl(commandParams)
 }
