@@ -21,14 +21,17 @@ import { concatStream } from 'usco-stl-parser'
 import centerGeometry from '../common/utils/centerGeometry'
 import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
 
-//interactions
+// interactions
 import controlsStream from '../common/controls/controlsStream'
-//import pickStream from '../common/picking/pickStream'
+// import pickStream from '../common/picking/pickStream'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
 import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 /* --------------------- */
 import adressBarDriver from './sideEffects/adressBarDriver'
+
+// basic api
+import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/android/androidInterface'
 
 const parsedSTLStream = adressBarDriver
   .filter(x => x !== null)
@@ -38,9 +41,10 @@ const parsedSTLStream = adressBarDriver
       loadAsStream(url).pipe(concatStream(data => add(data)))
     })
   })
-  .tap(e=>console.log('done loading'))
+  .tap(e => console.log('done loading'))
   .flatMapError(function (error) {
     console.error('ERROR in loading mesh file !!', error)
+    onLoadModelError(error)
     return undefined
   })
   .filter(x => x !== undefined)
@@ -59,8 +63,6 @@ const regl = reglM({
 const container = document.querySelector('canvas')
 // const container = document.querySelector('#drawHere')
 
-const {frame, clear} = regl
-
 /* --------------------- */
 
 /* Pipeline:
@@ -78,7 +80,7 @@ const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
 const machineParams = {
   machine_uuid: 'xx',
   machine_volume: [213, 220, 350],
-  machine_disallowed_areas : [
+  machine_disallowed_areas: [
     [[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]],
     [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]],
     [[-94.5, 104.6], [-115, 104.6], [-115, 105.5], [-94.5, 105.5]],
@@ -95,7 +97,7 @@ const renderAlt = prepareRenderAlt(regl, {machineParams})
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]},// [0.2, 1.125, 1.125]},
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
@@ -120,7 +122,8 @@ const addedEntities$ = parsedSTLStream
     return entity
   })
   .map(injectTMatrix)
-  //.tap(entity => console.log('entity done processing', entity))
+  .tap(m => onLoadModelSuccess()) // side effect => dispatch to callback
+  // .tap(entity => console.log('entity done processing', entity))
 
 camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
@@ -128,5 +131,7 @@ camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // i
       return {entities: [entity], camera, background: [1, 1, 1, 1]}
     }, camState$, addedEntities$)
 )
-.thru(limitFlow(33))
-.forEach(x => renderAlt(x))
+  //.merge( containerResizes$.map)
+  .thru(limitFlow(33))
+  .tap(x => regl.poll())
+  .forEach(x => renderAlt(x))
