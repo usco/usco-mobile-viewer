@@ -6,7 +6,7 @@ import normals from 'angle-normals'
 export function injectBounds (entity) {
   const bounds = computeBounds(entity)
   const result = Object.assign({}, entity, {bounds})
-  console.log('data with bounds', result)
+  //console.log('data with bounds', result)
   return result
 }
 
@@ -14,7 +14,7 @@ export function injectBounds (entity) {
 export function injectTMatrix (entity) {
   const modelMat = computeTMatrixFromTransforms(entity.transforms)
   const result = Object.assign({}, entity, {modelMat})
-  console.log('result', result)
+  //console.log('result', result)
   return result
 }
 
