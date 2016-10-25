@@ -31,6 +31,25 @@ import entityPrep from './entityPrep'
 // basic api
 import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/mobilePlatforms/interface'
 
+import callBackToStream from '../common/utils/most/callBackToStream'
+
+const makeModelUriFromCb = callBackToStream()
+const modelUri$ = makeModelUriFromCb.stream
+const setModelUri = makeModelUriFromCb.callback
+
+const makeMachineParamsFromCb = callBackToStream()
+const machineParams$ = makeMachineParamsFromCb.stream
+const setMachineParams = makeMachineParamsFromCb.callback
+
+modelUri$
+  .forEach(e => console.log('setting modelUri from outside js context', e))
+machineParams$
+  .forEach(e => console.log('setting machineParams from outside js context', e))
+
+setModelUri('http://localhost:8080/foo.stl')
+setMachineParams({'volume': 42})
+// ////////////
+
 const parsedSTLStream = adressBarDriver
   .filter(x => x !== null)
   .delay(200)
@@ -52,8 +71,7 @@ const regl = reglM({
   extensions: [
     'oes_texture_float', // FIXME: for shadows, is it widely supported ?
   // 'EXT_disjoint_timer_query'// for gpu benchmarking only
-  ],
-
+],
   profile: true
 })
 /*canvas: container,
@@ -112,9 +130,7 @@ camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // i
   .tap(x => regl.poll())
   .forEach(x => render(x))
 
-
 // OUTPUTS (sink side effects)
-
 addedEntities$
   .forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
 
