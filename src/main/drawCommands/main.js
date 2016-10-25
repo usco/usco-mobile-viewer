@@ -19,7 +19,7 @@ export default function prepareRenderAlt (regl, params) {
         depth: 1
       })
       entities.map(e => e.visuals.draw({view, camera, color:e.visuals.color , model: e.modelMat}))
-      entities.map(function (entity) {
+      /*entities.map(function (entity) {
         const {pos} = entity.transforms
         const offset = pos[2]-entity.bounds.size[2]*0.5
         const model = _model({pos: [pos[0], pos[1], -0.1]})
@@ -28,7 +28,7 @@ export default function prepareRenderAlt (regl, params) {
         const length = entity.bounds.size[1]+headSize[1]
 
         return makeDrawPrintheadShadow(regl, {width,length})({view, camera, model, color: [0.1, 0.1, 0.1, 0.15]})
-      })
+      })*/
 
       drawEnclosure(props)
     })

@@ -23,16 +23,16 @@ export default function makeDrawEnclosure (regl, params) {
 
   // const mGridSize = [21.3, 22]
   const _drawGrid = drawGrid(regl, { size: machine_volume, ticks: 50, centered: true })
-  const gridOffset = model({pos: [0, 0, 0.1]})
+  const gridOffset = model({pos: [0, 0, -0.2]})
 
   // infinite grid
   const gridSize = [1220, 1200] // size of 'infinite grid'
   const _drawInfiniGrid = drawGrid(regl, {size: gridSize, ticks: 10, infinite: true})
-  const infiniGridOffset = model({pos: [0, 0, -2]})
+  const infiniGridOffset = model({pos: [0, 0, -0.4]})
 
   const triSize = {width: 50, height: 20}
   const _drawTri = drawTri(regl, {width: triSize.width, height: triSize.height})
-  const triMatrix = model({ pos: [-triSize.width / 2, machine_volume[0] * 0.5, 0.5] })
+  const triMatrix = model({ pos: [-triSize.width / 2, machine_volume[1] * 0.5, 0.5] })
 
   const containerSize = [machine_volume[0], machine_volume[1], machine_volume[2]]
   const _drawCuboid = drawCuboid(regl, {size: containerSize})
@@ -42,9 +42,8 @@ export default function makeDrawEnclosure (regl, params) {
     .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
 
   return ({view, camera}) => {
-     _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
-
-    _drawGrid({view, camera, color: [0, 0, 0, 0.1], model: gridOffset})
+    _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
+    _drawGrid({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
 
     _drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
     _drawCuboid({view, camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix})
