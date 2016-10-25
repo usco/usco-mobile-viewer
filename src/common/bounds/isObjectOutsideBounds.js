@@ -74,7 +74,6 @@ export default function isObjectOutsideBounds (machine, entity) {
   const {machine_volume, machine_head_with_fans_polygon} = machine // machine volume assumed to be centered around [0,0,0]
 
   const headSize = computeSizeOfPoints(machine_head_with_fans_polygon)
-  console.log('headSize', headSize)
 
   const adjustedVolume = adjustedMachineVolumeByDissallowerAreas(machine)
   // console.log('machine_volume', machine_volume, 'adjustedVolume', adjustedVolume)
@@ -85,7 +84,7 @@ export default function isObjectOutsideBounds (machine, entity) {
     const printHeadOffset = 0
     let cur = (val + bounds.min[idx] - printHeadOffset) <= -halfVolume[idx] || val + bounds.max[idx] + printHeadOffset >= halfVolume[idx]
 
-    const objOffsetMin = val + bounds.min[idx] - printHeadOffset
+    /*const objOffsetMin = val + bounds.min[idx] - printHeadOffset
     const halfVol = -halfVolume[idx]
     const result = objOffsetMin <= halfVol
     console.log('min', objOffsetMin, halfVol, result)
@@ -93,7 +92,7 @@ export default function isObjectOutsideBounds (machine, entity) {
     const objOffsetMax = val + bounds.max[idx] + printHeadOffset
     const halfVol2 = halfVolume[idx]
     const result2 = objOffsetMax >= halfVol2
-    console.log('max', objOffsetMax, halfVol2, result2)
+    console.log('max', objOffsetMax, halfVol2, result2)*/
 
     return acc || cur
   }, false)
