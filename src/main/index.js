@@ -4,7 +4,6 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 
-import drawStaticMesh from './drawCommands/drawStaticMesh2/index'
 import prepareRender from './drawCommands/main'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
@@ -17,23 +16,20 @@ import limitFlow from '../common/utils/limitFlow'
 import loadAsStream from './loader'
 import { concatStream } from 'usco-stl-parser'
 
-// helpers
-import centerGeometry from '../common/utils/centerGeometry'
-import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
-
 // interactions
 import controlsStream from '../common/controls/controlsStream'
 // import pickStream from '../common/picking/pickStream'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
-import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 /* --------------------- */
 import adressBarDriver from './sideEffects/adressBarDriver'
 
 import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
 
+import entityPrep from './entityPrep'
+
 // basic api
-import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/mobilePlatforms/androidInterface'
+import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/mobilePlatforms/interface'
 
 const parsedSTLStream = adressBarDriver
   .filter(x => x !== null)
@@ -103,38 +99,7 @@ const machineParams = {
 }
 
 const render = prepareRender(regl, {machineParams})
-
-const addedEntities$ = parsedSTLStream
-  .map(geometry => ({
-    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
-    geometry,
-    visuals: {
-      type: 'mesh',
-      visible: true,
-      color: [0.02, 0.7, 1, 1] // 07a9ff [1, 1, 0, 0.5],
-    },
-  meta: {id: 0}})
-)
-  .map(injectNormals)
-  .map(injectBounds)
-  .map(function (data) {
-    // console.log('preping drawCall')
-    const geometry = centerGeometry(data.geometry, data.bounds, data.transforms)
-    const draw = drawStaticMesh(regl, {geometry: geometry}) // one command per mesh, but is faster
-    const visuals = Object.assign({}, data.visuals, {draw})
-    const entity = Object.assign({}, data, {visuals}) // Object.assign({}, data, {visuals: {draw}})
-    return entity
-  })
-  .map(function (data) {
-    let transforms = Object.assign({}, data.transforms, offsetTransformsByBounds(data.transforms, data.bounds))
-    const entity = Object.assign({}, data, {transforms})
-    return entity
-  })
-  .map(injectBounds)// we need to recompute bounds based on changes above
-  .map(injectTMatrix)
-  .tap(m => onLoadModelSuccess()) // side effect => dispatch to callback
-  .tap(entity => console.log('entity done processing', entity))
-  .multicast()
+const addedEntities$ = entityPrep(parsedSTLStream, regl)
 
 camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
@@ -147,6 +112,13 @@ camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // i
   .tap(x => regl.poll())
   .forEach(x => render(x))
 
+
+// OUTPUTS (sink side effects)
+
+addedEntities$
+  .forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
+
+// boundsExceeded
 const boundsExceeded$ = addedEntities$
   .map((entity) => isObjectOutsideBounds(machineParams, entity))
   .tap(e => console.log('outOfBounds??', e))
