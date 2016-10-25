@@ -5,7 +5,7 @@ const reglM = require('regl')
 // var regl = require('regl')(canvasOrElement)
 
 import drawStaticMesh from './drawCommands/drawStaticMesh2/index'
-import prepareRenderAlt from './drawCommands/main'
+import prepareRender from './drawCommands/main'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
@@ -100,14 +100,13 @@ const machineParams = {
     [ 60, 10 ],
     [ 60, -30 ]
   ]
-
 }
 
-const renderAlt = prepareRenderAlt(regl, {machineParams})
+const render = prepareRender(regl, {machineParams})
 
 const addedEntities$ = parsedSTLStream
   .map(geometry => ({
-    transforms: {pos: [65, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
+    transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
     geometry,
     visuals: {
       type: 'mesh',
@@ -134,8 +133,8 @@ const addedEntities$ = parsedSTLStream
   .map(injectBounds)// we need to recompute bounds based on changes above
   .map(injectTMatrix)
   .tap(m => onLoadModelSuccess()) // side effect => dispatch to callback
+  .tap(entity => console.log('entity done processing', entity))
   .multicast()
-  // .tap(entity => console.log('entity done processing', entity))
 
 camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
@@ -146,13 +145,10 @@ camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // i
   // .merge( containerResizes$.map)
   .thru(limitFlow(33))
   .tap(x => regl.poll())
-  .forEach(x => renderAlt(x))
-
+  .forEach(x => render(x))
 
 const boundsExceeded$ = addedEntities$
-  .map(function (entity) {
-    return isObjectOutsideBounds(machineParams, entity)
-  })
+  .map((entity) => isObjectOutsideBounds(machineParams, entity))
   .tap(e => console.log('outOfBounds??', e))
   .filter(x => x === true)
 
