@@ -9,22 +9,33 @@ function IOSCallback (data) {
   console.log('here', location)
   window.location = location
 }
+
 function callNativeApp (data) {
   try {
-    webkit.messageHandlers.callbackHandler.postMessage(data)
+    console.log('calling native app')
+    window.webkit.messageHandlers.callbackHandler.postMessage('data')
   } catch(err) {
     console.log('Not native')
   }
 }
 
 export function onLoadModelError (error) {
-  callNativeApp({modelLoadERROR: error})
+  try {
+    window.webkit.messageHandlers.loadModel.postMessage('error')
+  } catch(err) {console.log('Not native onLoadModelError')}
+// callNativeApp({modelLoadERROR: error})
 }
 
 export function onLoadModelSuccess (model) {
-  callNativeApp({modelLoaded: true})
+  try {
+    window.webkit.messageHandlers.loadModel.postMessage('success')
+  } catch(err) {console.log('Not native onLoadModelSuccess')}
+// callNativeApp({modelLoaded: true})
 }
 
 export function onBoundsExceeded () {
-  callNativeApp({boundsExceeded: true})
+  try {
+    window.webkit.messageHandlers.objectBounds.postMessage('exceeded')
+  } catch(err) {console.log('Not native onBoundsExceeded')}
+// callNativeApp({boundsExceeded: true})
 }
