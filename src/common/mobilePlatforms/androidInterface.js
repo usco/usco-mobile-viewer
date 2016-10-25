@@ -17,6 +17,6 @@ export function onLoadModelSuccess (model) {
   mobileCaller.call('onLoadModel(true)')
 }
 
-export function onBoundsExceeded (){
+export function onBoundsExceeded () {
   mobileCaller.call('onBoundsExceeded()')
 }
