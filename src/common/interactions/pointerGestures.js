@@ -20,17 +20,16 @@ export function preventDefault (event) {
   return event
 }
 export function interactionsFromEvents (targetEl) {
-  let mouseDowns$ = fromEvent('mousedown', targetEl)
-  let mouseUps$ = fromEvent('mouseup', targetEl)
-  let mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
-  let mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+  const mouseDowns$ = fromEvent('mousedown', targetEl)
+  const mouseUps$ = fromEvent('mouseup', targetEl)
+  const mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
+  const mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
 
-  let rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
+  const rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
 
-
-  const touchStart$ = fromEvent('touchstart', targetEl).filter(t => t.touches.length === 1)
+  const touchStart$ = fromEvent('touchstart', targetEl)
   const touchMoves$ = fromEvent('touchmove', targetEl).filter(t => t.touches.length === 1)
-  const touchEnd$ = fromEvent('touchend', targetEl).filter(t => t.touches.length === 1)
+  const touchEnd$ = fromEvent('touchend', targetEl)
 
   const gestureChange$ = fromEvent('gesturechange', targetEl)
   const gestureStart$ = fromEvent('gesturestart', targetEl)
