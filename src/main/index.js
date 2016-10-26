@@ -10,7 +10,8 @@ import camera from '../common/camera'
 
 import create from '@most/create'
 import { combine, combineArray, merge } from 'most'
-import limitFlow from '../common/utils/limitFlow'
+import limitFlow from '../common/utils/most/limitFlow'
+import callBackToStream from '../common/utils/most/callBackToStream'
 
 import loadAsStream from './loader'
 import { concatStream } from 'usco-stl-parser'
@@ -32,7 +33,6 @@ import {makeVisualState} from './visualState'
 // basic api
 import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady } from '../common/mobilePlatforms/interface'
 
-import callBackToStream from '../common/utils/most/callBackToStream'
 
 const makeModelUriFromCb = callBackToStream()
 const modelUriFromExt$ = makeModelUriFromCb.stream
