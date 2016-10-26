@@ -46,7 +46,7 @@ export default function prepareRenderAlt (regl, params) {
     })
   }
 
-  return function renderAlt (data) {
+  return function render(data) {
     const {entities, machine, camera, background} = data
     const {view} = camera
 
