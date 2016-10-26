@@ -1,14 +1,11 @@
 import { update, rotate, zoom } from './orbitControls'
-
-import most from 'most'
-import { sample } from 'most'
 import { fromEvent, combineArray, combine, mergeArray } from 'most'
 import { interactionsFromEvents, pointerGestures } from '../interactions/pointerGestures'
 
 import { model } from '../utils/modelUtils'
 import animationFrames from '../utils/animationFrames'
 
-export default function controlsStream (interactions, cameraData) {
+export default function controlsStream (interactions, cameraData, params) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 
@@ -29,7 +26,7 @@ export default function controlsStream (interactions, cameraData) {
       return delta
     })
     .map(function (delta) {
-      const angle = [- Math.PI * delta[0], - Math.PI * delta[1]]
+      const angle = [-Math.PI * delta[0], -Math.PI * delta[1]]
       return angle
     })
     // .throttle(10)
@@ -39,6 +36,8 @@ export default function controlsStream (interactions, cameraData) {
     .startWith(0)
     .filter(x => !isNaN(x))
     .throttle(10)
+
+  //model/ state/ reducers
 
   function makeCameraModel () {
     function applyRotation (state, angles) {
