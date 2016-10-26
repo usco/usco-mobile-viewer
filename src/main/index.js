@@ -163,4 +163,4 @@ const machineParams = {
 }
 // for testing
 // informations about the active machine
-window.setMachineParams(machineParams)
+//window.nativeApi.setMachineParams(machineParams)

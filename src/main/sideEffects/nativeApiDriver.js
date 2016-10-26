@@ -10,8 +10,9 @@ export default function nativeApiDriver(out$){
   const makeMachineParamsFromCb = callBackToStream()
   const machineParams$ = makeMachineParamsFromCb.stream.map(formatRawMachineData)
   // ugh but no choice
-  window.setModelUri = makeModelUriFromCb.callback
-  window.setMachineParams = makeMachineParamsFromCb.callback
+  window.nativeApi = {}
+  window.nativeApi.setModelUri = makeModelUriFromCb.callback
+  window.nativeApi.setMachineParams = makeMachineParamsFromCb.callback
 
   return {
     machineParams$,
