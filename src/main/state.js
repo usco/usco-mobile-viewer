@@ -1,6 +1,5 @@
 import { model } from '../common/utils/modelUtils'
 
-
 export function makeEntitiesModel (actions) {
   const defaults = []
   function addEntities (state, inputs) {
@@ -13,12 +12,11 @@ export function makeEntitiesModel (actions) {
 }
 
 
-export function makeMachineParamsModel (actions) {
-  const defaults = {}
+export function makeMachineModel (actions) {
+  const defaults = undefined
   function setMachineParams (state, inputs) {
-    state = Object.assign({}, inputs)
-    //console.log('state', state)
-    return state
+    const machine = {params: inputs}
+    return machine
   }
   const updateFunctions = {setMachineParams}
   const state$ = model(defaults, actions, updateFunctions)

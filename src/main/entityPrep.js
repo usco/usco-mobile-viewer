@@ -3,8 +3,6 @@ import centerGeometry from '../common/utils/centerGeometry'
 import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
 import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 
-import drawStaticMesh from './drawCommands/drawStaticMesh2/index'
-
 export default function entityPrep (rawGeometry$, regl) {
   const addedEntities$ = rawGeometry$
     .map(geometry => ({
@@ -19,13 +17,9 @@ export default function entityPrep (rawGeometry$, regl) {
   )
     .map(injectNormals)
     .map(injectBounds)
-    .map(function (data) {
-      // console.log('preping drawCall')
+    .map(function(data){
       const geometry = centerGeometry(data.geometry, data.bounds, data.transforms)
-      const draw = drawStaticMesh(regl, {geometry: geometry}) // one command per mesh, but is faster
-      const visuals = Object.assign({}, data.visuals, {draw})
-      const entity = Object.assign({}, data, {visuals}) // Object.assign({}, data, {visuals: {draw}})
-      return entity
+      return Object.assign({}, data, {geometry})
     })
     .map(function (data) {
       let transforms = Object.assign({}, data.transforms, offsetTransformsByBounds(data.transforms, data.bounds))

@@ -3,8 +3,7 @@ const reglM = require('regl')
 // const regl = require('regl')(require('gl')(256, 256))
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
-import prepareRender from './drawCommands/main'
-import makeDrawEnclosure from './drawCommands/drawEnclosure'
+import prepareRender from './drawCommands/render'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
@@ -27,7 +26,8 @@ import adressBarDriver from './sideEffects/adressBarDriver'
 import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
 
 import entityPrep from './entityPrep'
-import { makeEntitiesModel, makeMachineParamsModel } from './state'
+import { makeEntitiesModel, makeMachineModel } from './state'
+import {makeVisualState} from './visualState'
 
 // basic api
 import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady } from '../common/mobilePlatforms/interface'
@@ -104,20 +104,15 @@ const render = prepareRender(regl)
 const addEntities$ = entityPrep(parsedSTL$, regl)
 
 const entities$ = makeEntitiesModel({addEntities: addEntities$})
-const machineParams$ = makeMachineParamsModel({setMachineParams: setMachineParams$})
-const machine$ = machineParams$
-  .filter(x => Object.keys(x).length > 0)
-  .map(function (machineParams) {
-    const drawMachine = makeDrawEnclosure(regl, machineParams)
-    const machine = {draw: drawMachine, params: machineParams}
-    return machine
-  })
-  .multicast()
+const machine$ = makeMachineModel({setMachineParams: setMachineParams$}, regl)
 
 const appState$ = combineArray(
-  function (entities, machine, camera) {
-    return {entities, machine, camera, background: [1, 1, 1, 1]}
-  }, [entities$, machine$, camState$])
+  function (entities, machine) {
+    return {entities, machine}
+  }, [entities$, machine$])
+
+
+const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
   .thru(limitFlow(33))
   .tap(x => regl.poll())
   .forEach(x => render(x))
