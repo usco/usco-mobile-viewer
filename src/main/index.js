@@ -32,28 +32,17 @@ import {makeVisualState} from './visualState'
 
 // basic api
 import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady } from '../common/mobilePlatforms/interface'
+import nativeApiDriver from './sideEffects/nativeApiDriver'
 
-
-const makeModelUriFromCb = callBackToStream()
-const modelUriFromExt$ = makeModelUriFromCb.stream
-const setModelUri = makeModelUriFromCb.callback
-
-const makeMachineParamsFromCb = callBackToStream()
-const machineParamsFromExt$ = makeMachineParamsFromCb.stream
-const setMachineParams = makeMachineParamsFromCb.callback
-
-// ugh but no choice
-window.setModelUri = setModelUri
-window.setMachineParams = setMachineParams
 // ////////////
-
+const nativeApi = nativeApiDriver()
 const modelUri$ = merge(
   adressBarDriver,
-  modelUriFromExt$
+  nativeApi.modelUri$
 ).multicast()
 
 const setMachineParams$ = merge(
-  machineParamsFromExt$
+  nativeApi.machineParams$
 ).multicast()
 
 const parsedSTL$ = modelUri$
@@ -81,14 +70,9 @@ const regl = reglM({
   ],
   profile: true
 })
-/*canvas: container,
-  drawingBufferWidth: container.offsetWidth,
-  drawingBufferHeight: container.offsetHeight})*/ // for editor
+
 const container = document.querySelector('canvas')
-// const container = document.querySelector('#drawHere')
-
 /* --------------------- */
-
 /* Pipeline:
   - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
   - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
@@ -132,6 +116,7 @@ onViewerReady()
 addEntities$.forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
 boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of bounds
 
+//for testing only
 const machineParams = {
   machine_uuid: 'xx',
   machine_volume: [213, 220, 350],
@@ -155,4 +140,4 @@ const machineParams = {
 }
 // for testing
 // informations about the active machine
-setMachineParams(machineParams)
+window.setMachineParams(machineParams)
