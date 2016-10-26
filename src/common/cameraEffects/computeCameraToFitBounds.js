@@ -5,7 +5,7 @@ import vec3 from 'gl-vec3'
  * @param  {Object} camera the camera we are using
  * @param  {Object} bounds the current bounds of the entity
  */
-export default function zoomToFitBounds (camera, bounds) {
+export default function computeCameraToFitBounds (camera, bounds) {
   /*
   bounds: {
     dia: 40,
@@ -38,8 +38,8 @@ export default function zoomToFitBounds (camera, bounds) {
 
   camNewPos = vec3.subtract(camNewPos, camNewPos, vec)
 
-  return {camera: {
-    position: camNewPos,
-    target: camNewTgt
-  }}
+  return {
+    position: camNewPos, //[...camNewPos],
+    target: camNewTgt// [...camNewTgt]
+  }
 }
