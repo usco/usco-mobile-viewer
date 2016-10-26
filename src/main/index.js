@@ -3,14 +3,15 @@ const reglM = require('regl')
 // const regl = require('regl')(require('gl')(256, 256))
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
-
 import prepareRender from './drawCommands/main'
+import makeDrawEnclosure from './drawCommands/drawEnclosure'
+
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
 import create from '@most/create'
-import { combine } from 'most'
+import { combine, merge } from 'most'
 import limitFlow from '../common/utils/limitFlow'
 
 import loadAsStream from './loader'
@@ -29,28 +30,35 @@ import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
 import entityPrep from './entityPrep'
 
 // basic api
-import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded } from '../common/mobilePlatforms/interface'
+import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady } from '../common/mobilePlatforms/interface'
 
 import callBackToStream from '../common/utils/most/callBackToStream'
 
 const makeModelUriFromCb = callBackToStream()
-const modelUri$ = makeModelUriFromCb.stream
+const modelUriFromExt$ = makeModelUriFromCb.stream
 const setModelUri = makeModelUriFromCb.callback
 
 const makeMachineParamsFromCb = callBackToStream()
-const machineParams$ = makeMachineParamsFromCb.stream
+const machineParamsFromExt$ = makeMachineParamsFromCb.stream
 const setMachineParams = makeMachineParamsFromCb.callback
 
-modelUri$
-  .forEach(e => console.log('setting modelUri from outside js context', e))
-machineParams$
-  .forEach(e => console.log('setting machineParams from outside js context', e))
-
-setModelUri('http://localhost:8080/foo.stl')
-setMachineParams({'volume': 42})
+//ugh but no choice
+window.setModelUri = setModelUri
+window.setMachineParams = setMachineParams
 // ////////////
 
-const parsedSTLStream = adressBarDriver
+const modelUri$ = merge(
+  adressBarDriver,
+  modelUriFromExt$
+).multicast()
+
+const machineParams$ = merge(
+  machineParamsFromExt$
+)
+
+
+const parsedSTL$ = modelUri$
+  .tap(e=>console.log('modelUri',e))
   .filter(x => x !== null)
   .delay(200)
   .flatMap(function (url) {
@@ -87,13 +95,6 @@ const container = document.querySelector('canvas')
   - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
   - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
 */
-
-// interactions : camera controls
-const baseInteractions$ = interactionsFromEvents(container)
-const gestures = pointerGestures(baseInteractions$)
-const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
-
-// informations about the active machine
 const machineParams = {
   machine_uuid: 'xx',
   machine_volume: [213, 220, 350],
@@ -116,8 +117,14 @@ const machineParams = {
   ]
 }
 
+// interactions : camera controls
+const baseInteractions$ = interactionsFromEvents(container)
+const gestures = pointerGestures(baseInteractions$)
+const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
+
 const render = prepareRender(regl, {machineParams})
-const addedEntities$ = entityPrep(parsedSTLStream, regl)
+const addedEntities$ = entityPrep(parsedSTL$, regl)
+//const foo$ = machineParams$
 
 camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
   .merge(
@@ -130,14 +137,22 @@ camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // i
   .tap(x => regl.poll())
   .forEach(x => render(x))
 
-// OUTPUTS (sink side effects)
-addedEntities$
-  .forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
-
 // boundsExceeded
 const boundsExceeded$ = addedEntities$
   .map((entity) => isObjectOutsideBounds(machineParams, entity))
   .tap(e => console.log('outOfBounds??', e))
   .filter(x => x === true)
 
+onViewerReady()
+
+// OUTPUTS (sink side effects)
+addedEntities$
+  .forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
+
 boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of bounds
+
+//for testing
+// informations about the active machine
+
+//setModelUri('http://localhost:8080/data/sanguinololu_enclosure_full.stl')
+//setMachineParams(machineParams)
