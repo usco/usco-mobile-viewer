@@ -6,12 +6,11 @@ const reglM = require('regl')
 import prepareRender from './drawCommands/main'
 import makeDrawEnclosure from './drawCommands/drawEnclosure'
 
-
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
 import create from '@most/create'
-import { combine, merge } from 'most'
+import { combine, combineArray, merge } from 'most'
 import limitFlow from '../common/utils/limitFlow'
 
 import loadAsStream from './loader'
@@ -28,6 +27,7 @@ import adressBarDriver from './sideEffects/adressBarDriver'
 import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
 
 import entityPrep from './entityPrep'
+import { makeEntitiesModel, makeMachineParamsModel } from './state'
 
 // basic api
 import { onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady } from '../common/mobilePlatforms/interface'
@@ -42,7 +42,7 @@ const makeMachineParamsFromCb = callBackToStream()
 const machineParamsFromExt$ = makeMachineParamsFromCb.stream
 const setMachineParams = makeMachineParamsFromCb.callback
 
-//ugh but no choice
+// ugh but no choice
 window.setModelUri = setModelUri
 window.setMachineParams = setMachineParams
 // ////////////
@@ -52,13 +52,12 @@ const modelUri$ = merge(
   modelUriFromExt$
 ).multicast()
 
-const machineParams$ = merge(
+const setMachineParams$ = merge(
   machineParamsFromExt$
-)
-
+).multicast()
 
 const parsedSTL$ = modelUri$
-  .tap(e=>console.log('modelUri',e))
+  .tap(e => console.log('modelUri', e))
   .filter(x => x !== null)
   .delay(200)
   .flatMap(function (url) {
@@ -79,7 +78,7 @@ const regl = reglM({
   extensions: [
     'oes_texture_float', // FIXME: for shadows, is it widely supported ?
   // 'EXT_disjoint_timer_query'// for gpu benchmarking only
-],
+  ],
   profile: true
 })
 /*canvas: container,
@@ -95,6 +94,49 @@ const container = document.querySelector('canvas')
   - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
   - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
 */
+
+// interactions : camera controls
+const baseInteractions$ = interactionsFromEvents(container)
+const gestures = pointerGestures(baseInteractions$)
+const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
+
+const render = prepareRender(regl)
+const addEntities$ = entityPrep(parsedSTL$, regl)
+
+const entities$ = makeEntitiesModel({addEntities: addEntities$})
+const machineParams$ = makeMachineParamsModel({setMachineParams: setMachineParams$})
+const machine$ = machineParams$
+  .filter(x => Object.keys(x).length > 0)
+  .map(function (machineParams) {
+    const drawMachine = makeDrawEnclosure(regl, machineParams)
+    const machine = {draw: drawMachine, params: machineParams}
+    return machine
+  })
+  .multicast()
+
+const appState$ = combineArray(
+  function (entities, machine, camera) {
+    return {entities, machine, camera, background: [1, 1, 1, 1]}
+  }, [entities$, machine$, camState$])
+  .thru(limitFlow(33))
+  .tap(x => regl.poll())
+  .forEach(x => render(x))
+
+// boundsExceeded
+const boundsExceeded$ = combine(function (entity, machineParams) {
+  console.log('boundsExceeded', entity, machineParams)
+  return isObjectOutsideBounds(machineParams, entity)
+}, addEntities$, setMachineParams$)
+  // .map((entity) => isObjectOutsideBounds(machineParams, entity))
+  .tap(e => console.log('outOfBounds??', e))
+  .filter(x => x === true)
+
+onViewerReady()
+
+// OUTPUTS (sink side effects)
+addEntities$.forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
+boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of bounds
+
 const machineParams = {
   machine_uuid: 'xx',
   machine_volume: [213, 220, 350],
@@ -116,43 +158,6 @@ const machineParams = {
     [ 60, -30 ]
   ]
 }
-
-// interactions : camera controls
-const baseInteractions$ = interactionsFromEvents(container)
-const gestures = pointerGestures(baseInteractions$)
-const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
-
-const render = prepareRender(regl, {machineParams})
-const addedEntities$ = entityPrep(parsedSTL$, regl)
-//const foo$ = machineParams$
-
-camState$.map(camera => ({entities: [], camera, background: [1, 1, 1, 1]})) // initial / empty state
-  .merge(
-    combine(function (camera, entity) {
-      return {entities: [entity], camera, background: [1, 1, 1, 1]}
-    }, camState$, addedEntities$)
-)
-  // .merge( containerResizes$.map)
-  .thru(limitFlow(33))
-  .tap(x => regl.poll())
-  .forEach(x => render(x))
-
-// boundsExceeded
-const boundsExceeded$ = addedEntities$
-  .map((entity) => isObjectOutsideBounds(machineParams, entity))
-  .tap(e => console.log('outOfBounds??', e))
-  .filter(x => x === true)
-
-onViewerReady()
-
-// OUTPUTS (sink side effects)
-addedEntities$
-  .forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
-
-boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of bounds
-
-//for testing
+// for testing
 // informations about the active machine
-
-//setModelUri('http://localhost:8080/data/sanguinololu_enclosure_full.stl')
-//setMachineParams(machineParams)
+setMachineParams(machineParams)
