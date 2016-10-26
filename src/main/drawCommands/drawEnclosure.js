@@ -42,7 +42,7 @@ export default function makeDrawEnclosure (regl, params) {
     .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
 
   return ({view, camera}) => {
-    _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
+    //_drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
     _drawGrid({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
 
     _drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
