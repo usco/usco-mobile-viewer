@@ -20,3 +20,7 @@ export function onLoadModelSuccess (model) {
 export function onBoundsExceeded () {
   mobileCaller.call('onBoundsExceeded()')
 }
+
+export function onViewerReady () {
+  mobileCaller.call('onViewerReady()')
+}

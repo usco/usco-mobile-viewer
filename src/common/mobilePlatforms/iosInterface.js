@@ -39,3 +39,10 @@ export function onBoundsExceeded () {
   } catch(err) {console.log('Not native onBoundsExceeded')}
 // callNativeApp({boundsExceeded: true})
 }
+
+export function onViewerReady () {
+  try {
+    window.webkit.messageHandlers.viewer.postMessage('ready')
+  } catch(err) {console.log('Not native onViewerReady')}
+// callNativeApp({boundsExceeded: true})
+}
