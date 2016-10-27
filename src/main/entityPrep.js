@@ -3,7 +3,7 @@ import centerGeometry from '../common/utils/centerGeometry'
 import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
 import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 
-export default function entityPrep (rawGeometry$, regl) {
+export default function entityPrep (rawGeometry$) {
   const addedEntities$ = rawGeometry$
     .map(geometry => ({
       transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
