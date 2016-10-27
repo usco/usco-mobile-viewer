@@ -2,12 +2,13 @@ import { combine, combineArray, merge } from 'most'
 import makeDrawEnclosure from './drawCommands/drawEnclosure'
 import drawStaticMesh from './drawCommands/drawStaticMesh2/index'
 
-export function makeVisualState(regl, machine$, entities$, camState$){
+export function makeVisualState (regl, machine$, entities$, camState$) {
   const machineWithVisuals$ = machine$
-    .filter(x => x !== undefined)
     .map(function (machine) {
-      const draw = makeDrawEnclosure(regl, machine.params)
-      return Object.assign({}, machine, {draw})
+      if (machine !== undefined) {
+        const draw = makeDrawEnclosure(regl, machine.params)
+        return Object.assign({}, machine, {draw})
+      }
     })
 
   const entitiesWithVisuals$ = entities$
