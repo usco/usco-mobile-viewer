@@ -21,7 +21,7 @@ export default function controlsStream (interactions, cameraData, params) {
     .map(function (data) {
       let delta = [data.delta.x, data.delta.y]
       if (data.type === 'touch') {
-        delta = delta.map(x => x / mobileReductor)
+        // delta = delta.map(x => x / mobileReductor)
       }
       return delta
     })
@@ -29,7 +29,8 @@ export default function controlsStream (interactions, cameraData, params) {
       const angle = [-Math.PI * delta[0], -Math.PI * delta[1]]
       return angle
     })
-    // .throttle(10)
+    .map(x => x.map(y => y * 0.1))//empirical reduction factor
+    .map(x => x.map(y => y * window.devicePixelRatio))
 
   const zooms$ = gestures.zooms
     .map(x => -x) // we invert zoom direction
@@ -37,7 +38,7 @@ export default function controlsStream (interactions, cameraData, params) {
     .filter(x => !isNaN(x))
     .throttle(10)
 
-  //model/ state/ reducers
+  // model/ state/ reducers
 
   function makeCameraModel () {
     function applyRotation (state, angles) {
