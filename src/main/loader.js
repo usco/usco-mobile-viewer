@@ -27,7 +27,7 @@ function supportsStreaming () {
 }
 
 export default function loadTest (uri) {
-  console.log(`loading model from: ${uri}`)
+  //console.log(`loading model from: ${uri}`)
   const stlStream = makeStlStream({useWorker: true})
 
   const debugHelper = new Duplex({

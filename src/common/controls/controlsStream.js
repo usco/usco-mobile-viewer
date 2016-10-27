@@ -29,7 +29,7 @@ export default function controlsStream (interactions, cameraData, params) {
       const angle = [-Math.PI * delta[0], -Math.PI * delta[1]]
       return angle
     })
-    .map(x => x.map(y => y * 0.1))//empirical reduction factor
+    .map(x => x.map(y => y * 0.1))// empirical reduction factor
     .map(x => x.map(y => y * window.devicePixelRatio))
 
   const zooms$ = gestures.zooms

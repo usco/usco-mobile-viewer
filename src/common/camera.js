@@ -9,11 +9,4 @@ const camera = {
   position: [150, 250, 200],
   target: [0, 0, 0]
 }
-
-// below this, dynamic stuff mostly, since this is also the ouput of the controls function
-/*camera: {
-
-  //view: mat4.create() // default, this is just a 4x4 matrix
-}*/
-
 export default camera
