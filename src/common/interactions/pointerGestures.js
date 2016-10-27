@@ -162,17 +162,14 @@ function pinchZooms (gestureChange$, gestureStart$, gestureEnd$) {
         .map(x => x.scale)
         .loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
         .filter(x => x !== undefined)
-        .map(x => x / x)
-        .tap(e => console.log('pinchZoom:' + e))
-
-        //
+        //.map(x => x / x)
         .takeUntil(gestureEnd$)
     })
 }
 
 function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
   // for android , custom gesture handling
-
+  //very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
   return touchStart$
     .filter(t => t.touches.length === 2).filter(isNotIos)
     .flatMap(function (ts) {
@@ -202,7 +199,7 @@ function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
           const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
           return {scale}
         })
-        .map(x => x.scale * 0.0006)
+        .map(x => x.scale * 0.0004)
         .takeUntil(touchEnd$)
     })
 }
