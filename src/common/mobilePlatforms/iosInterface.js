@@ -25,6 +25,7 @@ export function makeIosInterface () {
     onLoadModelSuccess: () => callNativeApp('loadModel', 'success'),
     onBoundsExceeded: () => callNativeApp('objectBounds', 'exceeded'),
     onViewerReady: () => callNativeApp('viewer', 'ready'),
-    onMachineParamsError: () => callNativeApp('machineParams', 'error')
+    onMachineParamsError: () => callNativeApp('machineParams', 'error'),
+    onMachineParamsSuccess:() => callNativeApp('machineParams','success')
   }
 }

@@ -14,6 +14,7 @@ export function makeAndroidInterface () {
     onLoadModelSuccess: () => mobileCaller.call('onLoadModel(true)'),
     onBoundsExceeded: () => mobileCaller.call('onBoundsExceeded()'),
     onViewerReady: () => mobileCaller.call('onViewerReady()'),
-    onMachineParamsError: () => mobileCaller.call('onMachineParamsResult(false)')
+    onMachineParamsError: () => mobileCaller.call('onMachineParamsResult(false)'),
+    onMachineParamsSuccess: () => mobileCaller.call('onMachineParamsResult(true)')
   }
 }
