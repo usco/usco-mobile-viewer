@@ -10,39 +10,21 @@ function IOSCallback (data) {
   window.location = location
 }
 
-function callNativeApp (data) {
+function callNativeApp (path, payload) {
   try {
-    console.log('calling native app')
-    window.webkit.messageHandlers.callbackHandler.postMessage('data')
+    console.log('calling native app', path)
+    window.webkit.messageHandlers[path].postMessage(payload)
   } catch(err) {
     console.log('Not native')
   }
 }
 
-export function onLoadModelError (error) {
-  try {
-    window.webkit.messageHandlers.loadModel.postMessage('error')
-  } catch(err) {console.log('Not native onLoadModelError')}
-// callNativeApp({modelLoadERROR: error})
-}
-
-export function onLoadModelSuccess (model) {
-  try {
-    window.webkit.messageHandlers.loadModel.postMessage('success')
-  } catch(err) {console.log('Not native onLoadModelSuccess')}
-// callNativeApp({modelLoaded: true})
-}
-
-export function onBoundsExceeded () {
-  try {
-    window.webkit.messageHandlers.objectBounds.postMessage('exceeded')
-  } catch(err) {console.log('Not native onBoundsExceeded')}
-// callNativeApp({boundsExceeded: true})
-}
-
-export function onViewerReady () {
-  try {
-    window.webkit.messageHandlers.viewer.postMessage('ready')
-  } catch(err) {console.log('Not native onViewerReady')}
-// callNativeApp({boundsExceeded: true})
+export function makeIosInterface () {
+  return {
+    onLoadModelError: () => callNativeApp('loadModel', 'error'),
+    onLoadModelSuccess: () => callNativeApp('loadModel', 'success'),
+    onBoundsExceeded: () => callNativeApp('objectBounds', 'exceeded'),
+    onViewerReady: () => callNativeApp('viewer', 'ready'),
+    onMachineParamsError: () => callNativeApp('machineParams', 'error')
+  }
 }

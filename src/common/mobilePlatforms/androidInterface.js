@@ -6,21 +6,14 @@ let mobileCaller = {
       new Function(this.interfaceName + '.' + method)()
     }
   }
-
 }
 
-export function onLoadModelError (error) {
-  mobileCaller.call('onLoadModel(false)')
-}
-
-export function onLoadModelSuccess (model) {
-  mobileCaller.call('onLoadModel(true)')
-}
-
-export function onBoundsExceeded () {
-  mobileCaller.call('onBoundsExceeded()')
-}
-
-export function onViewerReady () {
-  mobileCaller.call('onViewerReady()')
+export function makeAndroidInterface () {
+  return {
+    onLoadModelError: () => mobileCaller.call('onLoadModel(false)'),
+    onLoadModelSuccess: () => mobileCaller.call('onLoadModel(true)'),
+    onBoundsExceeded: () => mobileCaller.call('onBoundsExceeded()'),
+    onViewerReady: () => mobileCaller.call('onViewerReady()'),
+    onMachineParamsError: () => mobileCaller.call('onMachineParamsResult(false)')
+  }
 }
