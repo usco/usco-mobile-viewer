@@ -19,6 +19,13 @@ export function preventDefault (event) {
   event.preventDefault()
   return event
 }
+
+// for gesture vs touch events
+function isNotIos (event) {
+  const ios = /iphone|ipod|ipad/.test(window.navigator.userAgent.toLowerCase())
+  return ios === false
+}
+
 export function interactionsFromEvents (targetEl) {
   const mouseDowns$ = fromEvent('mousedown', targetEl)
   const mouseUps$ = fromEvent('mouseup', targetEl)
@@ -40,12 +47,16 @@ export function interactionsFromEvents (targetEl) {
   const pointerMoves$ = merge(mouseMoves$, touchMoves$)
 
   const zooms$ = merge(
-    pinchZooms(gestureChange$, gestureStart$, gestureEnd$),
-      merge(
-        fromEvent('wheel', targetEl),
-        fromEvent('DOMMouseScroll', targetEl),
-        fromEvent('mousewheel', targetEl)
-      ).map(normalizeWheel)
+    merge(
+      pinchZooms(gestureChange$, gestureStart$, gestureEnd$),
+      pinchZoomsFromTouch(touchStart$, fromEvent('touchmove', targetEl), touchEnd$)
+    ),
+
+    merge(
+      fromEvent('wheel', targetEl),
+      fromEvent('DOMMouseScroll', targetEl),
+      fromEvent('mousewheel', targetEl)
+    ).map(normalizeWheel)
   )
 
   function preventScroll (targetEl) {
@@ -71,6 +82,9 @@ export function interactionsFromEvents (targetEl) {
     pointerDowns$,
     pointerUps$,
   pointerMoves$}
+}
+
+function gestureStart () {
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
@@ -141,16 +155,55 @@ function touchDrags (touchStart$, touchEnd$, touchMove$, settings) {
     })
 }
 
-function pinchZooms(gestureChange$, gestureStart$, gestureEnd$){
+function pinchZooms (gestureChange$, gestureStart$, gestureEnd$) {
   return gestureStart$
     .flatMap(function (gs) {
       return gestureChange$
         .map(x => x.scale)
         .loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
         .filter(x => x !== undefined)
-        .map(x => x * 5)
-        //.tap(e => console.log('pinchZoom:' + e))
+        .map(x => x / x)
+        .tap(e => console.log('pinchZoom:' + e))
+
+        //
         .takeUntil(gestureEnd$)
+    })
+}
+
+function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
+  // for android , custom gesture handling
+
+  return touchStart$
+    .filter(t => t.touches.length === 2).filter(isNotIos)
+    .flatMap(function (ts) {
+      return touchMoves$
+        .tap(e => e.preventDefault())
+        .filter(t => t.touches.length === 2)
+        .filter(isNotIos)
+        .map(e => {
+          return (e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) +
+          (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY)
+        })
+        .skipRepeats()
+        // .loop((prev, cur) => ({seed: cur, value: prev && Math.abs(prev - cur) > 150 ? cur : prev}), undefined)
+        .loop(function (prev, cur) {
+          let value
+          if (prev) {
+            const diff = Math.abs(prev - cur)
+            if (diff > 150) {
+              value = cur < prev ? -cur : cur
+              return {seed: cur, value}
+            }
+          }
+          return {seed: cur}
+        }, undefined)
+        .filter(x => x !== undefined)
+        .map(function (e) {
+          const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
+          return {scale}
+        })
+        .map(x => x.scale * 0.0006)
+        .takeUntil(touchEnd$)
     })
 }
 
