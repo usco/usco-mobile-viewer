@@ -16,13 +16,9 @@ test('computeCameraToFitBounds', t => {
   }
   const updatedCameraData = computeCameraToFitBounds(camera, bounds)
   const expUpdatedCameraData = {
-    camera: {
-      position: new Float32Array([0, -3.005925178527832, -5.410665035247803]),
-      target: new Float32Array([0, 0, 0])
-    }
+      position: [0, -3.005925178527832, -5.410665035247803], // new Float32Array(),
+      target: [0, 0, 0]// new Float32Array([0, 0, 0])
   }
-
-  console.log(updatedCameraData)
 
   t.deepEqual(updatedCameraData, expUpdatedCameraData)
 })

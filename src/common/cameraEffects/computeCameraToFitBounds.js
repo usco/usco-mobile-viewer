@@ -39,7 +39,7 @@ export default function computeCameraToFitBounds (camera, bounds) {
   camNewPos = vec3.subtract(camNewPos, camNewPos, vec)
 
   return {
-    position: camNewPos, //[...camNewPos],
-    target: camNewTgt// [...camNewTgt]
+    position: [...camNewPos],
+    target: [...camNewTgt]
   }
 }
