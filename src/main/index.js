@@ -32,13 +32,13 @@ import makeInterface from '../common/mobilePlatforms/interface'
 import nativeApiDriver from './sideEffects/nativeApiDriver'
 
 // ////////////
-const {onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady, onMachineParamsError} = makeInterface()
+const {onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady, onMachineParamsError, onMachineParamsSuccess} = makeInterface()
 const nativeApi = nativeApiDriver()
 
 const regl = reglM({
   extensions: [
-    'oes_texture_float', // FIXME: for shadows, is it widely supported ?
-  // 'EXT_disjoint_timer_query'// for gpu benchmarking only
+    //  'oes_texture_float', // FIXME: for shadows, is it widely supported ?
+    // 'EXT_disjoint_timer_query'// for gpu benchmarking only
   ],
   profile: true
 })
@@ -51,7 +51,7 @@ const container = document.querySelector('canvas')
   - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
 */
 
-/////////
+// ///////
 const modelUri$ = merge(
   adressBarDriver,
   nativeApi.modelUri$
@@ -73,18 +73,17 @@ const setMachineParams$ = merge(
     return just(null)
   })
   .filter(x => x !== null)
+  .tap(e => onMachineParamsSuccess(true))
   .multicast()
 
 const parsedSTL$ = modelUri$
   .flatMap(loadAsStream)
-  .tap(e => console.log('done loading', e))
   .flatMapError(function (error) {
     onLoadModelError(error)
     return just(undefined)
   })
   .filter(x => x !== undefined)
   .multicast()
-
 
 // interactions : camera controls
 const baseInteractions$ = interactionsFromEvents(container)
@@ -109,7 +108,7 @@ const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
 
 // boundsExceeded
 const boundsExceeded$ = combine(function (entity, machineParams) {
-  console.log('boundsExceeded', entity, machineParams)
+  // console.log('boundsExceeded', entity, machineParams)
   return isObjectOutsideBounds(machineParams, entity)
 }, addEntities$, setMachineParams$)
   // .map((entity) => isObjectOutsideBounds(machineParams, entity))
@@ -124,15 +123,16 @@ boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of 
 
 // for testing only
 const machineParams = {
-  'machine_width': { 'default_value': 215 },
-  'machine_depth': { 'default_value': 215 },
-  'machine_height': { 'default_value': 300 },
+  'machine_width': 215,
+  'machine_depth': 215,
+  'machine_height': 300,
   'machine_head_with_fans_polygon': {'default_value': [
       [-40, 10],
       [-40, -30],
       [60, 10],
       [60, -30]
   ]},
+  'printable_area': [200, 200],
   'machine_disallowed_areas': { 'default_value': [
       [[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]],
       [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]],
@@ -148,4 +148,4 @@ const machineParams = {
 }
 // for testing
 // informations about the active machine
-window.nativeApi.setMachineParams(machineParams)
+// window.nativeApi.setMachineParams(machineParams)
