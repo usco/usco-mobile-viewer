@@ -2,8 +2,6 @@ import { combine, combineArray, merge } from 'most'
 import makeDrawEnclosure from './drawCommands/drawEnclosure'
 import drawStaticMesh from './drawCommands/drawStaticMesh2/index'
 
-import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
-
 export function makeVisualState (regl, machine$, entities$, camState$) {
   const machineWithVisuals$ = machine$
     .map(function (machine) {
@@ -25,21 +23,12 @@ export function makeVisualState (regl, machine$, entities$, camState$) {
         })
     })
 
+
+  const outOfBoundsColor = [0.15, 0.15, 0.15, 0.3]
+  const background = [1, 1, 1, 1]
   return combineArray(
     function (entities, machine, camera) {
-      /*if(machine && machine.params){
-        entities = entities.map(function(entity){
-          const out = isObjectOutsideBounds(machine.params, entity)
-          if(!out){
-            return entity
-          }
-          console.log('jkjhkj')
-          const visuals = Object.assign({}, entity.visuals,{color:[1,0,0,1]})
-
-          let entity2 = Object.assign({}, entity, {visuals})
-          return entity2
-        })
-      }*/
-      return {entities, machine, camera, background: [1, 1, 1, 1]}
+      const view = camera.view
+      return {entities, machine, view, camera, background, outOfBoundsColor}
     }, [entitiesWithVisuals$, machineWithVisuals$, camState$])
 }

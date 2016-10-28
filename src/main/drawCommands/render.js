@@ -2,34 +2,42 @@ import makeWrapperScope from './wrapperScope'
 import makeDrawPrintheadShadow from './drawPrintheadShadow'
 
 import { default as model } from '../../common/utils/computeTMatrixFromTransforms'
-import drawGrid from './drawGrid/index'
+import prepareDrawGrid from './drawGrid/index'
 
-export default function prepareRenderAlt (regl, params) {
+export default function prepareRender (regl, params) {
   const wrapperScope = makeWrapperScope(regl)
   let tick = 0
-  //entity color for outOfBounds ? [0.15, 0.15, 0.15, 0.3]
 
-  //infine grid, always there
+  // infine grid, always there
   // infinite grid
   const gridSize = [1220, 1200] // size of 'infinite grid'
-  const _drawInfiniGrid = drawGrid(regl, {size: gridSize, ticks: 10, infinite: true})
+  const drawInfiniGrid = prepareDrawGrid(regl, {size: gridSize, ticks: 10, infinite: true})
   const infiniGridOffset = model({pos: [0, 0, -0.4]})
 
-
   let command = (props) => {
-    const {camera, view, entities, machine, background} = props
+    const {entities, machine, camera, view, background, outOfBoundsColor} = props
+
     wrapperScope(props, (context) => {
       regl.clear({
         color: background,
         depth: 1
       })
-      _drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
+      drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
 
-      entities.map(e => e.visuals.draw({view, camera, color:e.visuals.color , model: e.modelMat}))
-      if(machine && machine.draw){
-        machine.draw(props)
+      entities.map(function (entity) {
+        //use this for colors that change outside build area
+        //const color = entity.visuals.color
+        //const printableArea = machine ? machine.params.printable_area : [0, 0]
+        //this one for single color for outside bounds
+        const color = entity.bounds.outOfBounds ? outOfBoundsColor : entity.visuals.color
+        const printableArea = undefined
+
+        entity.visuals.draw({view, camera, color, model: entity.modelMat, printableArea})
+      })
+
+      if (machine) {
+        machine.draw({view, camera})
       }
-
 
       /*entities.map(function (entity) {
         const {pos} = entity.transforms
@@ -41,16 +49,11 @@ export default function prepareRenderAlt (regl, params) {
 
         return makeDrawPrintheadShadow(regl, {width,length})({view, camera, model, color: [0.1, 0.1, 0.1, 0.15]})
       })*/
-
-      //drawEnclosure(props)
     })
   }
 
-  return function render(data) {
-    const {entities, machine, camera, background} = data
-    const {view} = camera
-
-    command({entities, machine, camera, view, background})
+  return function render (data) {
+    command(data)
 
     // boilerplate etc
     tick += 0.01

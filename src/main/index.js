@@ -24,7 +24,7 @@ import adressBarDriver from './sideEffects/adressBarDriver'
 import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
 
 import entityPrep from './entityPrep'
-import { makeEntitiesModel, makeMachineModel } from './state'
+import { makeEntitiesModel, makeMachineModel, makeState } from './state'
 import { makeVisualState } from './visualState'
 
 // basic api
@@ -92,17 +92,20 @@ const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
 
 const render = prepareRender(regl)
 const addEntities$ = entityPrep(parsedSTL$)
+const setEntityBoundsStatus$ = merge(setMachineParams$, addEntities$.sample((x) => x, setMachineParams$))
 
-const entities$ = makeEntitiesModel({addEntities: addEntities$})
+const entities$ = makeEntitiesModel({addEntities: addEntities$, setEntityBoundsStatus: setEntityBoundsStatus$})
 const machine$ = makeMachineModel({setMachineParams: setMachineParams$})
 
-const appState$ = combineArray(
-  function (entities, machine) {
-    return {entities, machine}
-  }, [entities$, machine$])
+const appState$ = makeState(machine$, entities$)
 
 const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
   .thru(limitFlow(33))
+  .flatMapError(function (error) {
+    console.error('error in rendering', error)
+    return just(null)
+  })
+  .filter(x => x !== null)
   .tap(x => regl.poll())
   .forEach(x => render(x))
 
@@ -126,26 +129,16 @@ const machineParams = {
   'machine_width': 215,
   'machine_depth': 215,
   'machine_height': 300,
-  'machine_head_with_fans_polygon': {'default_value': [
-      [-40, 10],
-      [-40, -30],
-      [60, 10],
-      [60, -30]
-  ]},
   'printable_area': [200, 200],
-  'machine_disallowed_areas': { 'default_value': [
-      [[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]],
-      [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]],
-      [[-94.5, 104.6], [-115, 104.6], [-115, 105.5], [-94.5, 105.5]],
-      [[-91.4, 105.5], [-115, 105.5], [-115, 115], [-91.4, 115]],
-
-      [[77.3, -115], [77.3, -98.6], [115, -98.6], [115, -115]],
-      [[97.2, -98.6], [97.2, -54.5], [113, -54.5], [113, -98.6]],
-      [[100.5, -54.5], [100.5, 99.3], [115, 99.3], [115, -54.5]],
-      [[77, 99.3], [77, 115], [115, 115], [115, 99.3]]
-  ]},
-  'prime_tower_position_x': { 'default_value': 180 }
 }
+
 // for testing
 // informations about the active machine
-// window.nativeApi.setMachineParams(machineParams)
+//window.nativeApi.setMachineParams(machineParams)
+
+/*setTimeout(function () {
+  window.nativeApi.setMachineParams(machineParams)
+}, 2000)
+setTimeout(function () {
+  window.nativeApi.setModelUri('http://localhost:8080/data/sanguinololu_enclosure_full.stl')
+}, 1000)*/

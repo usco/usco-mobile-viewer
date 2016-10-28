@@ -14,18 +14,7 @@ test('isObjectOutsideBounds', t => {
 
   const machineParams = {
     machine_volume: [100, 150, 220],
-    machine_disallowed_areas: [
-      [[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]],
-      [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]],
-      [[-94.5, 104.6], [-115, 104.6], [-115, 105.5], [-94.5, 105.5]],
-      [[-91.4, 105.5], [-115, 105.5], [-115, 115], [-91.4, 115]]
-    ],
-    machine_head_with_fans_polygon: [
-      [ -20, 10 ],
-      [ -20, -10 ],
-      [ 50, 10 ],
-      [ 50, -10 ]
-    ]
+    printable_area: [180, 200]
   }
 
   const outOfBounds = isObjectOutsideBounds(machineParams, entity)
@@ -46,18 +35,7 @@ test('isObjectOutsideBounds( is out of bounds)', t => {
 
   const machineParams = {
     machine_volume: [50, 50, 50],
-    machine_disallowed_areas: [
-      [[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]],
-      [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]],
-      [[-94.5, 104.6], [-115, 104.6], [-115, 105.5], [-94.5, 105.5]],
-      [[-91.4, 105.5], [-115, 105.5], [-115, 115], [-91.4, 115]]
-    ],
-    machine_head_with_fans_polygon: [
-      [ -20, 10 ],
-      [ -20, -10 ],
-      [ 50, 10 ],
-      [ 50, -10 ]
-    ]
+    printable_area: [180, 200]
   }
 
   const outOfBounds = isObjectOutsideBounds(machineParams, entity)

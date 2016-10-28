@@ -71,16 +71,16 @@ function adjustedMachineVolumeByDissallowerAreas (machine) {
 export default function isObjectOutsideBounds (machine, entity) {
   const {bounds, transforms} = entity
   const {pos} = transforms
-  const {machine_volume, machine_head_with_fans_polygon} = machine // machine volume assumed to be centered around [0,0,0]
+  const {machine_volume, printable_area} = machine // machine volume assumed to be centered around [0,0,0]
 
-  const headSize = computeSizeOfPoints(machine_head_with_fans_polygon)
+  const headSize = [0, 0, 0] // computeSizeOfPoints(machine_head_with_fans_polygon)
 
-  const adjustedVolume = adjustedMachineVolumeByDissallowerAreas(machine)
-  // console.log('machine_volume', machine_volume, 'adjustedVolume', adjustedVolume)
+  const adjustedVolume = [printable_area[0], printable_area[1], machine_volume[2]] // adjustedMachineVolumeByDissallowerAreas(machine)
   const halfVolume = adjustedVolume.map(x => x * 0.5)
+  
   // basic check based on machn dimensions
   const aabbout = pos.reduce(function (acc, val, idx) {
-    //const printHeadOffset = headSize[idx] * 0.75
+    // const printHeadOffset = headSize[idx] * 0.75
     const printHeadOffset = 0
     let cur = (val + bounds.min[idx] - printHeadOffset) <= -halfVolume[idx] || val + bounds.max[idx] + printHeadOffset >= halfVolume[idx]
 
