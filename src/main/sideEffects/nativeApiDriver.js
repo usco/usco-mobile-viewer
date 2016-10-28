@@ -1,6 +1,6 @@
 // setModelUri('http://localhost:8080/data/sanguinololu_enclosure_full.stl')
 import callBackToStream from '../../common/utils/most/callBackToStream'
-import formatRawMachineData from '../../common/utils/formatRawMachineData'
+import formatRawMachineData from '../../common/utils/printing/formatRawMachineData'
 
 export default function nativeApiDriver(out$){
 
