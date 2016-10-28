@@ -1,9 +1,7 @@
 var glslify = require('glslify-sync') // works in client & server
-import { perspective } from 'gl-mat4'
 import mat4 from 'gl-mat4'
-import normals from 'angle-normals'
 
-export default function drawGrid (regl, params = {}) {
+export default function prepareDrawGrid (regl, params = {}) {
   let positions = []
   const infinite = params.infinite || false
   const centered = params.centered || false
