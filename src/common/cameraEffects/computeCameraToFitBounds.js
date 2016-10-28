@@ -1,6 +1,11 @@
 import vec3 from 'gl-vec3'
 
-export default function zoomToFitBounds (camera, bounds) {
+/**
+ * zooms in on an object trying to fit its bounds on the (2d) screen
+ * @param  {Object} camera the camera we are using
+ * @param  {Object} bounds the current bounds of the entity
+ */
+export default function computeCameraToFitBounds (camera, bounds) {
   /*
   bounds: {
     dia: 40,
@@ -14,7 +19,7 @@ export default function zoomToFitBounds (camera, bounds) {
 
   const radius = bounds.dia / 2
   const center = bounds.center
-  const targetOffset = vec3.subtract(vec3.create(), center, camera.target)
+  const targetOffset = vec3.subtract(vec3.create(), center, camera.target)//offset between target bounds center & camera's target
 
   // move camera to base position
   // compute new camera position
@@ -33,9 +38,8 @@ export default function zoomToFitBounds (camera, bounds) {
 
   camNewPos = vec3.subtract(camNewPos, camNewPos, vec)
 
-  // camera.updateProjectionMatrix()
-  return {camera: {
-    position: camNewPos,
-    target: camNewTgt
-  }}
+  return {
+    position: [...camNewPos],
+    target: [...camNewTgt]
+  }
 }

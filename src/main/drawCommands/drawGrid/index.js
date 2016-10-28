@@ -77,10 +77,10 @@ export default function drawGrid (regl, params = {}) {
       face: 'front'
     },
     polygonOffset: {
-      enable: false,
+      enable: true,
       offset: {
         factor: 1,
-        units: Math.random()
+        units: Math.random() * 10
       }
     }
 

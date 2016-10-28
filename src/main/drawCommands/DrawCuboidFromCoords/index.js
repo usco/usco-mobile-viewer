@@ -38,6 +38,10 @@ export default function drawCuboidFromCoords (regl, params) {
       mask: false,
       func: 'less',
       range: [0, 1]
+    },
+    cull: {
+      enable: true,
+      face: 'front'
     }
   })
 }

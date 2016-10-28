@@ -13,8 +13,9 @@ import boundingSphere from './boundingSphere'
  * bounds: {
  *  dia: 40,
  *   center: [0,20,8],
- *   min: [9, 10, 0],
+ *   min: [9, -10, 0],
  *   max: [15, 10, 4]
+ *   size: [6,20,4]
  *}
  */
 export default function computeBounds (object) {
@@ -23,22 +24,15 @@ export default function computeBounds (object) {
   bbox[0] = bbox[0].map((x, i) => x * scale[i])
   bbox[1] = bbox[1].map((x, i) => x * scale[i])
 
-
-  /*console.log(JSON.stringify(bbox))*/
   const center = vec3.scale(vec3.create(), vec3.add(vec3.create(), bbox[0], bbox[1]), 0.5)
-
-  /*console.log(JSON.stringify(center))
-  let bbox2 = boundingBox(object.geometry.positions)
-  const center2 = vec3.scale(vec3.create(), vec3.add(vec3.create(), bbox2[0], bbox2[1]), 0.5)
-  console.log(JSON.stringify(center2))*/
-
-
   const bsph = boundingSphere(center, object.geometry.positions) * Math.max(...scale)
+  const size = [bbox[1][0] - bbox[0][0], bbox[1][1] - bbox[0][1], bbox[1][2] - bbox[0][2]]
 
   return {
     dia: bsph,
     center: [...center],
     min: bbox[0],
-    max: bbox[1]
+    max: bbox[1],
+    size
   }
 }

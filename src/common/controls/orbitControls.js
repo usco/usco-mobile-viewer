@@ -28,7 +28,7 @@ export const params = {
     maxDistance: 4000
   },
   EPS: 0.000001,
-  drag: 0.47, // Decrease the momentum by 1% each iteration
+  drag: 0.27, // Decrease the momentum by 1% each iteration
 
   up: [0, 0, 1]
 }

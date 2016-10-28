@@ -29,5 +29,5 @@ void main () {
   vec3 diffuse = diffuseLightAmount * color.rgb * clamp(cosTheta , 0.0, 1.0 );
 
   float v = 0.8; // shadow value
-  gl_FragColor = vec4((ambient + diffuse * v), 1.);
+  gl_FragColor = vec4((ambient + diffuse * v), color.a);
 }

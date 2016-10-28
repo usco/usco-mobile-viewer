@@ -1,14 +1,11 @@
 import { update, rotate, zoom } from './orbitControls'
-
-import most from 'most'
-import { sample } from 'most'
 import { fromEvent, combineArray, combine, mergeArray } from 'most'
 import { interactionsFromEvents, pointerGestures } from '../interactions/pointerGestures'
 
 import { model } from '../utils/modelUtils'
 import animationFrames from '../utils/animationFrames'
 
-export default function controlsStream (interactions, cameraData) {
+export default function controlsStream (interactions, cameraData, params) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 
@@ -24,21 +21,24 @@ export default function controlsStream (interactions, cameraData) {
     .map(function (data) {
       let delta = [data.delta.x, data.delta.y]
       if (data.type === 'touch') {
-        delta = delta.map(x => x / mobileReductor)
+        // delta = delta.map(x => x / mobileReductor)
       }
       return delta
     })
     .map(function (delta) {
-      const angle = [- Math.PI * delta[0], - Math.PI * delta[1]]
+      const angle = [-Math.PI * delta[0], -Math.PI * delta[1]]
       return angle
     })
-    // .throttle(10)
+    .map(x => x.map(y => y * 0.1))// empirical reduction factor
+    .map(x => x.map(y => y * window.devicePixelRatio))
 
   const zooms$ = gestures.zooms
     .map(x => -x) // we invert zoom direction
     .startWith(0)
     .filter(x => !isNaN(x))
     .throttle(10)
+
+  // model/ state/ reducers
 
   function makeCameraModel () {
     function applyRotation (state, angles) {

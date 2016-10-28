@@ -3,7 +3,7 @@ import vec3 from 'gl-vec3'
 //import TWEEN from 'tween.js'
 import assign from 'fast.js/object/assign' // faster object.assign
 
-export default function zoomInOn (options, camera, targetObject) {
+export default function zoomInOn (options, camera, target) {
   const defaults = {
     position: undefined, // to force a given "point " vector to zoom in on
     distance: 3,
@@ -11,21 +11,21 @@ export default function zoomInOn (options, camera, targetObject) {
     precision: 0.001
   }
 
-  if (!targetObject) return
-  if (!camera) return
+  if (!target || !camera) return
 
   let {position, distance, zoomTime, precision} = assign({}, defaults, options)
   // console.log("ZoomInOnObject", targetObject,options)
 
   if (!position) {
-    distance = targetObject.bounds.radius * distance
-    position = targetObject.transforms.pos
+    distance = target.bounds.radius * distance
+    position = target.transforms.pos
   } else {
-    distance = vec3.length(vec3.subtract(vec3.create(), position, targetObject.transforms.pos)) * distance * 2
+    distance = vec3.length(vec3.subtract(vec3.create(), position, target.transforms.pos)) * distance * 2
   }
 
   let camPos = camera.position
   let camTgt = (camera.target || vec3.create())
+
   let camTgtTarget = position
   let camPosTarget = vec3.subtract(vec3.create(), camera.position, position) // camera.position.clone().sub(position)
 

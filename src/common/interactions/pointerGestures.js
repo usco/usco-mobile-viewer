@@ -19,31 +19,51 @@ export function preventDefault (event) {
   event.preventDefault()
   return event
 }
+
+// for gesture vs touch events
+function isNotIos (event) {
+  const ios = /iphone|ipod|ipad/.test(window.navigator.userAgent.toLowerCase())
+  return ios === false
+}
+
 export function interactionsFromEvents (targetEl) {
-  let mouseDowns$ = fromEvent('mousedown', targetEl)
-  let mouseUps$ = fromEvent('mouseup', targetEl)
-  let mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
-  let mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+  const mouseDowns$ = fromEvent('mousedown', targetEl)
+  const mouseUps$ = fromEvent('mouseup', targetEl)
+  const mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
+  const mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
 
-  let rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
-  let zooms$ = merge(
-    fromEvent('wheel', targetEl),
-    fromEvent('DOMMouseScroll', targetEl),
-    fromEvent('mousewheel', targetEl)
-  ).map(normalizeWheel)
+  const rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
 
-  let touchStart$ = fromEvent('touchstart', targetEl) // dom.touchstart(window)
-  let touchMoves$ = fromEvent('touchmove', targetEl) // dom.touchmove(window)
-  let touchEnd$ = fromEvent('touchend', targetEl) // dom.touchend(window)
+  const touchStart$ = fromEvent('touchstart', targetEl)
+  const touchMoves$ = fromEvent('touchmove', targetEl).filter(t => t.touches.length === 1)
+  const touchEnd$ = fromEvent('touchend', targetEl)
+
+  const gestureChange$ = fromEvent('gesturechange', targetEl)
+  const gestureStart$ = fromEvent('gesturestart', targetEl)
+  const gestureEnd$ = fromEvent('gestureend', targetEl)
 
   const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
   const pointerMoves$ = merge(mouseMoves$, touchMoves$)
 
+  const zooms$ = merge(
+    merge(
+      pinchZooms(gestureChange$, gestureStart$, gestureEnd$),
+      pinchZoomsFromTouch(touchStart$, fromEvent('touchmove', targetEl), touchEnd$)
+    ),
+
+    merge(
+      fromEvent('wheel', targetEl),
+      fromEvent('DOMMouseScroll', targetEl),
+      fromEvent('mousewheel', targetEl)
+    ).map(normalizeWheel)
+  )
+
   function preventScroll (targetEl) {
     fromEvent('mousewheel', targetEl).forEach(preventDefault)
     fromEvent('DOMMouseScroll', targetEl).forEach(preventDefault)
     fromEvent('wheel', targetEl).forEach(preventDefault)
+    fromEvent('touchmove', targetEl).forEach(preventDefault)
   }
   preventScroll(targetEl)
 
@@ -61,8 +81,10 @@ export function interactionsFromEvents (targetEl) {
 
     pointerDowns$,
     pointerUps$,
-    pointerMoves$
-  }
+  pointerMoves$}
+}
+
+function gestureStart () {
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
@@ -129,6 +151,55 @@ function touchDrags (touchStart$, touchEnd$, touchMove$, settings) {
           const normalized = {x: e.touches[0].pageX, y: e.touches[0].pageY}
           return {mouseEvent: e, delta, normalized, type: 'touch'}
         })
+        .takeUntil(touchEnd$)
+    })
+}
+
+function pinchZooms (gestureChange$, gestureStart$, gestureEnd$) {
+  return gestureStart$
+    .flatMap(function (gs) {
+      return gestureChange$
+        .map(x => x.scale)
+        .loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
+        .filter(x => x !== undefined)
+        //.map(x => x / x)
+        .takeUntil(gestureEnd$)
+    })
+}
+
+function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
+  // for android , custom gesture handling
+  //very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
+  return touchStart$
+    .filter(t => t.touches.length === 2).filter(isNotIos)
+    .flatMap(function (ts) {
+      return touchMoves$
+        .tap(e => e.preventDefault())
+        .filter(t => t.touches.length === 2)
+        .filter(isNotIos)
+        .map(e => {
+          return (e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) +
+          (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY)
+        })
+        .skipRepeats()
+        // .loop((prev, cur) => ({seed: cur, value: prev && Math.abs(prev - cur) > 150 ? cur : prev}), undefined)
+        .loop(function (prev, cur) {
+          let value
+          if (prev) {
+            const diff = Math.abs(prev - cur)
+            if (diff > 150) {
+              value = cur < prev ? -cur : cur
+              return {seed: cur, value}
+            }
+          }
+          return {seed: cur}
+        }, undefined)
+        .filter(x => x !== undefined)
+        .map(function (e) {
+          const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
+          return {scale}
+        })
+        .map(x => x.scale * 0.0004)
         .takeUntil(touchEnd$)
     })
 }

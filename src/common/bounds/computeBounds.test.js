@@ -15,7 +15,8 @@ test('computeBounds', t => {
     dia: 5.745432971379113,
     center: [-5, -0.4000000059604645, 2.5],
     min: [-10, -2.8, 1],
-    max: [0, 2, 4]
+    max: [0, 2, 4],
+    size: [10, 4.8, 3]
   }
 
   const bounds = computeBounds(input)
@@ -37,7 +38,8 @@ test('computeBounds (non default scale)', t => {
     dia: 9.415252306303229,
     center: [-6, -0.2800000011920929, -2.5],
     min: [-12, -1.9599999999999997, -1],
-    max: [0, 1.4, -4]
+    max: [0, 1.4, -4],
+    size: [12, 3.3599999999999994, -3]
   }
 
   const bounds = computeBounds(input)
