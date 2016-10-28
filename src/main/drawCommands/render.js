@@ -30,7 +30,7 @@ export default function prepareRender (regl, params) {
         //const printableArea = machine ? machine.params.printable_area : [0, 0]
         //this one for single color for outside bounds
         const color = entity.bounds.outOfBounds ? outOfBoundsColor : entity.visuals.color
-        const printableArea = [0, 0]
+        const printableArea = undefined
 
         entity.visuals.draw({view, camera, color, model: entity.modelMat, printableArea})
       })

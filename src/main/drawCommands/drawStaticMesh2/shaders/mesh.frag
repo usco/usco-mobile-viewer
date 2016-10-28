@@ -31,13 +31,13 @@ void main () {
   float v = 0.8; // shadow value
   vec4 endColor = color;
 
-  //if anything is outside the printable area, shade differently 
-  if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){
+  //if anything is outside the printable area, shade differently
+  /*if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){
     endColor = errorColor;
   }
   if(_worldSpacePosition.y>printableArea.y*0.5 || _worldSpacePosition.y<printableArea.y*-0.5) {
     endColor = errorColor;
-  }
+  }*/
 
   vec3 ambient = ambientLightAmount * endColor.rgb;
   float cosTheta = dot(fragNormal, lightDir);
