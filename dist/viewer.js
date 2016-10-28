@@ -3244,6 +3244,7 @@ function detectTransport() {
       return function (response) {
         var chunk = response.substr(offset);
         offset = response.length;
+
         return encoder.encode(chunk, { stream: true });
       };
     }
@@ -3258,6 +3259,7 @@ function supportsXhrResponseType(type) {
   } catch (e) {/* IE throws on setting responseType to an unsupported value */}
   return false;
 }
+
 },{"./fetch":17,"./xhr":20}],16:[function(require,module,exports){
 module.exports = require("./index").default;
 
@@ -16532,8 +16534,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
  * bounds: {
  *  dia: 40,
  *   center: [0,20,8],
- *   min: [9, 10, 0],
+ *   min: [9, -10, 0],
  *   max: [15, 10, 4]
+ *   size: [6,20,4]
  *}
  */
 function computeBounds(object) {
@@ -16546,24 +16549,60 @@ function computeBounds(object) {
     return x * scale[i];
   });
 
-  /*console.log(JSON.stringify(bbox))*/
   var center = _glVec2.default.scale(_glVec2.default.create(), _glVec2.default.add(_glVec2.default.create(), bbox[0], bbox[1]), 0.5);
-
-  /*console.log(JSON.stringify(center))
-  let bbox2 = boundingBox(object.geometry.positions)
-  const center2 = vec3.scale(vec3.create(), vec3.add(vec3.create(), bbox2[0], bbox2[1]), 0.5)
-  console.log(JSON.stringify(center2))*/
-
   var bsph = (0, _boundingSphere2.default)(center, object.geometry.positions) * Math.max.apply(Math, _toConsumableArray(scale));
+  var size = [bbox[1][0] - bbox[0][0], bbox[1][1] - bbox[0][1], bbox[1][2] - bbox[0][2]];
 
   return {
     dia: bsph,
     center: [].concat(_toConsumableArray(center)),
     min: bbox[0],
-    max: bbox[1]
+    max: bbox[1],
+    size: size
   };
 }
 },{"./boundingBox":186,"./boundingSphere":187,"gl-vec3":56}],189:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isObjectOutsideBounds;
+function isObjectOutsideBounds(machine, entity) {
+  var bounds = entity.bounds;
+  var transforms = entity.transforms;
+  var pos = transforms.pos;
+  var machine_volume = machine.machine_volume;
+  var printable_area = machine.printable_area; // machine volume assumed to be centered around [0,0,0]
+
+  var headSize = [0, 0, 0]; // computeSizeOfPoints(machine_head_with_fans_polygon)
+
+  var adjustedVolume = [printable_area[0], printable_area[1], machine_volume[2]]; // adjustedMachineVolumeByDissallowerAreas(machine)
+  var halfVolume = adjustedVolume.map(function (x) {
+    return x * 0.5;
+  });
+
+  // basic check based on machn dimensions
+  var aabbout = pos.reduce(function (acc, val, idx) {
+    // const printHeadOffset = headSize[idx] * 0.75
+    var printHeadOffset = 0;
+    var cur = val + bounds.min[idx] - printHeadOffset <= -halfVolume[idx] || val + bounds.max[idx] + printHeadOffset >= halfVolume[idx];
+
+    /*const objOffsetMin = val + bounds.min[idx] - printHeadOffset
+    const halfVol = -halfVolume[idx]
+    const result = objOffsetMin <= halfVol
+    console.log('min', objOffsetMin, halfVol, result)
+     const objOffsetMax = val + bounds.max[idx] + printHeadOffset
+    const halfVol2 = halfVolume[idx]
+    const result2 = objOffsetMax >= halfVol2
+    console.log('max', objOffsetMax, halfVol2, result2)*/
+
+    return acc || cur;
+  }, false);
+
+  return aabbout;
+}
+},{}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16577,18 +16616,11 @@ var camera = {
   phiDelta: 0,
   scale: 1,
 
-  position: [450, 300, 200],
+  position: [150, 250, 200],
   target: [0, 0, 0]
 };
-
-// below this, dynamic stuff mostly, since this is also the ouput of the controls function
-/*camera: {
-
-  //view: mat4.create() // default, this is just a 4x4 matrix
-}*/
-
 exports.default = camera;
-},{}],190:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16600,8 +16632,6 @@ var _orbitControls = require('./orbitControls');
 
 var _most = require('most');
 
-var _most2 = _interopRequireDefault(_most);
-
 var _pointerGestures = require('../interactions/pointerGestures');
 
 var _modelUtils = require('../utils/modelUtils');
@@ -16612,33 +16642,40 @@ var _animationFrames2 = _interopRequireDefault(_animationFrames);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function controlsStream(interactions, cameraData) {
+function controlsStream(interactions, cameraData, params) {
   var settings = cameraData.settings;
   var camera = cameraData.camera;
   var gestures = interactions.gestures;
 
 
-  var rate$ = (0, _animationFrames2.default)(); //heartBeat
-  //const heartBeat$ = most.periodic(16, 'x')
-  //sample(world, rate)
+  var rate$ = (0, _animationFrames2.default)(); // heartBeat
+  // const heartBeat$ = most.periodic(16, 'x')
+  // sample(world, rate)
 
   var mobileReductor = 5.0; // how much we want to divide touch deltas to get movements on mobile
 
   var dragMoves$ = gestures.dragMoves
-  //.throttle(16) // FIXME: not sure, could be optimized some more
+  // .throttle(16) // FIXME: not sure, could be optimized some more
   .filter(function (x) {
     return x !== undefined;
   }).map(function (data) {
     var delta = [data.delta.x, data.delta.y];
     if (data.type === 'touch') {
-      delta = delta.map(function (x) {
-        return x / mobileReductor;
-      });
+      // delta = delta.map(x => x / mobileReductor)
     }
     return delta;
   }).map(function (delta) {
     var angle = [-Math.PI * delta[0], -Math.PI * delta[1]];
     return angle;
+  }).map(function (x) {
+    return x.map(function (y) {
+      return y * 0.1;
+    });
+  }) // empirical reduction factor
+  .map(function (x) {
+    return x.map(function (y) {
+      return y * window.devicePixelRatio;
+    });
   });
 
   var zooms$ = gestures.zooms.map(function (x) {
@@ -16648,15 +16685,17 @@ function controlsStream(interactions, cameraData) {
     return !isNaN(x);
   }).throttle(10);
 
+  // model/ state/ reducers
+
   function makeCameraModel() {
     function applyRotation(state, angles) {
       state = (0, _orbitControls.rotate)(settings, state, angles); // mutating, meh
-      //state = update(settings, state) // not sure
+      state = (0, _orbitControls.update)(settings, state); // not sure
       return state;
     }
 
     function applyZoom(state, zooms) {
-      //console.log('applyZoom', zooms)
+      // console.log('applyZoom', zooms)
       state = (0, _orbitControls.zoom)(settings, state, zooms); // mutating, meh
       state = (0, _orbitControls.update)(settings, state); // not sure
       return state;
@@ -16672,7 +16711,6 @@ function controlsStream(interactions, cameraData) {
     var cameraState$ = (0, _modelUtils.model)(camera, actions, updateFunctions);
 
     return cameraState$;
-    return _most2.default.merge(cameraState$.take(2), cameraState$);
   }
 
   var cameraState$ = makeCameraModel();
@@ -16683,7 +16721,7 @@ function controlsStream(interactions, cameraData) {
     return x.changed;
   }).merge(cameraState$);
 }
-},{"../interactions/pointerGestures":192,"../utils/animationFrames":194,"../utils/modelUtils":197,"./orbitControls":191,"most":117}],191:[function(require,module,exports){
+},{"../interactions/pointerGestures":193,"../utils/animationFrames":199,"../utils/modelUtils":202,"./orbitControls":192,"most":117}],192:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16729,7 +16767,7 @@ var params = exports.params = {
     maxDistance: 4000
   },
   EPS: 0.000001,
-  drag: 0.47, // Decrease the momentum by 1% each iteration
+  drag: 0.27, // Decrease the momentum by 1% each iteration
 
   up: [0, 0, 1]
 };
@@ -16829,7 +16867,7 @@ function zoom(params, cameraState, zoomScale) {
   }
   return cameraState;
 }
-},{"gl-mat4":30,"gl-vec3":56}],192:[function(require,module,exports){
+},{"gl-mat4":30,"gl-vec3":56}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16863,22 +16901,44 @@ function preventDefault(event) {
   event.preventDefault();
   return event;
 }
+
+// for gesture vs touch events
+function isNotIos(event) {
+  var ios = /iphone|ipod|ipad/.test(window.navigator.userAgent.toLowerCase());
+  return ios === false;
+}
+
 function interactionsFromEvents(targetEl) {
   var mouseDowns$ = (0, _most.fromEvent)('mousedown', targetEl);
   var mouseUps$ = (0, _most.fromEvent)('mouseup', targetEl);
   var mouseLeaves$ = (0, _most.fromEvent)('mouseleave', targetEl).merge((0, _most.fromEvent)('mouseout', targetEl));
-  var mouseMoves$ = (0, _most.fromEvent)('mousemove', targetEl); //.takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+  var mouseMoves$ = (0, _most.fromEvent)('mousemove', targetEl); // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
 
   var rightClicks$ = (0, _most.fromEvent)('contextmenu', targetEl).tap(preventDefault); // disable the context menu / right click
-  var zooms$ = (0, _most.fromEvent)('wheel', targetEl).map(_utils.normalizeWheel);
 
-  var touchStart$ = (0, _most.fromEvent)('touchstart', targetEl); // dom.touchstart(window)
-  var touchMoves$ = (0, _most.fromEvent)('touchmove', targetEl); // dom.touchmove(window)
-  var touchEnd$ = (0, _most.fromEvent)('touchend', targetEl); // dom.touchend(window)
+  var touchStart$ = (0, _most.fromEvent)('touchstart', targetEl);
+  var touchMoves$ = (0, _most.fromEvent)('touchmove', targetEl).filter(function (t) {
+    return t.touches.length === 1;
+  });
+  var touchEnd$ = (0, _most.fromEvent)('touchend', targetEl);
+
+  var gestureChange$ = (0, _most.fromEvent)('gesturechange', targetEl);
+  var gestureStart$ = (0, _most.fromEvent)('gesturestart', targetEl);
+  var gestureEnd$ = (0, _most.fromEvent)('gestureend', targetEl);
 
   var pointerDowns$ = (0, _most.merge)(mouseDowns$, touchStart$); // mouse & touch interactions starts
   var pointerUps$ = (0, _most.merge)(mouseUps$, touchEnd$); // mouse & touch interactions ends
   var pointerMoves$ = (0, _most.merge)(mouseMoves$, touchMoves$);
+
+  var zooms$ = (0, _most.merge)((0, _most.merge)(pinchZooms(gestureChange$, gestureStart$, gestureEnd$), pinchZoomsFromTouch(touchStart$, (0, _most.fromEvent)('touchmove', targetEl), touchEnd$)), (0, _most.merge)((0, _most.fromEvent)('wheel', targetEl), (0, _most.fromEvent)('DOMMouseScroll', targetEl), (0, _most.fromEvent)('mousewheel', targetEl)).map(_utils.normalizeWheel));
+
+  function preventScroll(targetEl) {
+    (0, _most.fromEvent)('mousewheel', targetEl).forEach(preventDefault);
+    (0, _most.fromEvent)('DOMMouseScroll', targetEl).forEach(preventDefault);
+    (0, _most.fromEvent)('wheel', targetEl).forEach(preventDefault);
+    (0, _most.fromEvent)('touchmove', targetEl).forEach(preventDefault);
+  }
+  preventScroll(targetEl);
 
   return {
     mouseDowns$: mouseDowns$,
@@ -16894,9 +16954,7 @@ function interactionsFromEvents(targetEl) {
 
     pointerDowns$: pointerDowns$,
     pointerUps$: pointerUps$,
-    pointerMoves$: pointerMoves$
-
-  };
+    pointerMoves$: pointerMoves$ };
 }
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
@@ -16913,7 +16971,6 @@ function mouseDrags(mouseDowns$, mouseUps, mouseMoves, settings) {
     var prevY = md.offsetY;
 
     return mouseMoves.map(function (e) {
-
       var curX = e.clientX;
       var curY = e.clientY;
 
@@ -16965,6 +17022,55 @@ function touchDrags(touchStart$, touchEnd$, touchMove$, settings) {
   });
 }
 
+function pinchZooms(gestureChange$, gestureStart$, gestureEnd$) {
+  return gestureStart$.flatMap(function (gs) {
+    return gestureChange$.map(function (x) {
+      return x.scale;
+    }).loop(function (prev, cur) {
+      return { seed: cur, value: prev ? cur - prev : prev };
+    }, undefined).filter(function (x) {
+      return x !== undefined;
+    })
+    //.map(x => x / x)
+    .takeUntil(gestureEnd$);
+  });
+}
+
+function pinchZoomsFromTouch(touchStart$, touchMoves$, touchEnd$) {
+  // for android , custom gesture handling
+  //very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
+  return touchStart$.filter(function (t) {
+    return t.touches.length === 2;
+  }).filter(isNotIos).flatMap(function (ts) {
+    return touchMoves$.tap(function (e) {
+      return e.preventDefault();
+    }).filter(function (t) {
+      return t.touches.length === 2;
+    }).filter(isNotIos).map(function (e) {
+      return (e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) + (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY);
+    }).skipRepeats()
+    // .loop((prev, cur) => ({seed: cur, value: prev && Math.abs(prev - cur) > 150 ? cur : prev}), undefined)
+    .loop(function (prev, cur) {
+      var value = void 0;
+      if (prev) {
+        var diff = Math.abs(prev - cur);
+        if (diff > 150) {
+          value = cur < prev ? -cur : cur;
+          return { seed: cur, value: value };
+        }
+      }
+      return { seed: cur };
+    }, undefined).filter(function (x) {
+      return x !== undefined;
+    }).map(function (e) {
+      var scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e));
+      return { scale: scale };
+    }).map(function (x) {
+      return x.scale * 0.0004;
+    }).takeUntil(touchEnd$);
+  });
+}
+
 /* drag move interactions press & move(continuously firing)
 */
 function dragMoves(_ref, settings) {
@@ -16977,8 +17083,8 @@ function dragMoves(_ref, settings) {
   var touchMoves$ = _ref.touchMoves$;
 
   var dragMoves$ = (0, _most.merge)(mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, settings), touchDrags(touchStart$, touchEnd$, touchMoves$, settings));
-  //.merge(merge(touchEnd$, mouseUps$).map(undefined))
-  //.tap(e=>console.log('dragMoves',e))
+  // .merge(merge(touchEnd$, mouseUps$).map(undefined))
+  // .tap(e=>console.log('dragMoves',e))
 
   // .takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
 
@@ -17159,6 +17265,7 @@ function pointerGestures(baseInteractions) {
   var multiClickDelay = 250;
   var longPressDelay = 250;
   var maxStaticDeltaSqr = 100; // max 100 pixels delta
+  var zoomMultiplier = 200; // zoomFactor for normalized interactions across browsers
 
   var settings = { multiClickDelay: multiClickDelay, longPressDelay: longPressDelay, maxStaticDeltaSqr: maxStaticDeltaSqr };
 
@@ -17168,10 +17275,13 @@ function pointerGestures(baseInteractions) {
   return {
     taps: taps$,
     dragMoves: dragMoves$,
-    zooms: baseInteractions.zooms$,
-    pointerMoves: baseInteractions.pointerMoves$ };
+    zooms: baseInteractions.zooms$.map(function (x) {
+      return x * zoomMultiplier;
+    }),
+    pointerMoves: baseInteractions.pointerMoves$
+  };
 }
-},{"./utils":193,"@most/prelude":3,"fast.js/object/assign":14,"most":117}],193:[function(require,module,exports){
+},{"./utils":194,"@most/prelude":3,"fast.js/object/assign":14,"most":117}],194:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17199,10 +17309,138 @@ function normalizeWheel(event) {
     // Firefox
     delta = -event.deltaY;
   }
-
+  delta = delta >= 0 ? 1 : -1;
   return delta;
 }
-},{}],194:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeAndroidInterface = makeAndroidInterface;
+var mobileCaller = {
+  interfaceName: 'JAMDroid',
+
+  call: function call(method) {
+    if (eval('typeof ' + this.interfaceName) !== 'undefined') {
+      new Function(this.interfaceName + '.' + method)();
+    }
+  }
+};
+
+function makeAndroidInterface() {
+  return {
+    onLoadModelError: function onLoadModelError() {
+      return mobileCaller.call('onLoadModel(false)');
+    },
+    onLoadModelSuccess: function onLoadModelSuccess() {
+      return mobileCaller.call('onLoadModel(true)');
+    },
+    onBoundsExceeded: function onBoundsExceeded() {
+      return mobileCaller.call('onBoundsExceeded()');
+    },
+    onViewerReady: function onViewerReady() {
+      return mobileCaller.call('onViewerReady()');
+    },
+    onMachineParamsError: function onMachineParamsError() {
+      return mobileCaller.call('onMachineParamsResult(false)');
+    },
+    onMachineParamsSuccess: function onMachineParamsSuccess() {
+      return mobileCaller.call('onMachineParamsResult(true)');
+    }
+  };
+}
+},{}],196:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = detectPlatform;
+function detectPlatform() {
+  var userAgent = window.navigator.userAgent.toLowerCase();
+  var safari = /safari/.test(userAgent);
+  var ios = /iphone|ipod|ipad/.test(userAgent);
+
+  if (ios) {
+    if (safari) {
+      // browser
+    } else if (!safari) {
+      // webview
+    }
+    return 'ios';
+  } else {
+    // not iOS
+    return 'android';
+  }
+}
+},{}],197:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = makeInterface;
+
+var _detector = require('./detector');
+
+var _detector2 = _interopRequireDefault(_detector);
+
+var _androidInterface = require('./androidInterface');
+
+var _iosInterface = require('./iosInterface');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// ugh , lack of dynamic loading ...
+// import { onLoadModelError as androidModelError, onLoadModelSuccess as androidModelSuccess, onBoundsExceeded as androidBoundsExceeded, onViewerReady as androidViewerReady } from './androidInterface'
+// import { onLoadModelError as IOSModelError, onLoadModelSuccess as IOSModelSuccess, onBoundsExceeded as IOSBoundsExceeded , onViewerReady as IOSViewerReady} from './iosInterface'
+function makeInterface() {
+  console.log('platform', (0, _detector2.default)());
+  var platform = (0, _detector2.default)();
+  var actions = platform === 'ios' ? (0, _iosInterface.makeIosInterface)() : (0, _androidInterface.makeAndroidInterface)();
+  return actions;
+}
+},{"./androidInterface":195,"./detector":196,"./iosInterface":198}],198:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeIosInterface = makeIosInterface;
+function callNativeApp(path, payload) {
+  try {
+    console.log('calling native app', path);
+    window.webkit.messageHandlers[path].postMessage(payload);
+  } catch (err) {
+    console.log('Not native');
+  }
+}
+
+function makeIosInterface() {
+  return {
+    onLoadModelError: function onLoadModelError() {
+      return callNativeApp('loadModel', 'error');
+    },
+    onLoadModelSuccess: function onLoadModelSuccess() {
+      return callNativeApp('loadModel', 'success');
+    },
+    onBoundsExceeded: function onBoundsExceeded() {
+      return callNativeApp('objectBounds', 'exceeded');
+    },
+    onViewerReady: function onViewerReady() {
+      return callNativeApp('viewer', 'ready');
+    },
+    onMachineParamsError: function onMachineParamsError() {
+      return callNativeApp('machineParams', 'error');
+    },
+    onMachineParamsSuccess: function onMachineParamsSuccess() {
+      return callNativeApp('machineParams', 'success');
+    }
+  };
+}
+},{}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17269,7 +17507,7 @@ var Cancel = function () {
 
   return Cancel;
 }();
-},{"most":117}],195:[function(require,module,exports){
+},{"most":117}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17323,7 +17561,7 @@ function centerGeometry(geometry, bounds, transforms) {
   transform(geometry.positions, translateMat);
   return geometry;
 }
-},{"gl-mat4":30,"gl-vec3":56}],196:[function(require,module,exports){
+},{"gl-mat4":30,"gl-vec3":56}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17361,7 +17599,7 @@ function computeTMatrixFromTransforms(params) {
 
   return transforms;
 }
-},{"gl-mat4":30}],197:[function(require,module,exports){
+},{"gl-mat4":30}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17411,7 +17649,159 @@ function model(defaults, actions, updateFunctions) {
   // .distinctUntilChanged()
   .multicast();
 }
-},{"most":117}],198:[function(require,module,exports){
+},{"most":117}],203:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = callBackToStream;
+
+var _create = require('@most/create');
+
+var _create2 = _interopRequireDefault(_create);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function callBackToStream() {
+  var addWrap = function addWrap() {};
+
+  function callbackTest(externalData) {
+    addWrap(externalData);
+  }
+  var callback = callbackTest;
+  var stream = (0, _create2.default)(function (add, end, error) {
+    addWrap = add;
+  });
+  return { stream: stream, callback: callback };
+}
+},{"@most/create":1}],204:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.default = limitFlow;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// LimtiFlow by Nathan Ridley(axefrog) from https://gist.github.com/axefrog/84ec77c5f620dab5cdb7dd61e6f1df0b
+function limitFlow(period) {
+  return function limitFlow(stream) {
+    var source = new RateLimitSource(stream.source, period);
+    return new stream.constructor(source);
+  };
+}
+
+var RateLimitSource = function () {
+  function RateLimitSource(source, period) {
+    _classCallCheck(this, RateLimitSource);
+
+    this.source = source;
+    this.period = period;
+  }
+
+  _createClass(RateLimitSource, [{
+    key: "run",
+    value: function run(sink, scheduler) {
+      return this.source.run(new RateLimitSink(this, sink, scheduler), scheduler);
+    }
+  }]);
+
+  return RateLimitSource;
+}();
+
+var RateLimitSink = function () {
+  function RateLimitSink(source, sink, scheduler) {
+    _classCallCheck(this, RateLimitSink);
+
+    this.source = source;
+    this.sink = sink;
+    this.scheduler = scheduler;
+    this.nextTime = 0;
+    this.buffered = void 0;
+  }
+
+  _createClass(RateLimitSink, [{
+    key: "_run",
+    value: function _run(t) {
+      if (this.buffered === void 0) {
+        return;
+      }
+      var x = this.buffered;
+      var now = this.scheduler.now();
+      var period = this.source.period;
+      var nextTime = this.nextTime;
+      this.buffered = void 0;
+      this.nextTime = (nextTime + period > now ? nextTime : now) + period;
+      this.sink.event(t, x);
+    }
+  }, {
+    key: "event",
+    value: function event(t, x) {
+      var nothingScheduled = this.buffered === void 0;
+      this.buffered = x;
+      var task = new RateLimitTask(this);
+      var nextTime = this.nextTime;
+      if (t >= nextTime) {
+        this.scheduler.asap(task);
+      } else if (nothingScheduled) {
+        var interval = this.nextTime - this.scheduler.now();
+        this.scheduler.delay(interval, new RateLimitTask(this));
+      }
+    }
+  }, {
+    key: "end",
+    value: function end(t, x) {
+      this._run(t);
+      this.sink.end(t, x);
+    }
+  }, {
+    key: "error",
+    value: function error(t, e) {
+      this.sink.error(t, e);
+    }
+  }]);
+
+  return RateLimitSink;
+}();
+
+var RateLimitTask = function () {
+  function RateLimitTask(sink) {
+    _classCallCheck(this, RateLimitTask);
+
+    this.sink = sink;
+  }
+
+  _createClass(RateLimitTask, [{
+    key: "run",
+    value: function run(t) {
+      if (this.disposed) {
+        return;
+      }
+      this.sink._run(t);
+    }
+  }, {
+    key: "error",
+    value: function error(t, e) {
+      if (this.disposed) {
+        return;
+      }
+      this.sink.error(t, e);
+    }
+  }, {
+    key: "dispose",
+    value: function dispose() {
+      this.disposed = true;
+    }
+  }]);
+
+  return RateLimitTask;
+}();
+},{}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17433,7 +17823,22 @@ function offsetTransformsByBounds(transforms, bounds) {
   var offsetPos = [0.5 * (bounds.max[0] - bounds.min[0]) * axes[0] + pos[0], 0.5 * (bounds.max[1] - bounds.min[1]) * axes[1] + pos[1], 0.5 * (bounds.max[2] - bounds.min[2]) * axes[2] + pos[2]];
   return Object.assign({}, transforms, { pos: offsetPos });
 }
-},{}],199:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatRawMachineData;
+function formatRawMachineData(rawData) {
+  return {
+    machine_volume: [rawData.machine_width, rawData.machine_depth, rawData.machine_height],
+    machine_head_with_fans_polygon: [], // rawData.machine_head_with_fans_polygon.default_value,
+    machine_disallowed_areas: [], // rawData.machine_disallowed_areas.default_value,
+    printable_area: rawData.printable_area
+  };
+}
+},{}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17502,7 +17907,7 @@ function drawCuboid(regl, params) {
     }
   });
 }
-},{"gl-mat4":30}],200:[function(require,module,exports){
+},{"gl-mat4":30}],208:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17563,16 +17968,20 @@ function drawCuboidFromCoords(regl, params) {
       mask: false,
       func: 'less',
       range: [0, 1]
+    },
+    cull: {
+      enable: true,
+      face: 'front'
     }
   });
 }
-},{"gl-mat4":30}],201:[function(require,module,exports){
+},{"gl-mat4":30}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = Encl;
+exports.default = makeDrawEnclosure;
 
 var _index = require('./drawGrid/index');
 
@@ -17590,83 +17999,75 @@ var _index7 = require('./drawCuboidFromCoords/index');
 
 var _index8 = _interopRequireDefault(_index7);
 
-var _computeTMatrixFromTransforms = require('../../../common/utils/computeTMatrixFromTransforms');
+var _computeTMatrixFromTransforms = require('../../common/utils/computeTMatrixFromTransforms');
 
 var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Encl(regl, params) {
-  var machine_disallowed_areas = [[[-91.5, -115], [-115, -115], [-115, -104.6], [-91.5, -104.6]], [[-99.5, -104.6], [-115, -104.6], [-115, 104.6], [-99.5, 104.6]], [[-94.5, 104.6], [-115, 104.6], [-115, 105.5], [-94.5, 105.5]], [[-91.4, 105.5], [-115, 105.5], [-115, 115], [-91.4, 115]], [[77.3, -115], [77.3, -98.6], [115, -98.6], [115, -115]], [[97.2, -98.6], [97.2, -54.5], [113, -54.5], [113, -98.6]], [[100.5, -54.5], [100.5, 99.3], [115, 99.3], [115, -54.5]], [[77, 99.3], [77, 115], [115, 115], [115, 99.3]]];
-  var machine_volume = [213, 220, 350];
+function makeDrawEnclosure(regl, params) {
+  var machine_disallowed_areas = params.machine_disallowed_areas;
+  var machine_volume = params.machine_volume;
 
   // generate a dynamic uniform from the data above
-  var dynDisalowerAreasUniform = machine_disallowed_areas.map(function (area) {
-    return '[' + area.map(function (a) {
-      return 'vec2(' + a[0] + ', ' + a[1] + ')';
-    }).join(',') + ']';
+
+  var dynDisalowerAreasUniform = machine_disallowed_areas.map(function (area, index) {
+    var def = 'vec2 disArea_' + index + '[' + area.length + ']\n';
+    var asgnments = area.map(function (a, i) {
+      return 'disArea_' + index + '[' + i + '] = vec2(' + a[0] + ', ' + a[1] + ')\n';
+    }); // '[' + area.map(a => `vec2(${a[0]}, ${a[1]})`).join(',') + ']'
+    return def + asgnments;
   });
-  console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform);
-  // ``
+  // console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform)
+  // vec2 foo[1]
+  // foo[0] = vec2(0.,1.)
+  // foo[1] = vec2(1.,0.)
 
   // const mGridSize = [21.3, 22]
-  var _drawGrid = (0, _index2.default)(regl, { size: machine_volume, ticks: 50, centered: true });
-
-  // infinite grid
-  var gridSize = [2200, 2000]; // size of 'infinite grid'
-  var _drawInfiniGrid = (0, _index2.default)(regl, { size: gridSize, ticks: 10, infinite: true });
-  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -1.4] });
+  var drawGrid = (0, _index2.default)(regl, { size: machine_volume, ticks: 50, centered: true });
+  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.2] });
 
   var triSize = { width: 50, height: 20 };
-  var _drawTri = (0, _index4.default)(regl, { width: triSize.width, height: triSize.height });
-  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, machine_volume[0] * 0.5, 0.5] });
+  var drawTri = (0, _index4.default)(regl, { width: triSize.width, height: triSize.height });
+  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, machine_volume[1] * 0.5, 0.5] });
 
-  var containerSize = [machine_volume[1], machine_volume[0], machine_volume[2]];
-  var _drawCuboid = (0, _index6.default)(regl, { size: containerSize });
+  var containerSize = [machine_volume[0], machine_volume[1], machine_volume[2]];
+  var drawCuboid = (0, _index6.default)(regl, { size: containerSize });
   var containerCuboidMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, machine_volume[2] * 0.5] });
 
   var dissalowedVolumes = machine_disallowed_areas.map(function (area) {
-    return (0, _index8.default)(regl, { height: 350, coords: area });
+    return (0, _index8.default)(regl, { height: machine_volume[2], coords: area });
   });
 
   return function (_ref) {
     var view = _ref.view;
     var camera = _ref.camera;
 
-    _drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1], model: gridOffset });
-
-    _drawGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1] });
-
-    _drawTri({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: triMatrix });
-    _drawCuboid({ view: view, camera: camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix });
-
+    drawGrid({ view: view, camera: camera, color: [0, 0, 0, 0.2], model: gridOffset });
+    drawTri({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: triMatrix });
+    drawCuboid({ view: view, camera: camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix });
     // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
   };
 }
-},{"../../../common/utils/computeTMatrixFromTransforms":196,"./drawCuboid/index":199,"./drawCuboidFromCoords/index":200,"./drawGrid/index":202,"./drawTri/index":204}],202:[function(require,module,exports){
+},{"../../common/utils/computeTMatrixFromTransforms":201,"./drawCuboid/index":207,"./drawCuboidFromCoords/index":208,"./drawGrid/index":210,"./drawTri/index":213}],210:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = drawGrid;
+exports.default = prepareDrawGrid;
 
 var _glMat = require('gl-mat4');
 
 var _glMat2 = _interopRequireDefault(_glMat);
 
-var _angleNormals = require('angle-normals');
-
-var _angleNormals2 = _interopRequireDefault(_angleNormals);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
  // works in client & server
-function drawGrid(regl) {
+function prepareDrawGrid(regl) {
   var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   var positions = [];
-  console.log('making grid');
   var infinite = params.infinite || false;
   var centered = params.centered || false;
 
@@ -17683,7 +18084,6 @@ function drawGrid(regl) {
     var halfWidth = width * 0.5;
     var halfLength = length * 0.5;
 
-    // const foo = halfWidth/ticks
     var remWidth = halfWidth % ticks;
     var widthStart = -halfWidth + remWidth;
     var widthEnd = -widthStart;
@@ -17691,7 +18091,6 @@ function drawGrid(regl) {
     var remLength = halfLength % ticks;
     var lengthStart = -halfLength + remLength;
     var lengthEnd = -lengthStart;
-    console.log('remWidth', remWidth);
 
     for (var i = widthStart; i <= widthEnd; i += ticks) {
       positions.push(lengthStart, i, 0);
@@ -17747,16 +18146,67 @@ function drawGrid(regl) {
       face: 'front'
     },
     polygonOffset: {
-      enable: false,
+      enable: true,
       offset: {
         factor: 1,
-        units: Math.random()
+        units: Math.random() * 10
       }
     }
 
   });
 }
-},{"angle-normals":5,"gl-mat4":30}],203:[function(require,module,exports){
+},{"gl-mat4":30}],211:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = drawPrintheadShadow;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function drawPrintheadShadow(regl, params) {
+  var width = params.width;
+  var length = params.length;
+
+  var halfWidth = width * 0.5;
+  var halfLength = length * 0.5;
+
+  return regl({
+    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position, normal;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n fragNormal = normal;\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    attributes: {
+      position: [-halfWidth, -halfLength, 0, halfWidth, -halfLength, 0, halfWidth, halfLength, 0, -halfWidth, halfLength, 0],
+      normal: [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1]
+    },
+    elements: [0, 1, 3, 3, 1, 2],
+    // count: 4,
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: regl.prop('color')
+    },
+    cull: {
+      enable: true,
+      face: 'back'
+    },
+    polygonOffset: {
+      enable: true,
+      offset: {
+        factor: 1,
+        units: Math.random() * 10
+      }
+    }
+  });
+}
+},{"gl-mat4":30}],212:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17778,14 +18228,17 @@ function drawMesh(regl) {
   var geometry = params.geometry;
 
   var commandParams = {
-    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position, normal;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  gl_Position = projection * view * worldSpacePosition;\n}\n",
-    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvoid main () {\n  //vec2 foo[1] ;\n  //foo[0] = vec2(0.,1.);\n  //foo[1] = vec2(1.,0.);\n\n  vec3 ambient = ambientLightAmount * color.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * color.rgb * clamp(cosTheta , 0.0, 1.0 );\n\n  float v = 0.8; // shadow value\n  gl_FragColor = vec4((ambient + diffuse * v), 1.);\n}\n",
+    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position, normal;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvarying vec4 _worldSpacePosition;\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  _worldSpacePosition = worldSpacePosition;\n  gl_Position = projection * view * worldSpacePosition;\n}\n",
+    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvarying vec4 _worldSpacePosition;\n\nuniform vec2 printableArea;\n\nvec4 errorColor = vec4(0.15, 0.15, 0.15, 0.3);//vec4(0.15, 0.15, 0.15, 0.3);\n\nvoid main () {\n  vec4 depth = gl_FragCoord;\n\n  float v = 0.8; // shadow value\n  vec4 endColor = color;\n\n  //if anything is outside the printable area, shade differently\n  /*if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){\n    endColor = errorColor;\n  }\n  if(_worldSpacePosition.y>printableArea.y*0.5 || _worldSpacePosition.y<printableArea.y*-0.5) {\n    endColor = errorColor;\n  }*/\n\n  vec3 ambient = ambientLightAmount * endColor.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * endColor.rgb * clamp(cosTheta , 0.0, 1.0 );\n  gl_FragColor = vec4((ambient + diffuse * v), endColor.a);\n}\n",
 
     uniforms: {
       model: function model(context, props) {
         return props.model || _glMat2.default.identity([]);
       },
-      color: prop('color')
+      color: prop('color'),
+      printableArea: function printableArea(context, props) {
+        return props.printableArea || [0, 0];
+      }
     },
     attributes: {
       position: buffer(geometry.positions)
@@ -17807,10 +18260,9 @@ function drawMesh(regl) {
   }
   // Splice in any extra params
   commandParams = Object.assign({}, commandParams, params.extras);
-  console.log('commandParams', commandParams);
   return regl(commandParams);
 }
-},{"gl-mat4":30}],204:[function(require,module,exports){
+},{"gl-mat4":30}],213:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17841,11 +18293,7 @@ function drawTri(regl, params) {
       model: function model(context, props) {
         return props.model || _glMat2.default.identity([]);
       },
-      color: regl.prop('color'),
-      angle: function angle(_ref) {
-        var tick = _ref.tick;
-        return 0.01 * tick;
-      }
+      color: regl.prop('color')
     },
     cull: {
       enable: false,
@@ -17853,58 +18301,87 @@ function drawTri(regl, params) {
     }
   });
 }
-},{"gl-mat4":30}],205:[function(require,module,exports){
+},{"gl-mat4":30}],214:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = prepareRenderAlt;
+exports.default = prepareRender;
 
-var _wrapperScope2 = require('./wrapperScope2');
+var _wrapperScope = require('./wrapperScope');
 
-var _wrapperScope3 = _interopRequireDefault(_wrapperScope2);
+var _wrapperScope2 = _interopRequireDefault(_wrapperScope);
 
-var _drawEncl = require('./drawEncl');
+var _drawPrintheadShadow = require('./drawPrintheadShadow');
 
-var _drawEncl2 = _interopRequireDefault(_drawEncl);
+var _drawPrintheadShadow2 = _interopRequireDefault(_drawPrintheadShadow);
+
+var _computeTMatrixFromTransforms = require('../../common/utils/computeTMatrixFromTransforms');
+
+var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
+
+var _index = require('./drawGrid/index');
+
+var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var tick = 0;
+function prepareRender(regl, params) {
+  var wrapperScope = (0, _wrapperScope2.default)(regl);
+  var tick = 0;
 
-function prepareRenderAlt(regl) {
-  var _wrapperScope = (0, _wrapperScope3.default)(regl);
-
-  var drawEncl = (0, _drawEncl2.default)(regl);
+  // infine grid, always there
+  // infinite grid
+  var gridSize = [1220, 1200]; // size of 'infinite grid'
+  var drawInfiniGrid = (0, _index2.default)(regl, { size: gridSize, ticks: 10, infinite: true });
+  var infiniGridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.4] });
 
   var command = function command(props) {
+    var entities = props.entities;
+    var machine = props.machine;
     var camera = props.camera;
     var view = props.view;
-    var entities = props.entities;
     var background = props.background;
+    var outOfBoundsColor = props.outOfBoundsColor;
 
 
-    _wrapperScope(props, function (context) {
+    wrapperScope(props, function (context) {
       regl.clear({
         color: background,
         depth: 1
       });
-      entities.map(function (e) {
-        return e.visuals.draw({ view: view, camera: camera, color: e.visuals.color, model: e.modelMat });
+      drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1], model: infiniGridOffset });
+
+      entities.map(function (entity) {
+        //use this for colors that change outside build area
+        //const color = entity.visuals.color
+        //const printableArea = machine ? machine.params.printable_area : [0, 0]
+        //this one for single color for outside bounds
+        var color = entity.bounds.outOfBounds ? outOfBoundsColor : entity.visuals.color;
+        var printableArea = undefined;
+
+        entity.visuals.draw({ view: view, camera: camera, color: color, model: entity.modelMat, printableArea: printableArea });
       });
-      drawEncl(props);
+
+      if (machine) {
+        machine.draw({ view: view, camera: camera });
+      }
+
+      /*entities.map(function (entity) {
+        const {pos} = entity.transforms
+        const offset = pos[2]-entity.bounds.size[2]*0.5
+        const model = _model({pos: [pos[0], pos[1], -0.1]})
+        const headSize = [100,60]
+        const width = entity.bounds.size[0]+headSize[0]
+        const length = entity.bounds.size[1]+headSize[1]
+         return makeDrawPrintheadShadow(regl, {width,length})({view, camera, model, color: [0.1, 0.1, 0.1, 0.15]})
+      })*/
     });
   };
 
-  return function renderAlt(data) {
-    var camera = data.camera;
-    var entities = data.entities;
-    var background = data.background;
-    var view = camera.view;
-
-
-    command({ camera: camera, view: view, entities: entities, background: background });
+  return function render(data) {
+    command(data);
 
     // boilerplate etc
     tick += 0.01;
@@ -17913,7 +18390,7 @@ function prepareRenderAlt(regl) {
     return;
   };
 }
-},{"./drawEncl":201,"./wrapperScope2":206}],206:[function(require,module,exports){
+},{"../../common/utils/computeTMatrixFromTransforms":201,"./drawGrid/index":210,"./drawPrintheadShadow":211,"./wrapperScope":215}],215:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17955,7 +18432,7 @@ function wrapperScope(regl) {
         return props.view;
       },
       projection: function projection(context, props) {
-        return _glMat2.default.perspective([], Math.PI / 4, context.viewportWidth / context.viewportHeight, 0.1, 10000);
+        return _glMat2.default.perspective([], Math.PI / 4, context.viewportWidth / context.viewportHeight, 10, 10000);
       }
     },
     framebuffer: fbo
@@ -17964,34 +18441,13 @@ function wrapperScope(regl) {
   commandParams = Object.assign({}, commandParams, params.extras);
   return regl(commandParams);
 }
-},{"gl-mat4":30}],207:[function(require,module,exports){
+},{"gl-mat4":30}],216:[function(require,module,exports){
 'use strict';
 
-var _index = require('./drawCommands/alternative/drawStaticMesh2/index');
-
-var _index2 = _interopRequireDefault(_index);
-
-var _main = require('./drawCommands/alternative/main');
-
-var _main2 = _interopRequireDefault(_main);
-
-var _orbitControls = require('../common/controls/orbitControls');
-
-var _camera = require('../common/camera');
-
-var _camera2 = _interopRequireDefault(_camera);
-
-var _create = require('@most/create');
-
-var _create2 = _interopRequireDefault(_create);
-
-var _most = require('most');
-
-var _loader = require('./loader');
-
-var _loader2 = _interopRequireDefault(_loader);
-
-var _uscoStlParser = require('usco-stl-parser');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = entityPrep;
 
 var _centerGeometry = require('../common/utils/centerGeometry');
 
@@ -18001,13 +18457,87 @@ var _offsetTransformsByBounds = require('../common/utils/offsetTransformsByBound
 
 var _offsetTransformsByBounds2 = _interopRequireDefault(_offsetTransformsByBounds);
 
+var _prepPipeline = require('./prepPipeline');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function entityPrep(rawGeometry$) {
+  var addedEntities$ = rawGeometry$.map(function (geometry) {
+    return {
+      transforms: { pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1] }, // [0.2, 1.125, 1.125]},
+      geometry: geometry,
+      visuals: {
+        type: 'mesh',
+        visible: true,
+        color: [0.02, 0.7, 1, 1] // 07a9ff [1, 1, 0, 0.5],
+      },
+      meta: { id: 0 } };
+  }).map(_prepPipeline.injectNormals).map(_prepPipeline.injectBounds).map(function (data) {
+    var geometry = (0, _centerGeometry2.default)(data.geometry, data.bounds, data.transforms);
+    return Object.assign({}, data, { geometry: geometry });
+  }).map(function (data) {
+    var transforms = Object.assign({}, data.transforms, (0, _offsetTransformsByBounds2.default)(data.transforms, data.bounds));
+    var entity = Object.assign({}, data, { transforms: transforms });
+    return entity;
+  }).map(_prepPipeline.injectBounds) // we need to recompute bounds based on changes above
+  .map(_prepPipeline.injectTMatrix).tap(function (entity) {
+    return console.log('entity done processing', entity);
+  }).multicast();
+
+  return addedEntities$;
+} // helpers
+},{"../common/utils/centerGeometry":200,"../common/utils/offsetTransformsByBounds":205,"./prepPipeline":219}],217:[function(require,module,exports){
+'use strict';
+
+var _render = require('./drawCommands/render');
+
+var _render2 = _interopRequireDefault(_render);
+
+var _orbitControls = require('../common/controls/orbitControls');
+
+var _camera = require('../common/camera');
+
+var _camera2 = _interopRequireDefault(_camera);
+
+var _most = require('most');
+
+var _limitFlow = require('../common/utils/most/limitFlow');
+
+var _limitFlow2 = _interopRequireDefault(_limitFlow);
+
+var _loader = require('./loader');
+
+var _loader2 = _interopRequireDefault(_loader);
+
 var _controlsStream = require('../common/controls/controlsStream');
 
 var _controlsStream2 = _interopRequireDefault(_controlsStream);
 
 var _pointerGestures = require('../common/interactions/pointerGestures');
 
-var _prepPipeline = require('./prepPipeline');
+var _adressBarDriver = require('./sideEffects/adressBarDriver');
+
+var _adressBarDriver2 = _interopRequireDefault(_adressBarDriver);
+
+var _isObjectOutsideBounds = require('../common/bounds/isObjectOutsideBounds');
+
+var _isObjectOutsideBounds2 = _interopRequireDefault(_isObjectOutsideBounds);
+
+var _entityPrep = require('./entityPrep');
+
+var _entityPrep2 = _interopRequireDefault(_entityPrep);
+
+var _state = require('./state');
+
+var _visualState = require('./visualState');
+
+var _interface = require('../common/mobilePlatforms/interface');
+
+var _interface2 = _interopRequireDefault(_interface);
+
+var _nativeApiDriver = require('./sideEffects/nativeApiDriver');
+
+var _nativeApiDriver2 = _interopRequireDefault(_nativeApiDriver);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18017,196 +18547,117 @@ var reglM = require('regl');
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 
-// helpers
 
-//import pickStream from '../common/picking/pickStream'
+// interactions
+
+// import pickStream from '../common/picking/pickStream'
 
 /* --------------------- */
 
-console.log('here');
 
-// this is a pseudo cycle.js driver of course
-var adressBarDriver = (0, _create2.default)(function (add, end, error) {
-  var url = window.location.href;
+// basic api
 
-  function getParam(name, url) {
-    if (!url) url = location.href;
-    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-    var regexS = '[\\?&]' + name + '=([^&#]*)';
-    var regex = new RegExp(regexS);
-    var results = regex.exec(url);
-    return results == null ? null : results[1];
-  }
-  var params = getParam('modelUrl', url);
-  add(params);
-});
+// ////////////
+var _makeInterface = (0, _interface2.default)();
 
-var parsedSTLStream = adressBarDriver.filter(function (x) {
-  return x !== null;
-}).delay(200).flatMap(function (url) {
-  return (0, _create2.default)(function (add, end, error) {
-    (0, _loader2.default)(url).pipe((0, _uscoStlParser.concatStream)(function (data) {
-      return add(data);
-    }));
-  });
-}).flatMapError(function (error) {
-  console.error('ERROR in loading mesh file !!', error);
-  return undefined;
-}).filter(function (x) {
-  return x !== undefined;
-});
+var onLoadModelError = _makeInterface.onLoadModelError;
+var onLoadModelSuccess = _makeInterface.onLoadModelSuccess;
+var onBoundsExceeded = _makeInterface.onBoundsExceeded;
+var onViewerReady = _makeInterface.onViewerReady;
+var onMachineParamsError = _makeInterface.onMachineParamsError;
+var onMachineParamsSuccess = _makeInterface.onMachineParamsSuccess;
+
+var nativeApi = (0, _nativeApiDriver2.default)();
 
 var regl = reglM({
-  extensions: ['oes_texture_float'],
-
+  extensions: [
+    //  'oes_texture_float', // FIXME: for shadows, is it widely supported ?
+    // 'EXT_disjoint_timer_query'// for gpu benchmarking only
+  ],
   profile: true
 });
-/*canvas: container,
-  drawingBufferWidth: container.offsetWidth,
-  drawingBufferHeight: container.offsetHeight})*/ // for editor
+
 var container = document.querySelector('canvas');
-// const container = document.querySelector('#drawHere')
-
-var frame = regl.frame;
-var clear = regl.clear;
-
 /* --------------------- */
-
 /* Pipeline:
   - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
   - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
   - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
 */
-/*
-import { bunnyData, bunnyData2, bunnyData3, sceneData } from '../common/data'
-import makeGrid from './grid'
-import makeShadowPlane from './shadowPlane'
-import makeTransformGizmo from './transformsGizmo'
-// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/multipassGlow'
-// import { draw as _draw, makeDrawCalls } from './drawCommands/alternative/basic'
-//import { draw as _draw, makeDrawCalls, generateDrawFnForEntity } from './draw'
 
-const grid = makeGrid({size: [16, 16], ticks: 1})
-const gizmo = makeTransformGizmo()
-const shadowPlane = makeShadowPlane(160)
+// ///////
+var modelUri$ = (0, _most.merge)(_adressBarDriver2.default, nativeApi.modelUri$).flatMapError(function (error) {
+  // console.log('error', error)
+  onLoadModelError(error);
+  return (0, _most.just)(null);
+}).filter(function (x) {
+  return x !== null;
+}).multicast();
 
-function flatten (arr) {
-  return arr.reduce(function (a, b) {
-    return a.concat(b)
-  }, [])
-}
+var setMachineParams$ = (0, _most.merge)(nativeApi.machineParams$).flatMapError(function (error) {
+  // console.log('error', error)
+  onMachineParamsError(error);
+  return (0, _most.just)(null);
+}).filter(function (x) {
+  return x !== null;
+}).tap(function (e) {
+  return onMachineParamsSuccess(true);
+}).multicast();
 
-let fullData = {
-  scene: sceneData,
-  entities: flatten([bunnyData, bunnyData2, bunnyData3, grid, shadowPlane, ]) // gizmo])
-}
-
-// apply all changes
-fullData.entities = fullData.entities
-  .map(injectBounds)
-  .map(injectTMatrix)
-  .map(injectNormals)
-
-// inject bactching/rendering data
-const {hashStore, entities} = makeDrawCalls(regl, fullData)
-fullData.entities = entities
-
-// const drawModel = _drawModel.bind(null, regl)
-//const draw = _draw.bind(null, regl)
-// ============================================
-// main render function: data in, rendered frame out
-function render (data) {
-  //draw(hashStore, data)
-}
-
-// render one frame
-// render(fullData)
-
-
-// interactions : picking
-const picks$ = pickStream({gestures}, fullData)
-  .tap(e => console.log('picks', e))
-
-const selections$ = just(fullData.entities)
-  .map(function (x) {
-    return x.filter(x => 'meta' in x).filter(x => x.meta.selected)
-  })
-  .startWith([])
-  .merge(picks$)
-  .scan((acc, cur) => {
-  }, [])
-  .filter(x => x !== undefined)
-  .forEach(e => console.log('selections', e))
-
-function upsertCameraState (cameraState) {
-  let data = fullData
-  data.camera = cameraState
-  return data
-}
-
-// FIXME ! this is a hack, just for testing, also , imperative
-
-function setSelection ({entity}) {
-  console.log('setting seletion')
-  entity.meta.selected = !entity.meta.selected
-  return entity
-}
-
-const stateWithCameraState$ = camState$
-  .map(upsertCameraState)
-
-const stateWithSelectionState$ = picks$
-  .map(x => x.map(setSelection))
-  .map(e => fullData)
-
-// merge all the things that should trigger a re-render
-merge(
-  stateWithCameraState$,
-  stateWithSelectionState$
-)
-// .forEach(render)
-*/
+var parsedSTL$ = modelUri$.flatMap(_loader2.default).flatMapError(function (error) {
+  onLoadModelError(error);
+  return (0, _most.just)(undefined);
+}).filter(function (x) {
+  return x !== undefined;
+}).multicast();
 
 // interactions : camera controls
-
 var baseInteractions$ = (0, _pointerGestures.interactionsFromEvents)(container);
 var gestures = (0, _pointerGestures.pointerGestures)(baseInteractions$);
 var camState$ = (0, _controlsStream2.default)({ gestures: gestures }, { settings: _orbitControls.params, camera: _camera2.default });
 
-var renderAlt = (0, _main2.default)(regl);
+var render = (0, _render2.default)(regl);
+var addEntities$ = (0, _entityPrep2.default)(parsedSTL$);
+var setEntityBoundsStatus$ = (0, _most.merge)(setMachineParams$, addEntities$.sample(function (x) {
+  return x;
+}, setMachineParams$));
 
-var addedEntities$ = parsedSTLStream.map(function (geometry) {
-  return {
-    transforms: { pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1] }, //[0.2, 1.125, 1.125]},
-    geometry: geometry,
-    visuals: {
-      type: 'mesh',
-      visible: true,
-      color: [0.02, 0.7, 1, 1] // 07a9ff [1, 1, 0, 0.5],
-    },
-    meta: { id: 'FOOO' } };
-}).map(_prepPipeline.injectNormals).map(_prepPipeline.injectBounds).map(function (data) {
-  // console.log('preping drawCall')
-  var geometry = (0, _centerGeometry2.default)(data.geometry, data.bounds, data.transforms);
-  var draw = (0, _index2.default)(regl, { geometry: geometry }); // one command per mesh, but is faster
-  var visuals = Object.assign({}, data.visuals, { draw: draw });
-  var entity = Object.assign({}, data, { visuals: visuals }); // Object.assign({}, data, {visuals: {draw}})
-  return entity;
-}).map(function (data) {
-  var transforms = Object.assign({}, data.transforms, (0, _offsetTransformsByBounds2.default)(data.transforms, data.bounds));
-  var entity = Object.assign({}, data, { transforms: transforms });
-  return entity;
-}).map(_prepPipeline.injectTMatrix);
-//.tap(entity => console.log('entity done processing', entity))
-camState$.map(function (camera) {
-  return { entities: [], camera: camera, background: [1, 1, 1, 1] };
-}) // initial / empty state
-.merge((0, _most.combine)(function (camera, entity) {
-  return { entities: [entity], camera: camera, background: [1, 1, 1, 1] };
-}, camState$, addedEntities$)).forEach(function (x) {
-  return renderAlt(x);
+var entities$ = (0, _state.makeEntitiesModel)({ addEntities: addEntities$, setEntityBoundsStatus: setEntityBoundsStatus$ });
+var machine$ = (0, _state.makeMachineModel)({ setMachineParams: setMachineParams$ });
+
+var appState$ = (0, _state.makeState)(machine$, entities$);
+
+var visualState$ = (0, _visualState.makeVisualState)(regl, machine$, entities$, camState$).thru((0, _limitFlow2.default)(33)).flatMapError(function (error) {
+  console.error('error in rendering', error);
+  return (0, _most.just)(null);
+}).filter(function (x) {
+  return x !== null;
+}).tap(function (x) {
+  return regl.poll();
+}).forEach(function (x) {
+  return render(x);
 });
-},{"../common/camera":189,"../common/controls/controlsStream":190,"../common/controls/orbitControls":191,"../common/interactions/pointerGestures":192,"../common/utils/centerGeometry":195,"../common/utils/offsetTransformsByBounds":198,"./drawCommands/alternative/drawStaticMesh2/index":203,"./drawCommands/alternative/main":205,"./loader":208,"./prepPipeline":209,"@most/create":1,"most":117,"regl":149,"usco-stl-parser":176}],208:[function(require,module,exports){
+
+// boundsExceeded
+var boundsExceeded$ = (0, _most.combine)(function (entity, machineParams) {
+  // console.log('boundsExceeded', entity, machineParams)
+  return (0, _isObjectOutsideBounds2.default)(machineParams, entity);
+}, addEntities$, setMachineParams$)
+// .map((entity) => isObjectOutsideBounds(machineParams, entity))
+.tap(function (e) {
+  return console.log('outOfBounds??', e);
+}).filter(function (x) {
+  return x === true;
+});
+
+onViewerReady();
+
+// OUTPUTS (sink side effects)
+addEntities$.forEach(function (m) {
+  return onLoadModelSuccess();
+}); // side effect => dispatch to callback)
+boundsExceeded$.forEach(onBoundsExceeded);
+},{"../common/bounds/isObjectOutsideBounds":189,"../common/camera":190,"../common/controls/controlsStream":191,"../common/controls/orbitControls":192,"../common/interactions/pointerGestures":193,"../common/mobilePlatforms/interface":197,"../common/utils/most/limitFlow":204,"./drawCommands/render":214,"./entityPrep":216,"./loader":218,"./sideEffects/adressBarDriver":220,"./sideEffects/nativeApiDriver":221,"./state":222,"./visualState":223,"most":117,"regl":149}],218:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -18226,32 +18677,46 @@ var _fetchReadablestream = require('fetch-readablestream');
 
 var _fetchReadablestream2 = _interopRequireDefault(_fetchReadablestream);
 
+var _create = require('@most/create');
+
+var _create2 = _interopRequireDefault(_create);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //import XhrStream from 'xhr-stream'
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//require("web-streams-polyfill/dist/polyfill.min.js")
-//import 'whatwg-fetch'
-//import { ReadableStream } from "web-streams-polyfill"
-
+// import XhrStream from 'xhr-stream'
+// require("web-streams-polyfill/dist/polyfill.min.js")
+// import 'whatwg-fetch'
+// import { ReadableStream } from "web-streams-polyfill"
 
 var Duplex = require('stream').Duplex;
 var Readable = require('stream').Readable;
 
-function loadTest(uri) {
-  console.log('trying to load');
-  /*const xhr = new XMLHttpRequest()
-  // xhr.responseType = 'arraybuffer'
-  xhr.open('GET', uri, true)
-  const xhrStream = new XhrStream(xhr)*/
+function supportsXhrResponseType(type) {
+  try {
+    var tmpXhr = new XMLHttpRequest();
+    tmpXhr.responseType = type;
+    return tmpXhr.responseType === type;
+  } catch (e) {/* IE throws on setting responseType to an unsupported value */}
+  return false;
+}
 
+function supportsStreaming() {
+  var fetchSupport = typeof Response !== 'undefined' && Response.prototype.hasOwnProperty('body');
+  var mozChunkSupport = supportsXhrResponseType('moz-chunked-arraybuffer');
+  return fetchSupport || mozChunkSupport;
+}
+
+function loadTest(uri) {
+  //console.log(`loading model from: ${uri}`)
   var stlStream = (0, _uscoStlParser2.default)({ useWorker: true });
 
-  var foo = new Duplex({
+  var debugHelper = new Duplex({
     read: function read() {
       console.log('reading');
     },
@@ -18272,37 +18737,67 @@ function loadTest(uri) {
       var reader = void 0;
       var self = _this;
       var finish = function finish() {
-        self.emit('finish');
+        return self.emit('finish');
       };
       var end = function end() {
-        self.emit('end');
+        return self.emit('end');
       };
-      //const push = (data) => self.push(data)
-      var push = _this.push.bind(_this);
-      //const finish = this.emit.bind(this)
+      var push = function push(data) {
+        return self.push(data);
+      };
+      var emitError = function emitError(error) {
+        self.emit('error', error);
+      };
 
-      //console.log('push', push)
-      //console.log('end', end)
-      //console.log('finish', finish)
       var process = function process(data) {
         var value = data.value;
         var done = data.done;
-        //console.log('SOURCE chunk', data , value, done)
+        // console.log('SOURCE chunk', data , value, done)
 
         if (done) {
-          finish();
+          // finish()
           end();
         } else {
           push(Buffer(value));
-          return reader.read().then(process);
+          return reader.read().then(process).catch(function (e) {
+            return emitError(e);
+          });
         }
       };
-      (0, _fetchReadablestream2.default)(uri).then(function (response) {
-        reader = response.body.getReader();
-        reader.read().then(process);
-      }).catch(function (e) {
-        return console.log('error reading', e);
-      });
+
+      function streams() {
+        (0, _fetchReadablestream2.default)(uri).then(function (response) {
+          reader = response.body.getReader();
+          reader.read().then(process);
+        }).catch(function (e) {
+          emitError(e);
+        });
+      }
+
+      function noStreams() {
+        function onLoad(e) {
+          var value = e.target.response;
+          push(Buffer(value));
+          setTimeout(end, 0.0001); // don't call end directly !
+        }
+
+        function onError(e) {
+          emitError(e);
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'arraybuffer';
+        xhr.addEventListener('load', onLoad);
+        xhr.addEventListener('error', onError);
+        xhr.open('GET', uri, true);
+        xhr.send();
+      }
+
+      if (supportsStreaming()) {
+        streams();
+      } else {
+        noStreams();
+      }
       // if (!this.push(chunk)){
       // }
       return _this;
@@ -18311,18 +18806,30 @@ function loadTest(uri) {
     _createClass(HttpSourceStream, [{
       key: '_read',
       value: function _read(size) {
-        //console.log('_read')
-        //signal the source that it can start again
+        // console.log('_read')
+        // signal the source that it can start again
       }
     }]);
 
     return HttpSourceStream;
   }(Readable);
+  // return HttpSourceStream(uri).pipe(makeStlStream({useWorker: true}))
 
-  return new HttpSourceStream(uri).pipe((0, _uscoStlParser2.default)({ useWorker: true }));
+
+  return (0, _create2.default)(function (add, end, error) {
+    function streamErrorHandler(_error) {
+      // console.log('error in load stream')
+      error(_error);
+    }
+
+    new HttpSourceStream(uri).on('error', streamErrorHandler).pipe((0, _uscoStlParser2.default)({ useWorker: true })).on('error', streamErrorHandler).pipe((0, _uscoStlParser.concatStream)(function (data) {
+      return add(data);
+    })).on('error', streamErrorHandler);
+    // FIXME: TODO: add error handling here
+  });
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":9,"fetch-readablestream":16,"stream":150,"usco-stl-parser":176}],209:[function(require,module,exports){
+},{"@most/create":1,"buffer":9,"fetch-readablestream":16,"stream":150,"usco-stl-parser":176}],219:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18350,7 +18857,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function injectBounds(entity) {
   var bounds = (0, _computeBounds2.default)(entity);
   var result = Object.assign({}, entity, { bounds: bounds });
-  console.log('data with bounds', result);
+  //console.log('data with bounds', result)
   return result;
 }
 
@@ -18358,7 +18865,7 @@ function injectBounds(entity) {
 function injectTMatrix(entity) {
   var modelMat = (0, _computeTMatrixFromTransforms2.default)(entity.transforms);
   var result = Object.assign({}, entity, { modelMat: modelMat });
-  console.log('result', result);
+  //console.log('result', result)
   return result;
 }
 
@@ -18370,4 +18877,184 @@ function injectNormals(entity) {
   var result = Object.assign({}, entity, { geometry: geometry });
   return result;
 }
-},{"../common/bounds/computeBounds":188,"../common/utils/computeTMatrixFromTransforms":196,"angle-normals":5}]},{},[207]);
+},{"../common/bounds/computeBounds":188,"../common/utils/computeTMatrixFromTransforms":201,"angle-normals":5}],220:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _create = require('@most/create');
+
+var _create2 = _interopRequireDefault(_create);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// this is a pseudo cycle.js driver
+var adressBarDriver = (0, _create2.default)(function (add, end, error) {
+  var url = window.location.href;
+
+  function getParam(name, url) {
+    if (!url) url = location.href;
+    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
+    var regexS = '[\\?&]' + name + '=([^&#]*)';
+    var regex = new RegExp(regexS);
+    var results = regex.exec(url);
+    return results == null ? null : results[1];
+  }
+  var params = getParam('modelUrl', url);
+  add(params);
+});
+
+exports.default = adressBarDriver;
+},{"@most/create":1}],221:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = nativeApiDriver;
+
+var _callBackToStream = require('../../common/utils/most/callBackToStream');
+
+var _callBackToStream2 = _interopRequireDefault(_callBackToStream);
+
+var _formatRawMachineData = require('../../common/utils/printing/formatRawMachineData');
+
+var _formatRawMachineData2 = _interopRequireDefault(_formatRawMachineData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// setModelUri('http://localhost:8080/data/sanguinololu_enclosure_full.stl')
+function nativeApiDriver(out$) {
+
+  var makeModelUriFromCb = (0, _callBackToStream2.default)();
+  var modelUri$ = makeModelUriFromCb.stream;
+
+  var makeMachineParamsFromCb = (0, _callBackToStream2.default)();
+  var machineParams$ = makeMachineParamsFromCb.stream.map(_formatRawMachineData2.default);
+  // ugh but no choice
+  window.nativeApi = {};
+  window.nativeApi.setModelUri = makeModelUriFromCb.callback;
+  window.nativeApi.setMachineParams = makeMachineParamsFromCb.callback;
+
+  return {
+    machineParams$: machineParams$,
+    modelUri$: modelUri$
+  };
+}
+},{"../../common/utils/most/callBackToStream":203,"../../common/utils/printing/formatRawMachineData":206}],222:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeEntitiesModel = makeEntitiesModel;
+exports.makeMachineModel = makeMachineModel;
+exports.makeState = makeState;
+
+var _modelUtils = require('../common/utils/modelUtils');
+
+var _isObjectOutsideBounds = require('../common/bounds/isObjectOutsideBounds');
+
+var _isObjectOutsideBounds2 = _interopRequireDefault(_isObjectOutsideBounds);
+
+var _most = require('most');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function makeEntitiesModel(actions) {
+  var defaults = [];
+  function addEntities(state, inputs) {
+    return state.concat([inputs]);
+  }
+  function setEntityColors(state, inputs) {
+    return state.map(function (entity) {
+      if (entity.meta.id === inputs.id) {
+        var visuals = Object.assign({}, entity.visuals, { color: inputs.color });
+        return Object.assign({}, entity, { visuals: visuals });
+      }
+      return entity;
+    });
+  }
+  function setEntityBoundsStatus(state, input) {
+    console.log('setEntityBoundsStatus');
+    var outOfBoundsColor = [1, 0, 0, 1];
+    return state.map(function (entity) {
+      var outOfBounds = (0, _isObjectOutsideBounds2.default)(input, entity);
+      var color = outOfBounds ? outOfBoundsColor : entity.visuals.color;
+      var bounds = Object.assign({}, entity.bounds, { outOfBounds: outOfBounds });
+      //const visuals = Object.assign({}, entity.visuals, {color})
+      return Object.assign({}, entity, { bounds: bounds });
+    });
+  }
+  var updateFunctions = { addEntities: addEntities, setEntityColors: setEntityColors, setEntityBoundsStatus: setEntityBoundsStatus };
+  var state$ = (0, _modelUtils.model)(defaults, actions, updateFunctions);
+
+  return state$.skipRepeats().multicast();
+}
+
+function makeMachineModel(actions) {
+  var defaults = undefined;
+  function setMachineParams(state, inputs) {
+    var machine = { params: inputs };
+    return machine;
+  }
+  var updateFunctions = { setMachineParams: setMachineParams };
+  var state$ = (0, _modelUtils.model)(defaults, actions, updateFunctions);
+
+  return state$.skipRepeats().multicast();
+}
+
+function makeState(machine$, entities$) {
+  var appState$ = (0, _most.combineArray)(function (entities, machine) {
+    return { entities: entities, machine: machine };
+  }, [entities$, machine$]);
+  return appState$;
+}
+},{"../common/bounds/isObjectOutsideBounds":189,"../common/utils/modelUtils":202,"most":117}],223:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeVisualState = makeVisualState;
+
+var _most = require('most');
+
+var _drawEnclosure = require('./drawCommands/drawEnclosure');
+
+var _drawEnclosure2 = _interopRequireDefault(_drawEnclosure);
+
+var _index = require('./drawCommands/drawStaticMesh2/index');
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function makeVisualState(regl, machine$, entities$, camState$) {
+  var machineWithVisuals$ = machine$.map(function (machine) {
+    if (machine !== undefined) {
+      var draw = (0, _drawEnclosure2.default)(regl, machine.params);
+      return Object.assign({}, machine, { draw: draw });
+    }
+  });
+
+  var entitiesWithVisuals$ = entities$.map(function (entities) {
+    return entities.map(function (data) {
+      var geometry = data.geometry;
+      var draw = (0, _index2.default)(regl, { geometry: geometry }); // one command per mesh, but is faster
+      var visuals = Object.assign({}, data.visuals, { draw: draw });
+      var entity = Object.assign({}, data, { visuals: visuals }); // Object.assign({}, data, {visuals: {draw}})
+      return entity;
+    });
+  });
+
+  var outOfBoundsColor = [0.15, 0.15, 0.15, 0.3];
+  var background = [1, 1, 1, 1];
+  return (0, _most.combineArray)(function (entities, machine, camera) {
+    var view = camera.view;
+    return { entities: entities, machine: machine, view: view, camera: camera, background: background, outOfBoundsColor: outOfBoundsColor };
+  }, [entitiesWithVisuals$, machineWithVisuals$, camState$]);
+}
+},{"./drawCommands/drawEnclosure":209,"./drawCommands/drawStaticMesh2/index":212,"most":117}]},{},[217]);
