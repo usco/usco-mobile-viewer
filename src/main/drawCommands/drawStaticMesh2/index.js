@@ -10,7 +10,8 @@ export default function drawMesh (regl, params = {extras: {}}) {
 
     uniforms: {
       model: (context, props) => props.model || mat4.identity([]),
-      color: prop('color')
+      color: prop('color'),
+      printableArea: (context, props) => props.printableArea || [0, 0]
     },
     attributes: {
       position: buffer(geometry.positions)

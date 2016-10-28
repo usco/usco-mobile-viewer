@@ -16,9 +16,7 @@ export default function prepareRender (regl, params) {
 
   let command = (props) => {
     const {entities, machine, camera, view, background, outOfBoundsColor} = props
-    //const {camera, entities, machine, background, outOfBoundsColor} = props
-    //const {view} = camera
-    console.log()
+
     wrapperScope(props, (context) => {
       regl.clear({
         color: background,
@@ -27,8 +25,14 @@ export default function prepareRender (regl, params) {
       drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
 
       entities.map(function (entity) {
+        //use this for colors that change outside build area
+        //const color = entity.visuals.color
+        //const printableArea = machine ? machine.params.printable_area : [0, 0]
+        //this one for single color for outside bounds
         const color = entity.bounds.outOfBounds ? outOfBoundsColor : entity.visuals.color
-        entity.visuals.draw({view, camera, color, model: entity.modelMat})
+        const printableArea = [0, 0]
+
+        entity.visuals.draw({view, camera, color, model: entity.modelMat, printableArea})
       })
 
       if (machine) {
