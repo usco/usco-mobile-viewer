@@ -1,4 +1,6 @@
 import { model } from '../common/utils/modelUtils'
+import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
+import { combine, combineArray, merge, just } from 'most'
 
 export function makeEntitiesModel (actions) {
   const defaults = []
@@ -14,7 +16,18 @@ export function makeEntitiesModel (actions) {
       return entity
     })
   }
-  const updateFunctions = {addEntities}
+  function setEntityBoundsStatus (state, input) {
+    console.log('setEntityBoundsStatus')
+    const outOfBoundsColor = [1, 0, 0, 1]
+    return state.map(function (entity) {
+      const outOfBounds = isObjectOutsideBounds(input, entity)
+      const color = outOfBounds ? outOfBoundsColor : entity.visuals.color
+      const bounds = Object.assign({}, entity.bounds, {outOfBounds})
+      //const visuals = Object.assign({}, entity.visuals, {color})
+      return Object.assign({}, entity, {bounds})
+    })
+  }
+  const updateFunctions = {addEntities, setEntityColors, setEntityBoundsStatus}
   const state$ = model(defaults, actions, updateFunctions)
 
   return state$.skipRepeats().multicast()
@@ -30,4 +43,12 @@ export function makeMachineModel (actions) {
   const state$ = model(defaults, actions, updateFunctions)
 
   return state$.skipRepeats().multicast()
+}
+
+export function makeState (machine$, entities$) {
+  const appState$ = combineArray(
+    function (entities, machine) {
+      return {entities, machine}
+    }, [entities$, machine$])
+  return appState$
 }
