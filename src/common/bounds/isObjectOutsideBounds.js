@@ -73,25 +73,25 @@ export default function isObjectOutsideBounds (machine, entity) {
   const {pos} = transforms
   const {machine_volume, printable_area} = machine // machine volume assumed to be centered around [0,0,0]
 
-  const headSize = [0, 0, 0] // computeSizeOfPoints(machine_head_with_fans_polygon)
-
   const adjustedVolume = [printable_area[0], printable_area[1], machine_volume[2]] // adjustedMachineVolumeByDissallowerAreas(machine)
-  const halfVolume = adjustedVolume.map(x => x * 0.5)
-  
+  let halfVolume = adjustedVolume.map(x => x * 0.5)
+  halfVolume[2] *= 2 // z is ABOVE the build plate , so not actually centered around 0
+
+  console.log('adjustedVolume', adjustedVolume)
+
   // basic check based on machn dimensions
   const aabbout = pos.reduce(function (acc, val, idx) {
-    // const printHeadOffset = headSize[idx] * 0.75
-    const printHeadOffset = 0
-    let cur = (val + bounds.min[idx] - printHeadOffset) <= -halfVolume[idx] || val + bounds.max[idx] + printHeadOffset >= halfVolume[idx]
-
-    /*const objOffsetMin = val + bounds.min[idx] - printHeadOffset
+    let cur = (val + bounds.min[idx]) <= -halfVolume[idx] || val + bounds.max[idx] >= halfVolume[idx]
+    // console.log('halfVolume along',idx, halfVolume[idx])
+    /*const objOffsetMin = val + bounds.min[idx]
     const halfVol = -halfVolume[idx]
     const result = objOffsetMin <= halfVol
     console.log('min', objOffsetMin, halfVol, result)
 
-    const objOffsetMax = val + bounds.max[idx] + printHeadOffset
+    const objOffsetMax = val + bounds.max[idx]
     const halfVol2 = halfVolume[idx]
     const result2 = objOffsetMax >= halfVol2
+    console.log('halfVolume along',idx, halfVol)
     console.log('max', objOffsetMax, halfVol2, result2)*/
 
     return acc || cur
