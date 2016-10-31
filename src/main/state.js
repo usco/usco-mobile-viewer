@@ -17,13 +17,10 @@ export function makeEntitiesModel (actions) {
     })
   }
   function setEntityBoundsStatus (state, input) {
-    console.log('setEntityBoundsStatus')
-    const outOfBoundsColor = [1, 0, 0, 1]
+    //console.log('setEntityBoundsStatus')
     return state.map(function (entity) {
       const outOfBounds = isObjectOutsideBounds(input, entity)
-      const color = outOfBounds ? outOfBoundsColor : entity.visuals.color
       const bounds = Object.assign({}, entity.bounds, {outOfBounds})
-      //const visuals = Object.assign({}, entity.visuals, {color})
       return Object.assign({}, entity, {bounds})
     })
   }
