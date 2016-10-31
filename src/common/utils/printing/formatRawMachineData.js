@@ -1,5 +1,6 @@
 export default function formatRawMachineData (rawData) {
   return {
+    name: rawData.name,
     machine_volume: [
       rawData.machine_width,
       rawData.machine_depth,
