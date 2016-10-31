@@ -1,7 +1,7 @@
 var glslify = require('glslify-sync') // works in client & server
 import mat4 from 'gl-mat4'
 
-export default function drawMesh(regl, params={extras:{}}) {
+export default function drawMesh (regl, params = {extras: {}}) {
   const {prop, buffer} = regl
   const {geometry} = params
   let commandParams = {

@@ -31,8 +31,16 @@ export default function makeDrawEnclosure (regl, params) {
     positions: [[-1, +1, 0], [+1, +1, 0], [+1, -1, 0], [-1, -1, 0]],
     cells: [[2, 1, 0], [2, 0, 3]]
   }
-  const buildPlaneModel = model({ pos: [0, 0, -1], sca:[machine_volume[0]*0.5, machine_volume[1]*0.5 , 1] })
-  const drawBuildPlane = makeDrawStaticMesh(regl, {geometry: buildPlaneGeo})
+  const buildPlaneModel = model({ pos: [0, 0, -1], sca: [machine_volume[0] * 0.5, machine_volume[1] * 0.5, 1] })
+  const drawBuildPlane = makeDrawStaticMesh(regl, {
+      geometry: buildPlaneGeo,
+      extras: {
+        cull: {
+          enable: true,
+          face: 'back'
+        }
+      }
+  })
 
   // branding
   // const logoTexure = svgStringAsReglTexture(regl, getBrandingSvg(name))
