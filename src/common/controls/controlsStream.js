@@ -1,11 +1,11 @@
-import { update, rotate, zoom } from './orbitControls'
+import { update, rotate, zoom, setFocus } from './orbitControls'
 import { fromEvent, combineArray, combine, mergeArray } from 'most'
 import { interactionsFromEvents, pointerGestures } from '../interactions/pointerGestures'
 
 import { model } from '../utils/modelUtils'
 import animationFrames from '../utils/animationFrames'
 
-export default function controlsStream (interactions, cameraData, params) {
+export default function controlsStream (interactions, cameraData, focuses$) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 
@@ -29,7 +29,7 @@ export default function controlsStream (interactions, cameraData, params) {
       const angle = [-Math.PI * delta[0], -Math.PI * delta[1]]
       return angle
     })
-    .map(x => x.map(y => y * 0.1))// empirical reduction factor
+    .map(x => x.map(y => y * 0.1)) // empirical reduction factor
     .map(x => x.map(y => y * window.devicePixelRatio))
 
   const zooms$ = gestures.zooms
@@ -37,6 +37,8 @@ export default function controlsStream (interactions, cameraData, params) {
     .startWith(0)
     .filter(x => !isNaN(x))
     .throttle(10)
+
+  //const focuses$ = gestures.focuses
 
   // model/ state/ reducers
 
@@ -54,12 +56,18 @@ export default function controlsStream (interactions, cameraData, params) {
       return state
     }
 
+    function applyFocusOn (state, focuses) {
+      state = setFocus(settings, state, focuses) // mutating, meh
+      state = update(settings, state) // not sure
+      return state
+    }
+
     function updateState (state) {
       return update(settings, state)
     }
 
-    const updateFunctions = {applyZoom, applyRotation, updateState}
-    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: rate$}
+    const updateFunctions = {applyZoom, applyRotation, updateState, applyFocusOn}
+    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: rate$, applyFocusOn: focuses$}
 
     const cameraState$ = model(camera, actions, updateFunctions)
 

@@ -85,11 +85,6 @@ const parsedSTL$ = modelUri$
   .filter(x => x !== undefined)
   .multicast()
 
-// interactions : camera controls
-const baseInteractions$ = interactionsFromEvents(container)
-const gestures = pointerGestures(baseInteractions$)
-const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera})
-
 const render = prepareRender(regl)
 const addEntities$ = entityPrep(parsedSTL$)
 const setEntityBoundsStatus$ = merge(setMachineParams$, addEntities$.sample((x) => x, setMachineParams$))
@@ -98,6 +93,20 @@ const entities$ = makeEntitiesModel({addEntities: addEntities$, setEntityBoundsS
 const machine$ = makeMachineModel({setMachineParams: setMachineParams$})
 
 const appState$ = makeState(machine$, entities$)
+
+// interactions : camera controls
+const baseInteractions$ = interactionsFromEvents(container)
+const gestures = pointerGestures(baseInteractions$)
+const focuses$ = addEntities$.map(function (nEntity) {
+  const mid = nEntity.bounds.max.map(function (pos, idx) {
+    return pos - nEntity.bounds.min[idx]
+  })
+  return mid
+})
+
+/*baseInteractions$.taps
+focuses.forEach(e=>console.log('tapping'))*/
+const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, focuses$)
 
 const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
   .thru(limitFlow(33))
@@ -126,15 +135,16 @@ boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of 
 
 // for testing only
 const machineParams = {
+  'name': 'ultimaker3_extended',
   'machine_width': 215,
   'machine_depth': 215,
   'machine_height': 300,
-  'printable_area': [200, 200],
+  'printable_area': [200, 200]
 }
 
 // for testing
 // informations about the active machine
-window.nativeApi.setMachineParams(machineParams)
+// window.nativeApi.setMachineParams(machineParams)
 
 /*setTimeout(function () {
   window.nativeApi.setMachineParams(machineParams)
