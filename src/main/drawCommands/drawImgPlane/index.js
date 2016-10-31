@@ -1,6 +1,5 @@
 var glslify = require('glslify-sync') // works in client & server
 import mat4 from 'gl-mat4'
-const testImg = require('baboon-image')
 
 export default function makeDrawImgPlane (regl, params) {
   // const {width, height} = params
