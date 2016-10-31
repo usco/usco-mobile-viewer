@@ -3,10 +3,17 @@ import centerGeometry from '../common/utils/centerGeometry'
 import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
 import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
 
+/* Pipeline:
+  - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
+  - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
+  - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
+*/
+
 export default function entityPrep (rawGeometry$) {
+  //NOTE : rotation needs to be manually inverted , or an additional geometry transformation applied
   const addedEntities$ = rawGeometry$
     .map(geometry => ({
-      transforms: {pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
+      transforms: {pos: [0, 0, 0], rot: [0, 0, Math.PI], sca: [1, 1, 1]}, // [0.2, 1.125, 1.125]},
       geometry,
       visuals: {
         type: 'mesh',
