@@ -67,7 +67,7 @@ export default function prepareDrawGrid (regl, params = {}) {
         return mat4.ortho([], -300, 300, 350, -350, 0.01, 1000)
       },
       color: regl.prop('color'),
-      fogColor: (context, props) => props.fogColor || [1.,1.,1.,1.]
+      fogColor: (context, props) => props.fogColor || [1, 1, 1, 1]
     },
     lineWidth: 2,
     primitive: 'line strip',

@@ -8,8 +8,8 @@ import { default as model } from '../../common/utils/computeTMatrixFromTransform
 // import svgStringAsReglTexture from '../../common/utils/image/svgStringAsReglTexture'
 // import svgStringAsGeometry from '../../common/utils/geometry/svgStringAsGeometry'
 import getBrandingSvgGeometry from '../../branding/getBrandingSvgGeometry'
-//import getBrandingSvg from '../../branding/getBrandingSvg'
-//import makeDrawImgPlane from './drawImgPlane'
+// import getBrandingSvg from '../../branding/getBrandingSvg'
+// import makeDrawImgPlane from './drawImgPlane'
 
 import makeDrawStaticMesh from './drawStaticMesh'
 
@@ -27,13 +27,19 @@ export default function makeDrawEnclosure (regl, params) {
   const drawCuboid = prepareDrawCuboid(regl, {size: containerSize})
   const containerCuboidMatrix = model({ pos: [0, 0, machine_volume[2] * 0.5] })
 
+  const buildPlaneGeo = {
+    positions: [[-1, +1, 0], [+1, +1, 0], [+1, -1, 0], [-1, -1, 0]],
+    cells: [[2, 1, 0], [2, 0, 3]]
+  }
+  const buildPlaneModel = model({ pos: [0, 0, -1], sca:[machine_volume[0]*0.5, machine_volume[1]*0.5 , 1] })
+  const drawBuildPlane = makeDrawStaticMesh(regl, {geometry: buildPlaneGeo})
+
   // branding
   // const logoTexure = svgStringAsReglTexture(regl, getBrandingSvg(name))
   // const logoPlane = makeDrawImgPlane(regl, {texture: logoTexure})
   // logoTexure.width * logoScale, logoTexure.height * logoScale
   const logoMatrix = model({pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 60, 1], rot: [Math.PI / 2, Math.PI, 0]})
   const logoMatrix2 = model({pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 10, 1], rot: [Math.PI / 2, Math.PI, 0]})
-
   const logoMesh = getBrandingSvgGeometry(name)
   // const logoMesh = svgStringAsGeometry(logoImg)
   const drawLogoMesh = makeDrawStaticMesh(regl, {geometry: logoMesh})
@@ -44,6 +50,7 @@ export default function makeDrawEnclosure (regl, params) {
   return ({view, camera}) => {
     drawGrid({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
     drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
+    drawBuildPlane({view, camera, color: [1, 1, 1, 1], model: buildPlaneModel})
     drawCuboid({view, camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix})
     // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
     // logoPlane({view, camera, color: [0.4, 0.4, 0.4, 1], model: logoMatrix2})

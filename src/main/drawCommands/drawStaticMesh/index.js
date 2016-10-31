@@ -17,7 +17,7 @@ export default function drawMesh(regl, params={extras:{}}) {
     },
     elements: geometry.cells,
     cull: {
-      enable: true,
+      enable: false,
       face: 'front'
     }
   }
