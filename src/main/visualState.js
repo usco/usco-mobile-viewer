@@ -23,9 +23,11 @@ export function makeVisualState (regl, machine$, entities$, camState$) {
         })
     })
 
+  // const outOfBoundsColor = [1., 0.6, 0.16, 1. ]//(red: 255, green: 140, blue: 16
+  // const background = [1,1,1,1]
 
   const outOfBoundsColor = [0.15, 0.15, 0.15, 0.3]
-  const background = [1, 1, 1, 1]
+  const background = [0.96, 0.96, 0.96, 1]
   return combineArray(
     function (entities, machine, camera) {
       const view = camera.view

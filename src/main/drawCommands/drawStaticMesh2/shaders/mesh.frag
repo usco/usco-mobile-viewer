@@ -42,5 +42,9 @@ void main () {
   vec3 ambient = ambientLightAmount * endColor.rgb;
   float cosTheta = dot(fragNormal, lightDir);
   vec3 diffuse = diffuseLightAmount * endColor.rgb * clamp(cosTheta , 0.0, 1.0 );
-  gl_FragColor = vec4((ambient + diffuse * v), endColor.a);
+
+  float cosTheta2 = dot(fragNormal, vec3(-lightDir.x, -lightDir.y, lightDir.z));
+  vec3 diffuse2 = diffuseLightAmount * endColor.rgb * clamp(cosTheta2 , 0.0, 1.0 );
+
+  gl_FragColor = vec4((ambient + diffuse + diffuse2 * v), endColor.a);
 }

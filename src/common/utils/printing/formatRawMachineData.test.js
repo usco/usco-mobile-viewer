@@ -4,6 +4,7 @@ import formatRawMachineData from './formatRawMachineData'
 test('formatRawMachineData', t => {
 
   const input = {
+    'name': 'foo',
     'machine_width': 215,
     'machine_depth': 150,
     'machine_height': 200,
@@ -29,6 +30,7 @@ test('formatRawMachineData', t => {
   }
 
   const expOutput = {
+    name:'foo',
     machine_volume: [215, 150, 200],
     printable_area: [180, 200],
     machine_head_with_fans_polygon: [

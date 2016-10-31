@@ -22,7 +22,7 @@ export default function prepareRender (regl, params) {
         color: background,
         depth: 1
       })
-      drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], model: infiniGridOffset})
+      drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], fogColor: background, model: infiniGridOffset})
 
       entities.map(function (entity) {
         //use this for colors that change outside build area

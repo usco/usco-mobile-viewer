@@ -5,23 +5,17 @@ import drawCuboidFromCoords from './drawCuboidFromCoords/index'
 
 import { default as model } from '../../common/utils/computeTMatrixFromTransforms'
 
+// import svgStringAsReglTexture from '../../common/utils/image/svgStringAsReglTexture'
+// import svgStringAsGeometry from '../../common/utils/geometry/svgStringAsGeometry'
+import getBrandingSvgGeometry from '../../branding/getBrandingSvgGeometry'
+// import getBrandingSvg from '../../branding/getBrandingSvg'
+// import makeDrawImgPlane from './drawImgPlane'
+
+import makeDrawStaticMesh from './drawStaticMesh'
+
 export default function makeDrawEnclosure (regl, params) {
-  const {machine_disallowed_areas, machine_volume} = params
+  const {machine_disallowed_areas, machine_volume, name} = params
 
-  // generate a dynamic uniform from the data above
-  const dynDisalowerAreasUniform = machine_disallowed_areas.map((area, index) => {
-    const def = `vec2 disArea_${index}[${area.length}]
-`
-    const asgnments = area.map((a, i) => `disArea_${index}[${i}] = vec2(${a[0]}, ${a[1]})
-`) // '[' + area.map(a => `vec2(${a[0]}, ${a[1]})`).join(',') + ']'
-    return def + asgnments
-  })
-  // console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform)
-  // vec2 foo[1]
-  // foo[0] = vec2(0.,1.)
-  // foo[1] = vec2(1.,0.)
-
-  // const mGridSize = [21.3, 22]
   const drawGrid = prepareDrawGrid(regl, { size: machine_volume, ticks: 50, centered: true })
   const gridOffset = model({pos: [0, 0, -0.2]})
 
@@ -33,13 +27,41 @@ export default function makeDrawEnclosure (regl, params) {
   const drawCuboid = prepareDrawCuboid(regl, {size: containerSize})
   const containerCuboidMatrix = model({ pos: [0, 0, machine_volume[2] * 0.5] })
 
+  const buildPlaneGeo = {
+    positions: [[-1, +1, 0], [+1, +1, 0], [+1, -1, 0], [-1, -1, 0]],
+    cells: [[2, 1, 0], [2, 0, 3]]
+  }
+  const buildPlaneModel = model({ pos: [0, 0, -1], sca: [machine_volume[0] * 0.5, machine_volume[1] * 0.5, 1] })
+  const drawBuildPlane = makeDrawStaticMesh(regl, {
+      geometry: buildPlaneGeo,
+      extras: {
+        cull: {
+          enable: true,
+          face: 'back'
+        }
+      }
+  })
+
+  // branding
+  // const logoTexure = svgStringAsReglTexture(regl, getBrandingSvg(name))
+  // const logoPlane = makeDrawImgPlane(regl, {texture: logoTexure})
+  // logoTexure.width * logoScale, logoTexure.height * logoScale
+  const logoMatrix = model({pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 60, 1], rot: [Math.PI / 2, Math.PI, 0]})
+  const logoMatrix2 = model({pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 10, 1], rot: [Math.PI / 2, Math.PI, 0]})
+  const logoMesh = getBrandingSvgGeometry(name)
+  // const logoMesh = svgStringAsGeometry(logoImg)
+  const drawLogoMesh = makeDrawStaticMesh(regl, {geometry: logoMesh})
+
   const dissalowedVolumes = machine_disallowed_areas
     .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
 
   return ({view, camera}) => {
     drawGrid({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
     drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
+    drawBuildPlane({view, camera, color: [1, 1, 1, 1], model: buildPlaneModel})
     drawCuboid({view, camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix})
-  // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
+    // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
+    // logoPlane({view, camera, color: [0.4, 0.4, 0.4, 1], model: logoMatrix2})
+    drawLogoMesh({view, camera,color: [0, 0, 0, 0.5], model: logoMatrix})
   }
 }
