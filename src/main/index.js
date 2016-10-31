@@ -32,7 +32,7 @@ import makeInterface from '../common/mobilePlatforms/interface'
 import nativeApiDriver from './sideEffects/nativeApiDriver'
 
 // ////////////
-const {onLoadModelError, onLoadModelSuccess, onBoundsExceeded, onViewerReady, onMachineParamsError, onMachineParamsSuccess} = makeInterface()
+const {viewerReady, modelLoaded, objectFitsPrintableVolume, machineParamsLoaded} = makeInterface()
 const nativeApi = nativeApiDriver()
 
 const regl = reglM({
@@ -45,20 +45,14 @@ const regl = reglM({
 
 const container = document.querySelector('canvas')
 /* --------------------- */
-/* Pipeline:
-  - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
-  - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
-  - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
-*/
 
-// ///////
 const modelUri$ = merge(
   adressBarDriver,
   nativeApi.modelUri$
 )
   .flatMapError(function (error) {
     // console.log('error', error)
-    onLoadModelError(error)
+    modelLoaded(false) // error)
     return just(null)
   })
   .filter(x => x !== null)
@@ -69,17 +63,17 @@ const setMachineParams$ = merge(
 )
   .flatMapError(function (error) {
     // console.log('error', error)
-    onMachineParamsError(error)
+    machineParamsLoaded(false) // error)
     return just(null)
   })
   .filter(x => x !== null)
-  .tap(e => onMachineParamsSuccess(true))
+  .tap(e => machineParamsLoaded(true))
   .multicast()
 
 const parsedSTL$ = modelUri$
   .flatMap(loadAsStream)
   .flatMapError(function (error) {
-    onLoadModelError(error)
+    modelLoaded(false) // error)
     return just(undefined)
   })
   .filter(x => x !== undefined)
@@ -93,6 +87,7 @@ const entities$ = makeEntitiesModel({addEntities: addEntities$, setEntityBoundsS
 const machine$ = makeMachineModel({setMachineParams: setMachineParams$})
 
 const appState$ = makeState(machine$, entities$)
+  .forEach(x => x)
 
 // interactions : camera controls
 const baseInteractions$ = interactionsFromEvents(container)
@@ -119,19 +114,18 @@ const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
   .forEach(x => render(x))
 
 // boundsExceeded
-const boundsExceeded$ = combine(function (entity, machineParams) {
-  // console.log('boundsExceeded', entity, machineParams)
-  return isObjectOutsideBounds(machineParams, entity)
+const objectFitsPrintableVolume$ = combine(function (entity, machineParams) {
+  // console.log('objectFitsPrintableArea', entity, machineParams)
+  return !isObjectOutsideBounds(machineParams, entity)
 }, addEntities$, setMachineParams$)
-  // .map((entity) => isObjectOutsideBounds(machineParams, entity))
-  .tap(e => console.log('outOfBounds??', e))
-  .filter(x => x === true)
+  .tap(e => console.log('objectFitsPrintableVolume??', e))
+  .multicast()
 
-onViewerReady()
+viewerReady()
 
 // OUTPUTS (sink side effects)
-addEntities$.forEach(m => onLoadModelSuccess()) // side effect => dispatch to callback)
-boundsExceeded$.forEach(onBoundsExceeded) // dispatch message to signify out of bounds
+addEntities$.forEach(m => modelLoaded(true)) // side effect => dispatch to callback)
+objectFitsPrintableVolume$.forEach(objectFitsPrintableVolume) // dispatch message to signify out of bounds or not
 
 // for testing only
 const machineParams = {
@@ -144,7 +138,7 @@ const machineParams = {
 
 // for testing
 // informations about the active machine
-// window.nativeApi.setMachineParams(machineParams)
+window.nativeApi.setMachineParams(machineParams)
 
 /*setTimeout(function () {
   window.nativeApi.setMachineParams(machineParams)

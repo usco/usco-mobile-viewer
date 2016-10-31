@@ -2,6 +2,7 @@ let mobileCaller = {
   interfaceName: 'JAMDroid',
 
   call: function (method) {
+    //console.log('method', method)
     if (eval('typeof ' + this.interfaceName) !== 'undefined') {
       new Function(this.interfaceName + '.' + method)()
     }
@@ -10,11 +11,9 @@ let mobileCaller = {
 
 export function makeAndroidInterface () {
   return {
-    onLoadModelError: () => mobileCaller.call('onLoadModel(false)'),
-    onLoadModelSuccess: () => mobileCaller.call('onLoadModel(true)'),
-    onBoundsExceeded: () => mobileCaller.call('onBoundsExceeded()'),
-    onViewerReady: () => mobileCaller.call('onViewerReady()'),
-    onMachineParamsError: () => mobileCaller.call('onMachineParamsResult(false)'),
-    onMachineParamsSuccess: () => mobileCaller.call('onMachineParamsResult(true)')
+    viewerReady: () => mobileCaller.call('onViewerReady()'),
+    modelLoaded: (value) => mobileCaller.call(`onLoadModel(${value})`),
+    machineParamsLoaded: (value) => mobileCaller.call(`onMachineParamsResult(${value})`),
+    objectFitsPrintableVolume: (value) => mobileCaller.call(`objectFitsPrintableVolume(${value})`)
   }
 }

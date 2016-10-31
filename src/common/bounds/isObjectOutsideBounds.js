@@ -77,8 +77,6 @@ export default function isObjectOutsideBounds (machine, entity) {
   let halfVolume = adjustedVolume.map(x => x * 0.5)
   halfVolume[2] *= 2 // z is ABOVE the build plate , so not actually centered around 0
 
-  console.log('adjustedVolume', adjustedVolume)
-
   // basic check based on machn dimensions
   const aabbout = pos.reduce(function (acc, val, idx) {
     let cur = (val + bounds.min[idx]) <= -halfVolume[idx] || val + bounds.max[idx] >= halfVolume[idx]
