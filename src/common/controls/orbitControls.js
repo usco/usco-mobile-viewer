@@ -134,6 +134,17 @@ function pan (params) {
   return params
 }
 
+export function setFocus (params, cameraState, focusPoint) {
+  const sub = (a, b) => a.map((a1, i) => a1 - b[i])
+  const add = (a, b) => a.map((a1, i) => a1 + b[i])
+  const camTarget = cameraState.target
+  const diff = sub(focusPoint, camTarget) // [ focusPoint[0] - camTarget[0],
+  const zOffset = [0, 0, diff[2] * 0.5]
+  cameraState.target = add(camTarget, zOffset)
+  cameraState.position = add(cameraState.position, zOffset)
+  return cameraState
+}
+
 /*
 function setObservables (observables) {
   let {dragMoves$, zooms$} = observables
