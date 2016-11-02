@@ -19,23 +19,29 @@ export default function prepareDrawGrid (regl, params = {}) {
 
     const remWidth = halfWidth % ticks
     const widthStart = -halfWidth + remWidth
-    const widthEnd = - widthStart
+    const widthEnd = -widthStart
 
     const remLength = halfLength % ticks
-    const lengthStart = -halfLength + remLength
+    let lengthStart = -halfLength + remLength
     const lengthEnd = -lengthStart
 
-    for (let i = widthStart; i <= widthEnd; i += ticks) {
-      positions.push(lengthStart, i, 0)
-      positions.push(lengthEnd, i, 0)
-      positions.push(lengthStart, i, 0)
+    const skipEvery = 0
+
+    for (let i = widthStart, j=0; i <= widthEnd; i += ticks, j+=1) {
+      if(j%skipEvery !==0){
+        positions.push(lengthStart, i, 0)
+        positions.push(lengthEnd, i, 0)
+        positions.push(lengthStart, i, 0)
+      }
+    }
+    for (let i = lengthStart, j=0; i <= lengthEnd; i += ticks, j+=1) {
+      if(j%skipEvery !==0){
+        positions.push(i, widthStart, 0)
+        positions.push(i, widthEnd, 0)
+        positions.push(i, widthStart, 0)
+      }
     }
 
-    for (let i = lengthStart; i <= lengthEnd; i += ticks) {
-      positions.push(i, widthStart, 0)
-      positions.push(i, widthEnd, 0)
-      positions.push(i, widthStart, 0)
-    }
   } else {
     for (let i = -width * 0.5; i <= width * 0.5; i += ticks) {
       positions.push(-length * 0.5, i, 0)
@@ -50,10 +56,10 @@ export default function prepareDrawGrid (regl, params = {}) {
     }
   }
 
-  const frag = infinite ? glslify(__dirname + '/shaders/foggy.frag') : glslify(__dirname + '/shaders/grid.frag')
+  const frag = glslify(__dirname + '/shaders/grid.frag')//infinite ? glslify(__dirname + '/shaders/foggy.frag') : glslify(__dirname + '/shaders/grid.frag')
 
   return regl({
-    vert: glslify(__dirname + '/shaders/grid.vert'),
+    vert: glslify(__dirname + '/../shaders/basic.vert'),
     frag,
 
     attributes: {
@@ -70,7 +76,7 @@ export default function prepareDrawGrid (regl, params = {}) {
       fogColor: (context, props) => props.fogColor || [1, 1, 1, 1]
     },
     lineWidth: 2,
-    primitive: 'line strip',
+    primitive: 'lines',
     cull: {
       enable: true,
       face: 'front'

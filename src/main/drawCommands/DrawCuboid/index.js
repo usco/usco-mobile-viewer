@@ -7,7 +7,7 @@ export default function drawCuboid (regl, params) {
   const halfWidth = width * 0.5
   const halfLength = length * 0.5
   const halfHeight = height * 0.5
-  
+
   const position = [
     -halfWidth, -halfLength, -halfHeight,
     halfWidth, -halfLength, -halfHeight,
@@ -30,7 +30,7 @@ export default function drawCuboid (regl, params) {
   const normal = position.map(p => p / size)
 
   return regl({
-    vert: glslify(__dirname + '/shaders/mesh.vert'),
+    vert: glslify(__dirname + '/../shaders/basic.vert'),
     frag: glslify(__dirname + '/shaders/mesh.frag'),
 
     attributes: {

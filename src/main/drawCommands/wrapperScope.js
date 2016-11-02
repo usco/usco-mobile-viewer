@@ -8,7 +8,9 @@ export default function wrapperScope (regl, params = {}) {
       enable: true
     },
     context: {
-      lightDir: [.39, 0.87, 0.29],
+      lightDir: [0.39, 0.87, 0.29],
+      camNear: 0.1,
+      camFar: 2000,
     },
     uniforms: {
       lightDir: (context) => context.lightDir,
@@ -25,9 +27,12 @@ export default function wrapperScope (regl, params = {}) {
         return mat4.perspective([],
           Math.PI / 4,
           context.viewportWidth / context.viewportHeight,
-          10,
-          10000)
-      }
+          context.camNear,
+          context.camFar)
+      },
+      camNear: (context) => context.camNear,
+      camFar: (context) => context.camFar,
+      fudge: 2.0 / (Math.log(50000 + 1.0) / Math.LN2)
     },
     framebuffer: fbo
   }

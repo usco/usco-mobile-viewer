@@ -12,7 +12,7 @@ export default function prepareRender (regl, params) {
   // infinite grid
   const gridSize = [1220, 1200] // size of 'infinite grid'
   const drawInfiniGrid = prepareDrawGrid(regl, {size: gridSize, ticks: 10, infinite: true})
-  const infiniGridOffset = model({pos: [0, 0, -0.4]})
+  const infiniGridOffset = model({pos: [0, 0, -1.8]})
 
   let command = (props) => {
     const {entities, machine, camera, view, background, outOfBoundsColor} = props
@@ -22,7 +22,7 @@ export default function prepareRender (regl, params) {
         color: background,
         depth: 1
       })
-      drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], fogColor: background, model: infiniGridOffset})
+      //drawInfiniGrid({view, camera, color: [0, 0, 0, 0.1], fogColor: background, model: infiniGridOffset})
 
       entities.map(function (entity) {
         //use this for colors that change outside build area
