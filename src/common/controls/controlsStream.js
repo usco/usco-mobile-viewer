@@ -10,10 +10,6 @@ export default function controlsStream (interactions, cameraData, focuses$) {
   const {gestures} = interactions
 
   const rate$ = animationFrames() // heartBeat
-  // const heartBeat$ = most.periodic(16, 'x')
-  // sample(world, rate)
-
-  const mobileReductor = 5.0 // how much we want to divide touch deltas to get movements on mobile
 
   const dragMoves$ = gestures.dragMoves
     // .throttle(16) // FIXME: not sure, could be optimized some more
@@ -38,10 +34,7 @@ export default function controlsStream (interactions, cameraData, focuses$) {
     .filter(x => !isNaN(x))
     .throttle(10)
 
-  //const focuses$ = gestures.focuses
-
   // model/ state/ reducers
-
   function makeCameraModel () {
     function applyRotation (state, angles) {
       state = rotate(settings, state, angles) // mutating, meh
@@ -62,6 +55,22 @@ export default function controlsStream (interactions, cameraData, focuses$) {
       return state
     }
 
+    function zoomToFit (state, zoomsToFit) {
+      //params, cameraState, focusPoint
+      const sub = (a, b) => a.map((a1, i) => a1 - b[i])
+      const add = (a, b) => a.map((a1, i) => a1 + b[i])
+      const camTarget = state.target
+      const diff = sub(focusPoint, camTarget) // [ focusPoint[0] - camTarget[0],
+      const zOffset = [0, 0, diff[2] * 0.5]
+      state.target = add(camTarget, zOffset)
+      state.position = add(state.position, zOffset)
+
+      state = update(settings, state) // not sure
+
+      return state
+    }
+
+
     function updateState (state) {
       return update(settings, state)
     }
@@ -76,8 +85,10 @@ export default function controlsStream (interactions, cameraData, focuses$) {
 
   const cameraState$ = makeCameraModel()
 
-  return cameraState$
-    .sample(x => x, rate$)
-    .filter(x => x.changed)
-    .merge(cameraState$)
+  return rate$.sample(x => x,
+    cameraState$
+      .filter(x => x.changed)
+      .merge(cameraState$.take(1))
+    )
+    //.tap(e=>console.log('cameraState',e))
 }
