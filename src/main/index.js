@@ -8,7 +8,7 @@ import prepareRender from './drawCommands/render'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
-import { combine, combineArray, merge, just } from 'most'
+import { combine, merge, just } from 'most'
 import limitFlow from '../common/utils/most/limitFlow'
 
 import loadAsStream from './loader'
@@ -104,14 +104,22 @@ focuses.forEach(e=>console.log('tapping'))*/
 const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, focuses$)
 
 const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
-  .thru(limitFlow(33))
+  //.multicast()
   .flatMapError(function (error) {
-    console.error('error in rendering', error)
+    console.error('error in visualState', error)
     return just(null)
   })
   .filter(x => x !== null)
+
+visualState$
+  .thru(limitFlow(33))
   .tap(x => regl.poll())
-  .forEach(x => render(x))
+  .tap(render)
+  .flatMapError(function (error) {
+    console.error('error in render', error)
+    return just(null)
+  })
+  .forEach(x => x)
 
 // boundsExceeded
 const objectFitsPrintableVolume$ = combine(function (entity, machineParams) {
@@ -138,7 +146,7 @@ const machineParams = {
 
 // for testing
 // informations about the active machine
-//window.nativeApi.setMachineParams(machineParams)
+window.nativeApi.setMachineParams(machineParams)
 
 /*setTimeout(function () {
   window.nativeApi.setMachineParams(machineParams)
