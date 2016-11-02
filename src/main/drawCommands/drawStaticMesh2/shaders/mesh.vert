@@ -1,13 +1,14 @@
 precision mediump float;
-attribute vec3 position, normal;
-uniform mat4 model, view, projection;
-varying vec3 fragNormal, fragPosition;
 
+uniform float camNear, camFar;
+uniform mat4 model, view, projection;
+
+attribute vec3 position, normal;
+
+varying vec3 fragNormal, fragPosition;
 varying vec4 _worldSpacePosition;
 
-float near = 10.;
-float far = 5000.;
-uniform float camNear, camFar;
+#pragma glslify: zBufferAdjust = require('../../shaders/zBufferAdjust')
 
 void main() {
   fragPosition = position;
@@ -17,6 +18,9 @@ void main() {
   gl_Position = projection * view * worldSpacePosition;
 
 
-  gl_Position.z = 2.0*log(gl_Position.w/camNear)/log(camFar/camNear) - 1.;
-  gl_Position.z *= gl_Position.w;
+  vec4 glPosition = projection * view * model * vec4(position, 1);
+  //gl_Position = glPosition;
+  gl_Position = zBufferAdjust(glPosition, camNear, camFar);
+
+
 }

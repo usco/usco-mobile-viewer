@@ -9,8 +9,8 @@ export default function wrapperScope (regl, params = {}) {
     },
     context: {
       lightDir: [0.39, 0.87, 0.29],
-      camNear: 0.1,
-      camFar: 2000,
+      camNear: 0.01,
+      camFar: 2000
     },
     uniforms: {
       lightDir: (context) => context.lightDir,

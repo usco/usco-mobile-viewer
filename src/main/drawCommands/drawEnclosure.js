@@ -19,7 +19,7 @@ export default function makeDrawEnclosure (regl, params) {
   const drawGrid = prepareDrawGrid(regl, { size: machine_volume, ticks: 50, centered: true })
   const drawGridDense = prepareDrawGrid(regl, { size: machine_volume, ticks: 10, centered: true })
   const gridOffset = model({pos: [0, 0, 0.1]})
-  const gridOffsetD = model({pos: [0, 0, 0.9]})
+  const gridOffsetD = model({pos: [0, 0, 0.5]})
 
   const triSize = {width: 50, height: 20}
   const drawTri = prepareDrawTriangle(regl, {width: triSize.width, height: triSize.height})
@@ -54,12 +54,12 @@ export default function makeDrawEnclosure (regl, params) {
   // const logoMesh = svgStringAsGeometry(logoImg)
   const drawLogoMesh = makeDrawStaticMesh(regl, {geometry: logoMesh})
 
-  const dissalowedVolumes = machine_disallowed_areas
-    .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
+  //const dissalowedVolumes = machine_disallowed_areas
+  //  .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
 
   return ({view, camera}) => {
     drawGrid({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
-    drawGridDense({view, camera, color: [0, 0, 0, 0.05], model: gridOffsetD})
+    drawGridDense({view, camera, color: [0, 0, 0, 0.06], model: gridOffsetD})
 
     drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
     drawBuildPlane({view, camera, color: [1, 1, 1, 1], model: buildPlaneModel})
