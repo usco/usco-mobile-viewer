@@ -56,7 +56,7 @@ export default function prepareDrawGrid (regl, params = {}) {
     }
   }
 
-  const frag = glslify(__dirname + '/shaders/grid.frag')//infinite ? glslify(__dirname + '/shaders/foggy.frag') : glslify(__dirname + '/shaders/grid.frag')
+  const frag = infinite ? glslify(__dirname + '/shaders/foggy.frag') : glslify(__dirname + '/shaders/grid.frag')
 
   return regl({
     vert: glslify(__dirname + '/../shaders/basic.vert'),
