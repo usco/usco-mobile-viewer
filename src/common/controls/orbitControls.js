@@ -24,8 +24,8 @@ export const params = {
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
-    minDistance: 2,
-    maxDistance: 4000
+    minDistance: 5,
+    maxDistance: 1500
   },
   EPS: 0.000001,
   drag: 0.27, // Decrease the momentum by 1% each iteration
@@ -136,7 +136,7 @@ function pan (params) {
 
 export function setFocus (params, cameraState, focusPoint) {
   const sub = (a, b) => a.map((a1, i) => a1 - b[i])
-  const add = (a, b) => a.map((a1, i) => a1 + b[i])
+  const add = (a, b) => a.map((a1, i) => a1 + b[i])// NOTE: NO typedArray.map support on old browsers, polyfilled
   const camTarget = cameraState.target
   const diff = sub(focusPoint, camTarget) // [ focusPoint[0] - camTarget[0],
   const zOffset = [0, 0, diff[2] * 0.5]
@@ -144,6 +144,7 @@ export function setFocus (params, cameraState, focusPoint) {
   cameraState.position = add(cameraState.position, zOffset)
   return cameraState
 }
+
 
 /*
 function setObservables (observables) {

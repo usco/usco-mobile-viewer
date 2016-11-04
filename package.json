@@ -30,7 +30,8 @@
     "ray-aabb-intersection": "^1.0.1",
     "ray-sphere-intersection": "^1.0.0",
     "ray-triangle-intersection": "^1.0.3",
-    "regl": "^1.1.1",
+    "regl": "^1.3.0",
+    "typedarray-methods": "^1.0.0",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
     "vertices-bounding-box": "^1.0.0"
   },

@@ -54,11 +54,9 @@ export default function prepareRender (regl, params) {
 
   return function render (data) {
     command(data)
-
     // boilerplate etc
     tick += 0.01
     // for stats
     // regl.poll()
-    return
   }
 }

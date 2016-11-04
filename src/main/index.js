@@ -1,3 +1,5 @@
+//perhaps needed for simplicity: npm module
+require('typedarray-methods')
 const reglM = require('regl')
 // use this one for server side render
 // const regl = require('regl')(require('gl')(256, 256))
@@ -146,7 +148,7 @@ const machineParams = {
 
 // for testing
 // informations about the active machine
-window.nativeApi.setMachineParams(machineParams)
+//window.nativeApi.setMachineParams(machineParams)
 
 /*setTimeout(function () {
   window.nativeApi.setMachineParams(machineParams)
