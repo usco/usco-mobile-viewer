@@ -1,11 +1,10 @@
 import { update, rotate, zoom, setFocus } from './orbitControls'
-import { fromEvent, combineArray, combine, mergeArray } from 'most'
-import { interactionsFromEvents, pointerGestures } from '../interactions/pointerGestures'
+import computeCameraToFitBounds from '../cameraEffects/computeCameraToFitBounds'
 
 import { model } from '../utils/modelUtils'
 import animationFrames from '../utils/animationFrames'
 
-export default function controlsStream (interactions, cameraData, focuses$) {
+export default function controlsStream (interactions, cameraData, focuses$, entityFocuses$) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 
@@ -55,17 +54,21 @@ export default function controlsStream (interactions, cameraData, focuses$) {
       return state
     }
 
-    function zoomToFit (state, zoomsToFit) {
-      //params, cameraState, focusPoint
-      const sub = (a, b) => a.map((a1, i) => a1 - b[i])
-      const add = (a, b) => a.map((a1, i) => a1 + b[i])
-      const camTarget = state.target
-      const diff = sub(focusPoint, camTarget) // [ focusPoint[0] - camTarget[0],
-      const zOffset = [0, 0, diff[2] * 0.5]
-      state.target = add(camTarget, zOffset)
-      state.position = add(state.position, zOffset)
+    function zoomToFit (state, input) {
+      console.log('zoomToFit',input)
+      const {position, target} = computeCameraToFitBounds( state, input.bounds)
+      state.target = target
+      state.position = position
+      //state = update(settings, state) // not sure
 
-      state = update(settings, state) // not sure
+      const focuses = [input].map(function (nEntity) {
+        const mid = nEntity.bounds.max.map(function (pos, idx) {
+          return pos - nEntity.bounds.min[idx]
+        })
+        return mid
+      })[0]
+      state = setFocus(settings, state, focuses) // mutating, meh
+      //state = update(settings, state) // not sure
 
       return state
     }
@@ -75,8 +78,8 @@ export default function controlsStream (interactions, cameraData, focuses$) {
       return update(settings, state)
     }
 
-    const updateFunctions = {applyZoom, applyRotation, updateState, applyFocusOn}
-    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: rate$, applyFocusOn: focuses$}
+    const updateFunctions = {applyZoom, applyRotation, updateState, applyFocusOn, zoomToFit}
+    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: rate$, applyFocusOn: focuses$, zoomToFit: entityFocuses$}
 
     const cameraState$ = model(camera, actions, updateFunctions)
 

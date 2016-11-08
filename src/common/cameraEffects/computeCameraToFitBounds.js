@@ -17,19 +17,21 @@ export default function computeCameraToFitBounds (camera, bounds) {
     return
   }
 
-  const radius = bounds.dia / 2
+  // const radius = bounds.dia / 2
+  // we use radius so that we can be perspective indenpdant : a sphere seen from any angle is a sphere...
+  const radius = Math.max(...bounds.size) * 0.5 // we find the biggest dimension
   const center = bounds.center
-  const targetOffset = vec3.subtract(vec3.create(), center, camera.target)//offset between target bounds center & camera's target
+  const targetOffset = vec3.subtract(vec3.create(), center, camera.target) // offset between target bounds center & camera's target
 
   // move camera to base position
   // compute new camera position
-  let camNewPos = vec3.create(camera.position)
-  let camNewTgt = vec3.create(camera.target)
+  let camNewPos = vec3.fromValues(...camera.position)
+  let camNewTgt = vec3.fromValues(...camera.target)
   camNewPos = vec3.add(camNewPos, camNewPos, targetOffset)
-  camNewTgt = vec3.create(center)
+  camNewTgt = vec3.fromValues(...center)
 
   // and move it away from the boundingSphere of the object
-  const dist = vec3.distance(center, camNewPos) - radius * 4
+  const dist = vec3.distance(center, camNewPos) - radius *3 //FIXME: this needs to use the projection info/perspective
 
   let vec = vec3.create()
   vec = vec3.subtract(vec, camNewPos, camNewTgt)

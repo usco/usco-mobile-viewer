@@ -101,9 +101,13 @@ const focuses$ = addEntities$.map(function (nEntity) {
   return mid
 })
 
+const entityFocuses$ = addEntities$.map(function(nEntity){
+  return nEntity
+})
+
 /*baseInteractions$.taps
 focuses.forEach(e=>console.log('tapping'))*/
-const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, focuses$)
+const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, focuses$, entityFocuses$)
 
 const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
   //.multicast()
