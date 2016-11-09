@@ -1,11 +1,13 @@
 import vec3 from 'gl-vec3'
+import mat4 from 'gl-mat4'
 
 /**
  * zooms in on an object trying to fit its bounds on the (2d) screen
+ * assumes the bounds CENTER is not in world space for now, hence transforms needing to be passed
  * @param  {Object} camera the camera we are using
  * @param  {Object} bounds the current bounds of the entity
  */
-export default function computeCameraToFitBounds (camera, bounds) {
+export default function computeCameraToFitBounds ({camera, bounds, transforms}) {
   /*
   bounds: {
     dia: 40,
@@ -13,15 +15,17 @@ export default function computeCameraToFitBounds (camera, bounds) {
     min: [9, 10, 0],
     max: [15, 10, 4]
   },*/
-  if (!bounds) {
-    return
+  if (!bounds || !camera) {
+    throw new Error('No camera/bounds specified!')
   }
 
+  const {projection, view} = camera
   // const radius = bounds.dia / 2
   // we use radius so that we can be perspective indenpdant : a sphere seen from any angle is a sphere...
   const radius = Math.max(...bounds.size) * 0.5 // we find the biggest dimension
-  const center = bounds.center
-  const targetOffset = vec3.subtract(vec3.create(), center, camera.target) // offset between target bounds center & camera's target
+  const center = vec3.add([], bounds.center, transforms.pos) // TODO: apply transforms to center , here or elswhere ??
+
+  const targetOffset = vec3.subtract([], center, camera.target) // offset between target bounds center & camera's target
 
   // move camera to base position
   // compute new camera position
@@ -31,7 +35,8 @@ export default function computeCameraToFitBounds (camera, bounds) {
   camNewTgt = vec3.fromValues(...center)
 
   // and move it away from the boundingSphere of the object
-  const dist = vec3.distance(center, camNewPos) - radius *3 //FIXME: this needs to use the projection info/perspective
+  const combinedProjView = mat4.multiply([], projection, view)
+  const dist = vec3.distance(center, camNewPos) - radius * 4 // FIXME: this needs to use the projection info/perspective
 
   let vec = vec3.create()
   vec = vec3.subtract(vec, camNewPos, camNewTgt)
