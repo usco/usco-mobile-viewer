@@ -5,8 +5,8 @@ const camera = {
 
   projection: new Float32Array(16),
   view: new Float32Array(16),
-  near: 0.01,
-  far: 2000,
+  near: 10,//0.01,
+  far: 1000,
 
   thetaDelta: 0,
   phiDelta: 0,
