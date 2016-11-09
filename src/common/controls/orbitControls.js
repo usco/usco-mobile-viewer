@@ -24,8 +24,8 @@ export const params = {
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
-    minDistance: 5,
-    maxDistance: 1500
+    minDistance: 30,
+    maxDistance: 800
   },
   EPS: 0.000001,
   drag: 0.27, // Decrease the momentum by 1% each iteration
@@ -42,7 +42,7 @@ export function update (settings, state) {
   let curPhiDelta = camera.phiDelta
   let curScale = camera.scale
 
-  let offset = vec3.subtract(vec3.create(), position, target)
+  let offset = vec3.subtract([], position, target)
   let theta
   let phi
 
@@ -117,9 +117,13 @@ export function zoom (params, cameraState, zoomScale) {
     zoomScale = zoomScale * 0.001 // Math.min(Math.max(zoomScale, -0.1), 0.1)
     const amount = Math.abs(zoomScale) === 1 ? Math.pow(0.95, params.userControl.zoomSpeed) : zoomScale
     const scale = zoomScale < 0 ? (cameraState.scale / amount) : (cameraState.scale * amount)
-    // console.log('zoomScale',zoomScale,scale)
-
     cameraState.scale += amount
+
+    cameraState.near += amount * 0.5
+    cameraState.near = Math.min(Math.max(10, cameraState.near),12)
+    cameraState.far += amount * 500
+    cameraState.far = Math.max(Math.min(2000, cameraState.far),150)
+    console.log('near ', cameraState.near, 'far', cameraState.far)
   }
   return cameraState
 }
@@ -136,7 +140,7 @@ function pan (params) {
 
 export function setFocus (params, cameraState, focusPoint) {
   const sub = (a, b) => a.map((a1, i) => a1 - b[i])
-  const add = (a, b) => a.map((a1, i) => a1 + b[i])// NOTE: NO typedArray.map support on old browsers, polyfilled
+  const add = (a, b) => a.map((a1, i) => a1 + b[i]) // NOTE: NO typedArray.map support on old browsers, polyfilled
   const camTarget = cameraState.target
   const diff = sub(focusPoint, camTarget) // [ focusPoint[0] - camTarget[0],
   const zOffset = [0, 0, diff[2] * 0.5]
@@ -144,7 +148,6 @@ export function setFocus (params, cameraState, focusPoint) {
   cameraState.position = add(cameraState.position, zOffset)
   return cameraState
 }
-
 
 /*
 function setObservables (observables) {
