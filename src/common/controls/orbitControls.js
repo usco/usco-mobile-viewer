@@ -102,30 +102,30 @@ export function update (settings, state) {
   }
 }
 
-export function rotate (params, cameraState, angle) {
+export function rotate (params, camera, angle) {
   const reductionFactor = 500
   if (params.userControl.rotate) {
-    cameraState.thetaDelta += (angle[0] / reductionFactor)
-    cameraState.phiDelta += (angle[1] / reductionFactor)
+    camera.thetaDelta += (angle[0] / reductionFactor)
+    camera.phiDelta += (angle[1] / reductionFactor)
   }
 
-  return cameraState
+  return camera
 }
 
-export function zoom (params, cameraState, zoomScale) {
+export function zoom (params, camera, zoomScale) {
   if (params.userControl.zoom) {
     zoomScale = zoomScale * 0.001 // Math.min(Math.max(zoomScale, -0.1), 0.1)
     const amount = Math.abs(zoomScale) === 1 ? Math.pow(0.95, params.userControl.zoomSpeed) : zoomScale
-    const scale = zoomScale < 0 ? (cameraState.scale / amount) : (cameraState.scale * amount)
-    cameraState.scale += amount
+    const scale = zoomScale < 0 ? (camera.scale / amount) : (camera.scale * amount)
+    camera.scale += amount
 
-    cameraState.near += amount * 0.5
-    cameraState.near = Math.min(Math.max(10, cameraState.near),12)
-    cameraState.far += amount * 500
-    cameraState.far = Math.max(Math.min(2000, cameraState.far),150)
-    console.log('near ', cameraState.near, 'far', cameraState.far)
+    camera.near += amount * 0.5
+    camera.near = Math.min(Math.max(10, camera.near), 12)
+    camera.far += amount * 500
+    camera.far = Math.max(Math.min(2000, camera.far), 150)
+  // console.log('near ', camera.near, 'far', camera.far)
   }
-  return cameraState
+  return camera
 }
 
 function pan (params) {
@@ -138,15 +138,15 @@ function pan (params) {
   return params
 }
 
-export function setFocus (params, cameraState, focusPoint) {
+export function setFocus (params, camera, focusPoint) {
   const sub = (a, b) => a.map((a1, i) => a1 - b[i])
   const add = (a, b) => a.map((a1, i) => a1 + b[i]) // NOTE: NO typedArray.map support on old browsers, polyfilled
-  const camTarget = cameraState.target
+  const camTarget = camera.target
   const diff = sub(focusPoint, camTarget) // [ focusPoint[0] - camTarget[0],
   const zOffset = [0, 0, diff[2] * 0.5]
-  cameraState.target = add(camTarget, zOffset)
-  cameraState.position = add(cameraState.position, zOffset)
-  return cameraState
+  camera.target = add(camTarget, zOffset)
+  camera.position = add(camera.position, zOffset)
+  return camera
 }
 
 /*
