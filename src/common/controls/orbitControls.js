@@ -38,6 +38,8 @@ export function update (settings, state) {
   const camera = state
   const {EPS, up, drag} = settings
   const {position, target, view} = camera
+  const {targetTgt, positionTgt} = camera
+
   let curThetaDelta = camera.thetaDelta
   let curPhiDelta = camera.phiDelta
   let curScale = camera.scale
@@ -80,13 +82,25 @@ export function update (settings, state) {
     offset[2] = radius * sin(phi) * cos(theta)
   }
 
-  const newPosition = vec3.add(vec3.create(), target, offset)
-  const newTarget = target
+  let newPosition = vec3.add(vec3.create(), target, offset)
+  let newTarget = target
   const newView = mat4.lookAt(view, newPosition, target, up)
   /* mat3.fromMat4(camMat, camMat)
   quat.fromMat3(this.rotation, camMat)
   lookAt(view, this.position, this.target, this.up)
   */
+
+  // temporary setup for camera 'move/zoom to fit'
+  if (targetTgt && positionTgt) {
+    const posDiff = vec3.subtract([], positionTgt, newPosition)
+    const tgtDiff = vec3.subtract([], targetTgt, newTarget)
+    //console.log('posDiff', newPosition, positionTgt, newTarget, targetTgt)
+    if (vec3.length(posDiff) > 0.1 && vec3.length(tgtDiff) > 0.1) {
+      newPosition = vec3.scaleAndAdd(newPosition, newPosition, posDiff, 0.1)
+      newTarget = vec3.scaleAndAdd(newTarget, newTarget, tgtDiff, 0.1)
+    }
+  }
+
   const dragEffect = 1 - max(min(drag, 1.0), 0.01)
 
   const positionChanged = vec3.distance(position, newPosition) > 0 // TODO optimise
@@ -119,6 +133,7 @@ export function zoom (params, camera, zoomScale) {
     const scale = zoomScale < 0 ? (camera.scale / amount) : (camera.scale * amount)
     camera.scale += amount
 
+    // these are empirical values , after a LOT of testing
     camera.near += amount * 0.5
     camera.near = Math.min(Math.max(10, camera.near), 12)
     camera.far += amount * 500
