@@ -6,6 +6,22 @@ import fetchStream from 'fetch-readablestream'
 // import 'whatwg-fetch'
 // import { ReadableStream } from "web-streams-polyfill"
 
+//needed workaround for setTimeout issues on ios should be removed once things are solved cleanly (?no more polyfills)
+function requestTimeout (fn, delay) {
+  var start = new Date().getTime(),
+    handle = { }
+
+  function loop () {
+    var current = new Date().getTime(),
+      delta = current - start
+
+    delta >= delay ? fn.call() : handle.value = requestAnimationFrame(loop)
+  }
+
+  handle.value = requestAnimationFrame(loop)
+  return handle
+}
+
 const Duplex = require('stream').Duplex
 const Readable = require('stream').Readable
 
@@ -27,7 +43,7 @@ function supportsStreaming () {
 }
 
 export default function loadTest (uri) {
-  //console.log(`loading model from: ${uri}`)
+  // console.log(`loading model from: ${uri}`)
   const stlStream = makeStlStream({useWorker: true})
 
   const debugHelper = new Duplex({
@@ -56,7 +72,6 @@ export default function loadTest (uri) {
         const { value, done } = data
         // console.log('SOURCE chunk', data , value, done)
         if (done) {
-          // finish()
           end()
         } else {
           push(Buffer(value))
@@ -74,11 +89,32 @@ export default function loadTest (uri) {
         })
       }
 
+      this.readyData
+      this.lenToSend = undefined
+
       function noStreams () {
         function onLoad (e) {
-          let value = e.target.response
-          push(Buffer(value))
-          setTimeout(end, 0.0001) // don't call end directly !
+          console.log('onload', e.target.response)
+          let value = Buffer(e.target.response)
+          self.lenToSend = value.byteLength
+          self.readyData = value
+
+          push(value)
+          requestTimeout(end, 5)
+          // const pushRes = push(value)
+          /*while(push(value) !== false){
+            //readyData
+            console.log('here')
+          }*/
+          // console.log(pushRes)
+          // if push() returns false, then stop reading from source
+          // if (!this.push(chunk)){
+          // }
+          // push(value)
+          // end()
+          // alert(pushRes)
+
+        // setTimeout(end, 1,true) // don't call end directly !
         }
 
         function onError (e) {
@@ -87,29 +123,54 @@ export default function loadTest (uri) {
 
         const xhr = new XMLHttpRequest()
         xhr.responseType = 'arraybuffer'
-        xhr.addEventListener('load', onLoad)
+        xhr.addEventListener('load', onLoad.bind(this))
         xhr.addEventListener('error', onError)
         xhr.open('GET', uri, true)
         xhr.send()
       }
 
       if (supportsStreaming()) {
+        this.streamMode = true
         streams()
       } else {
+        this.streamMode = false
         noStreams()
       }
-    // if (!this.push(chunk)){
-    // }
     }
     _read (size) {
-      // console.log('_read')
-      // signal the source that it can start again
+      /*console.log('_read', size, this.lenToSend, this)
+      // this.push(this.readyData)
+      // setTimeout(this.end, 1,true) // don't call end directly !
+      let ready = true
+      if (this.streamMode) {
+        return
+      }
+      while(ready) {
+        if (size && this.lenToSend !== undefined && this.lenToSend > 0) {
+          size = Math.min(size, this.readyData.length)
+          const workChunk = this.readyData
+          const chunk = workChunk.slice(0, size)
+          ready = this.push(chunk)
+          this.lenToSend -= size // this.lenToSend//size
+          this.readyData = workChunk.slice(size)
+          console.log('sent', chunk)
+        } else {
+          ready = false
+        }
+        console.log('here')
+        if (this.lenToSend !== undefined && this.lenToSend <= 0) {
+          console.log('done')
+          ready = false
+          // this.emit('end')
+          setTimeout(this.end, 1, true) // don't call end directly !
+        }
+      }*/
+    // signal the source that it can start again
     }
   }
   // return HttpSourceStream(uri).pipe(makeStlStream({useWorker: true}))
   return create((add, end, error) => {
     function streamErrorHandler (_error) {
-      // console.log('error in load stream')
       error(_error)
     }
 
@@ -119,6 +180,5 @@ export default function loadTest (uri) {
       .on('error', streamErrorHandler)
       .pipe(concatStream(data => add(data)))
       .on('error', streamErrorHandler)
-  // FIXME: TODO: add error handling here
   })
 }
