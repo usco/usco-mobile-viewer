@@ -14,6 +14,6 @@ void main() {
   fragPosition = position;
   worldPosition = model * vec4(position, 1);
   vec4 glPosition = projection * view * worldPosition;
-  //gl_Position = glPosition;
-  gl_Position = zBufferAdjust(glPosition, camNear, camFar);
+  gl_Position = glPosition;
+  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);
 }
