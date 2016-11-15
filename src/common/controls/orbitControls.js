@@ -24,8 +24,8 @@ export const params = {
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
-    minDistance: 2,
-    maxDistance: 4000
+    minDistance: 30,
+    maxDistance: 800
   },
   EPS: 0.000001,
   drag: 0.27, // Decrease the momentum by 1% each iteration
@@ -38,11 +38,13 @@ export function update (settings, state) {
   const camera = state
   const {EPS, up, drag} = settings
   const {position, target, view} = camera
+  const {targetTgt, positionTgt} = camera
+
   let curThetaDelta = camera.thetaDelta
   let curPhiDelta = camera.phiDelta
   let curScale = camera.scale
 
-  let offset = vec3.subtract(vec3.create(), position, target)
+  let offset = vec3.subtract([], position, target)
   let theta
   let phi
 
@@ -80,13 +82,25 @@ export function update (settings, state) {
     offset[2] = radius * sin(phi) * cos(theta)
   }
 
-  const newPosition = vec3.add(vec3.create(), target, offset)
-  const newTarget = target
+  let newPosition = vec3.add(vec3.create(), target, offset)
+  let newTarget = target
   const newView = mat4.lookAt(view, newPosition, target, up)
   /* mat3.fromMat4(camMat, camMat)
   quat.fromMat3(this.rotation, camMat)
   lookAt(view, this.position, this.target, this.up)
   */
+
+  // temporary setup for camera 'move/zoom to fit'
+  if (targetTgt && positionTgt) {
+    const posDiff = vec3.subtract([], positionTgt, newPosition)
+    const tgtDiff = vec3.subtract([], targetTgt, newTarget)
+    //console.log('posDiff', newPosition, positionTgt, newTarget, targetTgt)
+    if (vec3.length(posDiff) > 0.1 && vec3.length(tgtDiff) > 0.1) {
+      newPosition = vec3.scaleAndAdd(newPosition, newPosition, posDiff, 0.1)
+      newTarget = vec3.scaleAndAdd(newTarget, newTarget, tgtDiff, 0.1)
+    }
+  }
+
   const dragEffect = 1 - max(min(drag, 1.0), 0.01)
 
   const positionChanged = vec3.distance(position, newPosition) > 0 // TODO optimise
@@ -102,26 +116,31 @@ export function update (settings, state) {
   }
 }
 
-export function rotate (params, cameraState, angle) {
+export function rotate (params, camera, angle) {
   const reductionFactor = 500
   if (params.userControl.rotate) {
-    cameraState.thetaDelta += (angle[0] / reductionFactor)
-    cameraState.phiDelta += (angle[1] / reductionFactor)
+    camera.thetaDelta += (angle[0] / reductionFactor)
+    camera.phiDelta += (angle[1] / reductionFactor)
   }
 
-  return cameraState
+  return camera
 }
 
-export function zoom (params, cameraState, zoomScale) {
+export function zoom (params, camera, zoomScale) {
   if (params.userControl.zoom) {
     zoomScale = zoomScale * 0.001 // Math.min(Math.max(zoomScale, -0.1), 0.1)
     const amount = Math.abs(zoomScale) === 1 ? Math.pow(0.95, params.userControl.zoomSpeed) : zoomScale
-    const scale = zoomScale < 0 ? (cameraState.scale / amount) : (cameraState.scale * amount)
-    // console.log('zoomScale',zoomScale,scale)
+    const scale = zoomScale < 0 ? (camera.scale / amount) : (camera.scale * amount)
+    camera.scale += amount
 
-    cameraState.scale += amount
+    // these are empirical values , after a LOT of testing
+    camera.near += amount * 0.5
+    camera.near = Math.min(Math.max(10, camera.near), 12)
+    camera.far += amount * 500
+    camera.far = Math.max(Math.min(2000, camera.far), 150)
+  // console.log('near ', camera.near, 'far', camera.far)
   }
-  return cameraState
+  return camera
 }
 
 function pan (params) {
@@ -134,15 +153,15 @@ function pan (params) {
   return params
 }
 
-export function setFocus (params, cameraState, focusPoint) {
+export function setFocus (params, camera, focusPoint) {
   const sub = (a, b) => a.map((a1, i) => a1 - b[i])
-  const add = (a, b) => a.map((a1, i) => a1 + b[i])
-  const camTarget = cameraState.target
+  const add = (a, b) => a.map((a1, i) => a1 + b[i]) // NOTE: NO typedArray.map support on old browsers, polyfilled
+  const camTarget = camera.target
   const diff = sub(focusPoint, camTarget) // [ focusPoint[0] - camTarget[0],
   const zOffset = [0, 0, diff[2] * 0.5]
-  cameraState.target = add(camTarget, zOffset)
-  cameraState.position = add(cameraState.position, zOffset)
-  return cameraState
+  camera.target = add(camTarget, zOffset)
+  camera.position = add(camera.position, zOffset)
+  return camera
 }
 
 /*

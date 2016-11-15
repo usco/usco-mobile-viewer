@@ -5,8 +5,8 @@ export default function drawMesh (regl, params = {extras: {}}) {
   const {prop, buffer} = regl
   const {geometry} = params
   let commandParams = {
-    vert: glslify(__dirname + '/shaders/mesh.vert'),
-    frag: glslify(__dirname + '/shaders/mesh.frag'),
+    vert: glslify(__dirname + '/../shaders/basic.vert'),
+    frag: glslify(__dirname + '/../shaders/basic.frag'),
 
     uniforms: {
       model: (context, props) => props.model || mat4.identity([]),

@@ -8,7 +8,7 @@ export default function wrapperScope (regl, params = {}) {
       enable: true
     },
     context: {
-      lightDir: [.39, 0.87, 0.29],
+      lightDir: [0.39, 0.87, 0.29]
     },
     uniforms: {
       lightDir: (context) => context.lightDir,
@@ -21,13 +21,9 @@ export default function wrapperScope (regl, params = {}) {
       ambientLightAmount: 0.8,
       diffuseLightAmount: 0.9,
       view: (context, props) => props.view,
-      projection: (context, props) => {
-        return mat4.perspective([],
-          Math.PI / 4,
-          context.viewportWidth / context.viewportHeight,
-          10,
-          10000)
-      }
+      projection: (context, props) => props.camera.projection,
+      camNear: (context, props) => props.camera.near,
+      camFar: (context, props) => props.camera.far
     },
     framebuffer: fbo
   }

@@ -1,19 +1,28 @@
 import { update, rotate, zoom, setFocus } from './orbitControls'
-import { fromEvent, combineArray, combine, mergeArray } from 'most'
-import { interactionsFromEvents, pointerGestures } from '../interactions/pointerGestures'
+import computeCameraToFitBounds from '../cameraEffects/computeCameraToFitBounds'
+import cameraOffsetToEntityBoundsCenter from '../cameraEffects/cameraOffsetToEntityBoundsCenter'
 
 import { model } from '../utils/modelUtils'
-import animationFrames from '../utils/animationFrames'
+import {animationFrames, rafStream} from '../utils/most/animationFrames'
 
-export default function controlsStream (interactions, cameraData, focuses$) {
+import mat4 from 'gl-mat4'
+import limitFlow from '../utils/most/limitFlow'
+
+export default function controlsStream (interactions, cameraData, focuses$, entityFocuses$, projection$) {
   const {settings, camera} = cameraData
   const {gestures} = interactions
 
-  const rate$ = animationFrames() // heartBeat
-  // const heartBeat$ = most.periodic(16, 'x')
-  // sample(world, rate)
+  const rate$ = rafStream() // heartBeat
 
-  const mobileReductor = 5.0 // how much we want to divide touch deltas to get movements on mobile
+  /*let i = 0
+  var newdiv = document.createElement("DIV")
+  newdiv.style.zIndex = 99
+  newdiv.style.position = 'absolute'
+  newdiv.style.color = 'red'
+  newdiv.style.top = '40px'
+  let textNode = document.createTextNode("some text"+i)
+  newdiv.appendChild(textNode)
+  document.body.appendChild(newdiv)*/
 
   const dragMoves$ = gestures.dragMoves
     // .throttle(16) // FIXME: not sure, could be optimized some more
@@ -38,36 +47,74 @@ export default function controlsStream (interactions, cameraData, focuses$) {
     .filter(x => !isNaN(x))
     .throttle(10)
 
-  //const focuses$ = gestures.focuses
-
   // model/ state/ reducers
-
   function makeCameraModel () {
+
+    function setProjection (state, input) {
+      const projection = mat4.perspective([], state.fov, input.width / input.height, // context.viewportWidth / context.viewportHeight,
+        state.near,
+        state.far)
+      //state = Object.assign({}, state, {projection})
+      state.projection = projection
+      state.aspect = input.width / input.height
+      //state = Object.assign({}, state, update(settings, state)) // not sure
+      return state
+    }
+
     function applyRotation (state, angles) {
+      //textNode.nodeValue= 'applyRotation'
       state = rotate(settings, state, angles) // mutating, meh
-      state = update(settings, state) // not sure
       return state
     }
 
     function applyZoom (state, zooms) {
       // console.log('applyZoom', zooms)
+      //textNode.nodeValue= 'applyZoom'
       state = zoom(settings, state, zooms) // mutating, meh
-      state = update(settings, state) // not sure
       return state
     }
 
     function applyFocusOn (state, focuses) {
       state = setFocus(settings, state, focuses) // mutating, meh
-      state = update(settings, state) // not sure
       return state
     }
 
-    function updateState (state) {
-      return update(settings, state)
+    function zoomToFit (state, input) {
+      //console.log('zoomToFit', state.position, state.target,  input)
+      let camera = state
+      const {bounds, transforms} = input
+      const offsetTargetAndPosition = cameraOffsetToEntityBoundsCenter({camera, bounds, transforms, axis: 2})
+      camera = Object.assign({}, state, offsetTargetAndPosition)
+      const phase2 = computeCameraToFitBounds({camera, bounds, transforms})
+      state.targetTgt = phase2.target
+      state.positionTgt = phase2.position
+      return state
     }
 
-    const updateFunctions = {applyZoom, applyRotation, updateState, applyFocusOn}
-    const actions = {applyZoom: zooms$, applyRotation: dragMoves$, updateState: rate$, applyFocusOn: focuses$}
+    //this is used for 'continuous updates' for things like spin effects, autoRotate etc
+    function updateState (state) {
+      //i++
+      //textNode.nodeValue= 'foo'+i
+      //return state
+      return Object.assign({}, state, update(settings, state))
+    }
+
+    const updateFunctions = {
+      setProjection,
+      applyZoom,
+      applyRotation,
+      //applyFocusOn,
+      zoomToFit,
+      updateState
+    }
+    const actions = {
+      setProjection: projection$,
+      applyZoom: zooms$,
+      applyRotation: dragMoves$,
+      //applyFocusOn: focuses$,
+      zoomToFit: entityFocuses$,
+      updateState: rate$
+    }
 
     const cameraState$ = model(camera, actions, updateFunctions)
 
@@ -77,7 +124,10 @@ export default function controlsStream (interactions, cameraData, focuses$) {
   const cameraState$ = makeCameraModel()
 
   return cameraState$
-    .sample(x => x, rate$)
-    .filter(x => x.changed)
-    .merge(cameraState$)
+    .thru(limitFlow(33))
+  /*return rate$.sample(x => x,
+    cameraState$
+      .filter(x => x.changed)
+      .merge(cameraState$.take(1))
+  )*/
 }

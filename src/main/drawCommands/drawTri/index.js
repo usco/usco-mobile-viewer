@@ -4,8 +4,8 @@ import mat4 from 'gl-mat4'
 export default function drawTri (regl, params) {
   const {width, height} = params
   return regl({
-    vert: glslify(__dirname + '/shaders/tri.vert'),
-    frag: glslify(__dirname + '/shaders/tri.frag'),
+    vert: glslify(__dirname + '/../shaders/basic.vert'),
+    frag: glslify(__dirname + '/../shaders/basic.frag'),
 
     attributes: {
       position: [

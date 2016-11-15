@@ -1,3 +1,5 @@
+//perhaps needed for simplicity: npm module
+//require('typedarray-methods')
 const reglM = require('regl')
 // use this one for server side render
 // const regl = require('regl')(require('gl')(256, 256))
@@ -8,7 +10,7 @@ import prepareRender from './drawCommands/render'
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
 
-import { combine, combineArray, merge, just } from 'most'
+import { combine, merge, just } from 'most'
 import limitFlow from '../common/utils/most/limitFlow'
 
 import loadAsStream from './loader'
@@ -18,6 +20,7 @@ import controlsStream from '../common/controls/controlsStream'
 // import pickStream from '../common/picking/pickStream'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
+import {elementSize} from '../common/interactions/elementSizing'
 /* --------------------- */
 import adressBarDriver from './sideEffects/adressBarDriver'
 
@@ -57,6 +60,7 @@ const modelUri$ = merge(
   })
   .filter(x => x !== null)
   .multicast()
+
 
 const setMachineParams$ = merge(
   nativeApi.machineParams$
@@ -99,19 +103,29 @@ const focuses$ = addEntities$.map(function (nEntity) {
   return mid
 })
 
+const entityFocuses$ = addEntities$
+const projection$ = elementSize(container)
 /*baseInteractions$.taps
 focuses.forEach(e=>console.log('tapping'))*/
-const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, focuses$)
+const camState$ = controlsStream({gestures}, {settings: cameraDefaults, camera}, focuses$, entityFocuses$, projection$)
 
 const visualState$ = makeVisualState(regl, machine$, entities$, camState$)
-  .thru(limitFlow(33))
+  .multicast()
   .flatMapError(function (error) {
-    console.error('error in rendering', error)
+    console.error('error in visualState', error)
     return just(null)
   })
   .filter(x => x !== null)
+
+visualState$
+  .thru(limitFlow(33))
   .tap(x => regl.poll())
-  .forEach(x => render(x))
+  .tap(render)
+  .flatMapError(function (error) {
+    console.error('error in render', error)
+    return just(null)
+  })
+  .forEach(x => x)
 
 // boundsExceeded
 const objectFitsPrintableVolume$ = combine(function (entity, machineParams) {
@@ -126,6 +140,7 @@ viewerReady()
 // OUTPUTS (sink side effects)
 addEntities$.forEach(m => modelLoaded(true)) // side effect => dispatch to callback)
 objectFitsPrintableVolume$.forEach(objectFitsPrintableVolume) // dispatch message to signify out of bounds or not
+
 
 // for testing only
 const machineParams = {
@@ -144,5 +159,5 @@ const machineParams = {
   window.nativeApi.setMachineParams(machineParams)
 }, 2000)
 setTimeout(function () {
-  window.nativeApi.setModelUri('http://localhost:8080/data/sanguinololu_enclosure_full.stl')
-}, 1000)*/
+  window.nativeApi.setModelUri( 'http://localhost:8080/data/sanguinololu_enclosure_full.stl')
+}, 50)*/
