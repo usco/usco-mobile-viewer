@@ -5,23 +5,6 @@ import fetchStream from 'fetch-readablestream'
 // require("web-streams-polyfill/dist/polyfill.min.js")
 // import 'whatwg-fetch'
 // import { ReadableStream } from "web-streams-polyfill"
-
-//needed workaround for setTimeout issues on ios should be removed once things are solved cleanly (?no more polyfills)
-function requestTimeout (fn, delay) {
-  var start = new Date().getTime(),
-    handle = { }
-
-  function loop () {
-    var current = new Date().getTime(),
-      delta = current - start
-
-    delta >= delay ? fn.call() : handle.value = requestAnimationFrame(loop)
-  }
-
-  handle.value = requestAnimationFrame(loop)
-  return handle
-}
-
 const Duplex = require('stream').Duplex
 const Readable = require('stream').Readable
 
@@ -100,21 +83,8 @@ export default function loadTest (uri) {
           self.readyData = value
 
           push(value)
-          requestTimeout(end, 5)
-          // const pushRes = push(value)
-          /*while(push(value) !== false){
-            //readyData
-            console.log('here')
-          }*/
-          // console.log(pushRes)
-          // if push() returns false, then stop reading from source
-          // if (!this.push(chunk)){
-          // }
-          // push(value)
-          // end()
-          // alert(pushRes)
-
-        // setTimeout(end, 1,true) // don't call end directly !
+          push(null) // DO NOT fire some event, this way value => null are
+          //handled in the correct order
         }
 
         function onError (e) {
