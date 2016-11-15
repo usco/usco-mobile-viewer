@@ -14,7 +14,7 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
 
   const rate$ = rafStream() // heartBeat
 
-  let i = 0
+  /*let i = 0
   var newdiv = document.createElement("DIV")
   newdiv.style.zIndex = 99
   newdiv.style.position = 'absolute'
@@ -22,7 +22,7 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
   newdiv.style.top = '40px'
   let textNode = document.createTextNode("some text"+i)
   newdiv.appendChild(textNode)
-  document.body.appendChild(newdiv)
+  document.body.appendChild(newdiv)*/
 
   const dragMoves$ = gestures.dragMoves
     // .throttle(16) // FIXME: not sure, could be optimized some more
@@ -49,40 +49,38 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
 
   // model/ state/ reducers
   function makeCameraModel () {
+
     function setProjection (state, input) {
       const projection = mat4.perspective([], state.fov, input.width / input.height, // context.viewportWidth / context.viewportHeight,
         state.near,
         state.far)
       //state = Object.assign({}, state, {projection})
       state.projection = projection
+      state.aspect = input.width / input.height
       //state = Object.assign({}, state, update(settings, state)) // not sure
       return state
     }
 
     function applyRotation (state, angles) {
-      textNode.nodeValue= 'applyRotation'
-
+      //textNode.nodeValue= 'applyRotation'
       state = rotate(settings, state, angles) // mutating, meh
-      //state = Object.assign({}, state, update(settings, state)) // not sure
       return state
     }
 
     function applyZoom (state, zooms) {
       // console.log('applyZoom', zooms)
-      textNode.nodeValue= 'applyZoom'
+      //textNode.nodeValue= 'applyZoom'
       state = zoom(settings, state, zooms) // mutating, meh
-      //state = Object.assign({}, state, update(settings, state)) // not sure
       return state
     }
 
     function applyFocusOn (state, focuses) {
       state = setFocus(settings, state, focuses) // mutating, meh
-      //state = Object.assign({}, state, update(settings, state)) // not sure
       return state
     }
 
     function zoomToFit (state, input) {
-      console.log('zoomToFit', state.position, state.target,  input)
+      //console.log('zoomToFit', state.position, state.target,  input)
       let camera = state
       const {bounds, transforms} = input
       const offsetTargetAndPosition = cameraOffsetToEntityBoundsCenter({camera, bounds, transforms, axis: 2})
