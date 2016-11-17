@@ -38,9 +38,9 @@ export function interactionsFromEvents (targetEl) {
   const touchMoves$ = fromEvent('touchmove', targetEl).filter(t => t.touches.length === 1)
   const touchEnd$ = fromEvent('touchend', targetEl)
 
-  const gestureChange$ = fromEvent('gesturechange', targetEl)
-  const gestureStart$ = fromEvent('gesturestart', targetEl)
-  const gestureEnd$ = fromEvent('gestureend', targetEl)
+  //const gestureChange$ = fromEvent('gesturechange', targetEl)
+  //const gestureStart$ = fromEvent('gesturestart', targetEl)
+  //const gestureEnd$ = fromEvent('gestureend', targetEl)
 
   const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
@@ -48,8 +48,8 @@ export function interactionsFromEvents (targetEl) {
 
   const zooms$ = merge(
     merge(
-      pinchZooms(gestureChange$, gestureStart$, gestureEnd$),
-      pinchZoomsFromTouch(touchStart$, fromEvent('touchmove', targetEl), touchEnd$)
+      //pinchZooms(gestureChange$, gestureStart$, gestureEnd$),// for Ios
+      pinchZoomsFromTouch(touchStart$, fromEvent('touchmove', targetEl), touchEnd$)// for Android (no gestureXX events)
     ),
 
     merge(
@@ -160,23 +160,35 @@ function pinchZooms (gestureChange$, gestureStart$, gestureEnd$) {
     .flatMap(function (gs) {
       return gestureChange$
         .map(x => x.scale)
-        .loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
+        //.loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
+        .loop(function(prev, cur) {
+          console.log('prev',prev,'cur',cur, 'value',prev ? cur - prev : prev)
+          let value = prev ? cur - prev : prev
+
+          if(value>0){
+            value = Math.min(Math.max(value, 0), 2)
+          }else{
+            value = Math.min(Math.max(value, 2), 0)
+          }
+
+          return {seed: cur, value}
+        },undefined)
         .filter(x => x !== undefined)
         //.map(x => x / x)
         .takeUntil(gestureEnd$)
-    })
+    }).tap(e=>console.log('pinchZooms',e))
 }
 
 function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
   // for android , custom gesture handling
   //very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
   return touchStart$
-    .filter(t => t.touches.length === 2).filter(isNotIos)
+    .filter(t => t.touches.length === 2)//.filter(isNotIos)
     .flatMap(function (ts) {
       return touchMoves$
         .tap(e => e.preventDefault())
         .filter(t => t.touches.length === 2)
-        .filter(isNotIos)
+        //.filter(isNotIos)
         .map(e => {
           return (e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) +
           (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY)
