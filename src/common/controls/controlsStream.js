@@ -39,17 +39,16 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
       return angle
     })
     .map(x => x.map(y => y * 0.1)) // empirical reduction factor
-    .map(x => x.map(y => y * window.devicePixelRatio))
 
   const zooms$ = gestures.zooms
     .map(x => -x) // we invert zoom direction
     .startWith(0)
     .filter(x => !isNaN(x))
-    .throttle(10)
+    .map(x => x * 2.5)
+    //.throttle(10)
 
   // model/ state/ reducers
   function makeCameraModel () {
-
     function setProjection (state, input) {
       const projection = mat4.perspective([], state.fov, input.width / input.height, // context.viewportWidth / context.viewportHeight,
         state.near,
@@ -68,8 +67,6 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
     }
 
     function applyZoom (state, zooms) {
-      // console.log('applyZoom', zooms)
-      //textNode.nodeValue= 'applyZoom'
       state = zoom(settings, state, zooms) // mutating, meh
       return state
     }
