@@ -61,7 +61,7 @@ export default function makeDrawEnclosure (regl, params) {
     drawGrid({view, camera, color: [0, 0, 0, 0.2], model: gridOffset})
     drawGridDense({view, camera, color: [0, 0, 0, 0.06], model: gridOffsetD})
 
-    drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
+    // drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
     drawBuildPlane({view, camera, color: [1, 1, 1, 1], model: buildPlaneModel})
     drawCuboid({view, camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix})
     // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
