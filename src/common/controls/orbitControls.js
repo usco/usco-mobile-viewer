@@ -139,6 +139,11 @@ export function zoom (params, camera, zoomScale) {
     camera.far += amount * 500
     camera.far = Math.max(Math.min(2000, camera.far), 150)
   // console.log('near ', camera.near, 'far', camera.far)
+
+  const projection = mat4.perspective([], camera.fov, camera.aspect, // context.viewportWidth / context.viewportHeight,
+    camera.near,
+    camera.far)
+  camera.projection = projection
   }
   return camera
 }

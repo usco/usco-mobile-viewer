@@ -38,9 +38,9 @@ export function interactionsFromEvents (targetEl) {
   const touchMoves$ = fromEvent('touchmove', targetEl).filter(t => t.touches.length === 1)
   const touchEnd$ = fromEvent('touchend', targetEl)
 
-  const gestureChange$ = fromEvent('gesturechange', targetEl)
-  const gestureStart$ = fromEvent('gesturestart', targetEl)
-  const gestureEnd$ = fromEvent('gestureend', targetEl)
+  // const gestureChange$ = fromEvent('gesturechange', targetEl)
+  // const gestureStart$ = fromEvent('gesturestart', targetEl)
+  // const gestureEnd$ = fromEvent('gestureend', targetEl)
 
   const pointerDowns$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
@@ -48,8 +48,8 @@ export function interactionsFromEvents (targetEl) {
 
   const zooms$ = merge(
     merge(
-      pinchZooms(gestureChange$, gestureStart$, gestureEnd$),
-      pinchZoomsFromTouch(touchStart$, fromEvent('touchmove', targetEl), touchEnd$)
+      // pinchZooms(gestureChange$, gestureStart$, gestureEnd$),// for Ios
+      pinchZoomsFromTouch(touchStart$, fromEvent('touchmove', targetEl), touchEnd$) // for Android (no gestureXX events)
     ),
 
     merge(
@@ -92,20 +92,20 @@ function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
   const {longPressDelay, maxStaticDeltaSqr} = settings
   return mouseDowns$.flatMap(function (md) {
     // calculate offsets when mouse down
-    let startX = md.offsetX
-    let startY = md.offsetY
+    let startX = md.offsetX * window.devicePixelRatio
+    let startY = md.offsetY * window.devicePixelRatio
     // Calculate delta with mousemove until mouseup
-    let prevX = md.offsetX
-    let prevY = md.offsetY
+    let prevX = startX
+    let prevY = startY
 
     return mouseMoves
       .map(function (e) {
-        let curX = e.clientX
-        let curY = e.clientY
+        let curX = e.clientX * window.devicePixelRatio
+        let curY = e.clientY * window.devicePixelRatio
 
         let delta = {
-          left: e.clientX - startX,
-          top: e.clientY - startY,
+          left: curX - startX,
+          top: curY - startY,
           x: prevX - curX,
           y: curY - prevY
         }
@@ -113,7 +113,7 @@ function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
         prevX = curX
         prevY = curY
 
-        const normalized = {x: e.clientX, y: e.clientY}
+        const normalized = {x: curX, y: curY}
         return {mouseEvent: e, delta, normalized, type: 'mouse'}
       })
       .takeUntil(mouseUps)
@@ -123,19 +123,19 @@ function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
 function touchDrags (touchStart$, touchEnd$, touchMove$, settings) {
   return touchStart$
     .flatMap(function (ts) {
-      let startX = ts.touches[0].pageX
-      let startY = ts.touches[0].pageY
+      let startX = ts.touches[0].pageX * window.devicePixelRatio
+      let startY = ts.touches[0].pageY * window.devicePixelRatio
 
-      let prevX = ts.touches[0].pageX
-      let prevY = ts.touches[0].pageY
+      let prevX = startX
+      let prevY = startY
 
       return touchMove$
         .map(function (e) {
-          let x = (e.touches[0].pageX - startX)
-          let y = (e.touches[0].pageY - startY)
+          let curX = e.touches[0].pageX * window.devicePixelRatio
+          let curY = e.touches[0].pageY * window.devicePixelRatio
 
-          let curX = e.touches[0].pageX
-          let curY = e.touches[0].pageY
+          let x = (curX - startX)
+          let y = (curY - startY)
 
           let delta = {
             left: x,
@@ -148,7 +148,7 @@ function touchDrags (touchStart$, touchEnd$, touchMove$, settings) {
           prevY = curY
 
           // let output = assign({}, e, {delta})
-          const normalized = {x: e.touches[0].pageX, y: e.touches[0].pageY}
+          const normalized = {x: curX, y: curY}
           return {mouseEvent: e, delta, normalized, type: 'touch'}
         })
         .takeUntil(touchEnd$)
@@ -160,46 +160,67 @@ function pinchZooms (gestureChange$, gestureStart$, gestureEnd$) {
     .flatMap(function (gs) {
       return gestureChange$
         .map(x => x.scale)
-        .loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
+        // .loop((prev, cur) => ({seed: cur, value: prev ? cur - prev : prev}), undefined)
+        .loop(function (prev, cur) {
+          console.log('prev', prev, 'cur', cur, 'value', prev ? cur - prev : prev)
+          let value = prev ? cur - prev : prev
+
+          if (value > 0) {
+            value = Math.min(Math.max(value, 0), 2)
+          } else {
+            value = Math.min(Math.max(value, 2), 0)
+          }
+
+          return {seed: cur, value}
+        }, undefined)
         .filter(x => x !== undefined)
-        //.map(x => x / x)
+        // .map(x => x / x)
         .takeUntil(gestureEnd$)
-    })
+    }).tap(e => console.log('pinchZooms', e))
 }
 
 function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
   // for android , custom gesture handling
-  //very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
+  // very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
   return touchStart$
-    .filter(t => t.touches.length === 2).filter(isNotIos)
+    .filter(t => t.touches.length === 2) // .filter(isNotIos)
     .flatMap(function (ts) {
+      let startX1 = ts.touches[0].pageX * window.devicePixelRatio
+      let startY1 = ts.touches[0].pageY * window.devicePixelRatio
+
+      let startX2 = ts.touches[1].pageX * window.devicePixelRatio
+      let startY2 = ts.touches[1].pageY * window.devicePixelRatio
+
+      const startDist = (startX1 - startX2 * startX1 - startX2) + (startY1 - startY2 * startY1 - startY2)
+
       return touchMoves$
         .tap(e => e.preventDefault())
         .filter(t => t.touches.length === 2)
-        .filter(isNotIos)
-        .map(e => {
-          return (e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) +
-          (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY)
+        // .tap(e => console.log('touchMoves BEFORE', e))
+        .map(function (e) {
+          let curX1 = e.touches[0].pageX * window.devicePixelRatio
+          let curY1 = e.touches[0].pageY * window.devicePixelRatio
+
+          let curX2 = e.touches[1].pageX * window.devicePixelRatio
+          let curY2 = e.touches[1].pageY * window.devicePixelRatio
+
+          const currentDist = (curX1 - curX2 * curX1 - curX2) + (curY1 - curY2 * curY1 - curY2)
+          return currentDist
         })
-        .skipRepeats()
-        // .loop((prev, cur) => ({seed: cur, value: prev && Math.abs(prev - cur) > 150 ? cur : prev}), undefined)
+
         .loop(function (prev, cur) {
-          let value
           if (prev) {
-            const diff = Math.abs(prev - cur)
-            if (diff > 150) {
-              value = cur < prev ? -cur : cur
-              return {seed: cur, value}
-            }
+            return {seed: cur, value: cur - prev}
           }
-          return {seed: cur}
+          return {seed: cur, value: cur - startDist}
         }, undefined)
         .filter(x => x !== undefined)
-        .map(function (e) {
+        .map(x => x * 0.000005) // arbitrary, in order to harmonise desktop /mobile up to a point
+        // .filter(isNotIos)
+        /*.map(function (e) {
           const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
-          return {scale}
-        })
-        .map(x => x.scale * 0.0004)
+          return scale
+        })*/
         .takeUntil(touchEnd$)
     })
 }
