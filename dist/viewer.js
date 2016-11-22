@@ -11028,163 +11028,9510 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],149:[function(require,module,exports){
-(function (global){
-(function(Oa){"object"===typeof exports&&"undefined"!==typeof module?module.exports=Oa():"function"===typeof define&&define.amd?define([],Oa):("undefined"!==typeof window?window:"undefined"!==typeof global?global:"undefined"!==typeof self?self:this).createREGL=Oa()})(function(){return function f(p,u,l){function k(c,a){if(!u[c]){if(!p[c]){var b="function"==typeof require&&require;if(!a&&b)return b(c,!0);if(x)return x(c,!0);b=Error("Cannot find module '"+c+"'");throw b.code="MODULE_NOT_FOUND",b;}b=
-u[c]={exports:{}};p[c][0].call(b.exports,function(a){var b=p[c][1][a];return k(b?b:a)},b,b.exports,f,p,u,l)}return u[c].exports}for(var x="function"==typeof require&&require,r=0;r<l.length;r++)k(l[r]);return k}({1:[function(f,p,u){function l(){this.w=this.z=this.y=this.x=this.state=0;this.buffer=null;this.size=0;this.normalized=!1;this.type=5126;this.divisor=this.stride=this.offset=0}p.exports=function(k,x,r,c,a){k=r.maxAttributes;x=Array(k);for(r=0;r<k;++r)x[r]=new l;return{Record:l,scope:{},state:x}}},
-{}],2:[function(f,p,u){function l(c){return t[Object.prototype.toString.call(c)]|0}function k(c,a){for(var b=0;b<a.length;++b)c[b]=a[b]}function x(c,a,b,k,l,r,x){for(var g=0,h=0;h<b;++h)for(var f=0;f<k;++f)c[g++]=a[l*h+r*f+x]}var r=f("./util/is-typed-array"),c=f("./util/is-ndarray"),a=f("./util/values"),b=f("./util/pool");u=f("./util/flatten");var F=u.flatten,M=u.shape,t=f("./constants/arraytypes.json"),y=f("./constants/dtypes.json"),g=f("./constants/usage.json"),E=[];E[5120]=1;E[5122]=2;E[5124]=
-4;E[5121]=1;E[5123]=2;E[5125]=4;E[5126]=4;p.exports=function(f,t,n){function m(c){this.id=H++;this.buffer=f.createBuffer();this.type=c;this.usage=35044;this.byteLength=0;this.dimension=1;this.dtype=5121;this.persistentData=null;n.profile&&(this.stats={size:0})}function B(c,a,b){c.byteLength=a.byteLength;f.bufferData(c.type,a,b)}function p(a,h,m,f,g,n){a.usage=m;if(Array.isArray(h)){if(a.dtype=f||5126,0<h.length)if(Array.isArray(h[0])){g=M(h);for(var K=f=1;K<g.length;++K)f*=g[K];a.dimension=f;h=F(h,
-g,a.dtype);B(a,h,m);n?a.persistentData=h:b.freeType(h)}else"number"===typeof h[0]?(a.dimension=g,g=b.allocType(a.dtype,h.length),k(g,h),B(a,g,m),n?a.persistentData=g:b.freeType(g)):r(h[0])&&(a.dimension=h[0].length,a.dtype=f||l(h[0])||5126,h=F(h,[h.length,h[0].length],a.dtype),B(a,h,m),n?a.persistentData=h:b.freeType(h))}else if(r(h))a.dtype=f||l(h),a.dimension=g,B(a,h,m),n&&(a.persistentData=new Uint8Array(new Uint8Array(h.buffer)));else if(c(h)){g=h.shape;var C=h.stride,K=h.offset,y=0,q=0,S=0,t=
-0;1===g.length?(y=g[0],q=1,S=C[0],t=0):2===g.length&&(y=g[0],q=g[1],S=C[0],t=C[1]);a.dtype=f||l(h.data)||5126;a.dimension=q;g=b.allocType(a.dtype,y*q);x(g,h.data,y,q,S,t,K);B(a,g,m);n?a.persistentData=g:b.freeType(g)}}function L(c){t.bufferCount--;f.deleteBuffer(c.buffer);c.buffer=null;delete h[c.id]}var H=0,h={};m.prototype.bind=function(){f.bindBuffer(this.type,this.buffer)};m.prototype.destroy=function(){L(this)};var fa=[];n.profile&&(t.getTotalBufferSize=function(){var c=0;Object.keys(h).forEach(function(a){c+=
-h[a].stats.size});return c});return{create:function(a,B,H,fa){function u(a){var h=35044,b=null,q=0,k=0,m=1;Array.isArray(a)||r(a)||c(a)?b=a:"number"===typeof a?q=a|0:a&&("data"in a&&(b=a.data),"usage"in a&&(h=g[a.usage]),"type"in a&&(k=y[a.type]),"dimension"in a&&(m=a.dimension|0),"length"in a&&(q=a.length|0));D.bind();b?p(D,b,h,k,m,fa):(f.bufferData(D.type,q,h),D.dtype=k||5121,D.usage=h,D.dimension=m,D.byteLength=q);n.profile&&(D.stats.size=D.byteLength*E[D.dtype]);return u}t.bufferCount++;var D=
-new m(B);h[D.id]=D;H||u(a);u._reglType="buffer";u._buffer=D;u.subdata=function(a,h){var m=(h||0)|0,q;D.bind();if(Array.isArray(a)){if(0<a.length)if("number"===typeof a[0]){var g=b.allocType(D.dtype,a.length);k(g,a);f.bufferSubData(D.type,m,g);b.freeType(g)}else if(Array.isArray(a[0])||r(a[0]))q=M(a),g=F(a,q,D.dtype),f.bufferSubData(D.type,m,g),b.freeType(g)}else if(r(a))f.bufferSubData(D.type,m,a);else if(c(a)){q=a.shape;var n=a.stride,B=g=0,y=0,t=0;1===q.length?(g=q[0],B=1,y=n[0],t=0):2===q.length&&
-(g=q[0],B=q[1],y=n[0],t=n[1]);q=Array.isArray(a.data)?D.dtype:l(a.data);q=b.allocType(q,g*B);x(q,a.data,g,B,y,t,a.offset);f.bufferSubData(D.type,m,q);b.freeType(q)}return u};n.profile&&(u.stats=D.stats);u.destroy=function(){L(D)};return u},createStream:function(a,c){var h=fa.pop();h||(h=new m(a));h.bind();p(h,c,35040,0,1,!1);return h},destroyStream:function(a){fa.push(a)},clear:function(){a(h).forEach(L);fa.forEach(L)},getBuffer:function(a){return a&&a._buffer instanceof m?a._buffer:null},restore:function(){a(h).forEach(function(a){a.buffer=
-f.createBuffer();f.bindBuffer(a.type,a.buffer);f.bufferData(a.type,a.persistentData||a.byteLength,a.usage)})},_initBuffer:p}}},{"./constants/arraytypes.json":3,"./constants/dtypes.json":4,"./constants/usage.json":6,"./util/flatten":23,"./util/is-ndarray":25,"./util/is-typed-array":26,"./util/pool":28,"./util/values":31}],3:[function(f,p,u){p.exports={"[object Int8Array]":5120,"[object Int16Array]":5122,"[object Int32Array]":5124,"[object Uint8Array]":5121,"[object Uint8ClampedArray]":5121,"[object Uint16Array]":5123,
-"[object Uint32Array]":5125,"[object Float32Array]":5126,"[object Float64Array]":5121,"[object ArrayBuffer]":5121}},{}],4:[function(f,p,u){p.exports={int8:5120,int16:5122,int32:5124,uint8:5121,uint16:5123,uint32:5125,"float":5126,float32:5126}},{}],5:[function(f,p,u){p.exports={points:0,point:0,lines:1,line:1,"line loop":2,"line strip":3,triangles:4,triangle:4,"triangle strip":5,"triangle fan":6}},{}],6:[function(f,p,u){p.exports={"static":35044,dynamic:35048,stream:35040}},{}],7:[function(f,p,u){function l(a){return Array.isArray(a)||
-M(a)||t(a)}function k(a){return a.sort(function(a,c){return"viewport"===a?-1:"viewport"===c?1:a<c?-1:1})}function x(a,c,b,k){this.thisDep=a;this.contextDep=c;this.propDep=b;this.append=k}function r(a){return a&&!(a.thisDep||a.contextDep||a.propDep)}function c(a){return new x(!1,!1,!1,a)}function a(a,c){var b=a.type;return 0===b?(b=a.data.length,new x(!0,1<=b,2<=b,c)):4===b?(b=a.data,new x(b.thisDep,b.contextDep,b.propDep,c)):new x(3===b,2===b,1===b,c)}var b=f("./util/codegen"),F=f("./util/loop"),
-M=f("./util/is-typed-array"),t=f("./util/is-ndarray"),y=f("./util/is-array-like"),g=f("./dynamic"),E=f("./constants/primitives.json"),C=f("./constants/dtypes.json"),N=["x","y","z","w"],n="blend.func blend.equation stencil.func stencil.opFront stencil.opBack sample.coverage viewport scissor.box polygonOffset.offset".split(" "),m={0:0,1:1,zero:0,one:1,"src color":768,"one minus src color":769,"src alpha":770,"one minus src alpha":771,"dst color":774,"one minus dst color":775,"dst alpha":772,"one minus dst alpha":773,
-"constant color":32769,"one minus constant color":32770,"constant alpha":32771,"one minus constant alpha":32772,"src alpha saturate":776},B={never:512,less:513,"<":513,equal:514,"=":514,"==":514,"===":514,lequal:515,"<=":515,greater:516,">":516,notequal:517,"!=":517,"!==":517,gequal:518,">=":518,always:519},Y={0:0,zero:0,keep:7680,replace:7681,increment:7682,decrement:7683,"increment wrap":34055,"decrement wrap":34056,invert:5386},L={cw:2304,ccw:2305},H=new x(!1,!1,!1,function(){});p.exports=function(h,
-f,t,p,M,u,Z,D,K,Aa,va,q,S,ma,ga){function W(d){return d.replace(".","_")}function R(d,a,c){var b=W(d);w.push(d);z[b]=e[b]=!!c;wa[b]=a}function G(d,a,c){var b=W(d);w.push(d);Array.isArray(c)?(e[b]=c.slice(),z[b]=c.slice()):e[b]=z[b]=c;xa[b]=a}function ba(){var d=b(),a=d.link,c=d.global;d.id=Ra++;d.batchId="0";var h=a(Qa),A=d.shared={props:"a0"};Object.keys(Qa).forEach(function(d){A[d]=c.def(h,".",d)});var J=d.next={},P=d.current={};Object.keys(xa).forEach(function(d){Array.isArray(e[d])&&(J[d]=c.def(A.next,
-".",d),P[d]=c.def(A.current,".",d))});var Sa=d.constants={};Object.keys(Ma).forEach(function(d){Sa[d]=c.def(JSON.stringify(Ma[d]))});d.invoke=function(e,I){switch(I.type){case 0:var c=["this",A.context,A.props,d.batchId];return e.def(a(I.data),".call(",c.slice(0,Math.max(I.data.length+1,4)),")");case 1:return e.def(A.props,I.data);case 2:return e.def(A.context,I.data);case 3:return e.def("this",I.data);case 4:return I.data.append(d,e),I.data.ref}};d.attribCache={};var I={};d.scopeAttrib=function(d){d=
-f.id(d);if(d in I)return I[d];var e=Aa.scope[d];e||(e=Aa.scope[d]=new Ba);return I[d]=a(e)};return d}function na(d){var e=d["static"];d=d.dynamic;var b;if("profile"in e){var h=!!e.profile;b=c(function(d,e){return h});b.enable=h}else if("profile"in d){var A=d.profile;b=a(A,function(d,e){return d.invoke(e,A)})}return b}function ya(d,e){var b=d["static"],h=d.dynamic;if("framebuffer"in b){var A=b.framebuffer;return A?(A=D.getFramebuffer(A),c(function(d,e){var a=d.link(A),v=d.shared;e.set(v.framebuffer,
-".next",a);v=v.context;e.set(v,".framebufferWidth",a+".width");e.set(v,".framebufferHeight",a+".height");return a})):c(function(d,e){var a=d.shared;e.set(a.framebuffer,".next","null");a=a.context;e.set(a,".framebufferWidth",a+".drawingBufferWidth");e.set(a,".framebufferHeight",a+".drawingBufferHeight");return"null"})}if("framebuffer"in h){var J=h.framebuffer;return a(J,function(d,e){var a=d.invoke(e,J),v=d.shared,c=v.framebuffer,a=e.def(c,".getFramebuffer(",a,")");e.set(c,".next",a);v=v.context;e.set(v,
-".framebufferWidth",a+"?"+a+".width:"+v+".drawingBufferWidth");e.set(v,".framebufferHeight",a+"?"+a+".height:"+v+".drawingBufferHeight");return a})}return null}function U(d,e,c){function b(d){if(d in h){var I=h[d];d=!0;var c=I.x|0,qa=I.y|0,P,aa;"width"in I?P=I.width|0:d=!1;"height"in I?aa=I.height|0:d=!1;return new x(!d&&e&&e.thisDep,!d&&e&&e.contextDep,!d&&e&&e.propDep,function(d,e){var a=d.shared.context,v=P;"width"in I||(v=e.def(a,".","framebufferWidth","-",c));var b=aa;"height"in I||(b=e.def(a,
-".","framebufferHeight","-",qa));return[c,qa,v,b]})}if(d in J){var w=J[d];d=a(w,function(d,e){var a=d.invoke(e,w),I=d.shared.context,c=e.def(a,".x|0"),v=e.def(a,".y|0"),qa=e.def('"width" in ',a,"?",a,".width|0:","(",I,".","framebufferWidth","-",c,")"),a=e.def('"height" in ',a,"?",a,".height|0:","(",I,".","framebufferHeight","-",v,")");return[c,v,qa,a]});e&&(d.thisDep=d.thisDep||e.thisDep,d.contextDep=d.contextDep||e.contextDep,d.propDep=d.propDep||e.propDep);return d}return e?new x(e.thisDep,e.contextDep,
-e.propDep,function(d,e){var a=d.shared.context;return[0,0,e.def(a,".","framebufferWidth"),e.def(a,".","framebufferHeight")]}):null}var h=d["static"],J=d.dynamic;if(d=b("viewport")){var P=d;d=new x(d.thisDep,d.contextDep,d.propDep,function(d,e){var a=P.append(d,e),c=d.shared.context;e.set(c,".viewportWidth",a[2]);e.set(c,".viewportHeight",a[3]);return a})}return{viewport:d,scissor_box:b("scissor.box")}}function ia(d){function e(d){if(d in b){var I=f.id(b[d]);d=c(function(){return I});d.id=I;return d}if(d in
-h){var v=h[d];return a(v,function(d,e){var a=d.invoke(e,v);return e.def(d.shared.strings,".id(",a,")")})}return null}var b=d["static"],h=d.dynamic,A=e("frag"),J=e("vert"),P=null;r(A)&&r(J)?(P=va.program(J.id,A.id),d=c(function(d,e){return d.link(P)})):d=new x(A&&A.thisDep||J&&J.thisDep,A&&A.contextDep||J&&J.contextDep,A&&A.propDep||J&&J.propDep,function(d,e){var a=d.shared.shader,c;c=A?A.append(d,e):e.def(a,".","frag");var v;v=J?J.append(d,e):e.def(a,".","vert");return e.def(a+".program("+v+","+c+
-")")});return{frag:A,vert:J,progVar:d,program:P}}function ka(d,e){function b(d,e){if(d in h){var v=h[d]|0;return c(function(d,a){e&&(d.OFFSET=v);return v})}if(d in A){var qa=A[d];return a(qa,function(d,a){var c=d.invoke(a,qa);e&&(d.OFFSET=c);return c})}return e&&J?c(function(d,e){d.OFFSET="0";return 0}):null}var h=d["static"],A=d.dynamic,J=function(){if("elements"in h){var d=h.elements;l(d)?d=u.getElements(u.create(d,!0)):d&&(d=u.getElements(d));var e=c(function(e,a){if(d){var c=e.link(d);return e.ELEMENTS=
-c}return e.ELEMENTS=null});e.value=d;return e}if("elements"in A){var v=A.elements;return a(v,function(d,e){var a=d.shared,c=a.isBufferArgs,a=a.elements,I=d.invoke(e,v),b=e.def("null"),c=e.def(c,"(",I,")"),I=d.cond(c).then(b,"=",a,".createStream(",I,");")["else"](b,"=",a,".getElements(",I,");");e.entry(I);e.exit(d.cond(c).then(a,".destroyStream(",b,");"));return d.ELEMENTS=b})}return null}(),P=b("offset",!0);return{elements:J,primitive:function(){if("primitive"in h){var d=h.primitive;return c(function(e,
-a){return E[d]})}if("primitive"in A){var e=A.primitive;return a(e,function(d,a){var c=d.constants.primTypes,v=d.invoke(a,e);return a.def(c,"[",v,"]")})}return J?r(J)?J.value?c(function(d,e){return e.def(d.ELEMENTS,".primType")}):c(function(){return 4}):new x(J.thisDep,J.contextDep,J.propDep,function(d,e){var a=d.ELEMENTS;return e.def(a,"?",a,".primType:",4)}):null}(),count:function(){if("count"in h){var d=h.count|0;return c(function(){return d})}if("count"in A){var e=A.count;return a(e,function(d,
-a){return d.invoke(a,e)})}return J?r(J)?J?P?new x(P.thisDep,P.contextDep,P.propDep,function(d,e){return e.def(d.ELEMENTS,".vertCount-",d.OFFSET)}):c(function(d,e){return e.def(d.ELEMENTS,".vertCount")}):c(function(){return-1}):new x(J.thisDep||P.thisDep,J.contextDep||P.contextDep,J.propDep||P.propDep,function(d,e){var a=d.ELEMENTS;return d.OFFSET?e.def(a,"?",a,".vertCount-",d.OFFSET,":-1"):e.def(a,"?",a,".vertCount:-1")}):null}(),instances:b("instances",!1),offset:P}}function ra(d,e){var b=d["static"],
-h=d.dynamic,A={};w.forEach(function(d){function e(I,w){if(d in b){var qa=I(b[d]);A[v]=c(function(){return qa})}else if(d in h){var P=h[d];A[v]=a(P,function(d,e){return w(d,e,d.invoke(e,P))})}}var v=W(d);switch(d){case "cull.enable":case "blend.enable":case "dither":case "stencil.enable":case "depth.enable":case "scissor.enable":case "polygonOffset.enable":case "sample.alpha":case "sample.enable":case "depth.mask":return e(function(d){return d},function(d,e,a){return a});case "depth.func":return e(function(d){return B[d]},
-function(d,e,a){return e.def(d.constants.compareFuncs,"[",a,"]")});case "depth.range":return e(function(d){return d},function(d,e,a){d=e.def("+",a,"[0]");e=e.def("+",a,"[1]");return[d,e]});case "blend.func":return e(function(d){return[m["srcRGB"in d?d.srcRGB:d.src],m["dstRGB"in d?d.dstRGB:d.dst],m["srcAlpha"in d?d.srcAlpha:d.src],m["dstAlpha"in d?d.dstAlpha:d.dst]]},function(d,e,a){function c(d,v){return e.def('"',d,v,'" in ',a,"?",a,".",d,v,":",a,".",d)}d=d.constants.blendFuncs;var v=c("src","RGB"),
-b=c("dst","RGB"),v=e.def(d,"[",v,"]"),h=e.def(d,"[",c("src","Alpha"),"]"),b=e.def(d,"[",b,"]");d=e.def(d,"[",c("dst","Alpha"),"]");return[v,b,h,d]});case "blend.equation":return e(function(d){if("string"===typeof d)return[ca[d],ca[d]];if("object"===typeof d)return[ca[d.rgb],ca[d.alpha]]},function(d,e,a){var c=d.constants.blendEquations,v=e.def(),b=e.def();d=d.cond("typeof ",a,'==="string"');d.then(v,"=",b,"=",c,"[",a,"];");d["else"](v,"=",c,"[",a,".rgb];",b,"=",c,"[",a,".alpha];");e(d);return[v,b]});
-case "blend.color":return e(function(d){return F(4,function(e){return+d[e]})},function(d,e,a){return F(4,function(d){return e.def("+",a,"[",d,"]")})});case "stencil.mask":return e(function(d){return d|0},function(d,e,a){return e.def(a,"|0")});case "stencil.func":return e(function(d){return[B[d.cmp||"keep"],d.ref||0,"mask"in d?d.mask:-1]},function(d,e,a){d=e.def('"cmp" in ',a,"?",d.constants.compareFuncs,"[",a,".cmp]",":",7680);var c=e.def(a,".ref|0");e=e.def('"mask" in ',a,"?",a,".mask|0:-1");return[d,
-c,e]});case "stencil.opFront":case "stencil.opBack":return e(function(e){return["stencil.opBack"===d?1029:1028,Y[e.fail||"keep"],Y[e.zfail||"keep"],Y[e.zpass||"keep"]]},function(e,a,c){function v(d){return a.def('"',d,'" in ',c,"?",b,"[",c,".",d,"]:",7680)}var b=e.constants.stencilOps;return["stencil.opBack"===d?1029:1028,v("fail"),v("zfail"),v("zpass")]});case "polygonOffset.offset":return e(function(d){return[d.factor|0,d.units|0]},function(d,e,a){d=e.def(a,".factor|0");e=e.def(a,".units|0");return[d,
-e]});case "cull.face":return e(function(d){var e=0;"front"===d?e=1028:"back"===d&&(e=1029);return e},function(d,e,a){return e.def(a,'==="front"?',1028,":",1029)});case "lineWidth":return e(function(d){return d},function(d,e,a){return a});case "frontFace":return e(function(d){return L[d]},function(d,e,a){return e.def(a+'==="cw"?2304:2305')});case "colorMask":return e(function(d){return d.map(function(d){return!!d})},function(d,e,a){return F(4,function(d){return"!!"+a+"["+d+"]"})});case "sample.coverage":return e(function(d){return["value"in
-d?d.value:1,!!d.invert]},function(d,e,a){d=e.def('"value" in ',a,"?+",a,".value:1");e=e.def("!!",a,".invert");return[d,e]})}});return A}function sa(d,e){var b=d["static"],h=d.dynamic,A={};Object.keys(b).forEach(function(d){var e=b[d],a;if("number"===typeof e||"boolean"===typeof e)a=c(function(){return e});else if("function"===typeof e){var v=e._reglType;if("texture2d"===v||"textureCube"===v)a=c(function(d){return d.link(e)});else if("framebuffer"===v||"framebufferCube"===v)a=c(function(d){return d.link(e.color[0])})}else y(e)&&
-(a=c(function(d){return d.global.def("[",F(e.length,function(d){return e[d]}),"]")}));a.value=e;A[d]=a});Object.keys(h).forEach(function(d){var e=h[d];A[d]=a(e,function(d,a){return d.invoke(a,e)})});return A}function da(d,e){var b=d["static"],h=d.dynamic,A={};Object.keys(b).forEach(function(d){var e=b[d],a=f.id(d),v=new Ba;if(l(e))v.state=1,v.buffer=M.getBuffer(M.create(e,34962,!1,!0)),v.type=0;else{var h=M.getBuffer(e);if(h)v.state=1,v.buffer=h,v.type=0;else if(e.constant){var w=e.constant;v.buffer=
-"null";v.state=2;"number"===typeof w?v.x=w:N.forEach(function(d,e){e<w.length&&(v[d]=w[e])})}else{var h=l(e.buffer)?M.getBuffer(M.create(e.buffer,34962,!1,!0)):M.getBuffer(e.buffer),z=e.offset|0,q=e.stride|0,k=e.size|0,g=!!e.normalized,m=0;"type"in e&&(m=C[e.type]);e=e.divisor|0;v.buffer=h;v.state=1;v.size=k;v.normalized=g;v.type=m||h.dtype;v.offset=z;v.stride=q;v.divisor=e}}A[d]=c(function(d,e){var c=d.attribCache;if(a in c)return c[a];var b={isStream:!1};Object.keys(v).forEach(function(d){b[d]=
-v[d]});v.buffer&&(b.buffer=d.link(v.buffer),b.type=b.type||b.buffer+".dtype");return c[a]=b})});Object.keys(h).forEach(function(d){var e=h[d];A[d]=a(e,function(d,a){function v(d){a(A[d],"=",c,".",d,"|0;")}var c=d.invoke(a,e),b=d.shared,h=b.isBufferArgs,w=b.buffer,A={isStream:a.def(!1)},z=new Ba;z.state=1;Object.keys(z).forEach(function(d){A[d]=a.def(""+z[d])});var aa=A.buffer,q=A.type;a("if(",h,"(",c,")){",A.isStream,"=true;",aa,"=",w,".createStream(",34962,",",c,");",q,"=",aa,".dtype;","}else{",
-aa,"=",w,".getBuffer(",c,");","if(",aa,"){",q,"=",aa,".dtype;",'}else if("constant" in ',c,"){",A.state,"=",2,";","if(typeof "+c+'.constant === "number"){',A[N[0]],"=",c,".constant;",N.slice(1).map(function(d){return A[d]}).join("="),"=0;","}else{",N.map(function(d,e){return A[d]+"="+c+".constant.length>="+e+"?"+c+".constant["+e+"]:0;"}).join(""),"}}else{","if(",h,"(",c,".buffer)){",aa,"=",w,".createStream(",34962,",",c,".buffer);","}else{",aa,"=",w,".getBuffer(",c,".buffer);","}",q,'="type" in ',
-c,"?",b.glTypes,"[",c,".type]:",aa,".dtype;",A.normalized,"=!!",c,".normalized;");v("size");v("offset");v("stride");v("divisor");a("}}");a.exit("if(",A.isStream,"){",w,".destroyStream(",aa,");","}");return A})});return A}function ja(d){var e=d["static"],b=d.dynamic,h={};Object.keys(e).forEach(function(d){var a=e[d];h[d]=c(function(d,e){return"number"===typeof a||"boolean"===typeof a?""+a:d.link(a)})});Object.keys(b).forEach(function(d){var e=b[d];h[d]=a(e,function(d,a){return d.invoke(a,e)})});return h}
-function la(d,e,a,c,b){var h=ya(d,b),w=U(d,h,b),z=ka(d,b),q=ra(d,b),k=ia(d,b),g=w.viewport;g&&(q.viewport=g);g=W("scissor.box");(w=w[g])&&(q[g]=w);w=0<Object.keys(q).length;h={framebuffer:h,draw:z,shader:k,state:q,dirty:w};h.profile=na(d,b);h.uniforms=sa(a,b);h.attributes=da(e,b);h.context=ja(c,b);return h}function ea(d,e,a){var c=d.shared.context,b=d.scope();Object.keys(a).forEach(function(h){e.save(c,"."+h);b(c,".",h,"=",a[h].append(d,e),";")});e(b)}function O(d,e,a,c){var b=d.shared,h=b.gl,w=b.framebuffer,
-z;oa&&(z=e.def(b.extensions,".webgl_draw_buffers"));var q=d.constants,b=q.drawBuffer,q=q.backBuffer;d=a?a.append(d,e):e.def(w,".next");c||e("if(",d,"!==",w,".cur){");e("if(",d,"){",h,".bindFramebuffer(",36160,",",d,".framebuffer);");oa&&e(z,".drawBuffersWEBGL(",b,"[",d,".colorAttachments.length]);");e("}else{",h,".bindFramebuffer(",36160,",null);");oa&&e(z,".drawBuffersWEBGL(",q,");");e("}",w,".cur=",d,";");c||e("}")}function ha(d,a,c){var b=d.shared,h=b.gl,z=d.current,q=d.next,g=b.current,k=b.next,
-m=d.cond(g,".dirty");w.forEach(function(a){a=W(a);if(!(a in c.state)){var v,b;if(a in q){v=q[a];b=z[a];var w=F(e[a].length,function(d){return m.def(v,"[",d,"]")});m(d.cond(w.map(function(d,e){return d+"!=="+b+"["+e+"]"}).join("||")).then(h,".",xa[a],"(",w,");",w.map(function(d,e){return b+"["+e+"]="+d}).join(";"),";"))}else v=m.def(k,".",a),w=d.cond(v,"!==",g,".",a),m(w),a in wa?w(d.cond(v).then(h,".enable(",wa[a],");")["else"](h,".disable(",wa[a],");"),g,".",a,"=",v,";"):w(h,".",xa[a],"(",v,");",
-g,".",a,"=",v,";")}});0===Object.keys(c.state).length&&m(g,".dirty=false;");a(m)}function Q(d,e,a,c){var b=d.shared,h=d.current,w=b.current,q=b.gl;k(Object.keys(a)).forEach(function(b){var z=a[b];if(!c||c(z)){var g=z.append(d,e);if(wa[b]){var k=wa[b];r(z)?g?e(q,".enable(",k,");"):e(q,".disable(",k,");"):e(d.cond(g).then(q,".enable(",k,");")["else"](q,".disable(",k,");"));e(w,".",b,"=",g,";")}else if(y(g)){var m=h[b];e(q,".",xa[b],"(",g,");",g.map(function(d,e){return m+"["+e+"]="+d}).join(";"),";")}else e(q,
-".",xa[b],"(",g,");",w,".",b,"=",g,";")}})}function pa(d,e){ta&&(d.instancing=e.def(d.shared.extensions,".angle_instanced_arrays"))}function V(d,e,a,c,b){function h(){return"undefined"===typeof performance?"Date.now()":"performance.now()"}function w(d){l=e.def();d(l,"=",h(),";");"string"===typeof b?d(k,".count+=",b,";"):d(k,".count++;");ma&&(c?(n=e.def(),d(n,"=",f,".getNumPendingQueries();")):d(f,".beginQuery(",k,");"))}function q(d){d(k,".cpuTime+=",h(),"-",l,";");ma&&(c?d(f,".pushScopeStats(",n,
-",",f,".getNumPendingQueries(),",k,");"):d(f,".endQuery();"))}function z(d){var a=e.def(m,".profile");e(m,".profile=",d,";");e.exit(m,".profile=",a,";")}var g=d.shared,k=d.stats,m=g.current,f=g.timer;a=a.profile;var l,n;if(a){if(r(a)){a.enable?(w(e),q(e.exit),z("true")):z("false");return}a=a.append(d,e);z(a)}else a=e.def(m,".profile");g=d.block();w(g);e("if(",a,"){",g,"}");d=d.block();q(d);e.exit("if(",a,"){",d,"}")}function X(d,e,a,c,b){function h(d){switch(d){case 35664:case 35667:case 35671:return 2;
-case 35665:case 35668:case 35672:return 3;case 35666:case 35669:case 35673:return 4;default:return 1}}function w(a,c,b){function h(){e("if(!",m,".buffer){",g,".enableVertexAttribArray(",k,");}");var a=b.type,w;w=b.size?e.def(b.size,"||",c):c;e("if(",m,".type!==",a,"||",m,".size!==",w,"||",aa.map(function(d){return m+"."+d+"!=="+b[d]}).join("||"),"){",g,".bindBuffer(",34962,",",f,".buffer);",g,".vertexAttribPointer(",[k,w,a,b.normalized,b.stride,b.offset],");",m,".type=",a,";",m,".size=",w,";",aa.map(function(d){return m+
-"."+d+"="+b[d]+";"}).join(""),"}");ta&&(a=b.divisor,e("if(",m,".divisor!==",a,"){",d.instancing,".vertexAttribDivisorANGLE(",[k,a],");",m,".divisor=",a,";}"))}function z(){e("if(",m,".buffer){",g,".disableVertexAttribArray(",k,");","}if(",N.map(function(d,e){return m+"."+d+"!=="+A[e]}).join("||"),"){",g,".vertexAttrib4f(",k,",",A,");",N.map(function(d,e){return m+"."+d+"="+A[e]+";"}).join(""),"}")}var g=q.gl,k=e.def(a,".location"),m=e.def(q.attributes,"[",k,"]");a=b.state;var f=b.buffer,A=[b.x,b.y,
-b.z,b.w],aa=["buffer","normalized","offset","stride"];1===a?h():2===a?z():(e("if(",a,"===",1,"){"),h(),e("}else{"),z(),e("}"))}var q=d.shared;c.forEach(function(c){var q=c.name,g=a.attributes[q],z;if(g){if(!b(g))return;z=g.append(d,e)}else{if(!b(H))return;var m=d.scopeAttrib(q);z={};Object.keys(new Ba).forEach(function(d){z[d]=e.def(m,".",d)})}w(d.link(c),h(c.info.type),z)})}function T(d,e,a,c,b){for(var h=d.shared,w=h.gl,g,q=0;q<c.length;++q){var z=c[q],m=z.name,k=z.info.type,l=a.uniforms[m],z=d.link(z)+
-".location",n;if(l){if(!b(l))continue;if(r(l)){m=l.value;if(35678===k||35680===k)k=d.link(m._texture||m.color[0]._texture),e(w,".uniform1i(",z,",",k+".bind());"),e.exit(k,".unbind();");else if(35674===k||35675===k||35676===k)m=d.global.def("new Float32Array(["+Array.prototype.slice.call(m)+"])"),l=2,35675===k?l=3:35676===k&&(l=4),e(w,".uniformMatrix",l,"fv(",z,",false,",m,");");else{switch(k){case 5126:g="1f";break;case 35664:g="2f";break;case 35665:g="3f";break;case 35666:g="4f";break;case 35670:g=
-"1i";break;case 5124:g="1i";break;case 35671:g="2i";break;case 35667:g="2i";break;case 35672:g="3i";break;case 35668:g="3i";break;case 35673:g="4i";break;case 35669:g="4i"}e(w,".uniform",g,"(",z,",",y(m)?Array.prototype.slice.call(m):m,");")}continue}else n=l.append(d,e)}else{if(!b(H))continue;n=e.def(h.uniforms,"[",f.id(m),"]")}35678===k?e("if(",n,"&&",n,'._reglType==="framebuffer"){',n,"=",n,".color[0];","}"):35680===k&&e("if(",n,"&&",n,'._reglType==="framebufferCube"){',n,"=",n,".color[0];","}");
-m=1;switch(k){case 35678:case 35680:k=e.def(n,"._texture");e(w,".uniform1i(",z,",",k,".bind());");e.exit(k,".unbind();");continue;case 5124:case 35670:g="1i";break;case 35667:case 35671:g="2i";m=2;break;case 35668:case 35672:g="3i";m=3;break;case 35669:case 35673:g="4i";m=4;break;case 5126:g="1f";break;case 35664:g="2f";m=2;break;case 35665:g="3f";m=3;break;case 35666:g="4f";m=4;break;case 35674:g="Matrix2fv";break;case 35675:g="Matrix3fv";break;case 35676:g="Matrix4fv"}e(w,".uniform",g,"(",z,",");
-if("M"===g.charAt(0)){var z=Math.pow(k-35674+2,2),B=d.global.def("new Float32Array(",z,")");e("false,(Array.isArray(",n,")||",n," instanceof Float32Array)?",n,":(",F(z,function(d){return B+"["+d+"]="+n+"["+d+"]"}),",",B,")")}else 1<m?e(F(m,function(d){return n+"["+d+"]"})):e(n);e(");")}}function ua(d,e,a,c){function b(h){var g=k[h];return g?g.contextDep&&c.contextDynamic||g.propDep?g.append(d,a):g.append(d,e):e.def(m,".",h)}function h(){function d(){a(x,".drawElementsInstancedANGLE(",[f,n,K,l+"<<(("+
-K+"-5121)>>1)",B],");")}function e(){a(x,".drawArraysInstancedANGLE(",[f,l,n,B],");")}q?S?d():(a("if(",q,"){"),d(),a("}else{"),e(),a("}")):e()}function g(){function d(){a(z+".drawElements("+[f,n,K,l+"<<(("+K+"-5121)>>1)"]+");")}function e(){a(z+".drawArrays("+[f,l,n]+");")}q?S?d():(a("if(",q,"){"),d(),a("}else{"),e(),a("}")):e()}var w=d.shared,z=w.gl,m=w.draw,k=c.draw,q=function(){var b=k.elements,h=e;if(b){if(b.contextDep&&c.contextDynamic||b.propDep)h=a;b=b.append(d,h)}else b=h.def(m,".","elements");
-b&&h("if("+b+")"+z+".bindBuffer(34963,"+b+".buffer.buffer);");return b}(),f=b("primitive"),l=b("offset"),n=function(){var b=k.count,h=e;if(b){if(b.contextDep&&c.contextDynamic||b.propDep)h=a;b=b.append(d,h)}else b=h.def(m,".","count");return b}();if("number"===typeof n){if(0===n)return}else a("if(",n,"){"),a.exit("}");var B,x;ta&&(B=b("instances"),x=d.instancing);var K=q+".type",S=k.elements&&r(k.elements);ta&&("number"!==typeof B||0<=B)?"string"===typeof B?(a("if(",B,">0){"),h(),a("}else if(",B,
-"<0){"),g(),a("}")):h():g()}function Ea(d,e,a,b,c){e=ba();c=e.proc("body",c);ta&&(e.instancing=c.def(e.shared.extensions,".angle_instanced_arrays"));d(e,c,a,b);return e.compile().body}function Fa(d,e,a,b){pa(d,e);X(d,e,a,b.attributes,function(){return!0});T(d,e,a,b.uniforms,function(){return!0});ua(d,e,e,a)}function Ha(d,e){var a=d.proc("draw",1);pa(d,a);ea(d,a,e.context);O(d,a,e.framebuffer);ha(d,a,e);Q(d,a,e.state);V(d,a,e,!1,!0);var b=e.shader.progVar.append(d,a);a(d.shared.gl,".useProgram(",b,
-".program);");if(e.shader.program)Fa(d,a,e,e.shader.program);else{var c=d.global.def("{}"),h=a.def(b,".id"),g=a.def(c,"[",h,"]");a(d.cond(g).then(g,".call(this,a0);")["else"](g,"=",c,"[",h,"]=",d.link(function(a){return Ea(Fa,d,e,a,1)}),"(",b,");",g,".call(this,a0);"))}0<Object.keys(e.state).length&&a(d.shared.current,".dirty=true;")}function Ia(d,e,a,b){function c(){return!0}d.batchId="a1";pa(d,e);X(d,e,a,b.attributes,c);T(d,e,a,b.uniforms,c);ua(d,e,e,a)}function Ca(e,a,b,c){function h(e){return e.contextDep&&
-w||e.propDep}function g(e){return!h(e)}pa(e,a);var w=b.contextDep,z=a.def(),m=a.def();e.shared.props=m;e.batchId=z;var k=e.scope(),q=e.scope();a(k.entry,"for(",z,"=0;",z,"<","a1",";++",z,"){",m,"=","a0","[",z,"];",q,"}",k.exit);b.needsContext&&ea(e,q,b.context);b.needsFramebuffer&&O(e,q,b.framebuffer);Q(e,q,b.state,h);b.profile&&h(b.profile)&&V(e,q,b,!1,!0);c?(X(e,k,b,c.attributes,g),X(e,q,b,c.attributes,h),T(e,k,b,c.uniforms,g),T(e,q,b,c.uniforms,h),ua(e,k,q,b)):(a=e.global.def("{}"),c=b.shader.progVar.append(e,
-q),m=q.def(c,".id"),k=q.def(a,"[",m,"]"),q(e.shared.gl,".useProgram(",c,".program);","if(!",k,"){",k,"=",a,"[",m,"]=",e.link(function(a){return Ea(Ia,e,b,a,2)}),"(",c,");}",k,".call(this,a0[",z,"],",z,");"))}function Da(e,a){function b(e){return e.contextDep&&h||e.propDep}var c=e.proc("batch",2);e.batchId="0";pa(e,c);var h=!1,g=!0;Object.keys(a.context).forEach(function(e){h=h||a.context[e].propDep});h||(ea(e,c,a.context),g=!1);var w=a.framebuffer,z=!1;w?(w.propDep?h=z=!0:w.contextDep&&h&&(z=!0),
-z||O(e,c,w)):O(e,c,null);a.state.viewport&&a.state.viewport.propDep&&(h=!0);ha(e,c,a);Q(e,c,a.state,function(e){return!b(e)});a.profile&&b(a.profile)||V(e,c,a,!1,"a1");a.contextDep=h;a.needsContext=g;a.needsFramebuffer=z;g=a.shader.progVar;if(g.contextDep&&h||g.propDep)Ca(e,c,a,null);else if(g=g.append(e,c),c(e.shared.gl,".useProgram(",g,".program);"),a.shader.program)Ca(e,c,a,a.shader.program);else{var w=e.global.def("{}"),z=c.def(g,".id"),q=c.def(w,"[",z,"]");c(e.cond(q).then(q,".call(this,a0,a1);")["else"](q,
-"=",w,"[",z,"]=",e.link(function(b){return Ea(Ca,e,a,b,2)}),"(",g,");",q,".call(this,a0,a1);"))}0<Object.keys(a.state).length&&c(e.shared.current,".dirty=true;")}function Pa(e,a){function b(g){var w=a.shader[g];w&&c.set(h.shader,"."+g,w.append(e,c))}var c=e.proc("scope",3);e.batchId="a2";var h=e.shared,g=h.current;ea(e,c,a.context);a.framebuffer&&a.framebuffer.append(e,c);k(Object.keys(a.state)).forEach(function(b){var g=a.state[b].append(e,c);y(g)?g.forEach(function(a,h){c.set(e.next[b],"["+h+"]",
-a)}):c.set(h.next,"."+b,g)});V(e,c,a,!0,!0);["elements","offset","count","instances","primitive"].forEach(function(b){var g=a.draw[b];g&&c.set(h.draw,"."+b,""+g.append(e,c))});Object.keys(a.uniforms).forEach(function(b){c.set(h.uniforms,"["+f.id(b)+"]",a.uniforms[b].append(e,c))});Object.keys(a.attributes).forEach(function(b){var h=a.attributes[b].append(e,c),g=e.scopeAttrib(b);Object.keys(new Ba).forEach(function(e){c.set(g,"."+e,h[e])})});b("vert");b("frag");0<Object.keys(a.state).length&&(c(g,
-".dirty=true;"),c.exit(g,".dirty=true;"));c("a1(",e.shared.context,",a0,",e.batchId,");")}function Na(e){if("object"===typeof e&&!y(e)){for(var a=Object.keys(e),b=0;b<a.length;++b)if(g.isDynamic(e[a[b]]))return!0;return!1}}function Ja(e,b,c){function h(e,a){q.forEach(function(d){var b=w[d];g.isDynamic(b)&&(b=e.invoke(a,b),a(n,".",d,"=",b,";"))})}var w=b["static"][c];if(w&&Na(w)){var z=e.global,q=Object.keys(w),k=!1,m=!1,f=!1,n=e.global.def("{}");q.forEach(function(b){var c=w[b];if(g.isDynamic(c))"function"===
-typeof c&&(c=w[b]=g.unbox(c)),b=a(c,null),k=k||b.thisDep,f=f||b.propDep,m=m||b.contextDep;else{z(n,".",b,"=");switch(typeof c){case "number":z(c);break;case "string":z('"',c,'"');break;case "object":Array.isArray(c)&&z("[",c.join(),"]");break;default:z(e.link(c))}z(";")}});b.dynamic[c]=new g.DynamicVariable(4,{thisDep:k,contextDep:m,propDep:f,ref:n,append:h});delete b["static"][c]}}var Ba=Aa.Record,ca={add:32774,subtract:32778,"reverse subtract":32779};t.ext_blend_minmax&&(ca.min=32775,ca.max=32776);
-var ta=t.angle_instanced_arrays,oa=t.webgl_draw_buffers,e={dirty:!0,profile:ga.profile},z={},w=[],wa={},xa={};R("dither",3024);R("blend.enable",3042);G("blend.color","blendColor",[0,0,0,0]);G("blend.equation","blendEquationSeparate",[32774,32774]);G("blend.func","blendFuncSeparate",[1,0,1,0]);R("depth.enable",2929,!0);G("depth.func","depthFunc",513);G("depth.range","depthRange",[0,1]);G("depth.mask","depthMask",!0);G("colorMask","colorMask",[!0,!0,!0,!0]);R("cull.enable",2884);G("cull.face","cullFace",
-1029);G("frontFace","frontFace",2305);G("lineWidth","lineWidth",1);R("polygonOffset.enable",32823);G("polygonOffset.offset","polygonOffset",[0,0]);R("sample.alpha",32926);R("sample.enable",32928);G("sample.coverage","sampleCoverage",[1,!1]);R("stencil.enable",2960);G("stencil.mask","stencilMask",-1);G("stencil.func","stencilFunc",[519,0,-1]);G("stencil.opFront","stencilOpSeparate",[1028,7680,7680,7680]);G("stencil.opBack","stencilOpSeparate",[1029,7680,7680,7680]);R("scissor.enable",3089);G("scissor.box",
-"scissor",[0,0,h.drawingBufferWidth,h.drawingBufferHeight]);G("viewport","viewport",[0,0,h.drawingBufferWidth,h.drawingBufferHeight]);var Qa={gl:h,context:S,strings:f,next:z,current:e,draw:q,elements:u,buffer:M,shader:va,attributes:Aa.state,uniforms:K,framebuffer:D,extensions:t,timer:ma,isBufferArgs:l},Ma={primTypes:E,compareFuncs:B,blendFuncs:m,blendEquations:ca,stencilOps:Y,glTypes:C,orientationType:L};oa&&(Ma.backBuffer=[1029],Ma.drawBuffer=F(p.maxDrawbuffers,function(e){return 0===e?[0]:F(e,function(e){return 36064+
-e})}));var Ra=0;return{next:z,current:e,procs:function(){var a=ba(),b=a.proc("poll"),c=a.proc("refresh"),g=a.block();b(g);c(g);var w=a.shared,z=w.gl,q=w.next,k=w.current;g(k,".dirty=false;");O(a,b);O(a,c,null,!0);var m=h.getExtension("angle_instanced_arrays"),f;m&&(f=a.link(m));for(var n=0;n<p.maxAttributes;++n){var l=c.def(w.attributes,"[",n,"]"),B=a.cond(l,".buffer");B.then(z,".enableVertexAttribArray(",n,");",z,".bindBuffer(",34962,",",l,".buffer.buffer);",z,".vertexAttribPointer(",n,",",l,".size,",
-l,".type,",l,".normalized,",l,".stride,",l,".offset);")["else"](z,".disableVertexAttribArray(",n,");",z,".vertexAttrib4f(",n,",",l,".x,",l,".y,",l,".z,",l,".w);",l,".buffer=null;");c(B);m&&c(f,".vertexAttribDivisorANGLE(",n,",",l,".divisor);")}Object.keys(wa).forEach(function(e){var h=wa[e],w=g.def(q,".",e),m=a.block();m("if(",w,"){",z,".enable(",h,")}else{",z,".disable(",h,")}",k,".",e,"=",w,";");c(m);b("if(",w,"!==",k,".",e,"){",m,"}")});Object.keys(xa).forEach(function(h){var w=xa[h],m=e[h],f,
-n,l=a.block();l(z,".",w,"(");y(m)?(w=m.length,f=a.global.def(q,".",h),n=a.global.def(k,".",h),l(F(w,function(e){return f+"["+e+"]"}),");",F(w,function(e){return n+"["+e+"]="+f+"["+e+"];"}).join("")),b("if(",F(w,function(e){return f+"["+e+"]!=="+n+"["+e+"]"}).join("||"),"){",l,"}")):(f=g.def(q,".",h),n=g.def(k,".",h),l(f,");",k,".",h,"=",f,";"),b("if(",f,"!==",n,"){",l,"}"));c(l)});return a.compile()}(),compile:function(e,a,b,c,h){var g=ba();g.stats=g.link(h);Object.keys(a["static"]).forEach(function(e){Ja(g,
-a,e)});n.forEach(function(a){Ja(g,e,a)});b=la(e,a,b,c,g);Ha(g,b);Pa(g,b);Da(g,b);return g.compile()}}}},{"./constants/dtypes.json":4,"./constants/primitives.json":5,"./dynamic":8,"./util/codegen":21,"./util/is-array-like":24,"./util/is-ndarray":25,"./util/is-typed-array":26,"./util/loop":27}],8:[function(f,p,u){function l(c,a){this.id=r++;this.type=c;this.data=a}function k(c){if(0===c.length)return[];var a=c.charAt(0),b=c.charAt(c.length-1);if(1<c.length&&a===b&&('"'===a||"'"===a))return['"'+c.substr(1,
-c.length-2).replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'"'];if(a=/\[(false|true|null|\d+|'[^']*'|"[^"]*")\]/.exec(c))return k(c.substr(0,a.index)).concat(k(a[1])).concat(k(c.substr(a.index+a[0].length)));a=c.split(".");if(1===a.length)return['"'+c.replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'"'];c=[];for(b=0;b<a.length;++b)c=c.concat(k(a[b]));return c}function x(c){return"["+k(c).join("][")+"]"}var r=0;p.exports={DynamicVariable:l,define:function(c,a){return new l(c,x(a+""))},isDynamic:function(c){return"function"===
-typeof c&&!c._reglType||c instanceof l},unbox:function(c,a){return"function"===typeof c?new l(0,c):c},accessor:x}},{}],9:[function(f,p,u){var l=f("./util/is-typed-array"),k=f("./util/is-ndarray"),x=f("./util/values"),r=f("./constants/primitives.json"),c=f("./constants/usage.json");p.exports=function(a,b,f,p){function t(a){this.id=C++;E[this.id]=this;this.buffer=a;this.primType=4;this.type=this.vertCount=0}function y(c,g,n,r,x,h,t){c.buffer.bind();if(g){var y=t;t||l(g)&&(!k(g)||l(g.data))||(y=b.oes_element_index_uint?
-5125:5123);f._initBuffer(c.buffer,g,n,y,3)}else a.bufferData(34963,h,n),c.buffer.dtype=y||5121,c.buffer.usage=n,c.buffer.dimension=3,c.buffer.byteLength=h;y=t;if(!t){switch(c.buffer.dtype){case 5121:case 5120:y=5121;break;case 5123:case 5122:y=5123;break;case 5125:case 5124:y=5125}c.buffer.dtype=y}c.type=y;g=x;0>g&&(g=c.buffer.byteLength,5123===y?g>>=1:5125===y&&(g>>=2));c.vertCount=g;g=r;0>r&&(g=4,r=c.buffer.dimension,1===r&&(g=0),2===r&&(g=1),3===r&&(g=4));c.primType=g}function g(a){p.elementsCount--;
-delete E[a.id];a.buffer.destroy();a.buffer=null}var E={},C=0,N={uint8:5121,uint16:5123};b.oes_element_index_uint&&(N.uint32=5125);t.prototype.bind=function(){this.buffer.bind()};var n=[];return{create:function(a,b){function n(a){if(a)if("number"===typeof a)x(a),C.primType=4,C.vertCount=a|0,C.type=5121;else{var b=null,g=35044,m=-1,f=-1,t=0,B=0;if(Array.isArray(a)||l(a)||k(a))b=a;else if("data"in a&&(b=a.data),"usage"in a&&(g=c[a.usage]),"primitive"in a&&(m=r[a.primitive]),"count"in a&&(f=a.count|0),
-"type"in a&&(B=N[a.type]),"length"in a)t=a.length|0;else if(t=f,5123===B||5122===B)t*=2;else if(5125===B||5124===B)t*=4;y(C,b,g,m,f,t,B)}else x(),C.primType=4,C.vertCount=0,C.type=5121;return n}var x=f.create(null,34963,!0),C=new t(x._buffer);p.elementsCount++;n(a);n._reglType="elements";n._elements=C;n.subdata=function(a,b){x.subdata(a,b);return n};n.destroy=function(){g(C)};return n},createStream:function(a){var b=n.pop();b||(b=new t(f.create(null,34963,!0,!1)._buffer));y(b,a,35040,-1,-1,0,0);return b},
-destroyStream:function(a){n.push(a)},getElements:function(a){return"function"===typeof a&&a._elements instanceof t?a._elements:null},clear:function(){x(E).forEach(g)}}}},{"./constants/primitives.json":5,"./constants/usage.json":6,"./util/is-ndarray":25,"./util/is-typed-array":26,"./util/values":31}],10:[function(f,p,u){p.exports=function(f,k){function x(a){a=a.toLowerCase();var c;try{c=r[a]=f.getExtension(a)}catch(k){}return!!c}for(var r={},c=0;c<k.extensions.length;++c){var a=k.extensions[c];if(!x(a))return k.onDestroy(),
-k.onDone('"'+a+'" extension is not supported by the current WebGL context, try upgrading your system or a different browser'),null}k.optionalExtensions.forEach(x);return{extensions:r,restore:function(){Object.keys(r).forEach(function(a){if(!x(a))throw Error("(regl): error restoring extension "+a);})}}}},{}],11:[function(f,p,u){var l=f("./util/values"),k=f("./util/extend"),x=[];x[6408]=4;var r=[];r[5121]=1;r[5126]=4;r[36193]=2;p.exports=function(c,a,b,f,p,t){function y(a,c,b){this.target=a;this.texture=
-c;this.renderbuffer=b;var h=a=0;c?(a=c.width,h=c.height):b&&(a=b.width,h=b.height);this.width=a;this.height=h}function g(a){a&&(a.texture&&a.texture._texture.decRef(),a.renderbuffer&&a.renderbuffer._renderbuffer.decRef())}function E(a,c,b){a&&(a.texture?a.texture._texture.refCount+=1:a.renderbuffer._renderbuffer.refCount+=1)}function C(a,b){b&&(b.texture?c.framebufferTexture2D(36160,a,b.target,b.texture._texture.texture,0):c.framebufferRenderbuffer(36160,a,36161,b.renderbuffer._renderbuffer.renderbuffer))}
-function N(a){var b=3553,c=null,h=null,g=a;"object"===typeof a&&(g=a.data,"target"in a&&(b=a.target|0));a=g._reglType;"texture2d"===a?c=g:"textureCube"===a?c=g:"renderbuffer"===a&&(h=g,b=36161);return new y(b,c,h)}function n(a,b,c,h,g){if(c)return a=f.create2D({width:a,height:b,format:h,type:g}),a._texture.refCount=0,new y(3553,a,null);a=p.create({width:a,height:b,format:h});a._renderbuffer.refCount=0;return new y(36161,null,a)}function m(a){return a&&(a.texture||a.renderbuffer)}function B(a,b,c){a&&
-(a.texture?a.texture.resize(b,c):a.renderbuffer&&a.renderbuffer.resize(b,c))}function u(){this.id=Z++;D[this.id]=this;this.framebuffer=c.createFramebuffer();this.height=this.width=0;this.colorAttachments=[];this.depthStencilAttachment=this.stencilAttachment=this.depthAttachment=null}function L(a){a.colorAttachments.forEach(g);g(a.depthAttachment);g(a.stencilAttachment);g(a.depthStencilAttachment)}function H(a){c.deleteFramebuffer(a.framebuffer);a.framebuffer=null;t.framebufferCount--;delete D[a.id]}
-function h(a){var h;c.bindFramebuffer(36160,a.framebuffer);var g=a.colorAttachments;for(h=0;h<g.length;++h)C(36064+h,g[h]);for(h=g.length;h<b.maxColorAttachments;++h)c.framebufferTexture2D(36160,36064+h,3553,null,0);c.framebufferTexture2D(36160,33306,3553,null,0);c.framebufferTexture2D(36160,36096,3553,null,0);c.framebufferTexture2D(36160,36128,3553,null,0);C(36096,a.depthAttachment);C(36128,a.stencilAttachment);C(33306,a.depthStencilAttachment);c.checkFramebufferStatus(36160);c.bindFramebuffer(36160,
-Ka.next);Ka.cur=Ka.next;c.getError()}function fa(a,b){function c(a,b){var k,f=0,l=0,t=!0,y=!0;k=null;var B=!0,C="rgba",F="uint8",p=1,M=null,H=null,u=null,Y=!1;if("number"===typeof a)f=a|0,l=b|0||f;else if(a){"shape"in a?(l=a.shape,f=l[0],l=l[1]):("radius"in a&&(f=l=a.radius),"width"in a&&(f=a.width),"height"in a&&(l=a.height));if("color"in a||"colors"in a)k=a.color||a.colors,Array.isArray(k);if(!k){"colorCount"in a&&(p=a.colorCount|0);"colorTexture"in a&&(B=!!a.colorTexture,C="rgba4");if("colorType"in
-a&&(F=a.colorType,!B))if("half float"===F||"float16"===F)C="rgba16f";else if("float"===F||"float32"===F)C="rgba32f";"colorFormat"in a&&(C=a.colorFormat,0<=La.indexOf(C)?B=!0:0<=za.indexOf(C)&&(B=!1))}if("depthTexture"in a||"depthStencilTexture"in a)Y=!(!a.depthTexture&&!a.depthStencilTexture);"depth"in a&&("boolean"===typeof a.depth?t=a.depth:(M=a.depth,y=!1));"stencil"in a&&("boolean"===typeof a.stencil?y=a.stencil:(H=a.stencil,t=!1));"depthStencil"in a&&("boolean"===typeof a.depthStencil?t=y=a.depthStencil:
-(u=a.depthStencil,y=t=!1))}else f=l=1;var D=null,fa=null,K=null,O=null;if(Array.isArray(k))D=k.map(N);else if(k)D=[N(k)];else for(D=Array(p),k=0;k<p;++k)D[k]=n(f,l,B,C,F);f=f||D[0].width;l=l||D[0].height;M?fa=N(M):t&&!y&&(fa=n(f,l,Y,"depth","uint32"));H?K=N(H):y&&!t&&(K=n(f,l,!1,"stencil","uint8"));u?O=N(u):!M&&!H&&y&&t&&(O=n(f,l,Y,"depth stencil","depth stencil"));t=null;for(k=0;k<D.length;++k)E(D[k],f,l),D[k]&&D[k].texture&&(y=x[D[k].texture._texture.format]*r[D[k].texture._texture.type],null===
-t&&(t=y));E(fa,f,l);E(K,f,l);E(O,f,l);L(g);g.width=f;g.height=l;g.colorAttachments=D;g.depthAttachment=fa;g.stencilAttachment=K;g.depthStencilAttachment=O;c.color=D.map(m);c.depth=m(fa);c.stencil=m(K);c.depthStencil=m(O);c.width=g.width;c.height=g.height;h(g);return c}var g=new u;t.framebufferCount++;c(a,b);return k(c,{resize:function(a,b){var k=a|0,f=b|0||k;if(k===g.width&&f===g.height)return c;for(var m=g.colorAttachments,l=0;l<m.length;++l)B(m[l],k,f);B(g.depthAttachment,k,f);B(g.stencilAttachment,
-k,f);B(g.depthStencilAttachment,k,f);g.width=c.width=k;g.height=c.height=f;h(g);return c},_reglType:"framebuffer",_framebuffer:g,destroy:function(){H(g);L(g)}})}var Ka={cur:null,next:null,dirty:!1},La=["rgba"],za=["rgba4","rgb565","rgb5 a1"];a.ext_srgb&&za.push("srgba");a.ext_color_buffer_half_float&&za.push("rgba16f","rgb16f");a.webgl_color_buffer_float&&za.push("rgba32f");var Ga=["uint8"];a.oes_texture_half_float&&Ga.push("half float","float16");a.oes_texture_float&&Ga.push("float","float32");var Z=
-0,D={};return k(Ka,{getFramebuffer:function(a){return"function"===typeof a&&"framebuffer"===a._reglType&&(a=a._framebuffer,a instanceof u)?a:null},create:fa,createCube:function(a){function c(a){var g,h={color:null},m=0,l=null;g="rgba";var n="uint8",r=1;if("number"===typeof a)m=a|0;else if(a){"shape"in a?m=a.shape[0]:("radius"in a&&(m=a.radius|0),"width"in a?m=a.width|0:"height"in a&&(m=a.height|0));if("color"in a||"colors"in a)l=a.color||a.colors,Array.isArray(l);l||("colorCount"in a&&(r=a.colorCount|
-0),"colorType"in a&&(n=a.colorType),"colorFormat"in a&&(g=a.colorFormat));"depth"in a&&(h.depth=a.depth);"stencil"in a&&(h.stencil=a.stencil);"depthStencil"in a&&(h.depthStencil=a.depthStencil)}else m=1;if(l)if(Array.isArray(l))for(a=[],g=0;g<l.length;++g)a[g]=l[g];else a=[l];else for(a=Array(r),l={radius:m,format:g,type:n},g=0;g<r;++g)a[g]=f.createCube(l);h.color=Array(a.length);for(g=0;g<a.length;++g)r=a[g],m=m||r.width,h.color[g]={target:34069,data:a[g]};for(g=0;6>g;++g){for(r=0;r<a.length;++r)h.color[r].target=
-34069+g;0<g&&(h.depth=b[0].depth,h.stencil=b[0].stencil,h.depthStencil=b[0].depthStencil);if(b[g])b[g](h);else b[g]=fa(h)}return k(c,{width:m,height:m,color:a})}var b=Array(6);c(a);return k(c,{faces:b,resize:function(a){var g=a|0;if(g===c.width)return c;var h=c.color;for(a=0;a<h.length;++a)h[a].resize(g);for(a=0;6>a;++a)b[a].resize(g);c.width=c.height=g;return c},_reglType:"framebufferCube",destroy:function(){b.forEach(function(a){a.destroy()})}})},clear:function(){l(D).forEach(H)},restore:function(){l(D).forEach(function(a){a.framebuffer=
-c.createFramebuffer();h(a)})}})}},{"./util/extend":22,"./util/values":31}],12:[function(f,p,u){p.exports=function(f,k){var x=1;k.ext_texture_filter_anisotropic&&(x=f.getParameter(34047));var r=1,c=1;k.webgl_draw_buffers&&(r=f.getParameter(34852),c=f.getParameter(36063));return{colorBits:[f.getParameter(3410),f.getParameter(3411),f.getParameter(3412),f.getParameter(3413)],depthBits:f.getParameter(3414),stencilBits:f.getParameter(3415),subpixelBits:f.getParameter(3408),extensions:Object.keys(k).filter(function(a){return!!k[a]}),
-maxAnisotropic:x,maxDrawbuffers:r,maxColorAttachments:c,pointSizeDims:f.getParameter(33901),lineWidthDims:f.getParameter(33902),maxViewportDims:f.getParameter(3386),maxCombinedTextureUnits:f.getParameter(35661),maxCubeMapSize:f.getParameter(34076),maxRenderbufferSize:f.getParameter(34024),maxTextureUnits:f.getParameter(34930),maxTextureSize:f.getParameter(3379),maxAttributes:f.getParameter(34921),maxVertexUniforms:f.getParameter(36347),maxVertexTextureUnits:f.getParameter(35660),maxVaryingVectors:f.getParameter(36348),
-maxFragmentUniforms:f.getParameter(36349),glsl:f.getParameter(35724),renderer:f.getParameter(7937),vendor:f.getParameter(7936),version:f.getParameter(7938)}}},{}],13:[function(f,p,u){var l=f("./util/is-typed-array");p.exports=function(k,f,r,c,a,b){return function(a){var b;b=null===f.next?5121:f.next.colorAttachments[0].texture._texture.type;var t=0,y=0,g=c.framebufferWidth,p=c.framebufferHeight,C=null;l(a)?C=a:a&&(t=a.x|0,y=a.y|0,g=(a.width||c.framebufferWidth-t)|0,p=(a.height||c.framebufferHeight-
-y)|0,C=a.data||null);r();a=g*p*4;C||(5121===b?C=new Uint8Array(a):5126===b&&(C=C||new Float32Array(a)));k.pixelStorei(3333,4);k.readPixels(t,y,g,p,6408,b,C);return C}}},{"./util/is-typed-array":26}],14:[function(f,p,u){var l=f("./util/values"),k=[];k[32854]=2;k[32855]=2;k[36194]=2;k[33189]=2;k[36168]=1;k[34041]=4;k[35907]=4;k[34836]=16;k[34842]=8;k[34843]=6;p.exports=function(f,r,c,a,b){function p(a){this.id=g++;this.refCount=1;this.renderbuffer=a;this.format=32854;this.height=this.width=0;b.profile&&
-(this.stats={size:0})}function M(b){var c=b.renderbuffer;f.bindRenderbuffer(36161,null);f.deleteRenderbuffer(c);b.renderbuffer=null;b.refCount=0;delete E[b.id];a.renderbufferCount--}var t={rgba4:32854,rgb565:36194,"rgb5 a1":32855,depth:33189,stencil:36168,"depth stencil":34041};r.ext_srgb&&(t.srgba=35907);r.ext_color_buffer_half_float&&(t.rgba16f=34842,t.rgb16f=34843);r.webgl_color_buffer_float&&(t.rgba32f=34836);var y=[];Object.keys(t).forEach(function(a){y[t[a]]=a});var g=0,E={};p.prototype.decRef=
-function(){0>=--this.refCount&&M(this)};b.profile&&(a.getTotalRenderbufferSize=function(){var a=0;Object.keys(E).forEach(function(b){a+=E[b].stats.size});return a});return{create:function(c,g){function n(a,c){var g=0,l=0,h=32854;"object"===typeof a&&a?("shape"in a?(l=a.shape,g=l[0]|0,l=l[1]|0):("radius"in a&&(g=l=a.radius|0),"width"in a&&(g=a.width|0),"height"in a&&(l=a.height|0)),"format"in a&&(h=t[a.format])):"number"===typeof a?(g=a|0,l="number"===typeof c?c|0:g):a||(g=l=1);if(g!==m.width||l!==
-m.height||h!==m.format)return n.width=m.width=g,n.height=m.height=l,m.format=h,f.bindRenderbuffer(36161,m.renderbuffer),f.renderbufferStorage(36161,h,g,l),b.profile&&(m.stats.size=k[m.format]*m.width*m.height),n.format=y[m.format],n}var m=new p(f.createRenderbuffer());E[m.id]=m;a.renderbufferCount++;n(c,g);n.resize=function(a,c){var g=a|0,l=c|0||g;if(g===m.width&&l===m.height)return n;n.width=m.width=g;n.height=m.height=l;f.bindRenderbuffer(36161,m.renderbuffer);f.renderbufferStorage(36161,m.format,
-g,l);b.profile&&(m.stats.size=k[m.format]*m.width*m.height);return n};n._reglType="renderbuffer";n._renderbuffer=m;b.profile&&(n.stats=m.stats);n.destroy=function(){m.decRef()};return n},clear:function(){l(E).forEach(M)},restore:function(){l(E).forEach(function(a){a.renderbuffer=f.createRenderbuffer();f.bindRenderbuffer(36161,a.renderbuffer);f.renderbufferStorage(36161,a.format,a.width,a.height)});f.bindRenderbuffer(36161,null)}}}},{"./util/values":31}],15:[function(f,p,u){var l=f("./util/values");
-p.exports=function(f,x,r,c){function a(a,c,b,g){this.name=a;this.id=c;this.location=b;this.info=g}function b(a,c){for(var b=0;b<a.length;++b)if(a[b].id===c.id){a[b].location=c.location;return}a.push(c)}function p(a,c,b){b=35632===a?y:g;var l=b[c];if(!l){var r=x.str(c),l=f.createShader(a);f.shaderSource(l,r);f.compileShader(l);b[c]=l}return l}function M(a,b){this.id=u++;this.fragId=a;this.vertId=b;this.program=null;this.uniforms=[];this.attributes=[];c.profile&&(this.stats={uniformsCount:0,attributesCount:0})}
-function t(g,m){var l,r;l=p(35632,g.fragId);r=p(35633,g.vertId);var t=g.program=f.createProgram();f.attachShader(t,l);f.attachShader(t,r);f.linkProgram(t);var y=f.getProgramParameter(t,35718);c.profile&&(g.stats.uniformsCount=y);var h=g.uniforms;for(l=0;l<y;++l)if(r=f.getActiveUniform(t,l))if(1<r.size)for(var C=0;C<r.size;++C){var E=r.name.replace("[0]","["+C+"]");b(h,new a(E,x.id(E),f.getUniformLocation(t,E),r))}else b(h,new a(r.name,x.id(r.name),f.getUniformLocation(t,r.name),r));y=f.getProgramParameter(t,
-35721);c.profile&&(g.stats.attributesCount=y);h=g.attributes;for(l=0;l<y;++l)(r=f.getActiveAttrib(t,l))&&b(h,new a(r.name,x.id(r.name),f.getAttribLocation(t,r.name),r))}var y={},g={},E={},C=[],u=0;c.profile&&(r.getMaxUniformsCount=function(){var a=0;C.forEach(function(b){b.stats.uniformsCount>a&&(a=b.stats.uniformsCount)});return a},r.getMaxAttributesCount=function(){var a=0;C.forEach(function(b){b.stats.attributesCount>a&&(a=b.stats.attributesCount)});return a});return{clear:function(){var a=f.deleteShader.bind(f);
-l(y).forEach(a);y={};l(g).forEach(a);g={};C.forEach(function(a){f.deleteProgram(a.program)});C.length=0;E={};r.shaderCount=0},program:function(a,b,c){r.shaderCount++;var g=E[b];g||(g=E[b]={});var f=g[a];f||(f=new M(b,a),t(f,c),g[a]=f,C.push(f));return f},restore:function(){y={};g={};for(var a=0;a<C.length;++a)t(C[a])},shader:p,frag:-1,vert:-1}}},{"./util/values":31}],16:[function(f,p,u){p.exports=function(){return{bufferCount:0,elementsCount:0,framebufferCount:0,shaderCount:0,textureCount:0,cubeCount:0,
-renderbufferCount:0,maxTextureUnits:0}}},{}],17:[function(f,p,u){p.exports=function(){var f={"":0},k=[""];return{id:function(x){var r=f[x];if(r)return r;r=f[x]=k.length;k.push(x);return r},str:function(f){return k[f]}}}},{}],18:[function(f,p,u){function l(a){return Array.isArray(a)&&(0===a.length||"number"===typeof a[0])}function k(a){return Array.isArray(a)&&0!==a.length&&E(a[0])?!0:!1}function x(a){return Object.prototype.toString.call(a)}function r(a){if(!a)return!1;var b=x(a);return 0<=Y.indexOf(b)?
-!0:l(a)||k(a)||t(a)}function c(a,b){36193===a.type?(a.data=g(b),y.freeType(b)):a.data=b}function a(a,b,c,g,f,k){a="undefined"!==typeof H[a]?H[a]:B[a]*L[b];k&&(a*=6);if(f){for(g=0;1<=c;)g+=a*c*c,c/=2;return g}return a*c*g}var b=f("./util/extend"),F=f("./util/values"),M=f("./util/is-typed-array"),t=f("./util/is-ndarray"),y=f("./util/pool"),g=f("./util/to-half-float"),E=f("./util/is-array-like"),C=f("./util/flatten");u=f("./constants/arraytypes.json");var N=f("./constants/arraytypes.json"),n=[9984,9986,
-9985,9987],m=[0,6409,6410,6407,6408],B={};B[6409]=B[6406]=B[6402]=1;B[34041]=B[6410]=2;B[6407]=B[35904]=3;B[6408]=B[35906]=4;var Y=Object.keys(u).concat(["[object HTMLCanvasElement]","[object CanvasRenderingContext2D]","[object HTMLImageElement]","[object HTMLVideoElement]"]),L=[];L[5121]=1;L[5126]=4;L[36193]=2;L[5123]=2;L[5125]=4;var H=[];H[32854]=2;H[32855]=2;H[36194]=2;H[34041]=4;H[33776]=.5;H[33777]=.5;H[33778]=1;H[33779]=1;H[35986]=.5;H[35987]=1;H[34798]=1;H[35840]=.5;H[35841]=.25;H[35842]=.5;
-H[35843]=.25;H[36196]=.5;p.exports=function(h,f,p,u,H,L,Z){function D(){this.format=this.internalformat=6408;this.type=5121;this.flipY=this.premultiplyAlpha=this.compressed=!1;this.unpackAlignment=1;this.channels=this.height=this.width=this.colorSpace=0}function K(a,b){a.internalformat=b.internalformat;a.format=b.format;a.type=b.type;a.compressed=b.compressed;a.premultiplyAlpha=b.premultiplyAlpha;a.flipY=b.flipY;a.unpackAlignment=b.unpackAlignment;a.colorSpace=b.colorSpace;a.width=b.width;a.height=
-b.height;a.channels=b.channels}function Y(a,b){if("object"===typeof b&&b){"premultiplyAlpha"in b&&(a.premultiplyAlpha=b.premultiplyAlpha);"flipY"in b&&(a.flipY=b.flipY);"alignment"in b&&(a.unpackAlignment=b.alignment);"colorSpace"in b&&(a.colorSpace=pa[b.colorSpace]);"type"in b&&(a.type=V[b.type]);var c=a.width,g=a.height,h=a.channels,f=!1;"shape"in b?(c=b.shape[0],g=b.shape[1],3===b.shape.length&&(h=b.shape[2],f=!0)):("radius"in b&&(c=g=b.radius),"width"in b&&(c=b.width),"height"in b&&(g=b.height),
-"channels"in b&&(h=b.channels,f=!0));a.width=c|0;a.height=g|0;a.channels=h|0;c=!1;"format"in b&&(c=b.format,g=a.internalformat=X[c],a.format=Pa[g],c in V&&!("type"in b)&&(a.type=V[c]),c in T&&(a.compressed=!0),c=!0);!f&&c?a.channels=B[a.format]:f&&!c&&a.channels!==m[a.format]&&(a.format=a.internalformat=m[a.channels])}}function va(a){h.pixelStorei(37440,a.flipY);h.pixelStorei(37441,a.premultiplyAlpha);h.pixelStorei(37443,a.colorSpace);h.pixelStorei(3317,a.unpackAlignment)}function q(){D.call(this);
-this.yOffset=this.xOffset=0;this.data=null;this.needsFree=!1;this.element=null;this.needsCopy=!1}function S(a,b){var h=null;r(b)?h=b:b&&(Y(a,b),"x"in b&&(a.xOffset=b.x|0),"y"in b&&(a.yOffset=b.y|0),r(b.data)&&(h=b.data));if(b.copy){var f=H.viewportWidth,n=H.viewportHeight;a.width=a.width||f-a.xOffset;a.height=a.height||n-a.yOffset;a.needsCopy=!0}else if(!h)a.width=a.width||1,a.height=a.height||1,a.channels=a.channels||4;else if(M(h))a.channels=a.channels||4,a.data=h,"type"in b||5121!==a.type||(a.type=
-N[Object.prototype.toString.call(h)]|0);else if(l(h)){a.channels=a.channels||4;f=h;n=f.length;switch(a.type){case 5121:case 5123:case 5125:case 5126:n=y.allocType(a.type,n);n.set(f);a.data=n;break;case 36193:a.data=g(f)}a.alignment=1;a.needsFree=!0}else if(t(h)){f=h.data;Array.isArray(f)||5121!==a.type||(a.type=N[Object.prototype.toString.call(f)]|0);var n=h.shape,q=h.stride,p,F,d,v;3===n.length?(d=n[2],v=q[2]):v=d=1;p=n[0];F=n[1];n=q[0];q=q[1];a.alignment=1;a.width=p;a.height=F;a.channels=d;a.format=
-a.internalformat=m[d];a.needsFree=!0;p=v;h=h.offset;d=a.width;v=a.height;F=a.channels;for(var u=y.allocType(36193===a.type?5126:a.type,d*v*F),B=0,A=0;A<v;++A)for(var D=0;D<d;++D)for(var ua=0;ua<F;++ua)u[B++]=f[n*D+q*A+p*ua+h];c(a,u)}else if("[object HTMLCanvasElement]"===x(h)||"[object CanvasRenderingContext2D]"===x(h))"[object HTMLCanvasElement]"===x(h)?a.element=h:a.element=h.canvas,a.width=a.element.width,a.height=a.element.height,a.channels=4;else if("[object HTMLImageElement]"===x(h))a.element=
-h,a.width=h.naturalWidth,a.height=h.naturalHeight,a.channels=4;else if("[object HTMLVideoElement]"===x(h))a.element=h,a.width=h.videoWidth,a.height=h.videoHeight,a.channels=4;else if(k(h)){f=a.width||h[0].length;n=a.height||h.length;q=a.channels;q=E(h[0][0])?q||h[0][0].length:q||1;p=C.shape(h);d=1;for(v=0;v<p.length;++v)d*=p[v];d=y.allocType(36193===a.type?5126:a.type,d);C.flatten(h,p,"",d);c(a,d);a.alignment=1;a.width=f;a.height=n;a.channels=q;a.format=a.internalformat=m[q];a.needsFree=!0}}function ma(a,
-b,c,g,f){var k=a.element,l=a.data,m=a.internalformat,d=a.format,r=a.type,n=a.width,q=a.height;va(a);k?h.texSubImage2D(b,f,c,g,d,r,k):a.compressed?h.compressedTexSubImage2D(b,f,c,g,m,n,q,l):a.needsCopy?(u(),h.copyTexSubImage2D(b,f,c,g,a.xOffset,a.yOffset,n,q)):h.texSubImage2D(b,f,c,g,n,q,d,r,l)}function ga(){return Na.pop()||new q}function W(a){a.needsFree&&y.freeType(a.data);q.call(a);Na.push(a)}function R(){D.call(this);this.genMipmaps=!1;this.mipmapHint=4352;this.mipmask=0;this.images=Array(16)}
-function G(a,b,c){var g=a.images[0]=ga();a.mipmask=1;g.width=a.width=b;g.height=a.height=c;g.channels=a.channels=4}function ba(a,b){var c=null;if(r(b))c=a.images[0]=ga(),K(c,a),S(c,b),a.mipmask=1;else if(Y(a,b),Array.isArray(b.mipmap))for(var g=b.mipmap,h=0;h<g.length;++h)c=a.images[h]=ga(),K(c,a),c.width>>=h,c.height>>=h,S(c,g[h]),a.mipmask|=1<<h;else c=a.images[0]=ga(),K(c,a),S(c,b),a.mipmask=1;K(a,a.images[0])}function na(a,b){for(var c=a.images,g=0;g<c.length&&c[g];++g){var f=c[g],k=b,l=g,m=f.element,
-d=f.data,r=f.internalformat,n=f.format,q=f.type,t=f.width,y=f.height;va(f);m?h.texImage2D(k,l,n,n,q,m):f.compressed?h.compressedTexImage2D(k,l,r,t,y,0,d):f.needsCopy?(u(),h.copyTexImage2D(k,l,n,f.xOffset,f.yOffset,t,y,0)):h.texImage2D(k,l,n,t,y,0,n,q,d)}}function ya(){var a=Ja.pop()||new R;D.call(a);for(var b=a.mipmask=0;16>b;++b)a.images[b]=null;return a}function U(a){for(var b=a.images,c=0;c<b.length;++c)b[c]&&W(b[c]),b[c]=null;Ja.push(a)}function ia(){this.magFilter=this.minFilter=9728;this.wrapT=
-this.wrapS=33071;this.anisotropic=1;this.genMipmaps=!1;this.mipmapHint=4352}function ka(a,b){"min"in b&&(a.minFilter=Q[b.min],0<=n.indexOf(a.minFilter)&&(a.genMipmaps=!0));"mag"in b&&(a.magFilter=ha[b.mag]);var c=a.wrapS,g=a.wrapT;if("wrap"in b){var h=b.wrap;"string"===typeof h?c=g=O[h]:Array.isArray(h)&&(c=O[h[0]],g=O[h[1]])}else"wrapS"in b&&(c=O[b.wrapS]),"wrapT"in b&&(g=O[b.wrapT]);a.wrapS=c;a.wrapT=g;"anisotropic"in b&&(a.anisotropic=b.anisotropic);if("mipmap"in b){c=!1;switch(typeof b.mipmap){case "string":a.mipmapHint=
-ea[b.mipmap];c=a.genMipmaps=!0;break;case "boolean":c=a.genMipmaps=b.mipmap;break;case "object":a.genMipmaps=!1,c=!0}!c||"min"in b||(a.minFilter=9984)}}function ra(a,b){h.texParameteri(b,10241,a.minFilter);h.texParameteri(b,10240,a.magFilter);h.texParameteri(b,10242,a.wrapS);h.texParameteri(b,10243,a.wrapT);f.ext_texture_filter_anisotropic&&h.texParameteri(b,34046,a.anisotropic);a.genMipmaps&&(h.hint(33170,a.mipmapHint),h.generateMipmap(b))}function sa(a){D.call(this);this.mipmask=0;this.internalformat=
-6408;this.id=Ba++;this.refCount=1;this.target=a;this.texture=h.createTexture();this.unit=-1;this.bindCount=0;this.texInfo=new ia;Z.profile&&(this.stats={size:0})}function da(a){h.activeTexture(33984);h.bindTexture(a.target,a.texture)}function ja(){var a=oa[0];a?h.bindTexture(a.target,a.texture):h.bindTexture(3553,null)}function la(a){var b=a.texture,c=a.unit,g=a.target;0<=c&&(h.activeTexture(33984+c),h.bindTexture(g,null),oa[c]=null);h.deleteTexture(b);a.texture=null;a.params=null;a.pixels=null;a.refCount=
-0;delete ca[a.id];L.textureCount--}var ea={"don't care":4352,"dont care":4352,nice:4354,fast:4353},O={repeat:10497,clamp:33071,mirror:33648},ha={nearest:9728,linear:9729},Q=b({mipmap:9987,"nearest mipmap nearest":9984,"linear mipmap nearest":9985,"nearest mipmap linear":9986,"linear mipmap linear":9987},ha),pa={none:0,browser:37444},V={uint8:5121,rgba4:32819,rgb565:33635,"rgb5 a1":32820},X={alpha:6406,luminance:6409,"luminance alpha":6410,rgb:6407,rgba:6408,rgba4:32854,"rgb5 a1":32855,rgb565:36194},
-T={};f.ext_srgb&&(X.srgb=35904,X.srgba=35906);f.oes_texture_float&&(V.float32=V["float"]=5126);f.oes_texture_half_float&&(V.float16=V["half float"]=36193);f.webgl_depth_texture&&(b(X,{depth:6402,"depth stencil":34041}),b(V,{uint16:5123,uint32:5125,"depth stencil":34042}));f.webgl_compressed_texture_s3tc&&b(T,{"rgb s3tc dxt1":33776,"rgba s3tc dxt1":33777,"rgba s3tc dxt3":33778,"rgba s3tc dxt5":33779});f.webgl_compressed_texture_atc&&b(T,{"rgb atc":35986,"rgba atc explicit alpha":35987,"rgba atc interpolated alpha":34798});
-f.webgl_compressed_texture_pvrtc&&b(T,{"rgb pvrtc 4bppv1":35840,"rgb pvrtc 2bppv1":35841,"rgba pvrtc 4bppv1":35842,"rgba pvrtc 2bppv1":35843});f.webgl_compressed_texture_etc1&&(T["rgb etc1"]=36196);var ua=Array.prototype.slice.call(h.getParameter(34467));Object.keys(T).forEach(function(a){var b=T[a];0<=ua.indexOf(b)&&(X[a]=b)});var Ea=Object.keys(X);p.textureFormats=Ea;var Fa=[];Object.keys(X).forEach(function(a){Fa[X[a]]=a});var Ha=[];Object.keys(V).forEach(function(a){Ha[V[a]]=a});var Ia=[];Object.keys(ha).forEach(function(a){Ia[ha[a]]=
-a});var Ca=[];Object.keys(Q).forEach(function(a){Ca[Q[a]]=a});var Da=[];Object.keys(O).forEach(function(a){Da[O[a]]=a});var Pa=Ea.reduce(function(a,b){var c=X[b];6409===c||6406===c||6409===c||6410===c||6402===c||34041===c?a[c]=c:32855===c||0<=b.indexOf("rgba")?a[c]=6408:a[c]=6407;return a},{}),Na=[],Ja=[],Ba=0,ca={},ta=p.maxTextureUnits,oa=Array(ta).map(function(){return null});b(sa.prototype,{bind:function(){this.bindCount+=1;var a=this.unit;if(0>a){for(var b=0;b<ta;++b){var c=oa[b];if(c){if(0<c.bindCount)continue;
-c.unit=-1}oa[b]=this;a=b;break}Z.profile&&L.maxTextureUnits<a+1&&(L.maxTextureUnits=a+1);this.unit=a;h.activeTexture(33984+a);h.bindTexture(this.target,this.texture)}return a},unbind:function(){--this.bindCount},decRef:function(){0>=--this.refCount&&la(this)}});Z.profile&&(L.getTotalTextureSize=function(){var a=0;Object.keys(ca).forEach(function(b){a+=ca[b].stats.size});return a});return{create2D:function(b,c){function g(b,c){var e=f.texInfo;ia.call(e);var h=ya();"number"===typeof b?"number"===typeof c?
-G(h,b|0,c|0):G(h,b|0,b|0):b?(ka(e,b),ba(h,b)):G(h,1,1);e.genMipmaps&&(h.mipmask=(h.width<<1)-1);f.mipmask=h.mipmask;K(f,h);f.internalformat=h.internalformat;g.width=h.width;g.height=h.height;da(f);na(h,3553);ra(e,3553);ja();U(h);Z.profile&&(f.stats.size=a(f.internalformat,f.type,h.width,h.height,e.genMipmaps,!1));g.format=Fa[f.internalformat];g.type=Ha[f.type];g.mag=Ia[e.magFilter];g.min=Ca[e.minFilter];g.wrapS=Da[e.wrapS];g.wrapT=Da[e.wrapT];return g}var f=new sa(3553);ca[f.id]=f;L.textureCount++;
-g(b,c);g.subimage=function(a,b,c,e){b|=0;c|=0;e|=0;var d=ga();K(d,f);d.width=0;d.height=0;S(d,a);d.width=d.width||(f.width>>e)-b;d.height=d.height||(f.height>>e)-c;da(f);ma(d,3553,b,c,e);ja();W(d);return g};g.resize=function(b,c){var e=b|0,k=c|0||e;if(e===f.width&&k===f.height)return g;g.width=f.width=e;g.height=f.height=k;da(f);for(var d=0;f.mipmask>>d;++d)h.texImage2D(3553,d,f.format,e>>d,k>>d,0,f.format,f.type,null);ja();Z.profile&&(f.stats.size=a(f.internalformat,f.type,e,k,!1,!1));return g};
-g._reglType="texture2d";g._texture=f;Z.profile&&(g.stats=f.stats);g.destroy=function(){f.decRef()};return g},createCube:function(b,c,g,f,k,l){function m(b,c,e,g,h,f){var k,l=n.texInfo;ia.call(l);for(k=0;6>k;++k)d[k]=ya();if("number"===typeof b||!b)for(b=b|0||1,k=0;6>k;++k)G(d[k],b,b);else if("object"===typeof b)if(c)ba(d[0],b),ba(d[1],c),ba(d[2],e),ba(d[3],g),ba(d[4],h),ba(d[5],f);else if(ka(l,b),Y(n,b),"faces"in b)for(b=b.faces,k=0;6>k;++k)K(d[k],n),ba(d[k],b[k]);else for(k=0;6>k;++k)ba(d[k],b);
-K(n,d[0]);n.mipmask=l.genMipmaps?(d[0].width<<1)-1:d[0].mipmask;n.internalformat=d[0].internalformat;m.width=d[0].width;m.height=d[0].height;da(n);for(k=0;6>k;++k)na(d[k],34069+k);ra(l,34067);ja();Z.profile&&(n.stats.size=a(n.internalformat,n.type,m.width,m.height,l.genMipmaps,!0));m.format=Fa[n.internalformat];m.type=Ha[n.type];m.mag=Ia[l.magFilter];m.min=Ca[l.minFilter];m.wrapS=Da[l.wrapS];m.wrapT=Da[l.wrapT];for(k=0;6>k;++k)U(d[k]);return m}var n=new sa(34067);ca[n.id]=n;L.cubeCount++;var d=Array(6);
-m(b,c,g,f,k,l);m.subimage=function(a,b,c,d,e){c|=0;d|=0;e|=0;var g=ga();K(g,n);g.width=0;g.height=0;S(g,b);g.width=g.width||(n.width>>e)-c;g.height=g.height||(n.height>>e)-d;da(n);ma(g,34069+a,c,d,e);ja();W(g);return m};m.resize=function(b){b|=0;if(b!==n.width){m.width=n.width=b;m.height=n.height=b;da(n);for(var c=0;6>c;++c)for(var d=0;n.mipmask>>d;++d)h.texImage2D(34069+c,d,n.format,b>>d,b>>d,0,n.format,n.type,null);ja();Z.profile&&(n.stats.size=a(n.internalformat,n.type,m.width,m.height,!1,!0));
-return m}};m._reglType="textureCube";m._texture=n;Z.profile&&(m.stats=n.stats);m.destroy=function(){n.decRef()};return m},clear:function(){for(var a=0;a<ta;++a)h.activeTexture(33984+a),h.bindTexture(3553,null),oa[a]=null;F(ca).forEach(la);L.cubeCount=0;L.textureCount=0},getTexture:function(a){return null},restore:function(){F(ca).forEach(function(a){a.texture=h.createTexture();h.bindTexture(a.target,a.texture);for(var b=0;32>b;++b)if(0!==(a.mipmask&1<<b))if(3553===a.target)h.texImage2D(3553,b,a.internalformat,
-a.width>>b,a.height>>b,0,a.internalformat,a.type,null);else for(var c=0;6>c;++c)h.texImage2D(34069+c,b,a.internalformat,a.width>>b,a.height>>b,0,a.internalformat,a.type,null);ra(a.texInfo,a.target)})}}}},{"./constants/arraytypes.json":3,"./util/extend":22,"./util/flatten":23,"./util/is-array-like":24,"./util/is-ndarray":25,"./util/is-typed-array":26,"./util/pool":28,"./util/to-half-float":30,"./util/values":31}],19:[function(f,p,u){p.exports=function(f,k){function p(){this.endQueryIndex=this.startQueryIndex=
--1;this.sum=0;this.stats=null}function r(a,b,c){var f=F.pop()||new p;f.startQueryIndex=a;f.endQueryIndex=b;f.sum=0;f.stats=c;u.push(f)}var c=k.ext_disjoint_timer_query;if(!c)return null;var a=[],b=[],F=[],u=[],t=[],y=[];return{beginQuery:function(g){var f=a.pop()||c.createQueryEXT();c.beginQueryEXT(35007,f);b.push(f);r(b.length-1,b.length,g)},endQuery:function(){c.endQueryEXT(35007)},pushScopeStats:r,update:function(){var g,f;g=b.length;if(0!==g){y.length=Math.max(y.length,g+1);t.length=Math.max(t.length,
-g+1);t[0]=0;var k=y[0]=0;for(f=g=0;f<b.length;++f){var l=b[f];c.getQueryObjectEXT(l,34919)?(k+=c.getQueryObjectEXT(l,34918),a.push(l)):b[g++]=l;t[f+1]=k;y[f+1]=g}b.length=g;for(f=g=0;f<u.length;++f){var k=u[f],n=k.startQueryIndex,l=k.endQueryIndex;k.sum+=t[l]-t[n];n=y[n];l=y[l];l===n?(k.stats.gpuTime+=k.sum/1E6,F.push(k)):(k.startQueryIndex=n,k.endQueryIndex=l,u[g++]=k)}u.length=g}},getNumPendingQueries:function(){return b.length},clear:function(){a.push.apply(a,b);for(var g=0;g<a.length;g++)c.deleteQueryEXT(a[g]);
-b.length=0;a.length=0},restore:function(){b.length=0;a.length=0}}}},{}],20:[function(f,p,u){p.exports="undefined"!==typeof performance&&performance.now?function(){return performance.now()}:function(){return+new Date}},{}],21:[function(f,p,u){function l(f){return Array.prototype.slice.call(f)}function k(f){return l(f).join("")}var x=f("./extend");p.exports=function(){function f(){var b=[],c=[];return x(function(){b.push.apply(b,l(arguments))},{def:function(){var f="v"+a++;c.push(f);0<arguments.length&&
-(b.push(f,"="),b.push.apply(b,l(arguments)),b.push(";"));return f},toString:function(){return k([0<c.length?"var "+c+";":"",k(b)])}})}function c(){function a(f,k){c(f,k,"=",b.def(f,k),";")}var b=f(),c=f(),k=b.toString,t=c.toString;return x(function(){b.apply(b,l(arguments))},{def:b.def,entry:b,exit:c,save:a,set:function(c,f,k){a(c,f);b(c,f,"=",k,";")},toString:function(){return k()+t()}})}var a=0,b=[],p=[],u=f(),t={};return{global:u,link:function(c){for(var g=0;g<p.length;++g)if(p[g]===c)return b[g];
-g="g"+a++;b.push(g);p.push(c);return g},block:f,proc:function(a,b){function f(){var a="a"+l.length;l.push(a);return a}var l=[];b=b||0;for(var r=0;r<b;++r)f();var r=c(),n=r.toString;return t[a]=x(r,{arg:f,toString:function(){return k(["function(",l.join(),"){",n(),"}"])}})},scope:c,cond:function(){var a=k(arguments),b=c(),f=c(),r=b.toString,t=f.toString;return x(b,{then:function(){b.apply(b,l(arguments));return this},"else":function(){f.apply(f,l(arguments));return this},toString:function(){var b=
-t();b&&(b="else{"+b+"}");return k(["if(",a,"){",r(),"}",b])}})},compile:function(){var a=['"use strict";',u,"return {"];Object.keys(t).forEach(function(b){a.push('"',b,'":',t[b].toString(),",")});a.push("}");var c=k(a).replace(/;/g,";\n").replace(/}/g,"}\n").replace(/{/g,"{\n");return Function.apply(null,b.concat(c)).apply(null,p)}}}},{"./extend":22}],22:[function(f,p,u){p.exports=function(f,k){for(var p=Object.keys(k),r=0;r<p.length;++r)f[p[r]]=k[p[r]];return f}},{}],23:[function(f,p,u){function l(f,
-c,a,b,k,l){for(var t=0;t<c;++t)for(var p=f[t],g=0;g<a;++g)for(var x=p[g],u=0;u<b;++u)k[l++]=x[u]}function k(f,c,a,b,p){for(var x=1,t=a+1;t<c.length;++t)x*=c[t];var y=c[a];if(4===c.length-a){var g=c[a+1],u=c[a+2];c=c[a+3];for(t=0;t<y;++t)l(f[t],g,u,c,b,p),p+=x}else for(t=0;t<y;++t)k(f[t],c,a+1,b,p),p+=x}var x=f("./pool");p.exports={shape:function(f){for(var c=[];f.length;f=f[0])c.push(f.length);return c},flatten:function(f,c,a,b){var p=1;if(c.length)for(var u=0;u<c.length;++u)p*=c[u];else p=0;a=b||
-x.allocType(a,p);switch(c.length){case 0:break;case 1:b=c[0];for(c=0;c<b;++c)a[c]=f[c];break;case 2:b=c[0];c=c[1];for(u=p=0;u<b;++u)for(var t=f[u],y=0;y<c;++y)a[p++]=t[y];break;case 3:l(f,c[0],c[1],c[2],a,0);break;default:k(f,c,0,a,0)}return a}}},{"./pool":28}],24:[function(f,p,u){var l=f("./is-typed-array");p.exports=function(f){return Array.isArray(f)||l(f)}},{"./is-typed-array":26}],25:[function(f,p,u){var l=f("./is-typed-array");p.exports=function(f){return!!f&&"object"===typeof f&&Array.isArray(f.shape)&&
-Array.isArray(f.stride)&&"number"===typeof f.offset&&f.shape.length===f.stride.length&&(Array.isArray(f.data)||l(f.data))}},{"./is-typed-array":26}],26:[function(f,p,u){var l=f("../constants/arraytypes.json");p.exports=function(f){return Object.prototype.toString.call(f)in l}},{"../constants/arraytypes.json":3}],27:[function(f,p,u){p.exports=function(f,k){for(var p=Array(f),r=0;r<f;++r)p[r]=k(r);return p}},{}],28:[function(f,p,u){function l(c){var a,b;a=(65535<c)<<4;c>>>=a;b=(255<c)<<3;c>>>=b;a|=
-b;b=(15<c)<<2;c>>>=b;a|=b;b=(3<c)<<1;return a|b|c>>>b>>1}function k(c){a:{for(var a=16;268435456>=a;a*=16)if(c<=a){c=a;break a}c=0}a=r[l(c)>>2];return 0<a.length?a.pop():new ArrayBuffer(c)}function x(c){r[l(c.byteLength)>>2].push(c)}var r=f("./loop")(8,function(){return[]});p.exports={alloc:k,free:x,allocType:function(c,a){var b=null;switch(c){case 5120:b=new Int8Array(k(a),0,a);break;case 5121:b=new Uint8Array(k(a),0,a);break;case 5122:b=new Int16Array(k(2*a),0,a);break;case 5123:b=new Uint16Array(k(2*
-a),0,a);break;case 5124:b=new Int32Array(k(4*a),0,a);break;case 5125:b=new Uint32Array(k(4*a),0,a);break;case 5126:b=new Float32Array(k(4*a),0,a);break;default:return null}return b.length!==a?b.subarray(0,a):b},freeType:function(c){x(c.buffer)}}},{"./loop":27}],29:[function(f,p,u){p.exports="function"===typeof requestAnimationFrame&&"function"===typeof cancelAnimationFrame?{next:function(f){return requestAnimationFrame(f)},cancel:function(f){return cancelAnimationFrame(f)}}:{next:function(f){return setTimeout(f,
-16)},cancel:clearTimeout}},{}],30:[function(f,p,u){var l=f("./pool"),k=new Float32Array(1),x=new Uint32Array(k.buffer);p.exports=function(f){for(var c=l.allocType(5123,f.length),a=0;a<f.length;++a)if(isNaN(f[a]))c[a]=65535;else if(Infinity===f[a])c[a]=31744;else if(-Infinity===f[a])c[a]=64512;else{k[0]=f[a];var b=x[0],p=b>>>31<<15,u=(b<<1>>>24)-127,b=b>>13&1023;c[a]=-24>u?p:-14>u?p+(b+1024>>-14-u):15<u?p+31744:p+(u+15<<10)+b}return c}},{"./pool":28}],31:[function(f,p,u){p.exports=function(f){return Object.keys(f).map(function(k){return f[k]})}},
-{}],32:[function(f,p,u){function l(a,b,f){function k(){var b=window.innerWidth,g=window.innerHeight;a!==document.body&&(g=a.getBoundingClientRect(),b=g.right-g.left,g=g.top-g.bottom);l.width=f*b;l.height=f*g;c(l.style,{width:b+"px",height:g+"px"})}var l=document.createElement("canvas");c(l.style,{border:0,margin:0,padding:0,top:0,left:0});a.appendChild(l);a===document.body&&(l.style.position="absolute",c(a.style,{margin:0,padding:0}));window.addEventListener("resize",k,!1);k();return{canvas:l,onDestroy:function(){window.removeEventListener("resize",
-k);a.removeChild(l)}}}function k(a,b){function c(f){try{return a.getContext(f,b)}catch(k){return null}}return c("webgl")||c("experimental-webgl")||c("webgl-experimental")}function x(a){return"string"===typeof a?a.split():a}function r(a){return"string"===typeof a?document.querySelector(a):a}var c=f("./util/extend");p.exports=function(a){var b=a||{},c,f,p,u;a={};var g=[],E=[],C="undefined"===typeof window?1:window.devicePixelRatio,N=!1,n=function(a){},m=function(){};"string"===typeof b?c=document.querySelector(b):
-"object"===typeof b&&("string"===typeof b.nodeName&&"function"===typeof b.appendChild&&"function"===typeof b.getBoundingClientRect?c=b:"function"===typeof b.drawArrays||"function"===typeof b.drawElements?(u=b,p=u.canvas):("gl"in b?u=b.gl:"canvas"in b?p=r(b.canvas):"container"in b&&(f=r(b.container)),"attributes"in b&&(a=b.attributes),"extensions"in b&&(g=x(b.extensions)),"optionalExtensions"in b&&(E=x(b.optionalExtensions)),"onDone"in b&&(n=b.onDone),"profile"in b&&(N=!!b.profile),"pixelRatio"in b&&
-(C=+b.pixelRatio)));c&&("canvas"===c.nodeName.toLowerCase()?p=c:f=c);if(!u){if(!p){c=l(f||document.body,n,C);if(!c)return null;p=c.canvas;m=c.onDestroy}u=k(p,a)}return u?{gl:u,canvas:p,container:f,extensions:g,optionalExtensions:E,pixelRatio:C,profile:N,onDone:n,onDestroy:m}:(m(),n("webgl not supported, try upgrading your browser or graphics drivers http://get.webgl.org"),null)}},{"./util/extend":22}],33:[function(f,p,u){function l(a,b){for(var c=0;c<a.length;++c)if(a[c]===b)return c;return-1}var k=
-f("./lib/util/extend"),x=f("./lib/dynamic"),r=f("./lib/util/raf"),c=f("./lib/util/clock"),a=f("./lib/strings"),b=f("./lib/webgl"),F=f("./lib/extension"),M=f("./lib/limits"),t=f("./lib/buffer"),y=f("./lib/elements"),g=f("./lib/texture"),E=f("./lib/renderbuffer"),C=f("./lib/framebuffer"),N=f("./lib/attribute"),n=f("./lib/shader"),m=f("./lib/read"),B=f("./lib/core"),Y=f("./lib/stats"),L=f("./lib/timer");p.exports=function(f){function h(){if(0===Q.length)G&&G.update(),T=null;else{T=r.next(h);K();for(var a=
-Q.length-1;0<=a;--a){var b=Q[a];b&&b(U,null,0)}q.flush();G&&G.update()}}function p(){!T&&0<Q.length&&(T=r.next(h))}function u(){T&&(r.cancel(h),T=null)}function La(a){a.preventDefault();u();pa.forEach(function(a){a()})}function za(a){q.getError();ma.restore();sa.restore();ka.restore();da.restore();ja.restore();la.restore();G&&G.restore();ea.procs.refresh();p();V.forEach(function(a){a()})}function Ga(a){function b(a){var c={},f={};Object.keys(a).forEach(function(b){var g=a[b];x.isDynamic(g)?f[b]=x.unbox(g,
-b):c[b]=g});return{dynamic:f,"static":c}}function c(a){for(;q.length<a;)q.push(null);return q}var f=b(a.context||{}),g=b(a.uniforms||{}),h=b(a.attributes||{}),l=b(function(a){function b(a){if(a in c){var f=c[a];delete c[a];Object.keys(f).forEach(function(b){c[a+"."+b]=f[b]})}}var c=k({},a);delete c.uniforms;delete c.attributes;delete c.context;"stencil"in c&&c.stencil.op&&(c.stencil.opBack=c.stencil.opFront=c.stencil.op,delete c.stencil.op);b("blend");b("depth");b("cull");b("stencil");b("polygonOffset");
-b("scissor");b("sample");return c}(a));a={gpuTime:0,cpuTime:0,count:0};var f=ea.compile(l,h,g,f,a),m=f.draw,n=f.batch,p=f.scope,q=[];return k(function(a,b){var f;if("function"===typeof a)return p.call(this,null,a,0);if("function"===typeof b)if("number"===typeof a)for(f=0;f<a;++f)p.call(this,null,b,f);else if(Array.isArray(a))for(f=0;f<a.length;++f)p.call(this,a[f],b,f);else return p.call(this,a,b,0);else if("number"===typeof a){if(0<a)return n.call(this,c(a|0),a|0)}else if(Array.isArray(a)){if(a.length)return n.call(this,
-a,a.length)}else return m.call(this,a)},{stats:a})}function Z(a){Q.push(a);p();return{cancel:function(){function b(){var a=l(Q,b);Q[a]=Q[Q.length-1];--Q.length;0>=Q.length&&u()}var c=l(Q,a);Q[c]=b}}}function D(){var a=O.viewport,b=O.scissor_box;a[0]=a[1]=b[0]=b[1]=0;U.viewportWidth=U.framebufferWidth=U.drawingBufferWidth=a[2]=b[2]=q.drawingBufferWidth;U.viewportHeight=U.framebufferHeight=U.drawingBufferHeight=a[3]=b[3]=q.drawingBufferHeight}function K(){U.tick+=1;U.time=va();D();ea.procs.poll()}function Aa(){D();
-ea.procs.refresh();G&&G.update()}function va(){return(c()-ba)/1E3}f=b(f);if(!f)return null;var q=f.gl,S=q.getContextAttributes();q.isContextLost();var ma=F(q,f);if(!ma)return null;var ga=a(),W=Y(),R=ma.extensions,G=L(q,R),ba=c(),na=q.drawingBufferWidth,ya=q.drawingBufferHeight,U={tick:0,time:0,viewportWidth:na,viewportHeight:ya,framebufferWidth:na,framebufferHeight:ya,drawingBufferWidth:na,drawingBufferHeight:ya,pixelRatio:f.pixelRatio},ia=M(q,R),ka=t(q,W,f),ra=y(q,R,ka,W),na=N(q,R,ia,ka,ga),sa=n(q,
-ga,W,f),da=g(q,R,ia,function(){ea.procs.poll()},U,W,f),ja=E(q,R,ia,W,f),la=C(q,R,ia,da,ja,W),ea=B(q,ga,R,ia,ka,ra,da,la,{},na,sa,{elements:null,primitive:4,count:-1,offset:0,instances:-1},U,G,f),ga=m(q,la,ea.procs.poll,U,S,R),O=ea.next,ha=q.canvas,Q=[],pa=[],V=[],X=[f.onDestroy],T=null;ha&&(ha.addEventListener("webglcontextlost",La,!1),ha.addEventListener("webglcontextrestored",za,!1));Aa();S=k(Ga,{clear:function(a){var b=0;ea.procs.poll();var c=a.color;c&&(q.clearColor(+c[0]||0,+c[1]||0,+c[2]||0,
-+c[3]||0),b|=16384);"depth"in a&&(q.clearDepth(+a.depth),b|=256);"stencil"in a&&(q.clearStencil(a.stencil|0),b|=1024);q.clear(b)},prop:x.define.bind(null,1),context:x.define.bind(null,2),"this":x.define.bind(null,3),draw:Ga({}),buffer:function(a){return ka.create(a,34962,!1,!1)},elements:function(a){return ra.create(a,!1)},texture:da.create2D,cube:da.createCube,renderbuffer:ja.create,framebuffer:la.create,framebufferCube:la.createCube,attributes:S,frame:Z,on:function(a,b){var c;switch(a){case "frame":return Z(b);
-case "lost":c=pa;break;case "restore":c=V;break;case "destroy":c=X}c.push(b);return{cancel:function(){for(var a=0;a<c.length;++a)if(c[a]===b){c[a]=c[c.length-1];c.pop();break}}}},limits:ia,hasExtension:function(a){return 0<=ia.extensions.indexOf(a.toLowerCase())},read:ga,destroy:function(){Q.length=0;u();ha&&(ha.removeEventListener("webglcontextlost",La),ha.removeEventListener("webglcontextrestored",za));sa.clear();la.clear();ja.clear();da.clear();ra.clear();ka.clear();G&&G.clear();X.forEach(function(a){a()})},
-_gl:q,_refresh:Aa,poll:function(){K();G&&G.update()},now:va,stats:W});f.onDone(null,S);return S}},{"./lib/attribute":1,"./lib/buffer":2,"./lib/core":7,"./lib/dynamic":8,"./lib/elements":9,"./lib/extension":10,"./lib/framebuffer":11,"./lib/limits":12,"./lib/read":13,"./lib/renderbuffer":14,"./lib/shader":15,"./lib/stats":16,"./lib/strings":17,"./lib/texture":18,"./lib/timer":19,"./lib/util/clock":20,"./lib/util/extend":22,"./lib/util/raf":29,"./lib/webgl":32}]},{},[33])(33)});
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.createREGL = factory());
+}(this, (function () { 'use strict';
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+var arrayTypes =  {
+	"[object Int8Array]": 5120,
+	"[object Int16Array]": 5122,
+	"[object Int32Array]": 5124,
+	"[object Uint8Array]": 5121,
+	"[object Uint8ClampedArray]": 5121,
+	"[object Uint16Array]": 5123,
+	"[object Uint32Array]": 5125,
+	"[object Float32Array]": 5126,
+	"[object Float64Array]": 5121,
+	"[object ArrayBuffer]": 5121
+};
+
+var isTypedArray = function (x) {
+  return Object.prototype.toString.call(x) in arrayTypes
+};
+
+var extend = function (base, opts) {
+  var keys = Object.keys(opts);
+  for (var i = 0; i < keys.length; ++i) {
+    base[keys[i]] = opts[keys[i]];
+  }
+  return base
+};
+
+// Error checking and parameter validation.
+//
+// Statements for the form `check.someProcedure(...)` get removed by
+// a browserify transform for optimized/minified bundles.
+//
+/* globals btoa */
+// only used for extracting shader names.  if btoa not present, then errors
+// will be slightly crappier
+function decodeB64 (str) {
+  if (typeof btoa !== 'undefined') {
+    return btoa(str)
+  }
+  return 'base64:' + str
+}
+
+function raise (message) {
+  var error = new Error('(regl) ' + message);
+  console.error(error);
+  throw error
+}
+
+function check (pred, message) {
+  if (!pred) {
+    raise(message);
+  }
+}
+
+function encolon (message) {
+  if (message) {
+    return ': ' + message
+  }
+  return ''
+}
+
+function checkParameter (param, possibilities, message) {
+  if (!(param in possibilities)) {
+    raise('unknown parameter (' + param + ')' + encolon(message) +
+          '. possible values: ' + Object.keys(possibilities).join());
+  }
+}
+
+function checkIsTypedArray (data, message) {
+  if (!isTypedArray(data)) {
+    raise(
+      'invalid parameter type' + encolon(message) +
+      '. must be a typed array');
+  }
+}
+
+function checkTypeOf (value, type, message) {
+  if (typeof value !== type) {
+    raise(
+      'invalid parameter type' + encolon(message) +
+      '. expected ' + type + ', got ' + (typeof value));
+  }
+}
+
+function checkNonNegativeInt (value, message) {
+  if (!((value >= 0) &&
+        ((value | 0) === value))) {
+    raise('invalid parameter type, (' + value + ')' + encolon(message) +
+          '. must be a nonnegative integer');
+  }
+}
+
+function checkOneOf (value, list, message) {
+  if (list.indexOf(value) < 0) {
+    raise('invalid value' + encolon(message) + '. must be one of: ' + list);
+  }
+}
+
+var constructorKeys = [
+  'gl',
+  'canvas',
+  'container',
+  'attributes',
+  'pixelRatio',
+  'extensions',
+  'optionalExtensions',
+  'profile',
+  'onDone'
+];
+
+function checkConstructor (obj) {
+  Object.keys(obj).forEach(function (key) {
+    if (constructorKeys.indexOf(key) < 0) {
+      raise('invalid regl constructor argument "' + key + '". must be one of ' + constructorKeys);
+    }
+  });
+}
+
+function leftPad (str, n) {
+  str = str + '';
+  while (str.length < n) {
+    str = ' ' + str;
+  }
+  return str
+}
+
+function ShaderFile () {
+  this.name = 'unknown';
+  this.lines = [];
+  this.index = {};
+  this.hasErrors = false;
+}
+
+function ShaderLine (number, line) {
+  this.number = number;
+  this.line = line;
+  this.errors = [];
+}
+
+function ShaderError (fileNumber, lineNumber, message) {
+  this.file = fileNumber;
+  this.line = lineNumber;
+  this.message = message;
+}
+
+function guessCommand () {
+  var error = new Error();
+  var stack = (error.stack || error).toString();
+  var pat = /compileProcedure.*\n\s*at.*\((.*)\)/.exec(stack);
+  if (pat) {
+    return pat[1]
+  }
+  var pat2 = /compileProcedure.*\n\s*at\s+(.*)(\n|$)/.exec(stack);
+  if (pat2) {
+    return pat2[1]
+  }
+  return 'unknown'
+}
+
+function guessCallSite () {
+  var error = new Error();
+  var stack = (error.stack || error).toString();
+  var pat = /at REGLCommand.*\n\s+at.*\((.*)\)/.exec(stack);
+  if (pat) {
+    return pat[1]
+  }
+  var pat2 = /at REGLCommand.*\n\s+at\s+(.*)\n/.exec(stack);
+  if (pat2) {
+    return pat2[1]
+  }
+  return 'unknown'
+}
+
+function parseSource (source, command) {
+  var lines = source.split('\n');
+  var lineNumber = 1;
+  var fileNumber = 0;
+  var files = {
+    unknown: new ShaderFile(),
+    0: new ShaderFile()
+  };
+  files.unknown.name = files[0].name = command || guessCommand();
+  files.unknown.lines.push(new ShaderLine(0, ''));
+  for (var i = 0; i < lines.length; ++i) {
+    var line = lines[i];
+    var parts = /^\s*\#\s*(\w+)\s+(.+)\s*$/.exec(line);
+    if (parts) {
+      switch (parts[1]) {
+        case 'line':
+          var lineNumberInfo = /(\d+)(\s+\d+)?/.exec(parts[2]);
+          if (lineNumberInfo) {
+            lineNumber = lineNumberInfo[1] | 0;
+            if (lineNumberInfo[2]) {
+              fileNumber = lineNumberInfo[2] | 0;
+              if (!(fileNumber in files)) {
+                files[fileNumber] = new ShaderFile();
+              }
+            }
+          }
+          break
+        case 'define':
+          var nameInfo = /SHADER_NAME(_B64)?\s+(.*)$/.exec(parts[2]);
+          if (nameInfo) {
+            files[fileNumber].name = (nameInfo[1]
+                ? decodeB64(nameInfo[2])
+                : nameInfo[2]);
+          }
+          break
+      }
+    }
+    files[fileNumber].lines.push(new ShaderLine(lineNumber++, line));
+  }
+  Object.keys(files).forEach(function (fileNumber) {
+    var file = files[fileNumber];
+    file.lines.forEach(function (line) {
+      file.index[line.number] = line;
+    });
+  });
+  return files
+}
+
+function parseErrorLog (errLog) {
+  var result = [];
+  errLog.split('\n').forEach(function (errMsg) {
+    if (errMsg.length < 5) {
+      return
+    }
+    var parts = /^ERROR\:\s+(\d+)\:(\d+)\:\s*(.*)$/.exec(errMsg);
+    if (parts) {
+      result.push(new ShaderError(
+        parts[1] | 0,
+        parts[2] | 0,
+        parts[3].trim()));
+    } else if (errMsg.length > 0) {
+      result.push(new ShaderError('unknown', 0, errMsg));
+    }
+  });
+  return result
+}
+
+function annotateFiles (files, errors) {
+  errors.forEach(function (error) {
+    var file = files[error.file];
+    if (file) {
+      var line = file.index[error.line];
+      if (line) {
+        line.errors.push(error);
+        file.hasErrors = true;
+        return
+      }
+    }
+    files.unknown.hasErrors = true;
+    files.unknown.lines[0].errors.push(error);
+  });
+}
+
+function checkShaderError (gl, shader, source, type, command) {
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    var errLog = gl.getShaderInfoLog(shader);
+    var typeName = type === gl.FRAGMENT_SHADER ? 'fragment' : 'vertex';
+    checkCommandType(source, 'string', typeName + ' shader source must be a string', command);
+    var files = parseSource(source, command);
+    var errors = parseErrorLog(errLog);
+    annotateFiles(files, errors);
+
+    Object.keys(files).forEach(function (fileNumber) {
+      var file = files[fileNumber];
+      if (!file.hasErrors) {
+        return
+      }
+
+      var strings = [''];
+      var styles = [''];
+
+      function push (str, style) {
+        strings.push(str);
+        styles.push(style || '');
+      }
+
+      push('file number ' + fileNumber + ': ' + file.name + '\n', 'color:red;text-decoration:underline;font-weight:bold');
+
+      file.lines.forEach(function (line) {
+        if (line.errors.length > 0) {
+          push(leftPad(line.number, 4) + '|  ', 'background-color:yellow; font-weight:bold');
+          push(line.line + '\n', 'color:red; background-color:yellow; font-weight:bold');
+
+          // try to guess token
+          var offset = 0;
+          line.errors.forEach(function (error) {
+            var message = error.message;
+            var token = /^\s*\'(.*)\'\s*\:\s*(.*)$/.exec(message);
+            if (token) {
+              var tokenPat = token[1];
+              message = token[2];
+              switch (tokenPat) {
+                case 'assign':
+                  tokenPat = '=';
+                  break
+              }
+              offset = Math.max(line.line.indexOf(tokenPat, offset), 0);
+            } else {
+              offset = 0;
+            }
+
+            push(leftPad('| ', 6));
+            push(leftPad('^^^', offset + 3) + '\n', 'font-weight:bold');
+            push(leftPad('| ', 6));
+            push(message + '\n', 'font-weight:bold');
+          });
+          push(leftPad('| ', 6) + '\n');
+        } else {
+          push(leftPad(line.number, 4) + '|  ');
+          push(line.line + '\n', 'color:red');
+        }
+      });
+      if (typeof document !== 'undefined') {
+        styles[0] = strings.join('%c');
+        console.log.apply(console, styles);
+      } else {
+        console.log(strings.join(''));
+      }
+    });
+
+    check.raise('Error compiling ' + typeName + ' shader, ' + files[0].name);
+  }
+}
+
+function checkLinkError (gl, program, fragShader, vertShader, command) {
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    var errLog = gl.getProgramInfoLog(program);
+    var fragParse = parseSource(fragShader, command);
+    var vertParse = parseSource(vertShader, command);
+
+    var header = 'Error linking program with vertex shader, "' +
+      vertParse[0].name + '", and fragment shader "' + fragParse[0].name + '"';
+
+    if (typeof document !== 'undefined') {
+      console.log('%c' + header + '\n%c' + errLog,
+        'color:red;text-decoration:underline;font-weight:bold',
+        'color:red');
+    } else {
+      console.log(header + '\n' + errLog);
+    }
+    check.raise(header);
+  }
+}
+
+function saveCommandRef (object) {
+  object._commandRef = guessCommand();
+}
+
+function saveDrawCommandInfo (opts, uniforms, attributes, stringStore) {
+  saveCommandRef(opts);
+
+  function id (str) {
+    if (str) {
+      return stringStore.id(str)
+    }
+    return 0
+  }
+  opts._fragId = id(opts.static.frag);
+  opts._vertId = id(opts.static.vert);
+
+  function addProps (dict, set) {
+    Object.keys(set).forEach(function (u) {
+      dict[stringStore.id(u)] = true;
+    });
+  }
+
+  var uniformSet = opts._uniformSet = {};
+  addProps(uniformSet, uniforms.static);
+  addProps(uniformSet, uniforms.dynamic);
+
+  var attributeSet = opts._attributeSet = {};
+  addProps(attributeSet, attributes.static);
+  addProps(attributeSet, attributes.dynamic);
+
+  opts._hasCount = (
+    'count' in opts.static ||
+    'count' in opts.dynamic ||
+    'elements' in opts.static ||
+    'elements' in opts.dynamic);
+}
+
+function commandRaise (message, command) {
+  var callSite = guessCallSite();
+  raise(message +
+    ' in command ' + (command || guessCommand()) +
+    (callSite === 'unknown' ? '' : ' called from ' + callSite));
+}
+
+function checkCommand (pred, message, command) {
+  if (!pred) {
+    commandRaise(message, command || guessCommand());
+  }
+}
+
+function checkParameterCommand (param, possibilities, message, command) {
+  if (!(param in possibilities)) {
+    commandRaise(
+      'unknown parameter (' + param + ')' + encolon(message) +
+      '. possible values: ' + Object.keys(possibilities).join(),
+      command || guessCommand());
+  }
+}
+
+function checkCommandType (value, type, message, command) {
+  if (typeof value !== type) {
+    commandRaise(
+      'invalid parameter type' + encolon(message) +
+      '. expected ' + type + ', got ' + (typeof value),
+      command || guessCommand());
+  }
+}
+
+function checkOptional (block) {
+  block();
+}
+
+function checkFramebufferFormat (attachment, texFormats, rbFormats) {
+  if (attachment.texture) {
+    checkOneOf(
+      attachment.texture._texture.internalformat,
+      texFormats,
+      'unsupported texture format for attachment');
+  } else {
+    checkOneOf(
+      attachment.renderbuffer._renderbuffer.format,
+      rbFormats,
+      'unsupported renderbuffer format for attachment');
+  }
+}
+
+var GL_CLAMP_TO_EDGE = 0x812F;
+
+var GL_NEAREST = 0x2600;
+var GL_NEAREST_MIPMAP_NEAREST = 0x2700;
+var GL_LINEAR_MIPMAP_NEAREST = 0x2701;
+var GL_NEAREST_MIPMAP_LINEAR = 0x2702;
+var GL_LINEAR_MIPMAP_LINEAR = 0x2703;
+
+var GL_BYTE = 5120;
+var GL_UNSIGNED_BYTE = 5121;
+var GL_SHORT = 5122;
+var GL_UNSIGNED_SHORT = 5123;
+var GL_INT = 5124;
+var GL_UNSIGNED_INT = 5125;
+var GL_FLOAT = 5126;
+
+var GL_UNSIGNED_SHORT_4_4_4_4 = 0x8033;
+var GL_UNSIGNED_SHORT_5_5_5_1 = 0x8034;
+var GL_UNSIGNED_SHORT_5_6_5 = 0x8363;
+var GL_UNSIGNED_INT_24_8_WEBGL = 0x84FA;
+
+var GL_HALF_FLOAT_OES = 0x8D61;
+
+var TYPE_SIZE = {};
+
+TYPE_SIZE[GL_BYTE] =
+TYPE_SIZE[GL_UNSIGNED_BYTE] = 1;
+
+TYPE_SIZE[GL_SHORT] =
+TYPE_SIZE[GL_UNSIGNED_SHORT] =
+TYPE_SIZE[GL_HALF_FLOAT_OES] =
+TYPE_SIZE[GL_UNSIGNED_SHORT_5_6_5] =
+TYPE_SIZE[GL_UNSIGNED_SHORT_4_4_4_4] =
+TYPE_SIZE[GL_UNSIGNED_SHORT_5_5_5_1] = 2;
+
+TYPE_SIZE[GL_INT] =
+TYPE_SIZE[GL_UNSIGNED_INT] =
+TYPE_SIZE[GL_FLOAT] =
+TYPE_SIZE[GL_UNSIGNED_INT_24_8_WEBGL] = 4;
+
+function pixelSize (type, channels) {
+  if (type === GL_UNSIGNED_SHORT_5_5_5_1 ||
+      type === GL_UNSIGNED_SHORT_4_4_4_4 ||
+      type === GL_UNSIGNED_SHORT_5_6_5) {
+    return 2
+  } else if (type === GL_UNSIGNED_INT_24_8_WEBGL) {
+    return 4
+  } else {
+    return TYPE_SIZE[type] * channels
+  }
+}
+
+function isPow2 (v) {
+  return !(v & (v - 1)) && (!!v)
+}
+
+function checkTexture2D (info, mipData, limits) {
+  var i;
+  var w = mipData.width;
+  var h = mipData.height;
+  var c = mipData.channels;
+
+  // Check texture shape
+  check(w > 0 && w <= limits.maxTextureSize &&
+        h > 0 && h <= limits.maxTextureSize,
+        'invalid texture shape');
+
+  // check wrap mode
+  if (info.wrapS !== GL_CLAMP_TO_EDGE || info.wrapT !== GL_CLAMP_TO_EDGE) {
+    check(isPow2(w) && isPow2(h),
+      'incompatible wrap mode for texture, both width and height must be power of 2');
+  }
+
+  if (mipData.mipmask === 1) {
+    if (w !== 1 && h !== 1) {
+      check(
+        info.minFilter !== GL_NEAREST_MIPMAP_NEAREST &&
+        info.minFilter !== GL_NEAREST_MIPMAP_LINEAR &&
+        info.minFilter !== GL_LINEAR_MIPMAP_NEAREST &&
+        info.minFilter !== GL_LINEAR_MIPMAP_LINEAR,
+        'min filter requires mipmap');
+    }
+  } else {
+    // texture must be power of 2
+    check(isPow2(w) && isPow2(h),
+      'texture must be a square power of 2 to support mipmapping');
+    check(mipData.mipmask === (w << 1) - 1,
+      'missing or incomplete mipmap data');
+  }
+
+  if (mipData.type === GL_FLOAT) {
+    if (limits.extensions.indexOf('oes_texture_float_linear') < 0) {
+      check(info.minFilter === GL_NEAREST && info.magFilter === GL_NEAREST,
+        'filter not supported, must enable oes_texture_float_linear');
+    }
+    check(!info.genMipmaps,
+      'mipmap generation not supported with float textures');
+  }
+
+  // check image complete
+  var mipimages = mipData.images;
+  for (i = 0; i < 16; ++i) {
+    if (mipimages[i]) {
+      var mw = w >> i;
+      var mh = h >> i;
+      check(mipData.mipmask & (1 << i), 'missing mipmap data');
+
+      var img = mipimages[i];
+
+      check(
+        img.width === mw &&
+        img.height === mh,
+        'invalid shape for mip images');
+
+      check(
+        img.format === mipData.format &&
+        img.internalformat === mipData.internalformat &&
+        img.type === mipData.type,
+        'incompatible type for mip image');
+
+      if (img.compressed) {
+        // TODO: check size for compressed images
+      } else if (img.data) {
+        // check(img.data.byteLength === mw * mh *
+        // Math.max(pixelSize(img.type, c), img.unpackAlignment),
+        var rowSize = Math.ceil(pixelSize(img.type, c) * mw / img.unpackAlignment) * img.unpackAlignment;
+        check(img.data.byteLength === rowSize * mh,
+          'invalid data for image, buffer size is inconsistent with image format');
+      } else if (img.element) {
+        // TODO: check element can be loaded
+      } else if (img.copy) {
+        // TODO: check compatible format and type
+      }
+    } else if (!info.genMipmaps) {
+      check((mipData.mipmask & (1 << i)) === 0, 'extra mipmap data');
+    }
+  }
+
+  if (mipData.compressed) {
+    check(!info.genMipmaps,
+      'mipmap generation for compressed images not supported');
+  }
+}
+
+function checkTextureCube (texture, info, faces, limits) {
+  var w = texture.width;
+  var h = texture.height;
+  var c = texture.channels;
+
+  // Check texture shape
+  check(
+    w > 0 && w <= limits.maxTextureSize && h > 0 && h <= limits.maxTextureSize,
+    'invalid texture shape');
+  check(
+    w === h,
+    'cube map must be square');
+  check(
+    info.wrapS === GL_CLAMP_TO_EDGE && info.wrapT === GL_CLAMP_TO_EDGE,
+    'wrap mode not supported by cube map');
+
+  for (var i = 0; i < faces.length; ++i) {
+    var face = faces[i];
+    check(
+      face.width === w && face.height === h,
+      'inconsistent cube map face shape');
+
+    if (info.genMipmaps) {
+      check(!face.compressed,
+        'can not generate mipmap for compressed textures');
+      check(face.mipmask === 1,
+        'can not specify mipmaps and generate mipmaps');
+    } else {
+      // TODO: check mip and filter mode
+    }
+
+    var mipmaps = face.images;
+    for (var j = 0; j < 16; ++j) {
+      var img = mipmaps[j];
+      if (img) {
+        var mw = w >> j;
+        var mh = h >> j;
+        check(face.mipmask & (1 << j), 'missing mipmap data');
+        check(
+          img.width === mw &&
+          img.height === mh,
+          'invalid shape for mip images');
+        check(
+          img.format === texture.format &&
+          img.internalformat === texture.internalformat &&
+          img.type === texture.type,
+          'incompatible type for mip image');
+
+        if (img.compressed) {
+          // TODO: check size for compressed images
+        } else if (img.data) {
+          check(img.data.byteLength === mw * mh *
+            Math.max(pixelSize(img.type, c), img.unpackAlignment),
+            'invalid data for image, buffer size is inconsistent with image format');
+        } else if (img.element) {
+          // TODO: check element can be loaded
+        } else if (img.copy) {
+          // TODO: check compatible format and type
+        }
+      }
+    }
+  }
+}
+
+var check$1 = extend(check, {
+  optional: checkOptional,
+  raise: raise,
+  commandRaise: commandRaise,
+  command: checkCommand,
+  parameter: checkParameter,
+  commandParameter: checkParameterCommand,
+  constructor: checkConstructor,
+  type: checkTypeOf,
+  commandType: checkCommandType,
+  isTypedArray: checkIsTypedArray,
+  nni: checkNonNegativeInt,
+  oneOf: checkOneOf,
+  shaderError: checkShaderError,
+  linkError: checkLinkError,
+  callSite: guessCallSite,
+  saveCommandRef: saveCommandRef,
+  saveDrawInfo: saveDrawCommandInfo,
+  framebufferFormat: checkFramebufferFormat,
+  guessCommand: guessCommand,
+  texture2D: checkTexture2D,
+  textureCube: checkTextureCube
+});
+
+var VARIABLE_COUNTER = 0;
+
+var DYN_FUNC = 0;
+
+function DynamicVariable (type, data) {
+  this.id = (VARIABLE_COUNTER++);
+  this.type = type;
+  this.data = data;
+}
+
+function escapeStr (str) {
+  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+}
+
+function splitParts (str) {
+  if (str.length === 0) {
+    return []
+  }
+
+  var firstChar = str.charAt(0);
+  var lastChar = str.charAt(str.length - 1);
+
+  if (str.length > 1 &&
+      firstChar === lastChar &&
+      (firstChar === '"' || firstChar === "'")) {
+    return ['"' + escapeStr(str.substr(1, str.length - 2)) + '"']
+  }
+
+  var parts = /\[(false|true|null|\d+|'[^']*'|"[^"]*")\]/.exec(str);
+  if (parts) {
+    return (
+      splitParts(str.substr(0, parts.index))
+      .concat(splitParts(parts[1]))
+      .concat(splitParts(str.substr(parts.index + parts[0].length)))
+    )
+  }
+
+  var subparts = str.split('.');
+  if (subparts.length === 1) {
+    return ['"' + escapeStr(str) + '"']
+  }
+
+  var result = [];
+  for (var i = 0; i < subparts.length; ++i) {
+    result = result.concat(splitParts(subparts[i]));
+  }
+  return result
+}
+
+function toAccessorString (str) {
+  return '[' + splitParts(str).join('][') + ']'
+}
+
+function defineDynamic (type, data) {
+  return new DynamicVariable(type, toAccessorString(data + ''))
+}
+
+function isDynamic (x) {
+  return (typeof x === 'function' && !x._reglType) ||
+         x instanceof DynamicVariable
+}
+
+function unbox (x, path) {
+  if (typeof x === 'function') {
+    return new DynamicVariable(DYN_FUNC, x)
+  }
+  return x
+}
+
+var dynamic = {
+  DynamicVariable: DynamicVariable,
+  define: defineDynamic,
+  isDynamic: isDynamic,
+  unbox: unbox,
+  accessor: toAccessorString
+};
+
+/* globals requestAnimationFrame, cancelAnimationFrame */
+var raf = {
+  next: typeof requestAnimationFrame === 'function'
+    ? function (cb) { return requestAnimationFrame(cb) }
+    : function (cb) { return setTimeout(cb, 16) },
+  cancel: typeof cancelAnimationFrame === 'function'
+    ? function (raf) { return cancelAnimationFrame(raf) }
+    : clearTimeout
+};
+
+/* globals performance */
+var clock = (typeof performance !== 'undefined' && performance.now)
+  ? function () { return performance.now() }
+  : function () { return +(new Date()) };
+
+function createStringStore () {
+  var stringIds = {'': 0};
+  var stringValues = [''];
+  return {
+    id: function (str) {
+      var result = stringIds[str];
+      if (result) {
+        return result
+      }
+      result = stringIds[str] = stringValues.length;
+      stringValues.push(str);
+      return result
+    },
+
+    str: function (id) {
+      return stringValues[id]
+    }
+  }
+}
+
+// Context and canvas creation helper functions
+function createCanvas (element, onDone, pixelRatio) {
+  var canvas = document.createElement('canvas');
+  extend(canvas.style, {
+    border: 0,
+    margin: 0,
+    padding: 0,
+    top: 0,
+    left: 0
+  });
+  element.appendChild(canvas);
+
+  if (element === document.body) {
+    canvas.style.position = 'absolute';
+    extend(element.style, {
+      margin: 0,
+      padding: 0
+    });
+  }
+
+  function resize () {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    if (element !== document.body) {
+      var bounds = element.getBoundingClientRect();
+      w = bounds.right - bounds.left;
+      h = bounds.bottom - bounds.top;
+    }
+    canvas.width = pixelRatio * w;
+    canvas.height = pixelRatio * h;
+    extend(canvas.style, {
+      width: w + 'px',
+      height: h + 'px'
+    });
+  }
+
+  window.addEventListener('resize', resize, false);
+
+  function onDestroy () {
+    window.removeEventListener('resize', resize);
+    element.removeChild(canvas);
+  }
+
+  resize();
+
+  return {
+    canvas: canvas,
+    onDestroy: onDestroy
+  }
+}
+
+function createContext (canvas, contexAttributes) {
+  function get (name) {
+    try {
+      return canvas.getContext(name, contexAttributes)
+    } catch (e) {
+      return null
+    }
+  }
+  return (
+    get('webgl') ||
+    get('experimental-webgl') ||
+    get('webgl-experimental')
+  )
+}
+
+function isHTMLElement (obj) {
+  return (
+    typeof obj.nodeName === 'string' &&
+    typeof obj.appendChild === 'function' &&
+    typeof obj.getBoundingClientRect === 'function'
+  )
+}
+
+function isWebGLContext (obj) {
+  return (
+    typeof obj.drawArrays === 'function' ||
+    typeof obj.drawElements === 'function'
+  )
+}
+
+function parseExtensions (input) {
+  if (typeof input === 'string') {
+    return input.split()
+  }
+  check$1(Array.isArray(input), 'invalid extension array');
+  return input
+}
+
+function getElement (desc) {
+  if (typeof desc === 'string') {
+    check$1(typeof document !== 'undefined', 'not supported outside of DOM');
+    return document.querySelector(desc)
+  }
+  return desc
+}
+
+function parseArgs (args_) {
+  var args = args_ || {};
+  var element, container, canvas, gl;
+  var contextAttributes = {};
+  var extensions = [];
+  var optionalExtensions = [];
+  var pixelRatio = (typeof window === 'undefined' ? 1 : window.devicePixelRatio);
+  var profile = false;
+  var onDone = function (err) {
+    if (err) {
+      check$1.raise(err);
+    }
+  };
+  var onDestroy = function () {};
+  if (typeof args === 'string') {
+    check$1(
+      typeof document !== 'undefined',
+      'selector queries only supported in DOM enviroments');
+    element = document.querySelector(args);
+    check$1(element, 'invalid query string for element');
+  } else if (typeof args === 'object') {
+    if (isHTMLElement(args)) {
+      element = args;
+    } else if (isWebGLContext(args)) {
+      gl = args;
+      canvas = gl.canvas;
+    } else {
+      check$1.constructor(args);
+      if ('gl' in args) {
+        gl = args.gl;
+      } else if ('canvas' in args) {
+        canvas = getElement(args.canvas);
+      } else if ('container' in args) {
+        container = getElement(args.container);
+      }
+      if ('attributes' in args) {
+        contextAttributes = args.attributes;
+        check$1.type(contextAttributes, 'object', 'invalid context attributes');
+      }
+      if ('extensions' in args) {
+        extensions = parseExtensions(args.extensions);
+      }
+      if ('optionalExtensions' in args) {
+        optionalExtensions = parseExtensions(args.optionalExtensions);
+      }
+      if ('onDone' in args) {
+        check$1.type(
+          args.onDone, 'function',
+          'invalid or missing onDone callback');
+        onDone = args.onDone;
+      }
+      if ('profile' in args) {
+        profile = !!args.profile;
+      }
+      if ('pixelRatio' in args) {
+        pixelRatio = +args.pixelRatio;
+        check$1(pixelRatio > 0, 'invalid pixel ratio');
+      }
+    }
+  } else {
+    check$1.raise('invalid arguments to regl');
+  }
+
+  if (element) {
+    if (element.nodeName.toLowerCase() === 'canvas') {
+      canvas = element;
+    } else {
+      container = element;
+    }
+  }
+
+  if (!gl) {
+    if (!canvas) {
+      check$1(
+        typeof document !== 'undefined',
+        'must manually specify webgl context outside of DOM environments');
+      var result = createCanvas(container || document.body, onDone, pixelRatio);
+      if (!result) {
+        return null
+      }
+      canvas = result.canvas;
+      onDestroy = result.onDestroy;
+    }
+    gl = createContext(canvas, contextAttributes);
+  }
+
+  if (!gl) {
+    onDestroy();
+    onDone('webgl not supported, try upgrading your browser or graphics drivers http://get.webgl.org');
+    return null
+  }
+
+  return {
+    gl: gl,
+    canvas: canvas,
+    container: container,
+    extensions: extensions,
+    optionalExtensions: optionalExtensions,
+    pixelRatio: pixelRatio,
+    profile: profile,
+    onDone: onDone,
+    onDestroy: onDestroy
+  }
+}
+
+function createExtensionCache (gl, config) {
+  var extensions = {};
+
+  function tryLoadExtension (name_) {
+    check$1.type(name_, 'string', 'extension name must be string');
+    var name = name_.toLowerCase();
+    var ext;
+    try {
+      ext = extensions[name] = gl.getExtension(name);
+    } catch (e) {}
+    return !!ext
+  }
+
+  for (var i = 0; i < config.extensions.length; ++i) {
+    var name = config.extensions[i];
+    if (!tryLoadExtension(name)) {
+      config.onDestroy();
+      config.onDone('"' + name + '" extension is not supported by the current WebGL context, try upgrading your system or a different browser');
+      return null
+    }
+  }
+
+  config.optionalExtensions.forEach(tryLoadExtension);
+
+  return {
+    extensions: extensions,
+    restore: function () {
+      Object.keys(extensions).forEach(function (name) {
+        if (!tryLoadExtension(name)) {
+          throw new Error('(regl): error restoring extension ' + name)
+        }
+      });
+    }
+  }
+}
+
+var GL_SUBPIXEL_BITS = 0x0D50;
+var GL_RED_BITS = 0x0D52;
+var GL_GREEN_BITS = 0x0D53;
+var GL_BLUE_BITS = 0x0D54;
+var GL_ALPHA_BITS = 0x0D55;
+var GL_DEPTH_BITS = 0x0D56;
+var GL_STENCIL_BITS = 0x0D57;
+
+var GL_ALIASED_POINT_SIZE_RANGE = 0x846D;
+var GL_ALIASED_LINE_WIDTH_RANGE = 0x846E;
+
+var GL_MAX_TEXTURE_SIZE = 0x0D33;
+var GL_MAX_VIEWPORT_DIMS = 0x0D3A;
+var GL_MAX_VERTEX_ATTRIBS = 0x8869;
+var GL_MAX_VERTEX_UNIFORM_VECTORS = 0x8DFB;
+var GL_MAX_VARYING_VECTORS = 0x8DFC;
+var GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS = 0x8B4D;
+var GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS = 0x8B4C;
+var GL_MAX_TEXTURE_IMAGE_UNITS = 0x8872;
+var GL_MAX_FRAGMENT_UNIFORM_VECTORS = 0x8DFD;
+var GL_MAX_CUBE_MAP_TEXTURE_SIZE = 0x851C;
+var GL_MAX_RENDERBUFFER_SIZE = 0x84E8;
+
+var GL_VENDOR = 0x1F00;
+var GL_RENDERER = 0x1F01;
+var GL_VERSION = 0x1F02;
+var GL_SHADING_LANGUAGE_VERSION = 0x8B8C;
+
+var GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
+
+var GL_MAX_COLOR_ATTACHMENTS_WEBGL = 0x8CDF;
+var GL_MAX_DRAW_BUFFERS_WEBGL = 0x8824;
+
+var wrapLimits = function (gl, extensions) {
+  var maxAnisotropic = 1;
+  if (extensions.ext_texture_filter_anisotropic) {
+    maxAnisotropic = gl.getParameter(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+  }
+
+  var maxDrawbuffers = 1;
+  var maxColorAttachments = 1;
+  if (extensions.webgl_draw_buffers) {
+    maxDrawbuffers = gl.getParameter(GL_MAX_DRAW_BUFFERS_WEBGL);
+    maxColorAttachments = gl.getParameter(GL_MAX_COLOR_ATTACHMENTS_WEBGL);
+  }
+
+  return {
+    // drawing buffer bit depth
+    colorBits: [
+      gl.getParameter(GL_RED_BITS),
+      gl.getParameter(GL_GREEN_BITS),
+      gl.getParameter(GL_BLUE_BITS),
+      gl.getParameter(GL_ALPHA_BITS)
+    ],
+    depthBits: gl.getParameter(GL_DEPTH_BITS),
+    stencilBits: gl.getParameter(GL_STENCIL_BITS),
+    subpixelBits: gl.getParameter(GL_SUBPIXEL_BITS),
+
+    // supported extensions
+    extensions: Object.keys(extensions).filter(function (ext) {
+      return !!extensions[ext]
+    }),
+
+    // max aniso samples
+    maxAnisotropic: maxAnisotropic,
+
+    // max draw buffers
+    maxDrawbuffers: maxDrawbuffers,
+    maxColorAttachments: maxColorAttachments,
+
+    // point and line size ranges
+    pointSizeDims: gl.getParameter(GL_ALIASED_POINT_SIZE_RANGE),
+    lineWidthDims: gl.getParameter(GL_ALIASED_LINE_WIDTH_RANGE),
+    maxViewportDims: gl.getParameter(GL_MAX_VIEWPORT_DIMS),
+    maxCombinedTextureUnits: gl.getParameter(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+    maxCubeMapSize: gl.getParameter(GL_MAX_CUBE_MAP_TEXTURE_SIZE),
+    maxRenderbufferSize: gl.getParameter(GL_MAX_RENDERBUFFER_SIZE),
+    maxTextureUnits: gl.getParameter(GL_MAX_TEXTURE_IMAGE_UNITS),
+    maxTextureSize: gl.getParameter(GL_MAX_TEXTURE_SIZE),
+    maxAttributes: gl.getParameter(GL_MAX_VERTEX_ATTRIBS),
+    maxVertexUniforms: gl.getParameter(GL_MAX_VERTEX_UNIFORM_VECTORS),
+    maxVertexTextureUnits: gl.getParameter(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+    maxVaryingVectors: gl.getParameter(GL_MAX_VARYING_VECTORS),
+    maxFragmentUniforms: gl.getParameter(GL_MAX_FRAGMENT_UNIFORM_VECTORS),
+
+    // vendor info
+    glsl: gl.getParameter(GL_SHADING_LANGUAGE_VERSION),
+    renderer: gl.getParameter(GL_RENDERER),
+    vendor: gl.getParameter(GL_VENDOR),
+    version: gl.getParameter(GL_VERSION)
+  }
+};
+
+function isNDArrayLike (obj) {
+  return (
+    !!obj &&
+    typeof obj === 'object' &&
+    Array.isArray(obj.shape) &&
+    Array.isArray(obj.stride) &&
+    typeof obj.offset === 'number' &&
+    obj.shape.length === obj.stride.length &&
+    (Array.isArray(obj.data) ||
+      isTypedArray(obj.data)))
+}
+
+var values = function (obj) {
+  return Object.keys(obj).map(function (key) { return obj[key] })
+};
+
+function loop (n, f) {
+  var result = Array(n);
+  for (var i = 0; i < n; ++i) {
+    result[i] = f(i);
+  }
+  return result
+}
+
+var GL_BYTE$1 = 5120;
+var GL_UNSIGNED_BYTE$2 = 5121;
+var GL_SHORT$1 = 5122;
+var GL_UNSIGNED_SHORT$1 = 5123;
+var GL_INT$1 = 5124;
+var GL_UNSIGNED_INT$1 = 5125;
+var GL_FLOAT$2 = 5126;
+
+var bufferPool = loop(8, function () {
+  return []
+});
+
+function nextPow16 (v) {
+  for (var i = 16; i <= (1 << 28); i *= 16) {
+    if (v <= i) {
+      return i
+    }
+  }
+  return 0
+}
+
+function log2 (v) {
+  var r, shift;
+  r = (v > 0xFFFF) << 4;
+  v >>>= r;
+  shift = (v > 0xFF) << 3;
+  v >>>= shift; r |= shift;
+  shift = (v > 0xF) << 2;
+  v >>>= shift; r |= shift;
+  shift = (v > 0x3) << 1;
+  v >>>= shift; r |= shift;
+  return r | (v >> 1)
+}
+
+function alloc (n) {
+  var sz = nextPow16(n);
+  var bin = bufferPool[log2(sz) >> 2];
+  if (bin.length > 0) {
+    return bin.pop()
+  }
+  return new ArrayBuffer(sz)
+}
+
+function free (buf) {
+  bufferPool[log2(buf.byteLength) >> 2].push(buf);
+}
+
+function allocType (type, n) {
+  var result = null;
+  switch (type) {
+    case GL_BYTE$1:
+      result = new Int8Array(alloc(n), 0, n);
+      break
+    case GL_UNSIGNED_BYTE$2:
+      result = new Uint8Array(alloc(n), 0, n);
+      break
+    case GL_SHORT$1:
+      result = new Int16Array(alloc(2 * n), 0, n);
+      break
+    case GL_UNSIGNED_SHORT$1:
+      result = new Uint16Array(alloc(2 * n), 0, n);
+      break
+    case GL_INT$1:
+      result = new Int32Array(alloc(4 * n), 0, n);
+      break
+    case GL_UNSIGNED_INT$1:
+      result = new Uint32Array(alloc(4 * n), 0, n);
+      break
+    case GL_FLOAT$2:
+      result = new Float32Array(alloc(4 * n), 0, n);
+      break
+    default:
+      return null
+  }
+  if (result.length !== n) {
+    return result.subarray(0, n)
+  }
+  return result
+}
+
+function freeType (array) {
+  free(array.buffer);
+}
+
+var pool = {
+  alloc: alloc,
+  free: free,
+  allocType: allocType,
+  freeType: freeType
+};
+
+var flattenUtils = {
+  shape: arrayShape$1,
+  flatten: flattenArray
+};
+
+function flatten1D (array, nx, out) {
+  for (var i = 0; i < nx; ++i) {
+    out[i] = array[i];
+  }
+}
+
+function flatten2D (array, nx, ny, out) {
+  var ptr = 0;
+  for (var i = 0; i < nx; ++i) {
+    var row = array[i];
+    for (var j = 0; j < ny; ++j) {
+      out[ptr++] = row[j];
+    }
+  }
+}
+
+function flatten3D (array, nx, ny, nz, out, ptr_) {
+  var ptr = ptr_;
+  for (var i = 0; i < nx; ++i) {
+    var row = array[i];
+    for (var j = 0; j < ny; ++j) {
+      var col = row[j];
+      for (var k = 0; k < nz; ++k) {
+        out[ptr++] = col[k];
+      }
+    }
+  }
+}
+
+function flattenRec (array, shape, level, out, ptr) {
+  var stride = 1;
+  for (var i = level + 1; i < shape.length; ++i) {
+    stride *= shape[i];
+  }
+  var n = shape[level];
+  if (shape.length - level === 4) {
+    var nx = shape[level + 1];
+    var ny = shape[level + 2];
+    var nz = shape[level + 3];
+    for (i = 0; i < n; ++i) {
+      flatten3D(array[i], nx, ny, nz, out, ptr);
+      ptr += stride;
+    }
+  } else {
+    for (i = 0; i < n; ++i) {
+      flattenRec(array[i], shape, level + 1, out, ptr);
+      ptr += stride;
+    }
+  }
+}
+
+function flattenArray (array, shape, type, out_) {
+  var sz = 1;
+  if (shape.length) {
+    for (var i = 0; i < shape.length; ++i) {
+      sz *= shape[i];
+    }
+  } else {
+    sz = 0;
+  }
+  var out = out_ || pool.allocType(type, sz);
+  switch (shape.length) {
+    case 0:
+      break
+    case 1:
+      flatten1D(array, shape[0], out);
+      break
+    case 2:
+      flatten2D(array, shape[0], shape[1], out);
+      break
+    case 3:
+      flatten3D(array, shape[0], shape[1], shape[2], out, 0);
+      break
+    default:
+      flattenRec(array, shape, 0, out, 0);
+  }
+  return out
+}
+
+function arrayShape$1 (array_) {
+  var shape = [];
+  for (var array = array_; array.length; array = array[0]) {
+    shape.push(array.length);
+  }
+  return shape
+}
+
+var int8 = 5120;
+var int16 = 5122;
+var int32 = 5124;
+var uint8 = 5121;
+var uint16 = 5123;
+var uint32 = 5125;
+var float = 5126;
+var float32 = 5126;
+var glTypes = {
+	int8: int8,
+	int16: int16,
+	int32: int32,
+	uint8: uint8,
+	uint16: uint16,
+	uint32: uint32,
+	float: float,
+	float32: float32
+};
+
+var dynamic$1 = 35048;
+var stream = 35040;
+var usageTypes = {
+	dynamic: dynamic$1,
+	stream: stream,
+	"static": 35044
+};
+
+var arrayFlatten = flattenUtils.flatten;
+var arrayShape = flattenUtils.shape;
+
+var GL_STATIC_DRAW = 0x88E4;
+var GL_STREAM_DRAW = 0x88E0;
+
+var GL_UNSIGNED_BYTE$1 = 5121;
+var GL_FLOAT$1 = 5126;
+
+var DTYPES_SIZES = [];
+DTYPES_SIZES[5120] = 1; // int8
+DTYPES_SIZES[5122] = 2; // int16
+DTYPES_SIZES[5124] = 4; // int32
+DTYPES_SIZES[5121] = 1; // uint8
+DTYPES_SIZES[5123] = 2; // uint16
+DTYPES_SIZES[5125] = 4; // uint32
+DTYPES_SIZES[5126] = 4; // float32
+
+function typedArrayCode (data) {
+  return arrayTypes[Object.prototype.toString.call(data)] | 0
+}
+
+function copyArray (out, inp) {
+  for (var i = 0; i < inp.length; ++i) {
+    out[i] = inp[i];
+  }
+}
+
+function transpose (
+  result, data, shapeX, shapeY, strideX, strideY, offset) {
+  var ptr = 0;
+  for (var i = 0; i < shapeX; ++i) {
+    for (var j = 0; j < shapeY; ++j) {
+      result[ptr++] = data[strideX * i + strideY * j + offset];
+    }
+  }
+}
+
+function wrapBufferState (gl, stats, config) {
+  var bufferCount = 0;
+  var bufferSet = {};
+
+  function REGLBuffer (type) {
+    this.id = bufferCount++;
+    this.buffer = gl.createBuffer();
+    this.type = type;
+    this.usage = GL_STATIC_DRAW;
+    this.byteLength = 0;
+    this.dimension = 1;
+    this.dtype = GL_UNSIGNED_BYTE$1;
+
+    this.persistentData = null;
+
+    if (config.profile) {
+      this.stats = {size: 0};
+    }
+  }
+
+  REGLBuffer.prototype.bind = function () {
+    gl.bindBuffer(this.type, this.buffer);
+  };
+
+  REGLBuffer.prototype.destroy = function () {
+    destroy(this);
+  };
+
+  var streamPool = [];
+
+  function createStream (type, data) {
+    var buffer = streamPool.pop();
+    if (!buffer) {
+      buffer = new REGLBuffer(type);
+    }
+    buffer.bind();
+    initBufferFromData(buffer, data, GL_STREAM_DRAW, 0, 1, false);
+    return buffer
+  }
+
+  function destroyStream (stream$$1) {
+    streamPool.push(stream$$1);
+  }
+
+  function initBufferFromTypedArray (buffer, data, usage) {
+    buffer.byteLength = data.byteLength;
+    gl.bufferData(buffer.type, data, usage);
+  }
+
+  function initBufferFromData (buffer, data, usage, dtype, dimension, persist) {
+    var shape;
+    buffer.usage = usage;
+    if (Array.isArray(data)) {
+      buffer.dtype = dtype || GL_FLOAT$1;
+      if (data.length > 0) {
+        var flatData;
+        if (Array.isArray(data[0])) {
+          shape = arrayShape(data);
+          var dim = 1;
+          for (var i = 1; i < shape.length; ++i) {
+            dim *= shape[i];
+          }
+          buffer.dimension = dim;
+          flatData = arrayFlatten(data, shape, buffer.dtype);
+          initBufferFromTypedArray(buffer, flatData, usage);
+          if (persist) {
+            buffer.persistentData = flatData;
+          } else {
+            pool.freeType(flatData);
+          }
+        } else if (typeof data[0] === 'number') {
+          buffer.dimension = dimension;
+          var typedData = pool.allocType(buffer.dtype, data.length);
+          copyArray(typedData, data);
+          initBufferFromTypedArray(buffer, typedData, usage);
+          if (persist) {
+            buffer.persistentData = typedData;
+          } else {
+            pool.freeType(typedData);
+          }
+        } else if (isTypedArray(data[0])) {
+          buffer.dimension = data[0].length;
+          buffer.dtype = dtype || typedArrayCode(data[0]) || GL_FLOAT$1;
+          flatData = arrayFlatten(
+            data,
+            [data.length, data[0].length],
+            buffer.dtype);
+          initBufferFromTypedArray(buffer, flatData, usage);
+          if (persist) {
+            buffer.persistentData = flatData;
+          } else {
+            pool.freeType(flatData);
+          }
+        } else {
+          check$1.raise('invalid buffer data');
+        }
+      }
+    } else if (isTypedArray(data)) {
+      buffer.dtype = dtype || typedArrayCode(data);
+      buffer.dimension = dimension;
+      initBufferFromTypedArray(buffer, data, usage);
+      if (persist) {
+        buffer.persistentData = new Uint8Array(new Uint8Array(data.buffer));
+      }
+    } else if (isNDArrayLike(data)) {
+      shape = data.shape;
+      var stride = data.stride;
+      var offset = data.offset;
+
+      var shapeX = 0;
+      var shapeY = 0;
+      var strideX = 0;
+      var strideY = 0;
+      if (shape.length === 1) {
+        shapeX = shape[0];
+        shapeY = 1;
+        strideX = stride[0];
+        strideY = 0;
+      } else if (shape.length === 2) {
+        shapeX = shape[0];
+        shapeY = shape[1];
+        strideX = stride[0];
+        strideY = stride[1];
+      } else {
+        check$1.raise('invalid shape');
+      }
+
+      buffer.dtype = dtype || typedArrayCode(data.data) || GL_FLOAT$1;
+      buffer.dimension = shapeY;
+
+      var transposeData = pool.allocType(buffer.dtype, shapeX * shapeY);
+      transpose(transposeData,
+        data.data,
+        shapeX, shapeY,
+        strideX, strideY,
+        offset);
+      initBufferFromTypedArray(buffer, transposeData, usage);
+      if (persist) {
+        buffer.persistentData = transposeData;
+      } else {
+        pool.freeType(transposeData);
+      }
+    } else {
+      check$1.raise('invalid buffer data');
+    }
+  }
+
+  function destroy (buffer) {
+    stats.bufferCount--;
+
+    var handle = buffer.buffer;
+    check$1(handle, 'buffer must not be deleted already');
+    gl.deleteBuffer(handle);
+    buffer.buffer = null;
+    delete bufferSet[buffer.id];
+  }
+
+  function createBuffer (options, type, deferInit, persistent) {
+    stats.bufferCount++;
+
+    var buffer = new REGLBuffer(type);
+    bufferSet[buffer.id] = buffer;
+
+    function reglBuffer (options) {
+      var usage = GL_STATIC_DRAW;
+      var data = null;
+      var byteLength = 0;
+      var dtype = 0;
+      var dimension = 1;
+      if (Array.isArray(options) ||
+          isTypedArray(options) ||
+          isNDArrayLike(options)) {
+        data = options;
+      } else if (typeof options === 'number') {
+        byteLength = options | 0;
+      } else if (options) {
+        check$1.type(
+          options, 'object',
+          'buffer arguments must be an object, a number or an array');
+
+        if ('data' in options) {
+          check$1(
+            data === null ||
+            Array.isArray(data) ||
+            isTypedArray(data) ||
+            isNDArrayLike(data),
+            'invalid data for buffer');
+          data = options.data;
+        }
+
+        if ('usage' in options) {
+          check$1.parameter(options.usage, usageTypes, 'invalid buffer usage');
+          usage = usageTypes[options.usage];
+        }
+
+        if ('type' in options) {
+          check$1.parameter(options.type, glTypes, 'invalid buffer type');
+          dtype = glTypes[options.type];
+        }
+
+        if ('dimension' in options) {
+          check$1.type(options.dimension, 'number', 'invalid dimension');
+          dimension = options.dimension | 0;
+        }
+
+        if ('length' in options) {
+          check$1.nni(byteLength, 'buffer length must be a nonnegative integer');
+          byteLength = options.length | 0;
+        }
+      }
+
+      buffer.bind();
+      if (!data) {
+        gl.bufferData(buffer.type, byteLength, usage);
+        buffer.dtype = dtype || GL_UNSIGNED_BYTE$1;
+        buffer.usage = usage;
+        buffer.dimension = dimension;
+        buffer.byteLength = byteLength;
+      } else {
+        initBufferFromData(buffer, data, usage, dtype, dimension, persistent);
+      }
+
+      if (config.profile) {
+        buffer.stats.size = buffer.byteLength * DTYPES_SIZES[buffer.dtype];
+      }
+
+      return reglBuffer
+    }
+
+    function setSubData (data, offset) {
+      check$1(offset + data.byteLength <= buffer.byteLength,
+        'invalid buffer subdata call, buffer is too small. ' + ' Can\'t write data of size ' + data.byteLength + ' starting from offset ' + offset + ' to a buffer of size ' + buffer.byteLength);
+
+      gl.bufferSubData(buffer.type, offset, data);
+    }
+
+    function subdata (data, offset_) {
+      var offset = (offset_ || 0) | 0;
+      var shape;
+      buffer.bind();
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
+          if (typeof data[0] === 'number') {
+            var converted = pool.allocType(buffer.dtype, data.length);
+            copyArray(converted, data);
+            setSubData(converted, offset);
+            pool.freeType(converted);
+          } else if (Array.isArray(data[0]) || isTypedArray(data[0])) {
+            shape = arrayShape(data);
+            var flatData = arrayFlatten(data, shape, buffer.dtype);
+            setSubData(flatData, offset);
+            pool.freeType(flatData);
+          } else {
+            check$1.raise('invalid buffer data');
+          }
+        }
+      } else if (isTypedArray(data)) {
+        setSubData(data, offset);
+      } else if (isNDArrayLike(data)) {
+        shape = data.shape;
+        var stride = data.stride;
+
+        var shapeX = 0;
+        var shapeY = 0;
+        var strideX = 0;
+        var strideY = 0;
+        if (shape.length === 1) {
+          shapeX = shape[0];
+          shapeY = 1;
+          strideX = stride[0];
+          strideY = 0;
+        } else if (shape.length === 2) {
+          shapeX = shape[0];
+          shapeY = shape[1];
+          strideX = stride[0];
+          strideY = stride[1];
+        } else {
+          check$1.raise('invalid shape');
+        }
+        var dtype = Array.isArray(data.data)
+          ? buffer.dtype
+          : typedArrayCode(data.data);
+
+        var transposeData = pool.allocType(dtype, shapeX * shapeY);
+        transpose(transposeData,
+          data.data,
+          shapeX, shapeY,
+          strideX, strideY,
+          data.offset);
+        setSubData(transposeData, offset);
+        pool.freeType(transposeData);
+      } else {
+        check$1.raise('invalid data for buffer subdata');
+      }
+      return reglBuffer
+    }
+
+    if (!deferInit) {
+      reglBuffer(options);
+    }
+
+    reglBuffer._reglType = 'buffer';
+    reglBuffer._buffer = buffer;
+    reglBuffer.subdata = subdata;
+    if (config.profile) {
+      reglBuffer.stats = buffer.stats;
+    }
+    reglBuffer.destroy = function () { destroy(buffer); };
+
+    return reglBuffer
+  }
+
+  function restoreBuffers () {
+    values(bufferSet).forEach(function (buffer) {
+      buffer.buffer = gl.createBuffer();
+      gl.bindBuffer(buffer.type, buffer.buffer);
+      gl.bufferData(
+        buffer.type, buffer.persistentData || buffer.byteLength, buffer.usage);
+    });
+  }
+
+  if (config.profile) {
+    stats.getTotalBufferSize = function () {
+      var total = 0;
+      // TODO: Right now, the streams are not part of the total count.
+      Object.keys(bufferSet).forEach(function (key) {
+        total += bufferSet[key].stats.size;
+      });
+      return total
+    };
+  }
+
+  return {
+    create: createBuffer,
+
+    createStream: createStream,
+    destroyStream: destroyStream,
+
+    clear: function () {
+      values(bufferSet).forEach(destroy);
+      streamPool.forEach(destroy);
+    },
+
+    getBuffer: function (wrapper) {
+      if (wrapper && wrapper._buffer instanceof REGLBuffer) {
+        return wrapper._buffer
+      }
+      return null
+    },
+
+    restore: restoreBuffers,
+
+    _initBuffer: initBufferFromData
+  }
+}
+
+var points = 0;
+var point = 0;
+var lines = 1;
+var line = 1;
+var triangles = 4;
+var triangle = 4;
+var primTypes = {
+	points: points,
+	point: point,
+	lines: lines,
+	line: line,
+	triangles: triangles,
+	triangle: triangle,
+	"line loop": 2,
+	"line strip": 3,
+	"triangle strip": 5,
+	"triangle fan": 6
+};
+
+var GL_POINTS = 0;
+var GL_LINES = 1;
+var GL_TRIANGLES = 4;
+
+var GL_BYTE$2 = 5120;
+var GL_UNSIGNED_BYTE$3 = 5121;
+var GL_SHORT$2 = 5122;
+var GL_UNSIGNED_SHORT$2 = 5123;
+var GL_INT$2 = 5124;
+var GL_UNSIGNED_INT$2 = 5125;
+
+var GL_ELEMENT_ARRAY_BUFFER = 34963;
+
+var GL_STREAM_DRAW$1 = 0x88E0;
+var GL_STATIC_DRAW$1 = 0x88E4;
+
+function wrapElementsState (gl, extensions, bufferState, stats) {
+  var elementSet = {};
+  var elementCount = 0;
+
+  var elementTypes = {
+    'uint8': GL_UNSIGNED_BYTE$3,
+    'uint16': GL_UNSIGNED_SHORT$2
+  };
+
+  if (extensions.oes_element_index_uint) {
+    elementTypes.uint32 = GL_UNSIGNED_INT$2;
+  }
+
+  function REGLElementBuffer (buffer) {
+    this.id = elementCount++;
+    elementSet[this.id] = this;
+    this.buffer = buffer;
+    this.primType = GL_TRIANGLES;
+    this.vertCount = 0;
+    this.type = 0;
+  }
+
+  REGLElementBuffer.prototype.bind = function () {
+    this.buffer.bind();
+  };
+
+  var bufferPool = [];
+
+  function createElementStream (data) {
+    var result = bufferPool.pop();
+    if (!result) {
+      result = new REGLElementBuffer(bufferState.create(
+        null,
+        GL_ELEMENT_ARRAY_BUFFER,
+        true,
+        false)._buffer);
+    }
+    initElements(result, data, GL_STREAM_DRAW$1, -1, -1, 0, 0);
+    return result
+  }
+
+  function destroyElementStream (elements) {
+    bufferPool.push(elements);
+  }
+
+  function initElements (
+    elements,
+    data,
+    usage,
+    prim,
+    count,
+    byteLength,
+    type) {
+    elements.buffer.bind();
+    if (data) {
+      var predictedType = type;
+      if (!type && (
+          !isTypedArray(data) ||
+         (isNDArrayLike(data) && !isTypedArray(data.data)))) {
+        predictedType = extensions.oes_element_index_uint
+          ? GL_UNSIGNED_INT$2
+          : GL_UNSIGNED_SHORT$2;
+      }
+      bufferState._initBuffer(
+        elements.buffer,
+        data,
+        usage,
+        predictedType,
+        3);
+    } else {
+      gl.bufferData(GL_ELEMENT_ARRAY_BUFFER, byteLength, usage);
+      elements.buffer.dtype = dtype || GL_UNSIGNED_BYTE$3;
+      elements.buffer.usage = usage;
+      elements.buffer.dimension = 3;
+      elements.buffer.byteLength = byteLength;
+    }
+
+    var dtype = type;
+    if (!type) {
+      switch (elements.buffer.dtype) {
+        case GL_UNSIGNED_BYTE$3:
+        case GL_BYTE$2:
+          dtype = GL_UNSIGNED_BYTE$3;
+          break
+
+        case GL_UNSIGNED_SHORT$2:
+        case GL_SHORT$2:
+          dtype = GL_UNSIGNED_SHORT$2;
+          break
+
+        case GL_UNSIGNED_INT$2:
+        case GL_INT$2:
+          dtype = GL_UNSIGNED_INT$2;
+          break
+
+        default:
+          check$1.raise('unsupported type for element array');
+      }
+      elements.buffer.dtype = dtype;
+    }
+    elements.type = dtype;
+
+    // Check oes_element_index_uint extension
+    check$1(
+      dtype !== GL_UNSIGNED_INT$2 ||
+      !!extensions.oes_element_index_uint,
+      '32 bit element buffers not supported, enable oes_element_index_uint first');
+
+    // try to guess default primitive type and arguments
+    var vertCount = count;
+    if (vertCount < 0) {
+      vertCount = elements.buffer.byteLength;
+      if (dtype === GL_UNSIGNED_SHORT$2) {
+        vertCount >>= 1;
+      } else if (dtype === GL_UNSIGNED_INT$2) {
+        vertCount >>= 2;
+      }
+    }
+    elements.vertCount = vertCount;
+
+    // try to guess primitive type from cell dimension
+    var primType = prim;
+    if (prim < 0) {
+      primType = GL_TRIANGLES;
+      var dimension = elements.buffer.dimension;
+      if (dimension === 1) primType = GL_POINTS;
+      if (dimension === 2) primType = GL_LINES;
+      if (dimension === 3) primType = GL_TRIANGLES;
+    }
+    elements.primType = primType;
+  }
+
+  function destroyElements (elements) {
+    stats.elementsCount--;
+
+    check$1(elements.buffer !== null, 'must not double destroy elements');
+    delete elementSet[elements.id];
+    elements.buffer.destroy();
+    elements.buffer = null;
+  }
+
+  function createElements (options, persistent) {
+    var buffer = bufferState.create(null, GL_ELEMENT_ARRAY_BUFFER, true);
+    var elements = new REGLElementBuffer(buffer._buffer);
+    stats.elementsCount++;
+
+    function reglElements (options) {
+      if (!options) {
+        buffer();
+        elements.primType = GL_TRIANGLES;
+        elements.vertCount = 0;
+        elements.type = GL_UNSIGNED_BYTE$3;
+      } else if (typeof options === 'number') {
+        buffer(options);
+        elements.primType = GL_TRIANGLES;
+        elements.vertCount = options | 0;
+        elements.type = GL_UNSIGNED_BYTE$3;
+      } else {
+        var data = null;
+        var usage = GL_STATIC_DRAW$1;
+        var primType = -1;
+        var vertCount = -1;
+        var byteLength = 0;
+        var dtype = 0;
+        if (Array.isArray(options) ||
+            isTypedArray(options) ||
+            isNDArrayLike(options)) {
+          data = options;
+        } else {
+          check$1.type(options, 'object', 'invalid arguments for elements');
+          if ('data' in options) {
+            data = options.data;
+            check$1(
+                Array.isArray(data) ||
+                isTypedArray(data) ||
+                isNDArrayLike(data),
+                'invalid data for element buffer');
+          }
+          if ('usage' in options) {
+            check$1.parameter(
+              options.usage,
+              usageTypes,
+              'invalid element buffer usage');
+            usage = usageTypes[options.usage];
+          }
+          if ('primitive' in options) {
+            check$1.parameter(
+              options.primitive,
+              primTypes,
+              'invalid element buffer primitive');
+            primType = primTypes[options.primitive];
+          }
+          if ('count' in options) {
+            check$1(
+              typeof options.count === 'number' && options.count >= 0,
+              'invalid vertex count for elements');
+            vertCount = options.count | 0;
+          }
+          if ('type' in options) {
+            check$1.parameter(
+              options.type,
+              elementTypes,
+              'invalid buffer type');
+            dtype = elementTypes[options.type];
+          }
+          if ('length' in options) {
+            byteLength = options.length | 0;
+          } else {
+            byteLength = vertCount;
+            if (dtype === GL_UNSIGNED_SHORT$2 || dtype === GL_SHORT$2) {
+              byteLength *= 2;
+            } else if (dtype === GL_UNSIGNED_INT$2 || dtype === GL_INT$2) {
+              byteLength *= 4;
+            }
+          }
+        }
+        initElements(
+          elements,
+          data,
+          usage,
+          primType,
+          vertCount,
+          byteLength,
+          dtype);
+      }
+
+      return reglElements
+    }
+
+    reglElements(options);
+
+    reglElements._reglType = 'elements';
+    reglElements._elements = elements;
+    reglElements.subdata = function (data, offset) {
+      buffer.subdata(data, offset);
+      return reglElements
+    };
+    reglElements.destroy = function () {
+      destroyElements(elements);
+    };
+
+    return reglElements
+  }
+
+  return {
+    create: createElements,
+    createStream: createElementStream,
+    destroyStream: destroyElementStream,
+    getElements: function (elements) {
+      if (typeof elements === 'function' &&
+          elements._elements instanceof REGLElementBuffer) {
+        return elements._elements
+      }
+      return null
+    },
+    clear: function () {
+      values(elementSet).forEach(destroyElements);
+    }
+  }
+}
+
+var FLOAT = new Float32Array(1);
+var INT = new Uint32Array(FLOAT.buffer);
+
+var GL_UNSIGNED_SHORT$4 = 5123;
+
+function convertToHalfFloat (array) {
+  var ushorts = pool.allocType(GL_UNSIGNED_SHORT$4, array.length);
+
+  for (var i = 0; i < array.length; ++i) {
+    if (isNaN(array[i])) {
+      ushorts[i] = 0xffff;
+    } else if (array[i] === Infinity) {
+      ushorts[i] = 0x7c00;
+    } else if (array[i] === -Infinity) {
+      ushorts[i] = 0xfc00;
+    } else {
+      FLOAT[0] = array[i];
+      var x = INT[0];
+
+      var sgn = (x >>> 31) << 15;
+      var exp = ((x << 1) >>> 24) - 127;
+      var frac = (x >> 13) & ((1 << 10) - 1);
+
+      if (exp < -24) {
+        // round non-representable denormals to 0
+        ushorts[i] = sgn;
+      } else if (exp < -14) {
+        // handle denormals
+        var s = -14 - exp;
+        ushorts[i] = sgn + ((frac + (1 << 10)) >> s);
+      } else if (exp > 15) {
+        // round overflow to +/- Infinity
+        ushorts[i] = sgn + 0x7c00;
+      } else {
+        // otherwise convert directly
+        ushorts[i] = sgn + ((exp + 15) << 10) + frac;
+      }
+    }
+  }
+
+  return ushorts
+}
+
+function isArrayLike (s) {
+  return Array.isArray(s) || isTypedArray(s)
+}
+
+var GL_COMPRESSED_TEXTURE_FORMATS = 0x86A3;
+
+var GL_TEXTURE_2D = 0x0DE1;
+var GL_TEXTURE_CUBE_MAP = 0x8513;
+var GL_TEXTURE_CUBE_MAP_POSITIVE_X = 0x8515;
+
+var GL_RGBA = 0x1908;
+var GL_ALPHA = 0x1906;
+var GL_RGB = 0x1907;
+var GL_LUMINANCE = 0x1909;
+var GL_LUMINANCE_ALPHA = 0x190A;
+
+var GL_RGBA4 = 0x8056;
+var GL_RGB5_A1 = 0x8057;
+var GL_RGB565 = 0x8D62;
+
+var GL_UNSIGNED_SHORT_4_4_4_4$1 = 0x8033;
+var GL_UNSIGNED_SHORT_5_5_5_1$1 = 0x8034;
+var GL_UNSIGNED_SHORT_5_6_5$1 = 0x8363;
+var GL_UNSIGNED_INT_24_8_WEBGL$1 = 0x84FA;
+
+var GL_DEPTH_COMPONENT = 0x1902;
+var GL_DEPTH_STENCIL = 0x84F9;
+
+var GL_SRGB_EXT = 0x8C40;
+var GL_SRGB_ALPHA_EXT = 0x8C42;
+
+var GL_HALF_FLOAT_OES$1 = 0x8D61;
+
+var GL_COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
+var GL_COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F1;
+var GL_COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
+var GL_COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
+
+var GL_COMPRESSED_RGB_ATC_WEBGL = 0x8C92;
+var GL_COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL = 0x8C93;
+var GL_COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL = 0x87EE;
+
+var GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG = 0x8C00;
+var GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG = 0x8C01;
+var GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
+var GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG = 0x8C03;
+
+var GL_COMPRESSED_RGB_ETC1_WEBGL = 0x8D64;
+
+var GL_UNSIGNED_BYTE$4 = 0x1401;
+var GL_UNSIGNED_SHORT$3 = 0x1403;
+var GL_UNSIGNED_INT$3 = 0x1405;
+var GL_FLOAT$3 = 0x1406;
+
+var GL_TEXTURE_WRAP_S = 0x2802;
+var GL_TEXTURE_WRAP_T = 0x2803;
+
+var GL_REPEAT = 0x2901;
+var GL_CLAMP_TO_EDGE$1 = 0x812F;
+var GL_MIRRORED_REPEAT = 0x8370;
+
+var GL_TEXTURE_MAG_FILTER = 0x2800;
+var GL_TEXTURE_MIN_FILTER = 0x2801;
+
+var GL_NEAREST$1 = 0x2600;
+var GL_LINEAR = 0x2601;
+var GL_NEAREST_MIPMAP_NEAREST$1 = 0x2700;
+var GL_LINEAR_MIPMAP_NEAREST$1 = 0x2701;
+var GL_NEAREST_MIPMAP_LINEAR$1 = 0x2702;
+var GL_LINEAR_MIPMAP_LINEAR$1 = 0x2703;
+
+var GL_GENERATE_MIPMAP_HINT = 0x8192;
+var GL_DONT_CARE = 0x1100;
+var GL_FASTEST = 0x1101;
+var GL_NICEST = 0x1102;
+
+var GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
+
+var GL_UNPACK_ALIGNMENT = 0x0CF5;
+var GL_UNPACK_FLIP_Y_WEBGL = 0x9240;
+var GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL = 0x9241;
+var GL_UNPACK_COLORSPACE_CONVERSION_WEBGL = 0x9243;
+
+var GL_BROWSER_DEFAULT_WEBGL = 0x9244;
+
+var GL_TEXTURE0 = 0x84C0;
+
+var MIPMAP_FILTERS = [
+  GL_NEAREST_MIPMAP_NEAREST$1,
+  GL_NEAREST_MIPMAP_LINEAR$1,
+  GL_LINEAR_MIPMAP_NEAREST$1,
+  GL_LINEAR_MIPMAP_LINEAR$1
+];
+
+var CHANNELS_FORMAT = [
+  0,
+  GL_LUMINANCE,
+  GL_LUMINANCE_ALPHA,
+  GL_RGB,
+  GL_RGBA
+];
+
+var FORMAT_CHANNELS = {};
+FORMAT_CHANNELS[GL_LUMINANCE] =
+FORMAT_CHANNELS[GL_ALPHA] =
+FORMAT_CHANNELS[GL_DEPTH_COMPONENT] = 1;
+FORMAT_CHANNELS[GL_DEPTH_STENCIL] =
+FORMAT_CHANNELS[GL_LUMINANCE_ALPHA] = 2;
+FORMAT_CHANNELS[GL_RGB] =
+FORMAT_CHANNELS[GL_SRGB_EXT] = 3;
+FORMAT_CHANNELS[GL_RGBA] =
+FORMAT_CHANNELS[GL_SRGB_ALPHA_EXT] = 4;
+
+function objectName (str) {
+  return '[object ' + str + ']'
+}
+
+var CANVAS_CLASS = objectName('HTMLCanvasElement');
+var CONTEXT2D_CLASS = objectName('CanvasRenderingContext2D');
+var IMAGE_CLASS = objectName('HTMLImageElement');
+var VIDEO_CLASS = objectName('HTMLVideoElement');
+
+var PIXEL_CLASSES = Object.keys(arrayTypes).concat([
+  CANVAS_CLASS,
+  CONTEXT2D_CLASS,
+  IMAGE_CLASS,
+  VIDEO_CLASS
+]);
+
+// for every texture type, store
+// the size in bytes.
+var TYPE_SIZES = [];
+TYPE_SIZES[GL_UNSIGNED_BYTE$4] = 1;
+TYPE_SIZES[GL_FLOAT$3] = 4;
+TYPE_SIZES[GL_HALF_FLOAT_OES$1] = 2;
+
+TYPE_SIZES[GL_UNSIGNED_SHORT$3] = 2;
+TYPE_SIZES[GL_UNSIGNED_INT$3] = 4;
+
+var FORMAT_SIZES_SPECIAL = [];
+FORMAT_SIZES_SPECIAL[GL_RGBA4] = 2;
+FORMAT_SIZES_SPECIAL[GL_RGB5_A1] = 2;
+FORMAT_SIZES_SPECIAL[GL_RGB565] = 2;
+FORMAT_SIZES_SPECIAL[GL_DEPTH_STENCIL] = 4;
+
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGB_S3TC_DXT1_EXT] = 0.5;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGBA_S3TC_DXT1_EXT] = 0.5;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGBA_S3TC_DXT3_EXT] = 1;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGBA_S3TC_DXT5_EXT] = 1;
+
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGB_ATC_WEBGL] = 0.5;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL] = 1;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL] = 1;
+
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG] = 0.5;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG] = 0.25;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG] = 0.5;
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG] = 0.25;
+
+FORMAT_SIZES_SPECIAL[GL_COMPRESSED_RGB_ETC1_WEBGL] = 0.5;
+
+function isNumericArray (arr) {
+  return (
+    Array.isArray(arr) &&
+    (arr.length === 0 ||
+    typeof arr[0] === 'number'))
+}
+
+function isRectArray (arr) {
+  if (!Array.isArray(arr)) {
+    return false
+  }
+  var width = arr.length;
+  if (width === 0 || !isArrayLike(arr[0])) {
+    return false
+  }
+  return true
+}
+
+function classString (x) {
+  return Object.prototype.toString.call(x)
+}
+
+function isCanvasElement (object) {
+  return classString(object) === CANVAS_CLASS
+}
+
+function isContext2D (object) {
+  return classString(object) === CONTEXT2D_CLASS
+}
+
+function isImageElement (object) {
+  return classString(object) === IMAGE_CLASS
+}
+
+function isVideoElement (object) {
+  return classString(object) === VIDEO_CLASS
+}
+
+function isPixelData (object) {
+  if (!object) {
+    return false
+  }
+  var className = classString(object);
+  if (PIXEL_CLASSES.indexOf(className) >= 0) {
+    return true
+  }
+  return (
+    isNumericArray(object) ||
+    isRectArray(object) ||
+    isNDArrayLike(object))
+}
+
+function typedArrayCode$1 (data) {
+  return arrayTypes[Object.prototype.toString.call(data)] | 0
+}
+
+function convertData (result, data) {
+  var n = data.length;
+  switch (result.type) {
+    case GL_UNSIGNED_BYTE$4:
+    case GL_UNSIGNED_SHORT$3:
+    case GL_UNSIGNED_INT$3:
+    case GL_FLOAT$3:
+      var converted = pool.allocType(result.type, n);
+      converted.set(data);
+      result.data = converted;
+      break
+
+    case GL_HALF_FLOAT_OES$1:
+      result.data = convertToHalfFloat(data);
+      break
+
+    default:
+      check$1.raise('unsupported texture type, must specify a typed array');
+  }
+}
+
+function preConvert (image, n) {
+  return pool.allocType(
+    image.type === GL_HALF_FLOAT_OES$1
+      ? GL_FLOAT$3
+      : image.type, n)
+}
+
+function postConvert (image, data) {
+  if (image.type === GL_HALF_FLOAT_OES$1) {
+    image.data = convertToHalfFloat(data);
+    pool.freeType(data);
+  } else {
+    image.data = data;
+  }
+}
+
+function transposeData (image, array, strideX, strideY, strideC, offset) {
+  var w = image.width;
+  var h = image.height;
+  var c = image.channels;
+  var n = w * h * c;
+  var data = preConvert(image, n);
+
+  var p = 0;
+  for (var i = 0; i < h; ++i) {
+    for (var j = 0; j < w; ++j) {
+      for (var k = 0; k < c; ++k) {
+        data[p++] = array[strideX * j + strideY * i + strideC * k + offset];
+      }
+    }
+  }
+
+  postConvert(image, data);
+}
+
+function getTextureSize (format, type, width, height, isMipmap, isCube) {
+  var s;
+  if (typeof FORMAT_SIZES_SPECIAL[format] !== 'undefined') {
+    // we have a special array for dealing with weird color formats such as RGB5A1
+    s = FORMAT_SIZES_SPECIAL[format];
+  } else {
+    s = FORMAT_CHANNELS[format] * TYPE_SIZES[type];
+  }
+
+  if (isCube) {
+    s *= 6;
+  }
+
+  if (isMipmap) {
+    // compute the total size of all the mipmaps.
+    var total = 0;
+
+    var w = width;
+    while (w >= 1) {
+      // we can only use mipmaps on a square image,
+      // so we can simply use the width and ignore the height:
+      total += s * w * w;
+      w /= 2;
+    }
+    return total
+  } else {
+    return s * width * height
+  }
+}
+
+function createTextureSet (
+  gl, extensions, limits, reglPoll, contextState, stats, config) {
+  // -------------------------------------------------------
+  // Initialize constants and parameter tables here
+  // -------------------------------------------------------
+  var mipmapHint = {
+    "don't care": GL_DONT_CARE,
+    'dont care': GL_DONT_CARE,
+    'nice': GL_NICEST,
+    'fast': GL_FASTEST
+  };
+
+  var wrapModes = {
+    'repeat': GL_REPEAT,
+    'clamp': GL_CLAMP_TO_EDGE$1,
+    'mirror': GL_MIRRORED_REPEAT
+  };
+
+  var magFilters = {
+    'nearest': GL_NEAREST$1,
+    'linear': GL_LINEAR
+  };
+
+  var minFilters = extend({
+    'mipmap': GL_LINEAR_MIPMAP_LINEAR$1,
+    'nearest mipmap nearest': GL_NEAREST_MIPMAP_NEAREST$1,
+    'linear mipmap nearest': GL_LINEAR_MIPMAP_NEAREST$1,
+    'nearest mipmap linear': GL_NEAREST_MIPMAP_LINEAR$1,
+    'linear mipmap linear': GL_LINEAR_MIPMAP_LINEAR$1
+  }, magFilters);
+
+  var colorSpace = {
+    'none': 0,
+    'browser': GL_BROWSER_DEFAULT_WEBGL
+  };
+
+  var textureTypes = {
+    'uint8': GL_UNSIGNED_BYTE$4,
+    'rgba4': GL_UNSIGNED_SHORT_4_4_4_4$1,
+    'rgb565': GL_UNSIGNED_SHORT_5_6_5$1,
+    'rgb5 a1': GL_UNSIGNED_SHORT_5_5_5_1$1
+  };
+
+  var textureFormats = {
+    'alpha': GL_ALPHA,
+    'luminance': GL_LUMINANCE,
+    'luminance alpha': GL_LUMINANCE_ALPHA,
+    'rgb': GL_RGB,
+    'rgba': GL_RGBA,
+    'rgba4': GL_RGBA4,
+    'rgb5 a1': GL_RGB5_A1,
+    'rgb565': GL_RGB565
+  };
+
+  var compressedTextureFormats = {};
+
+  if (extensions.ext_srgb) {
+    textureFormats.srgb = GL_SRGB_EXT;
+    textureFormats.srgba = GL_SRGB_ALPHA_EXT;
+  }
+
+  if (extensions.oes_texture_float) {
+    textureTypes.float32 = textureTypes.float = GL_FLOAT$3;
+  }
+
+  if (extensions.oes_texture_half_float) {
+    textureTypes['float16'] = textureTypes['half float'] = GL_HALF_FLOAT_OES$1;
+  }
+
+  if (extensions.webgl_depth_texture) {
+    extend(textureFormats, {
+      'depth': GL_DEPTH_COMPONENT,
+      'depth stencil': GL_DEPTH_STENCIL
+    });
+
+    extend(textureTypes, {
+      'uint16': GL_UNSIGNED_SHORT$3,
+      'uint32': GL_UNSIGNED_INT$3,
+      'depth stencil': GL_UNSIGNED_INT_24_8_WEBGL$1
+    });
+  }
+
+  if (extensions.webgl_compressed_texture_s3tc) {
+    extend(compressedTextureFormats, {
+      'rgb s3tc dxt1': GL_COMPRESSED_RGB_S3TC_DXT1_EXT,
+      'rgba s3tc dxt1': GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+      'rgba s3tc dxt3': GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+      'rgba s3tc dxt5': GL_COMPRESSED_RGBA_S3TC_DXT5_EXT
+    });
+  }
+
+  if (extensions.webgl_compressed_texture_atc) {
+    extend(compressedTextureFormats, {
+      'rgb atc': GL_COMPRESSED_RGB_ATC_WEBGL,
+      'rgba atc explicit alpha': GL_COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL,
+      'rgba atc interpolated alpha': GL_COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL
+    });
+  }
+
+  if (extensions.webgl_compressed_texture_pvrtc) {
+    extend(compressedTextureFormats, {
+      'rgb pvrtc 4bppv1': GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG,
+      'rgb pvrtc 2bppv1': GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG,
+      'rgba pvrtc 4bppv1': GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG,
+      'rgba pvrtc 2bppv1': GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG
+    });
+  }
+
+  if (extensions.webgl_compressed_texture_etc1) {
+    compressedTextureFormats['rgb etc1'] = GL_COMPRESSED_RGB_ETC1_WEBGL;
+  }
+
+  // Copy over all texture formats
+  var supportedCompressedFormats = Array.prototype.slice.call(
+    gl.getParameter(GL_COMPRESSED_TEXTURE_FORMATS));
+  Object.keys(compressedTextureFormats).forEach(function (name) {
+    var format = compressedTextureFormats[name];
+    if (supportedCompressedFormats.indexOf(format) >= 0) {
+      textureFormats[name] = format;
+    }
+  });
+
+  var supportedFormats = Object.keys(textureFormats);
+  limits.textureFormats = supportedFormats;
+
+  // associate with every format string its
+  // corresponding GL-value.
+  var textureFormatsInvert = [];
+  Object.keys(textureFormats).forEach(function (key) {
+    var val = textureFormats[key];
+    textureFormatsInvert[val] = key;
+  });
+
+  // associate with every type string its
+  // corresponding GL-value.
+  var textureTypesInvert = [];
+  Object.keys(textureTypes).forEach(function (key) {
+    var val = textureTypes[key];
+    textureTypesInvert[val] = key;
+  });
+
+  var magFiltersInvert = [];
+  Object.keys(magFilters).forEach(function (key) {
+    var val = magFilters[key];
+    magFiltersInvert[val] = key;
+  });
+
+  var minFiltersInvert = [];
+  Object.keys(minFilters).forEach(function (key) {
+    var val = minFilters[key];
+    minFiltersInvert[val] = key;
+  });
+
+  var wrapModesInvert = [];
+  Object.keys(wrapModes).forEach(function (key) {
+    var val = wrapModes[key];
+    wrapModesInvert[val] = key;
+  });
+
+  // colorFormats[] gives the format (channels) associated to an
+  // internalformat
+  var colorFormats = supportedFormats.reduce(function (color, key) {
+    var glenum = textureFormats[key];
+    if (glenum === GL_LUMINANCE ||
+        glenum === GL_ALPHA ||
+        glenum === GL_LUMINANCE ||
+        glenum === GL_LUMINANCE_ALPHA ||
+        glenum === GL_DEPTH_COMPONENT ||
+        glenum === GL_DEPTH_STENCIL) {
+      color[glenum] = glenum;
+    } else if (glenum === GL_RGB5_A1 || key.indexOf('rgba') >= 0) {
+      color[glenum] = GL_RGBA;
+    } else {
+      color[glenum] = GL_RGB;
+    }
+    return color
+  }, {});
+
+  function TexFlags () {
+    // format info
+    this.internalformat = GL_RGBA;
+    this.format = GL_RGBA;
+    this.type = GL_UNSIGNED_BYTE$4;
+    this.compressed = false;
+
+    // pixel storage
+    this.premultiplyAlpha = false;
+    this.flipY = false;
+    this.unpackAlignment = 1;
+    this.colorSpace = 0;
+
+    // shape info
+    this.width = 0;
+    this.height = 0;
+    this.channels = 0;
+  }
+
+  function copyFlags (result, other) {
+    result.internalformat = other.internalformat;
+    result.format = other.format;
+    result.type = other.type;
+    result.compressed = other.compressed;
+
+    result.premultiplyAlpha = other.premultiplyAlpha;
+    result.flipY = other.flipY;
+    result.unpackAlignment = other.unpackAlignment;
+    result.colorSpace = other.colorSpace;
+
+    result.width = other.width;
+    result.height = other.height;
+    result.channels = other.channels;
+  }
+
+  function parseFlags (flags, options) {
+    if (typeof options !== 'object' || !options) {
+      return
+    }
+
+    if ('premultiplyAlpha' in options) {
+      check$1.type(options.premultiplyAlpha, 'boolean',
+        'invalid premultiplyAlpha');
+      flags.premultiplyAlpha = options.premultiplyAlpha;
+    }
+
+    if ('flipY' in options) {
+      check$1.type(options.flipY, 'boolean',
+        'invalid texture flip');
+      flags.flipY = options.flipY;
+    }
+
+    if ('alignment' in options) {
+      check$1.oneOf(options.alignment, [1, 2, 4, 8],
+        'invalid texture unpack alignment');
+      flags.unpackAlignment = options.alignment;
+    }
+
+    if ('colorSpace' in options) {
+      check$1.parameter(options.colorSpace, colorSpace,
+        'invalid colorSpace');
+      flags.colorSpace = colorSpace[options.colorSpace];
+    }
+
+    if ('type' in options) {
+      var type = options.type;
+      check$1(extensions.oes_texture_float ||
+        !(type === 'float' || type === 'float32'),
+        'you must enable the OES_texture_float extension in order to use floating point textures.');
+      check$1(extensions.oes_texture_half_float ||
+        !(type === 'half float' || type === 'float16'),
+        'you must enable the OES_texture_half_float extension in order to use 16-bit floating point textures.');
+      check$1(extensions.webgl_depth_texture ||
+        !(type === 'uint16' || type === 'uint32' || type === 'depth stencil'),
+        'you must enable the WEBGL_depth_texture extension in order to use depth/stencil textures.');
+      check$1.parameter(type, textureTypes,
+        'invalid texture type');
+      flags.type = textureTypes[type];
+    }
+
+    var w = flags.width;
+    var h = flags.height;
+    var c = flags.channels;
+    var hasChannels = false;
+    if ('shape' in options) {
+      check$1(Array.isArray(options.shape) && options.shape.length >= 2,
+        'shape must be an array');
+      w = options.shape[0];
+      h = options.shape[1];
+      if (options.shape.length === 3) {
+        c = options.shape[2];
+        check$1(c > 0 && c <= 4, 'invalid number of channels');
+        hasChannels = true;
+      }
+      check$1(w >= 0 && w <= limits.maxTextureSize, 'invalid width');
+      check$1(h >= 0 && h <= limits.maxTextureSize, 'invalid height');
+    } else {
+      if ('radius' in options) {
+        w = h = options.radius;
+        check$1(w >= 0 && w <= limits.maxTextureSize, 'invalid radius');
+      }
+      if ('width' in options) {
+        w = options.width;
+        check$1(w >= 0 && w <= limits.maxTextureSize, 'invalid width');
+      }
+      if ('height' in options) {
+        h = options.height;
+        check$1(h >= 0 && h <= limits.maxTextureSize, 'invalid height');
+      }
+      if ('channels' in options) {
+        c = options.channels;
+        check$1(c > 0 && c <= 4, 'invalid number of channels');
+        hasChannels = true;
+      }
+    }
+    flags.width = w | 0;
+    flags.height = h | 0;
+    flags.channels = c | 0;
+
+    var hasFormat = false;
+    if ('format' in options) {
+      var formatStr = options.format;
+      check$1(extensions.webgl_depth_texture ||
+        !(formatStr === 'depth' || formatStr === 'depth stencil'),
+        'you must enable the WEBGL_depth_texture extension in order to use depth/stencil textures.');
+      check$1.parameter(formatStr, textureFormats,
+        'invalid texture format');
+      var internalformat = flags.internalformat = textureFormats[formatStr];
+      flags.format = colorFormats[internalformat];
+      if (formatStr in textureTypes) {
+        if (!('type' in options)) {
+          flags.type = textureTypes[formatStr];
+        }
+      }
+      if (formatStr in compressedTextureFormats) {
+        flags.compressed = true;
+      }
+      hasFormat = true;
+    }
+
+    // Reconcile channels and format
+    if (!hasChannels && hasFormat) {
+      flags.channels = FORMAT_CHANNELS[flags.format];
+    } else if (hasChannels && !hasFormat) {
+      if (flags.channels !== CHANNELS_FORMAT[flags.format]) {
+        flags.format = flags.internalformat = CHANNELS_FORMAT[flags.channels];
+      }
+    } else if (hasFormat && hasChannels) {
+      check$1(
+        flags.channels === FORMAT_CHANNELS[flags.format],
+        'number of channels inconsistent with specified format');
+    }
+  }
+
+  function setFlags (flags) {
+    gl.pixelStorei(GL_UNPACK_FLIP_Y_WEBGL, flags.flipY);
+    gl.pixelStorei(GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL, flags.premultiplyAlpha);
+    gl.pixelStorei(GL_UNPACK_COLORSPACE_CONVERSION_WEBGL, flags.colorSpace);
+    gl.pixelStorei(GL_UNPACK_ALIGNMENT, flags.unpackAlignment);
+  }
+
+  // -------------------------------------------------------
+  // Tex image data
+  // -------------------------------------------------------
+  function TexImage () {
+    TexFlags.call(this);
+
+    this.xOffset = 0;
+    this.yOffset = 0;
+
+    // data
+    this.data = null;
+    this.needsFree = false;
+
+    // html element
+    this.element = null;
+
+    // copyTexImage info
+    this.needsCopy = false;
+  }
+
+  function parseImage (image, options) {
+    var data = null;
+    if (isPixelData(options)) {
+      data = options;
+    } else if (options) {
+      check$1.type(options, 'object', 'invalid pixel data type');
+      parseFlags(image, options);
+      if ('x' in options) {
+        image.xOffset = options.x | 0;
+      }
+      if ('y' in options) {
+        image.yOffset = options.y | 0;
+      }
+      if (isPixelData(options.data)) {
+        data = options.data;
+      }
+    }
+
+    check$1(
+      !image.compressed ||
+      data instanceof Uint8Array,
+      'compressed texture data must be stored in a uint8array');
+
+    if (options.copy) {
+      check$1(!data, 'can not specify copy and data field for the same texture');
+      var viewW = contextState.viewportWidth;
+      var viewH = contextState.viewportHeight;
+      image.width = image.width || (viewW - image.xOffset);
+      image.height = image.height || (viewH - image.yOffset);
+      image.needsCopy = true;
+      check$1(image.xOffset >= 0 && image.xOffset < viewW &&
+            image.yOffset >= 0 && image.yOffset < viewH &&
+            image.width > 0 && image.width <= viewW &&
+            image.height > 0 && image.height <= viewH,
+            'copy texture read out of bounds');
+    } else if (!data) {
+      image.width = image.width || 1;
+      image.height = image.height || 1;
+      image.channels = image.channels || 4;
+    } else if (isTypedArray(data)) {
+      image.channels = image.channels || 4;
+      image.data = data;
+      if (!('type' in options) && image.type === GL_UNSIGNED_BYTE$4) {
+        image.type = typedArrayCode$1(data);
+      }
+    } else if (isNumericArray(data)) {
+      image.channels = image.channels || 4;
+      convertData(image, data);
+      image.alignment = 1;
+      image.needsFree = true;
+    } else if (isNDArrayLike(data)) {
+      var array = data.data;
+      if (!Array.isArray(array) && image.type === GL_UNSIGNED_BYTE$4) {
+        image.type = typedArrayCode$1(array);
+      }
+      var shape = data.shape;
+      var stride = data.stride;
+      var shapeX, shapeY, shapeC, strideX, strideY, strideC;
+      if (shape.length === 3) {
+        shapeC = shape[2];
+        strideC = stride[2];
+      } else {
+        check$1(shape.length === 2, 'invalid ndarray pixel data, must be 2 or 3D');
+        shapeC = 1;
+        strideC = 1;
+      }
+      shapeX = shape[0];
+      shapeY = shape[1];
+      strideX = stride[0];
+      strideY = stride[1];
+      image.alignment = 1;
+      image.width = shapeX;
+      image.height = shapeY;
+      image.channels = shapeC;
+      image.format = image.internalformat = CHANNELS_FORMAT[shapeC];
+      image.needsFree = true;
+      transposeData(image, array, strideX, strideY, strideC, data.offset);
+    } else if (isCanvasElement(data) || isContext2D(data)) {
+      if (isCanvasElement(data)) {
+        image.element = data;
+      } else {
+        image.element = data.canvas;
+      }
+      image.width = image.element.width;
+      image.height = image.element.height;
+      image.channels = 4;
+    } else if (isImageElement(data)) {
+      image.element = data;
+      image.width = data.naturalWidth;
+      image.height = data.naturalHeight;
+      image.channels = 4;
+    } else if (isVideoElement(data)) {
+      image.element = data;
+      image.width = data.videoWidth;
+      image.height = data.videoHeight;
+      image.channels = 4;
+    } else if (isRectArray(data)) {
+      var w = image.width || data[0].length;
+      var h = image.height || data.length;
+      var c = image.channels;
+      if (isArrayLike(data[0][0])) {
+        c = c || data[0][0].length;
+      } else {
+        c = c || 1;
+      }
+      var arrayShape = flattenUtils.shape(data);
+      var n = 1;
+      for (var dd = 0; dd < arrayShape.length; ++dd) {
+        n *= arrayShape[dd];
+      }
+      var allocData = preConvert(image, n);
+      flattenUtils.flatten(data, arrayShape, '', allocData);
+      postConvert(image, allocData);
+      image.alignment = 1;
+      image.width = w;
+      image.height = h;
+      image.channels = c;
+      image.format = image.internalformat = CHANNELS_FORMAT[c];
+      image.needsFree = true;
+    }
+
+    if (image.type === GL_FLOAT$3) {
+      check$1(limits.extensions.indexOf('oes_texture_float') >= 0,
+        'oes_texture_float extension not enabled');
+    } else if (image.type === GL_HALF_FLOAT_OES$1) {
+      check$1(limits.extensions.indexOf('oes_texture_half_float') >= 0,
+        'oes_texture_half_float extension not enabled');
+    }
+
+    // do compressed texture  validation here.
+  }
+
+  function setImage (info, target, miplevel) {
+    var element = info.element;
+    var data = info.data;
+    var internalformat = info.internalformat;
+    var format = info.format;
+    var type = info.type;
+    var width = info.width;
+    var height = info.height;
+
+    setFlags(info);
+
+    if (element) {
+      gl.texImage2D(target, miplevel, format, format, type, element);
+    } else if (info.compressed) {
+      gl.compressedTexImage2D(target, miplevel, internalformat, width, height, 0, data);
+    } else if (info.needsCopy) {
+      reglPoll();
+      gl.copyTexImage2D(
+        target, miplevel, format, info.xOffset, info.yOffset, width, height, 0);
+    } else {
+      gl.texImage2D(
+        target, miplevel, format, width, height, 0, format, type, data);
+    }
+  }
+
+  function setSubImage (info, target, x, y, miplevel) {
+    var element = info.element;
+    var data = info.data;
+    var internalformat = info.internalformat;
+    var format = info.format;
+    var type = info.type;
+    var width = info.width;
+    var height = info.height;
+
+    setFlags(info);
+
+    if (element) {
+      gl.texSubImage2D(
+        target, miplevel, x, y, format, type, element);
+    } else if (info.compressed) {
+      gl.compressedTexSubImage2D(
+        target, miplevel, x, y, internalformat, width, height, data);
+    } else if (info.needsCopy) {
+      reglPoll();
+      gl.copyTexSubImage2D(
+        target, miplevel, x, y, info.xOffset, info.yOffset, width, height);
+    } else {
+      gl.texSubImage2D(
+        target, miplevel, x, y, width, height, format, type, data);
+    }
+  }
+
+  // texImage pool
+  var imagePool = [];
+
+  function allocImage () {
+    return imagePool.pop() || new TexImage()
+  }
+
+  function freeImage (image) {
+    if (image.needsFree) {
+      pool.freeType(image.data);
+    }
+    TexImage.call(image);
+    imagePool.push(image);
+  }
+
+  // -------------------------------------------------------
+  // Mip map
+  // -------------------------------------------------------
+  function MipMap () {
+    TexFlags.call(this);
+
+    this.genMipmaps = false;
+    this.mipmapHint = GL_DONT_CARE;
+    this.mipmask = 0;
+    this.images = Array(16);
+  }
+
+  function parseMipMapFromShape (mipmap, width, height) {
+    var img = mipmap.images[0] = allocImage();
+    mipmap.mipmask = 1;
+    img.width = mipmap.width = width;
+    img.height = mipmap.height = height;
+    img.channels = mipmap.channels = 4;
+  }
+
+  function parseMipMapFromObject (mipmap, options) {
+    var imgData = null;
+    if (isPixelData(options)) {
+      imgData = mipmap.images[0] = allocImage();
+      copyFlags(imgData, mipmap);
+      parseImage(imgData, options);
+      mipmap.mipmask = 1;
+    } else {
+      parseFlags(mipmap, options);
+      if (Array.isArray(options.mipmap)) {
+        var mipData = options.mipmap;
+        for (var i = 0; i < mipData.length; ++i) {
+          imgData = mipmap.images[i] = allocImage();
+          copyFlags(imgData, mipmap);
+          imgData.width >>= i;
+          imgData.height >>= i;
+          parseImage(imgData, mipData[i]);
+          mipmap.mipmask |= (1 << i);
+        }
+      } else {
+        imgData = mipmap.images[0] = allocImage();
+        copyFlags(imgData, mipmap);
+        parseImage(imgData, options);
+        mipmap.mipmask = 1;
+      }
+    }
+    copyFlags(mipmap, mipmap.images[0]);
+
+    // For textures of the compressed format WEBGL_compressed_texture_s3tc
+    // we must have that
+    //
+    // "When level equals zero width and height must be a multiple of 4.
+    // When level is greater than 0 width and height must be 0, 1, 2 or a multiple of 4. "
+    //
+    // but we do not yet support having multiple mipmap levels for compressed textures,
+    // so we only test for level zero.
+
+    if (mipmap.compressed &&
+        (mipmap.internalformat === GL_COMPRESSED_RGB_S3TC_DXT1_EXT) ||
+        (mipmap.internalformat === GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ||
+        (mipmap.internalformat === GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) ||
+        (mipmap.internalformat === GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)) {
+      check$1(mipmap.width % 4 === 0 &&
+            mipmap.height % 4 === 0,
+            'for compressed texture formats, mipmap level 0 must have width and height that are a multiple of 4');
+    }
+  }
+
+  function setMipMap (mipmap, target) {
+    var images = mipmap.images;
+    for (var i = 0; i < images.length; ++i) {
+      if (!images[i]) {
+        return
+      }
+      setImage(images[i], target, i);
+    }
+  }
+
+  var mipPool = [];
+
+  function allocMipMap () {
+    var result = mipPool.pop() || new MipMap();
+    TexFlags.call(result);
+    result.mipmask = 0;
+    for (var i = 0; i < 16; ++i) {
+      result.images[i] = null;
+    }
+    return result
+  }
+
+  function freeMipMap (mipmap) {
+    var images = mipmap.images;
+    for (var i = 0; i < images.length; ++i) {
+      if (images[i]) {
+        freeImage(images[i]);
+      }
+      images[i] = null;
+    }
+    mipPool.push(mipmap);
+  }
+
+  // -------------------------------------------------------
+  // Tex info
+  // -------------------------------------------------------
+  function TexInfo () {
+    this.minFilter = GL_NEAREST$1;
+    this.magFilter = GL_NEAREST$1;
+
+    this.wrapS = GL_CLAMP_TO_EDGE$1;
+    this.wrapT = GL_CLAMP_TO_EDGE$1;
+
+    this.anisotropic = 1;
+
+    this.genMipmaps = false;
+    this.mipmapHint = GL_DONT_CARE;
+  }
+
+  function parseTexInfo (info, options) {
+    if ('min' in options) {
+      var minFilter = options.min;
+      check$1.parameter(minFilter, minFilters);
+      info.minFilter = minFilters[minFilter];
+      if (MIPMAP_FILTERS.indexOf(info.minFilter) >= 0) {
+        info.genMipmaps = true;
+      }
+    }
+
+    if ('mag' in options) {
+      var magFilter = options.mag;
+      check$1.parameter(magFilter, magFilters);
+      info.magFilter = magFilters[magFilter];
+    }
+
+    var wrapS = info.wrapS;
+    var wrapT = info.wrapT;
+    if ('wrap' in options) {
+      var wrap = options.wrap;
+      if (typeof wrap === 'string') {
+        check$1.parameter(wrap, wrapModes);
+        wrapS = wrapT = wrapModes[wrap];
+      } else if (Array.isArray(wrap)) {
+        check$1.parameter(wrap[0], wrapModes);
+        check$1.parameter(wrap[1], wrapModes);
+        wrapS = wrapModes[wrap[0]];
+        wrapT = wrapModes[wrap[1]];
+      }
+    } else {
+      if ('wrapS' in options) {
+        var optWrapS = options.wrapS;
+        check$1.parameter(optWrapS, wrapModes);
+        wrapS = wrapModes[optWrapS];
+      }
+      if ('wrapT' in options) {
+        var optWrapT = options.wrapT;
+        check$1.parameter(optWrapT, wrapModes);
+        wrapT = wrapModes[optWrapT];
+      }
+    }
+    info.wrapS = wrapS;
+    info.wrapT = wrapT;
+
+    if ('anisotropic' in options) {
+      var anisotropic = options.anisotropic;
+      check$1(typeof anisotropic === 'number' &&
+         anisotropic >= 1 && anisotropic <= limits.maxAnisotropic,
+        'aniso samples must be between 1 and ');
+      info.anisotropic = options.anisotropic;
+    }
+
+    if ('mipmap' in options) {
+      var hasMipMap = false;
+      switch (typeof options.mipmap) {
+        case 'string':
+          check$1.parameter(options.mipmap, mipmapHint,
+            'invalid mipmap hint');
+          info.mipmapHint = mipmapHint[options.mipmap];
+          info.genMipmaps = true;
+          hasMipMap = true;
+          break
+
+        case 'boolean':
+          hasMipMap = info.genMipmaps = options.mipmap;
+          break
+
+        case 'object':
+          check$1(Array.isArray(options.mipmap), 'invalid mipmap type');
+          info.genMipmaps = false;
+          hasMipMap = true;
+          break
+
+        default:
+          check$1.raise('invalid mipmap type');
+      }
+      if (hasMipMap && !('min' in options)) {
+        info.minFilter = GL_NEAREST_MIPMAP_NEAREST$1;
+      }
+    }
+  }
+
+  function setTexInfo (info, target) {
+    gl.texParameteri(target, GL_TEXTURE_MIN_FILTER, info.minFilter);
+    gl.texParameteri(target, GL_TEXTURE_MAG_FILTER, info.magFilter);
+    gl.texParameteri(target, GL_TEXTURE_WRAP_S, info.wrapS);
+    gl.texParameteri(target, GL_TEXTURE_WRAP_T, info.wrapT);
+    if (extensions.ext_texture_filter_anisotropic) {
+      gl.texParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, info.anisotropic);
+    }
+    if (info.genMipmaps) {
+      gl.hint(GL_GENERATE_MIPMAP_HINT, info.mipmapHint);
+      gl.generateMipmap(target);
+    }
+  }
+
+  // -------------------------------------------------------
+  // Full texture object
+  // -------------------------------------------------------
+  var textureCount = 0;
+  var textureSet = {};
+  var numTexUnits = limits.maxTextureUnits;
+  var textureUnits = Array(numTexUnits).map(function () {
+    return null
+  });
+
+  function REGLTexture (target) {
+    TexFlags.call(this);
+    this.mipmask = 0;
+    this.internalformat = GL_RGBA;
+
+    this.id = textureCount++;
+
+    this.refCount = 1;
+
+    this.target = target;
+    this.texture = gl.createTexture();
+
+    this.unit = -1;
+    this.bindCount = 0;
+
+    this.texInfo = new TexInfo();
+
+    if (config.profile) {
+      this.stats = {size: 0};
+    }
+  }
+
+  function tempBind (texture) {
+    gl.activeTexture(GL_TEXTURE0);
+    gl.bindTexture(texture.target, texture.texture);
+  }
+
+  function tempRestore () {
+    var prev = textureUnits[0];
+    if (prev) {
+      gl.bindTexture(prev.target, prev.texture);
+    } else {
+      gl.bindTexture(GL_TEXTURE_2D, null);
+    }
+  }
+
+  function destroy (texture) {
+    var handle = texture.texture;
+    check$1(handle, 'must not double destroy texture');
+    var unit = texture.unit;
+    var target = texture.target;
+    if (unit >= 0) {
+      gl.activeTexture(GL_TEXTURE0 + unit);
+      gl.bindTexture(target, null);
+      textureUnits[unit] = null;
+    }
+    gl.deleteTexture(handle);
+    texture.texture = null;
+    texture.params = null;
+    texture.pixels = null;
+    texture.refCount = 0;
+    delete textureSet[texture.id];
+    stats.textureCount--;
+  }
+
+  extend(REGLTexture.prototype, {
+    bind: function () {
+      var texture = this;
+      texture.bindCount += 1;
+      var unit = texture.unit;
+      if (unit < 0) {
+        for (var i = 0; i < numTexUnits; ++i) {
+          var other = textureUnits[i];
+          if (other) {
+            if (other.bindCount > 0) {
+              continue
+            }
+            other.unit = -1;
+          }
+          textureUnits[i] = texture;
+          unit = i;
+          break
+        }
+        if (unit >= numTexUnits) {
+          check$1.raise('insufficient number of texture units');
+        }
+        if (config.profile && stats.maxTextureUnits < (unit + 1)) {
+          stats.maxTextureUnits = unit + 1; // +1, since the units are zero-based
+        }
+        texture.unit = unit;
+        gl.activeTexture(GL_TEXTURE0 + unit);
+        gl.bindTexture(texture.target, texture.texture);
+      }
+      return unit
+    },
+
+    unbind: function () {
+      this.bindCount -= 1;
+    },
+
+    decRef: function () {
+      if (--this.refCount <= 0) {
+        destroy(this);
+      }
+    }
+  });
+
+  function createTexture2D (a, b) {
+    var texture = new REGLTexture(GL_TEXTURE_2D);
+    textureSet[texture.id] = texture;
+    stats.textureCount++;
+
+    function reglTexture2D (a, b) {
+      var texInfo = texture.texInfo;
+      TexInfo.call(texInfo);
+      var mipData = allocMipMap();
+
+      if (typeof a === 'number') {
+        if (typeof b === 'number') {
+          parseMipMapFromShape(mipData, a | 0, b | 0);
+        } else {
+          parseMipMapFromShape(mipData, a | 0, a | 0);
+        }
+      } else if (a) {
+        check$1.type(a, 'object', 'invalid arguments to regl.texture');
+        parseTexInfo(texInfo, a);
+        parseMipMapFromObject(mipData, a);
+      } else {
+        // empty textures get assigned a default shape of 1x1
+        parseMipMapFromShape(mipData, 1, 1);
+      }
+
+      if (texInfo.genMipmaps) {
+        mipData.mipmask = (mipData.width << 1) - 1;
+      }
+      texture.mipmask = mipData.mipmask;
+
+      copyFlags(texture, mipData);
+
+      check$1.texture2D(texInfo, mipData, limits);
+      texture.internalformat = mipData.internalformat;
+
+      reglTexture2D.width = mipData.width;
+      reglTexture2D.height = mipData.height;
+
+      tempBind(texture);
+      setMipMap(mipData, GL_TEXTURE_2D);
+      setTexInfo(texInfo, GL_TEXTURE_2D);
+      tempRestore();
+
+      freeMipMap(mipData);
+
+      if (config.profile) {
+        texture.stats.size = getTextureSize(
+          texture.internalformat,
+          texture.type,
+          mipData.width,
+          mipData.height,
+          texInfo.genMipmaps,
+          false);
+      }
+      reglTexture2D.format = textureFormatsInvert[texture.internalformat];
+      reglTexture2D.type = textureTypesInvert[texture.type];
+
+      reglTexture2D.mag = magFiltersInvert[texInfo.magFilter];
+      reglTexture2D.min = minFiltersInvert[texInfo.minFilter];
+
+      reglTexture2D.wrapS = wrapModesInvert[texInfo.wrapS];
+      reglTexture2D.wrapT = wrapModesInvert[texInfo.wrapT];
+
+      return reglTexture2D
+    }
+
+    function subimage (image, x_, y_, level_) {
+      check$1(!!image, 'must specify image data');
+
+      var x = x_ | 0;
+      var y = y_ | 0;
+      var level = level_ | 0;
+
+      var imageData = allocImage();
+      copyFlags(imageData, texture);
+      imageData.width = 0;
+      imageData.height = 0;
+      parseImage(imageData, image);
+      imageData.width = imageData.width || ((texture.width >> level) - x);
+      imageData.height = imageData.height || ((texture.height >> level) - y);
+
+      check$1(
+        texture.type === imageData.type &&
+        texture.format === imageData.format &&
+        texture.internalformat === imageData.internalformat,
+        'incompatible format for texture.subimage');
+      check$1(
+        x >= 0 && y >= 0 &&
+        x + imageData.width <= texture.width &&
+        y + imageData.height <= texture.height,
+        'texture.subimage write out of bounds');
+      check$1(
+        texture.mipmask & (1 << level),
+        'missing mipmap data');
+      check$1(
+        imageData.data || imageData.element || imageData.needsCopy,
+        'missing image data');
+
+      tempBind(texture);
+      setSubImage(imageData, GL_TEXTURE_2D, x, y, level);
+      tempRestore();
+
+      freeImage(imageData);
+
+      return reglTexture2D
+    }
+
+    function resize (w_, h_) {
+      var w = w_ | 0;
+      var h = (h_ | 0) || w;
+      if (w === texture.width && h === texture.height) {
+        return reglTexture2D
+      }
+
+      reglTexture2D.width = texture.width = w;
+      reglTexture2D.height = texture.height = h;
+
+      tempBind(texture);
+      for (var i = 0; texture.mipmask >> i; ++i) {
+        gl.texImage2D(
+          GL_TEXTURE_2D,
+          i,
+          texture.format,
+          w >> i,
+          h >> i,
+          0,
+          texture.format,
+          texture.type,
+          null);
+      }
+      tempRestore();
+
+      // also, recompute the texture size.
+      if (config.profile) {
+        texture.stats.size = getTextureSize(
+          texture.internalformat,
+          texture.type,
+          w,
+          h,
+          false,
+          false);
+      }
+
+      return reglTexture2D
+    }
+
+    reglTexture2D(a, b);
+
+    reglTexture2D.subimage = subimage;
+    reglTexture2D.resize = resize;
+    reglTexture2D._reglType = 'texture2d';
+    reglTexture2D._texture = texture;
+    if (config.profile) {
+      reglTexture2D.stats = texture.stats;
+    }
+    reglTexture2D.destroy = function () {
+      texture.decRef();
+    };
+
+    return reglTexture2D
+  }
+
+  function createTextureCube (a0, a1, a2, a3, a4, a5) {
+    var texture = new REGLTexture(GL_TEXTURE_CUBE_MAP);
+    textureSet[texture.id] = texture;
+    stats.cubeCount++;
+
+    var faces = new Array(6);
+
+    function reglTextureCube (a0, a1, a2, a3, a4, a5) {
+      var i;
+      var texInfo = texture.texInfo;
+      TexInfo.call(texInfo);
+      for (i = 0; i < 6; ++i) {
+        faces[i] = allocMipMap();
+      }
+
+      if (typeof a0 === 'number' || !a0) {
+        var s = (a0 | 0) || 1;
+        for (i = 0; i < 6; ++i) {
+          parseMipMapFromShape(faces[i], s, s);
+        }
+      } else if (typeof a0 === 'object') {
+        if (a1) {
+          parseMipMapFromObject(faces[0], a0);
+          parseMipMapFromObject(faces[1], a1);
+          parseMipMapFromObject(faces[2], a2);
+          parseMipMapFromObject(faces[3], a3);
+          parseMipMapFromObject(faces[4], a4);
+          parseMipMapFromObject(faces[5], a5);
+        } else {
+          parseTexInfo(texInfo, a0);
+          parseFlags(texture, a0);
+          if ('faces' in a0) {
+            var face_input = a0.faces;
+            check$1(Array.isArray(face_input) && face_input.length === 6,
+              'cube faces must be a length 6 array');
+            for (i = 0; i < 6; ++i) {
+              check$1(typeof face_input[i] === 'object' && !!face_input[i],
+                'invalid input for cube map face');
+              copyFlags(faces[i], texture);
+              parseMipMapFromObject(faces[i], face_input[i]);
+            }
+          } else {
+            for (i = 0; i < 6; ++i) {
+              parseMipMapFromObject(faces[i], a0);
+            }
+          }
+        }
+      } else {
+        check$1.raise('invalid arguments to cube map');
+      }
+
+      copyFlags(texture, faces[0]);
+      if (texInfo.genMipmaps) {
+        texture.mipmask = (faces[0].width << 1) - 1;
+      } else {
+        texture.mipmask = faces[0].mipmask;
+      }
+
+      check$1.textureCube(texture, texInfo, faces, limits);
+      texture.internalformat = faces[0].internalformat;
+
+      reglTextureCube.width = faces[0].width;
+      reglTextureCube.height = faces[0].height;
+
+      tempBind(texture);
+      for (i = 0; i < 6; ++i) {
+        setMipMap(faces[i], GL_TEXTURE_CUBE_MAP_POSITIVE_X + i);
+      }
+      setTexInfo(texInfo, GL_TEXTURE_CUBE_MAP);
+      tempRestore();
+
+      if (config.profile) {
+        texture.stats.size = getTextureSize(
+          texture.internalformat,
+          texture.type,
+          reglTextureCube.width,
+          reglTextureCube.height,
+          texInfo.genMipmaps,
+          true);
+      }
+
+      reglTextureCube.format = textureFormatsInvert[texture.internalformat];
+      reglTextureCube.type = textureTypesInvert[texture.type];
+
+      reglTextureCube.mag = magFiltersInvert[texInfo.magFilter];
+      reglTextureCube.min = minFiltersInvert[texInfo.minFilter];
+
+      reglTextureCube.wrapS = wrapModesInvert[texInfo.wrapS];
+      reglTextureCube.wrapT = wrapModesInvert[texInfo.wrapT];
+
+      for (i = 0; i < 6; ++i) {
+        freeMipMap(faces[i]);
+      }
+
+      return reglTextureCube
+    }
+
+    function subimage (face, image, x_, y_, level_) {
+      check$1(!!image, 'must specify image data');
+      check$1(typeof face === 'number' && face === (face | 0) &&
+        face >= 0 && face < 6, 'invalid face');
+
+      var x = x_ | 0;
+      var y = y_ | 0;
+      var level = level_ | 0;
+
+      var imageData = allocImage();
+      copyFlags(imageData, texture);
+      imageData.width = 0;
+      imageData.height = 0;
+      parseImage(imageData, image);
+      imageData.width = imageData.width || ((texture.width >> level) - x);
+      imageData.height = imageData.height || ((texture.height >> level) - y);
+
+      check$1(
+        texture.type === imageData.type &&
+        texture.format === imageData.format &&
+        texture.internalformat === imageData.internalformat,
+        'incompatible format for texture.subimage');
+      check$1(
+        x >= 0 && y >= 0 &&
+        x + imageData.width <= texture.width &&
+        y + imageData.height <= texture.height,
+        'texture.subimage write out of bounds');
+      check$1(
+        texture.mipmask & (1 << level),
+        'missing mipmap data');
+      check$1(
+        imageData.data || imageData.element || imageData.needsCopy,
+        'missing image data');
+
+      tempBind(texture);
+      setSubImage(imageData, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, x, y, level);
+      tempRestore();
+
+      freeImage(imageData);
+
+      return reglTextureCube
+    }
+
+    function resize (radius_) {
+      var radius = radius_ | 0;
+      if (radius === texture.width) {
+        return
+      }
+
+      reglTextureCube.width = texture.width = radius;
+      reglTextureCube.height = texture.height = radius;
+
+      tempBind(texture);
+      for (var i = 0; i < 6; ++i) {
+        for (var j = 0; texture.mipmask >> j; ++j) {
+          gl.texImage2D(
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            j,
+            texture.format,
+            radius >> j,
+            radius >> j,
+            0,
+            texture.format,
+            texture.type,
+            null);
+        }
+      }
+      tempRestore();
+
+      if (config.profile) {
+        texture.stats.size = getTextureSize(
+          texture.internalformat,
+          texture.type,
+          reglTextureCube.width,
+          reglTextureCube.height,
+          false,
+          true);
+      }
+
+      return reglTextureCube
+    }
+
+    reglTextureCube(a0, a1, a2, a3, a4, a5);
+
+    reglTextureCube.subimage = subimage;
+    reglTextureCube.resize = resize;
+    reglTextureCube._reglType = 'textureCube';
+    reglTextureCube._texture = texture;
+    if (config.profile) {
+      reglTextureCube.stats = texture.stats;
+    }
+    reglTextureCube.destroy = function () {
+      texture.decRef();
+    };
+
+    return reglTextureCube
+  }
+
+  // Called when regl is destroyed
+  function destroyTextures () {
+    for (var i = 0; i < numTexUnits; ++i) {
+      gl.activeTexture(GL_TEXTURE0 + i);
+      gl.bindTexture(GL_TEXTURE_2D, null);
+      textureUnits[i] = null;
+    }
+    values(textureSet).forEach(destroy);
+
+    stats.cubeCount = 0;
+    stats.textureCount = 0;
+  }
+
+  if (config.profile) {
+    stats.getTotalTextureSize = function () {
+      var total = 0;
+      Object.keys(textureSet).forEach(function (key) {
+        total += textureSet[key].stats.size;
+      });
+      return total
+    };
+  }
+
+  function restoreTextures () {
+    values(textureSet).forEach(function (texture) {
+      texture.texture = gl.createTexture();
+      gl.bindTexture(texture.target, texture.texture);
+      for (var i = 0; i < 32; ++i) {
+        if ((texture.mipmask & (1 << i)) === 0) {
+          continue
+        }
+        if (texture.target === GL_TEXTURE_2D) {
+          gl.texImage2D(GL_TEXTURE_2D,
+            i,
+            texture.internalformat,
+            texture.width >> i,
+            texture.height >> i,
+            0,
+            texture.internalformat,
+            texture.type,
+            null);
+        } else {
+          for (var j = 0; j < 6; ++j) {
+            gl.texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j,
+              i,
+              texture.internalformat,
+              texture.width >> i,
+              texture.height >> i,
+              0,
+              texture.internalformat,
+              texture.type,
+              null);
+          }
+        }
+      }
+      setTexInfo(texture.texInfo, texture.target);
+    });
+  }
+
+  return {
+    create2D: createTexture2D,
+    createCube: createTextureCube,
+    clear: destroyTextures,
+    getTexture: function (wrapper) {
+      return null
+    },
+    restore: restoreTextures
+  }
+}
+
+var GL_RENDERBUFFER = 0x8D41;
+
+var GL_RGBA4$1 = 0x8056;
+var GL_RGB5_A1$1 = 0x8057;
+var GL_RGB565$1 = 0x8D62;
+var GL_DEPTH_COMPONENT16 = 0x81A5;
+var GL_STENCIL_INDEX8 = 0x8D48;
+var GL_DEPTH_STENCIL$1 = 0x84F9;
+
+var GL_SRGB8_ALPHA8_EXT = 0x8C43;
+
+var GL_RGBA32F_EXT = 0x8814;
+
+var GL_RGBA16F_EXT = 0x881A;
+var GL_RGB16F_EXT = 0x881B;
+
+var FORMAT_SIZES = [];
+
+FORMAT_SIZES[GL_RGBA4$1] = 2;
+FORMAT_SIZES[GL_RGB5_A1$1] = 2;
+FORMAT_SIZES[GL_RGB565$1] = 2;
+
+FORMAT_SIZES[GL_DEPTH_COMPONENT16] = 2;
+FORMAT_SIZES[GL_STENCIL_INDEX8] = 1;
+FORMAT_SIZES[GL_DEPTH_STENCIL$1] = 4;
+
+FORMAT_SIZES[GL_SRGB8_ALPHA8_EXT] = 4;
+FORMAT_SIZES[GL_RGBA32F_EXT] = 16;
+FORMAT_SIZES[GL_RGBA16F_EXT] = 8;
+FORMAT_SIZES[GL_RGB16F_EXT] = 6;
+
+function getRenderbufferSize (format, width, height) {
+  return FORMAT_SIZES[format] * width * height
+}
+
+var wrapRenderbuffers = function (gl, extensions, limits, stats, config) {
+  var formatTypes = {
+    'rgba4': GL_RGBA4$1,
+    'rgb565': GL_RGB565$1,
+    'rgb5 a1': GL_RGB5_A1$1,
+    'depth': GL_DEPTH_COMPONENT16,
+    'stencil': GL_STENCIL_INDEX8,
+    'depth stencil': GL_DEPTH_STENCIL$1
+  };
+
+  if (extensions.ext_srgb) {
+    formatTypes['srgba'] = GL_SRGB8_ALPHA8_EXT;
+  }
+
+  if (extensions.ext_color_buffer_half_float) {
+    formatTypes['rgba16f'] = GL_RGBA16F_EXT;
+    formatTypes['rgb16f'] = GL_RGB16F_EXT;
+  }
+
+  if (extensions.webgl_color_buffer_float) {
+    formatTypes['rgba32f'] = GL_RGBA32F_EXT;
+  }
+
+  var formatTypesInvert = [];
+  Object.keys(formatTypes).forEach(function (key) {
+    var val = formatTypes[key];
+    formatTypesInvert[val] = key;
+  });
+
+  var renderbufferCount = 0;
+  var renderbufferSet = {};
+
+  function REGLRenderbuffer (renderbuffer) {
+    this.id = renderbufferCount++;
+    this.refCount = 1;
+
+    this.renderbuffer = renderbuffer;
+
+    this.format = GL_RGBA4$1;
+    this.width = 0;
+    this.height = 0;
+
+    if (config.profile) {
+      this.stats = {size: 0};
+    }
+  }
+
+  REGLRenderbuffer.prototype.decRef = function () {
+    if (--this.refCount <= 0) {
+      destroy(this);
+    }
+  };
+
+  function destroy (rb) {
+    var handle = rb.renderbuffer;
+    check$1(handle, 'must not double destroy renderbuffer');
+    gl.bindRenderbuffer(GL_RENDERBUFFER, null);
+    gl.deleteRenderbuffer(handle);
+    rb.renderbuffer = null;
+    rb.refCount = 0;
+    delete renderbufferSet[rb.id];
+    stats.renderbufferCount--;
+  }
+
+  function createRenderbuffer (a, b) {
+    var renderbuffer = new REGLRenderbuffer(gl.createRenderbuffer());
+    renderbufferSet[renderbuffer.id] = renderbuffer;
+    stats.renderbufferCount++;
+
+    function reglRenderbuffer (a, b) {
+      var w = 0;
+      var h = 0;
+      var format = GL_RGBA4$1;
+
+      if (typeof a === 'object' && a) {
+        var options = a;
+        if ('shape' in options) {
+          var shape = options.shape;
+          check$1(Array.isArray(shape) && shape.length >= 2,
+            'invalid renderbuffer shape');
+          w = shape[0] | 0;
+          h = shape[1] | 0;
+        } else {
+          if ('radius' in options) {
+            w = h = options.radius | 0;
+          }
+          if ('width' in options) {
+            w = options.width | 0;
+          }
+          if ('height' in options) {
+            h = options.height | 0;
+          }
+        }
+        if ('format' in options) {
+          check$1.parameter(options.format, formatTypes,
+            'invalid renderbuffer format');
+          format = formatTypes[options.format];
+        }
+      } else if (typeof a === 'number') {
+        w = a | 0;
+        if (typeof b === 'number') {
+          h = b | 0;
+        } else {
+          h = w;
+        }
+      } else if (!a) {
+        w = h = 1;
+      } else {
+        check$1.raise('invalid arguments to renderbuffer constructor');
+      }
+
+      // check shape
+      check$1(
+        w > 0 && h > 0 &&
+        w <= limits.maxRenderbufferSize && h <= limits.maxRenderbufferSize,
+        'invalid renderbuffer size');
+
+      if (w === renderbuffer.width &&
+          h === renderbuffer.height &&
+          format === renderbuffer.format) {
+        return
+      }
+
+      reglRenderbuffer.width = renderbuffer.width = w;
+      reglRenderbuffer.height = renderbuffer.height = h;
+      renderbuffer.format = format;
+
+      gl.bindRenderbuffer(GL_RENDERBUFFER, renderbuffer.renderbuffer);
+      gl.renderbufferStorage(GL_RENDERBUFFER, format, w, h);
+
+      if (config.profile) {
+        renderbuffer.stats.size = getRenderbufferSize(renderbuffer.format, renderbuffer.width, renderbuffer.height);
+      }
+      reglRenderbuffer.format = formatTypesInvert[renderbuffer.format];
+
+      return reglRenderbuffer
+    }
+
+    function resize (w_, h_) {
+      var w = w_ | 0;
+      var h = (h_ | 0) || w;
+
+      if (w === renderbuffer.width && h === renderbuffer.height) {
+        return reglRenderbuffer
+      }
+
+      // check shape
+      check$1(
+        w > 0 && h > 0 &&
+        w <= limits.maxRenderbufferSize && h <= limits.maxRenderbufferSize,
+        'invalid renderbuffer size');
+
+      reglRenderbuffer.width = renderbuffer.width = w;
+      reglRenderbuffer.height = renderbuffer.height = h;
+
+      gl.bindRenderbuffer(GL_RENDERBUFFER, renderbuffer.renderbuffer);
+      gl.renderbufferStorage(GL_RENDERBUFFER, renderbuffer.format, w, h);
+
+      // also, recompute size.
+      if (config.profile) {
+        renderbuffer.stats.size = getRenderbufferSize(
+          renderbuffer.format, renderbuffer.width, renderbuffer.height);
+      }
+
+      return reglRenderbuffer
+    }
+
+    reglRenderbuffer(a, b);
+
+    reglRenderbuffer.resize = resize;
+    reglRenderbuffer._reglType = 'renderbuffer';
+    reglRenderbuffer._renderbuffer = renderbuffer;
+    if (config.profile) {
+      reglRenderbuffer.stats = renderbuffer.stats;
+    }
+    reglRenderbuffer.destroy = function () {
+      renderbuffer.decRef();
+    };
+
+    return reglRenderbuffer
+  }
+
+  if (config.profile) {
+    stats.getTotalRenderbufferSize = function () {
+      var total = 0;
+      Object.keys(renderbufferSet).forEach(function (key) {
+        total += renderbufferSet[key].stats.size;
+      });
+      return total
+    };
+  }
+
+  function restoreRenderbuffers () {
+    values(renderbufferSet).forEach(function (rb) {
+      rb.renderbuffer = gl.createRenderbuffer();
+      gl.bindRenderbuffer(GL_RENDERBUFFER, rb.renderbuffer);
+      gl.renderbufferStorage(GL_RENDERBUFFER, rb.format, rb.width, rb.height);
+    });
+    gl.bindRenderbuffer(GL_RENDERBUFFER, null);
+  }
+
+  return {
+    create: createRenderbuffer,
+    clear: function () {
+      values(renderbufferSet).forEach(destroy);
+    },
+    restore: restoreRenderbuffers
+  }
+};
+
+// We store these constants so that the minifier can inline them
+var GL_FRAMEBUFFER = 0x8D40;
+var GL_RENDERBUFFER$1 = 0x8D41;
+
+var GL_TEXTURE_2D$1 = 0x0DE1;
+var GL_TEXTURE_CUBE_MAP_POSITIVE_X$1 = 0x8515;
+
+var GL_COLOR_ATTACHMENT0 = 0x8CE0;
+var GL_DEPTH_ATTACHMENT = 0x8D00;
+var GL_STENCIL_ATTACHMENT = 0x8D20;
+var GL_DEPTH_STENCIL_ATTACHMENT = 0x821A;
+
+var GL_FRAMEBUFFER_COMPLETE = 0x8CD5;
+var GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT = 0x8CD6;
+var GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT = 0x8CD7;
+var GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS = 0x8CD9;
+var GL_FRAMEBUFFER_UNSUPPORTED = 0x8CDD;
+
+var GL_HALF_FLOAT_OES$2 = 0x8D61;
+var GL_UNSIGNED_BYTE$5 = 0x1401;
+var GL_FLOAT$4 = 0x1406;
+
+var GL_RGBA$1 = 0x1908;
+
+var GL_DEPTH_COMPONENT$1 = 0x1902;
+
+var colorTextureFormatEnums = [
+  GL_RGBA$1
+];
+
+// for every texture format, store
+// the number of channels
+var textureFormatChannels = [];
+textureFormatChannels[GL_RGBA$1] = 4;
+
+// for every texture type, store
+// the size in bytes.
+var textureTypeSizes = [];
+textureTypeSizes[GL_UNSIGNED_BYTE$5] = 1;
+textureTypeSizes[GL_FLOAT$4] = 4;
+textureTypeSizes[GL_HALF_FLOAT_OES$2] = 2;
+
+var GL_RGBA4$2 = 0x8056;
+var GL_RGB5_A1$2 = 0x8057;
+var GL_RGB565$2 = 0x8D62;
+var GL_DEPTH_COMPONENT16$1 = 0x81A5;
+var GL_STENCIL_INDEX8$1 = 0x8D48;
+var GL_DEPTH_STENCIL$2 = 0x84F9;
+
+var GL_SRGB8_ALPHA8_EXT$1 = 0x8C43;
+
+var GL_RGBA32F_EXT$1 = 0x8814;
+
+var GL_RGBA16F_EXT$1 = 0x881A;
+var GL_RGB16F_EXT$1 = 0x881B;
+
+var colorRenderbufferFormatEnums = [
+  GL_RGBA4$2,
+  GL_RGB5_A1$2,
+  GL_RGB565$2,
+  GL_SRGB8_ALPHA8_EXT$1,
+  GL_RGBA16F_EXT$1,
+  GL_RGB16F_EXT$1,
+  GL_RGBA32F_EXT$1
+];
+
+var statusCode = {};
+statusCode[GL_FRAMEBUFFER_COMPLETE] = 'complete';
+statusCode[GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT] = 'incomplete attachment';
+statusCode[GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS] = 'incomplete dimensions';
+statusCode[GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT] = 'incomplete, missing attachment';
+statusCode[GL_FRAMEBUFFER_UNSUPPORTED] = 'unsupported';
+
+function wrapFBOState (
+  gl,
+  extensions,
+  limits,
+  textureState,
+  renderbufferState,
+  stats) {
+  var framebufferState = {
+    cur: null,
+    next: null,
+    dirty: false,
+    setFBO: null
+  };
+
+  var colorTextureFormats = ['rgba'];
+  var colorRenderbufferFormats = ['rgba4', 'rgb565', 'rgb5 a1'];
+
+  if (extensions.ext_srgb) {
+    colorRenderbufferFormats.push('srgba');
+  }
+
+  if (extensions.ext_color_buffer_half_float) {
+    colorRenderbufferFormats.push('rgba16f', 'rgb16f');
+  }
+
+  if (extensions.webgl_color_buffer_float) {
+    colorRenderbufferFormats.push('rgba32f');
+  }
+
+  var colorTypes = ['uint8'];
+  if (extensions.oes_texture_half_float) {
+    colorTypes.push('half float', 'float16');
+  }
+  if (extensions.oes_texture_float) {
+    colorTypes.push('float', 'float32');
+  }
+
+  function FramebufferAttachment (target, texture, renderbuffer) {
+    this.target = target;
+    this.texture = texture;
+    this.renderbuffer = renderbuffer;
+
+    var w = 0;
+    var h = 0;
+    if (texture) {
+      w = texture.width;
+      h = texture.height;
+    } else if (renderbuffer) {
+      w = renderbuffer.width;
+      h = renderbuffer.height;
+    }
+    this.width = w;
+    this.height = h;
+  }
+
+  function decRef (attachment) {
+    if (attachment) {
+      if (attachment.texture) {
+        attachment.texture._texture.decRef();
+      }
+      if (attachment.renderbuffer) {
+        attachment.renderbuffer._renderbuffer.decRef();
+      }
+    }
+  }
+
+  function incRefAndCheckShape (attachment, width, height) {
+    if (!attachment) {
+      return
+    }
+    if (attachment.texture) {
+      var texture = attachment.texture._texture;
+      var tw = Math.max(1, texture.width);
+      var th = Math.max(1, texture.height);
+      check$1(tw === width && th === height,
+        'inconsistent width/height for supplied texture');
+      texture.refCount += 1;
+    } else {
+      var renderbuffer = attachment.renderbuffer._renderbuffer;
+      check$1(
+        renderbuffer.width === width && renderbuffer.height === height,
+        'inconsistent width/height for renderbuffer');
+      renderbuffer.refCount += 1;
+    }
+  }
+
+  function attach (location, attachment) {
+    if (attachment) {
+      if (attachment.texture) {
+        gl.framebufferTexture2D(
+          GL_FRAMEBUFFER,
+          location,
+          attachment.target,
+          attachment.texture._texture.texture,
+          0);
+      } else {
+        gl.framebufferRenderbuffer(
+          GL_FRAMEBUFFER,
+          location,
+          GL_RENDERBUFFER$1,
+          attachment.renderbuffer._renderbuffer.renderbuffer);
+      }
+    }
+  }
+
+  function parseAttachment (attachment) {
+    var target = GL_TEXTURE_2D$1;
+    var texture = null;
+    var renderbuffer = null;
+
+    var data = attachment;
+    if (typeof attachment === 'object') {
+      data = attachment.data;
+      if ('target' in attachment) {
+        target = attachment.target | 0;
+      }
+    }
+
+    check$1.type(data, 'function', 'invalid attachment data');
+
+    var type = data._reglType;
+    if (type === 'texture2d') {
+      texture = data;
+      check$1(target === GL_TEXTURE_2D$1);
+    } else if (type === 'textureCube') {
+      texture = data;
+      check$1(
+        target >= GL_TEXTURE_CUBE_MAP_POSITIVE_X$1 &&
+        target < GL_TEXTURE_CUBE_MAP_POSITIVE_X$1 + 6,
+        'invalid cube map target');
+    } else if (type === 'renderbuffer') {
+      renderbuffer = data;
+      target = GL_RENDERBUFFER$1;
+    } else {
+      check$1.raise('invalid regl object for attachment');
+    }
+
+    return new FramebufferAttachment(target, texture, renderbuffer)
+  }
+
+  function allocAttachment (
+    width,
+    height,
+    isTexture,
+    format,
+    type) {
+    if (isTexture) {
+      var texture = textureState.create2D({
+        width: width,
+        height: height,
+        format: format,
+        type: type
+      });
+      texture._texture.refCount = 0;
+      return new FramebufferAttachment(GL_TEXTURE_2D$1, texture, null)
+    } else {
+      var rb = renderbufferState.create({
+        width: width,
+        height: height,
+        format: format
+      });
+      rb._renderbuffer.refCount = 0;
+      return new FramebufferAttachment(GL_RENDERBUFFER$1, null, rb)
+    }
+  }
+
+  function unwrapAttachment (attachment) {
+    return attachment && (attachment.texture || attachment.renderbuffer)
+  }
+
+  function resizeAttachment (attachment, w, h) {
+    if (attachment) {
+      if (attachment.texture) {
+        attachment.texture.resize(w, h);
+      } else if (attachment.renderbuffer) {
+        attachment.renderbuffer.resize(w, h);
+      }
+    }
+  }
+
+  var framebufferCount = 0;
+  var framebufferSet = {};
+
+  function REGLFramebuffer () {
+    this.id = framebufferCount++;
+    framebufferSet[this.id] = this;
+
+    this.framebuffer = gl.createFramebuffer();
+    this.width = 0;
+    this.height = 0;
+
+    this.colorAttachments = [];
+    this.depthAttachment = null;
+    this.stencilAttachment = null;
+    this.depthStencilAttachment = null;
+  }
+
+  function decFBORefs (framebuffer) {
+    framebuffer.colorAttachments.forEach(decRef);
+    decRef(framebuffer.depthAttachment);
+    decRef(framebuffer.stencilAttachment);
+    decRef(framebuffer.depthStencilAttachment);
+  }
+
+  function destroy (framebuffer) {
+    var handle = framebuffer.framebuffer;
+    check$1(handle, 'must not double destroy framebuffer');
+    gl.deleteFramebuffer(handle);
+    framebuffer.framebuffer = null;
+    stats.framebufferCount--;
+    delete framebufferSet[framebuffer.id];
+  }
+
+  function updateFramebuffer (framebuffer) {
+    var i;
+
+    gl.bindFramebuffer(GL_FRAMEBUFFER, framebuffer.framebuffer);
+    var colorAttachments = framebuffer.colorAttachments;
+    for (i = 0; i < colorAttachments.length; ++i) {
+      attach(GL_COLOR_ATTACHMENT0 + i, colorAttachments[i]);
+    }
+    for (i = colorAttachments.length; i < limits.maxColorAttachments; ++i) {
+      gl.framebufferTexture2D(
+        GL_FRAMEBUFFER,
+        GL_COLOR_ATTACHMENT0 + i,
+        GL_TEXTURE_2D$1,
+        null,
+        0);
+    }
+
+    gl.framebufferTexture2D(
+      GL_FRAMEBUFFER,
+      GL_DEPTH_STENCIL_ATTACHMENT,
+      GL_TEXTURE_2D$1,
+      null,
+      0);
+    gl.framebufferTexture2D(
+      GL_FRAMEBUFFER,
+      GL_DEPTH_ATTACHMENT,
+      GL_TEXTURE_2D$1,
+      null,
+      0);
+    gl.framebufferTexture2D(
+      GL_FRAMEBUFFER,
+      GL_STENCIL_ATTACHMENT,
+      GL_TEXTURE_2D$1,
+      null,
+      0);
+
+    attach(GL_DEPTH_ATTACHMENT, framebuffer.depthAttachment);
+    attach(GL_STENCIL_ATTACHMENT, framebuffer.stencilAttachment);
+    attach(GL_DEPTH_STENCIL_ATTACHMENT, framebuffer.depthStencilAttachment);
+
+    // Check status code
+    var status = gl.checkFramebufferStatus(GL_FRAMEBUFFER);
+    if (status !== GL_FRAMEBUFFER_COMPLETE) {
+      check$1.raise('framebuffer configuration not supported, status = ' +
+        statusCode[status]);
+    }
+
+    gl.bindFramebuffer(GL_FRAMEBUFFER, framebufferState.next);
+    framebufferState.cur = framebufferState.next;
+
+    // FIXME: Clear error code here.  This is a work around for a bug in
+    // headless-gl
+    gl.getError();
+  }
+
+  function createFBO (a0, a1) {
+    var framebuffer = new REGLFramebuffer();
+    stats.framebufferCount++;
+
+    function reglFramebuffer (a, b) {
+      var i;
+
+      check$1(framebufferState.next !== framebuffer,
+        'can not update framebuffer which is currently in use');
+
+      var extDrawBuffers = extensions.webgl_draw_buffers;
+
+      var width = 0;
+      var height = 0;
+
+      var needsDepth = true;
+      var needsStencil = true;
+
+      var colorBuffer = null;
+      var colorTexture = true;
+      var colorFormat = 'rgba';
+      var colorType = 'uint8';
+      var colorCount = 1;
+
+      var depthBuffer = null;
+      var stencilBuffer = null;
+      var depthStencilBuffer = null;
+      var depthStencilTexture = false;
+
+      if (typeof a === 'number') {
+        width = a | 0;
+        height = (b | 0) || width;
+      } else if (!a) {
+        width = height = 1;
+      } else {
+        check$1.type(a, 'object', 'invalid arguments for framebuffer');
+        var options = a;
+
+        if ('shape' in options) {
+          var shape = options.shape;
+          check$1(Array.isArray(shape) && shape.length >= 2,
+            'invalid shape for framebuffer');
+          width = shape[0];
+          height = shape[1];
+        } else {
+          if ('radius' in options) {
+            width = height = options.radius;
+          }
+          if ('width' in options) {
+            width = options.width;
+          }
+          if ('height' in options) {
+            height = options.height;
+          }
+        }
+
+        if ('color' in options ||
+            'colors' in options) {
+          colorBuffer =
+            options.color ||
+            options.colors;
+          if (Array.isArray(colorBuffer)) {
+            check$1(
+              colorBuffer.length === 1 || extDrawBuffers,
+              'multiple render targets not supported');
+          }
+        }
+
+        if (!colorBuffer) {
+          if ('colorCount' in options) {
+            colorCount = options.colorCount | 0;
+            check$1(colorCount > 0, 'invalid color buffer count');
+          }
+
+          if ('colorTexture' in options) {
+            colorTexture = !!options.colorTexture;
+            colorFormat = 'rgba4';
+          }
+
+          if ('colorType' in options) {
+            colorType = options.colorType;
+            if (!colorTexture) {
+              if (colorType === 'half float' || colorType === 'float16') {
+                check$1(extensions.ext_color_buffer_half_float,
+                  'you must enable EXT_color_buffer_half_float to use 16-bit render buffers');
+                colorFormat = 'rgba16f';
+              } else if (colorType === 'float' || colorType === 'float32') {
+                check$1(extensions.webgl_color_buffer_float,
+                  'you must enable WEBGL_color_buffer_float in order to use 32-bit floating point renderbuffers');
+                colorFormat = 'rgba32f';
+              }
+            } else {
+              check$1(extensions.oes_texture_float ||
+                !(colorType === 'float' || colorType === 'float32'),
+                'you must enable OES_texture_float in order to use floating point framebuffer objects');
+              check$1(extensions.oes_texture_half_float ||
+                !(colorType === 'half float' || colorType === 'float16'),
+                'you must enable OES_texture_half_float in order to use 16-bit floating point framebuffer objects');
+            }
+            check$1.oneOf(colorType, colorTypes, 'invalid color type');
+          }
+
+          if ('colorFormat' in options) {
+            colorFormat = options.colorFormat;
+            if (colorTextureFormats.indexOf(colorFormat) >= 0) {
+              colorTexture = true;
+            } else if (colorRenderbufferFormats.indexOf(colorFormat) >= 0) {
+              colorTexture = false;
+            } else {
+              if (colorTexture) {
+                check$1.oneOf(
+                  options.colorFormat, colorTextureFormats,
+                  'invalid color format for texture');
+              } else {
+                check$1.oneOf(
+                  options.colorFormat, colorRenderbufferFormats,
+                  'invalid color format for renderbuffer');
+              }
+            }
+          }
+        }
+
+        if ('depthTexture' in options || 'depthStencilTexture' in options) {
+          depthStencilTexture = !!(options.depthTexture ||
+            options.depthStencilTexture);
+          check$1(!depthStencilTexture || extensions.webgl_depth_texture,
+            'webgl_depth_texture extension not supported');
+        }
+
+        if ('depth' in options) {
+          if (typeof options.depth === 'boolean') {
+            needsDepth = options.depth;
+          } else {
+            depthBuffer = options.depth;
+            needsStencil = false;
+          }
+        }
+
+        if ('stencil' in options) {
+          if (typeof options.stencil === 'boolean') {
+            needsStencil = options.stencil;
+          } else {
+            stencilBuffer = options.stencil;
+            needsDepth = false;
+          }
+        }
+
+        if ('depthStencil' in options) {
+          if (typeof options.depthStencil === 'boolean') {
+            needsDepth = needsStencil = options.depthStencil;
+          } else {
+            depthStencilBuffer = options.depthStencil;
+            needsDepth = false;
+            needsStencil = false;
+          }
+        }
+      }
+
+      // parse attachments
+      var colorAttachments = null;
+      var depthAttachment = null;
+      var stencilAttachment = null;
+      var depthStencilAttachment = null;
+
+      // Set up color attachments
+      if (Array.isArray(colorBuffer)) {
+        colorAttachments = colorBuffer.map(parseAttachment);
+      } else if (colorBuffer) {
+        colorAttachments = [parseAttachment(colorBuffer)];
+      } else {
+        colorAttachments = new Array(colorCount);
+        for (i = 0; i < colorCount; ++i) {
+          colorAttachments[i] = allocAttachment(
+            width,
+            height,
+            colorTexture,
+            colorFormat,
+            colorType);
+        }
+      }
+
+      check$1(extensions.webgl_draw_buffers || colorAttachments.length <= 1,
+        'you must enable the WEBGL_draw_buffers extension in order to use multiple color buffers.');
+      check$1(colorAttachments.length <= limits.maxColorAttachments,
+        'too many color attachments, not supported');
+
+      width = width || colorAttachments[0].width;
+      height = height || colorAttachments[0].height;
+
+      if (depthBuffer) {
+        depthAttachment = parseAttachment(depthBuffer);
+      } else if (needsDepth && !needsStencil) {
+        depthAttachment = allocAttachment(
+          width,
+          height,
+          depthStencilTexture,
+          'depth',
+          'uint32');
+      }
+
+      if (stencilBuffer) {
+        stencilAttachment = parseAttachment(stencilBuffer);
+      } else if (needsStencil && !needsDepth) {
+        stencilAttachment = allocAttachment(
+          width,
+          height,
+          false,
+          'stencil',
+          'uint8');
+      }
+
+      if (depthStencilBuffer) {
+        depthStencilAttachment = parseAttachment(depthStencilBuffer);
+      } else if (!depthBuffer && !stencilBuffer && needsStencil && needsDepth) {
+        depthStencilAttachment = allocAttachment(
+          width,
+          height,
+          depthStencilTexture,
+          'depth stencil',
+          'depth stencil');
+      }
+
+      check$1(
+        (!!depthBuffer) + (!!stencilBuffer) + (!!depthStencilBuffer) <= 1,
+        'invalid framebuffer configuration, can specify exactly one depth/stencil attachment');
+
+      var commonColorAttachmentSize = null;
+
+      for (i = 0; i < colorAttachments.length; ++i) {
+        incRefAndCheckShape(colorAttachments[i], width, height);
+        check$1(!colorAttachments[i] ||
+          (colorAttachments[i].texture &&
+            colorTextureFormatEnums.indexOf(colorAttachments[i].texture._texture.format) >= 0) ||
+          (colorAttachments[i].renderbuffer &&
+            colorRenderbufferFormatEnums.indexOf(colorAttachments[i].renderbuffer._renderbuffer.format) >= 0),
+          'framebuffer color attachment ' + i + ' is invalid');
+
+        if (colorAttachments[i] && colorAttachments[i].texture) {
+          var colorAttachmentSize =
+              textureFormatChannels[colorAttachments[i].texture._texture.format] *
+              textureTypeSizes[colorAttachments[i].texture._texture.type];
+
+          if (commonColorAttachmentSize === null) {
+            commonColorAttachmentSize = colorAttachmentSize;
+          } else {
+            // We need to make sure that all color attachments have the same number of bitplanes
+            // (that is, the same numer of bits per pixel)
+            // This is required by the GLES2.0 standard. See the beginning of Chapter 4 in that document.
+            check$1(commonColorAttachmentSize === colorAttachmentSize,
+                  'all color attachments much have the same number of bits per pixel.');
+          }
+        }
+      }
+      incRefAndCheckShape(depthAttachment, width, height);
+      check$1(!depthAttachment ||
+        (depthAttachment.texture &&
+          depthAttachment.texture._texture.format === GL_DEPTH_COMPONENT$1) ||
+        (depthAttachment.renderbuffer &&
+          depthAttachment.renderbuffer._renderbuffer.format === GL_DEPTH_COMPONENT16$1),
+        'invalid depth attachment for framebuffer object');
+      incRefAndCheckShape(stencilAttachment, width, height);
+      check$1(!stencilAttachment ||
+        (stencilAttachment.renderbuffer &&
+          stencilAttachment.renderbuffer._renderbuffer.format === GL_STENCIL_INDEX8$1),
+        'invalid stencil attachment for framebuffer object');
+      incRefAndCheckShape(depthStencilAttachment, width, height);
+      check$1(!depthStencilAttachment ||
+        (depthStencilAttachment.texture &&
+          depthStencilAttachment.texture._texture.format === GL_DEPTH_STENCIL$2) ||
+        (depthStencilAttachment.renderbuffer &&
+          depthStencilAttachment.renderbuffer._renderbuffer.format === GL_DEPTH_STENCIL$2),
+        'invalid depth-stencil attachment for framebuffer object');
+
+      // decrement references
+      decFBORefs(framebuffer);
+
+      framebuffer.width = width;
+      framebuffer.height = height;
+
+      framebuffer.colorAttachments = colorAttachments;
+      framebuffer.depthAttachment = depthAttachment;
+      framebuffer.stencilAttachment = stencilAttachment;
+      framebuffer.depthStencilAttachment = depthStencilAttachment;
+
+      reglFramebuffer.color = colorAttachments.map(unwrapAttachment);
+      reglFramebuffer.depth = unwrapAttachment(depthAttachment);
+      reglFramebuffer.stencil = unwrapAttachment(stencilAttachment);
+      reglFramebuffer.depthStencil = unwrapAttachment(depthStencilAttachment);
+
+      reglFramebuffer.width = framebuffer.width;
+      reglFramebuffer.height = framebuffer.height;
+
+      updateFramebuffer(framebuffer);
+
+      return reglFramebuffer
+    }
+
+    function resize (w_, h_) {
+      check$1(framebufferState.next !== framebuffer,
+        'can not resize a framebuffer which is currently in use');
+
+      var w = w_ | 0;
+      var h = (h_ | 0) || w;
+      if (w === framebuffer.width && h === framebuffer.height) {
+        return reglFramebuffer
+      }
+
+      // resize all buffers
+      var colorAttachments = framebuffer.colorAttachments;
+      for (var i = 0; i < colorAttachments.length; ++i) {
+        resizeAttachment(colorAttachments[i], w, h);
+      }
+      resizeAttachment(framebuffer.depthAttachment, w, h);
+      resizeAttachment(framebuffer.stencilAttachment, w, h);
+      resizeAttachment(framebuffer.depthStencilAttachment, w, h);
+
+      framebuffer.width = reglFramebuffer.width = w;
+      framebuffer.height = reglFramebuffer.height = h;
+
+      updateFramebuffer(framebuffer);
+
+      return reglFramebuffer
+    }
+
+    reglFramebuffer(a0, a1);
+
+    return extend(reglFramebuffer, {
+      resize: resize,
+      _reglType: 'framebuffer',
+      _framebuffer: framebuffer,
+      destroy: function () {
+        destroy(framebuffer);
+        decFBORefs(framebuffer);
+      },
+      use: function (block) {
+        framebufferState.setFBO({
+          framebuffer: reglFramebuffer
+        }, block);
+      }
+    })
+  }
+
+  function createCubeFBO (options) {
+    var faces = Array(6);
+
+    function reglFramebufferCube (a) {
+      var i;
+
+      check$1(faces.indexOf(framebufferState.next) < 0,
+        'can not update framebuffer which is currently in use');
+
+      var extDrawBuffers = extensions.webgl_draw_buffers;
+
+      var params = {
+        color: null
+      };
+
+      var radius = 0;
+
+      var colorBuffer = null;
+      var colorFormat = 'rgba';
+      var colorType = 'uint8';
+      var colorCount = 1;
+
+      if (typeof a === 'number') {
+        radius = a | 0;
+      } else if (!a) {
+        radius = 1;
+      } else {
+        check$1.type(a, 'object', 'invalid arguments for framebuffer');
+        var options = a;
+
+        if ('shape' in options) {
+          var shape = options.shape;
+          check$1(
+            Array.isArray(shape) && shape.length >= 2,
+            'invalid shape for framebuffer');
+          check$1(
+            shape[0] === shape[1],
+            'cube framebuffer must be square');
+          radius = shape[0];
+        } else {
+          if ('radius' in options) {
+            radius = options.radius | 0;
+          }
+          if ('width' in options) {
+            radius = options.width | 0;
+            if ('height' in options) {
+              check$1(options.height === radius, 'must be square');
+            }
+          } else if ('height' in options) {
+            radius = options.height | 0;
+          }
+        }
+
+        if ('color' in options ||
+            'colors' in options) {
+          colorBuffer =
+            options.color ||
+            options.colors;
+          if (Array.isArray(colorBuffer)) {
+            check$1(
+              colorBuffer.length === 1 || extDrawBuffers,
+              'multiple render targets not supported');
+          }
+        }
+
+        if (!colorBuffer) {
+          if ('colorCount' in options) {
+            colorCount = options.colorCount | 0;
+            check$1(colorCount > 0, 'invalid color buffer count');
+          }
+
+          if ('colorType' in options) {
+            check$1.oneOf(
+              options.colorType, colorTypes,
+              'invalid color type');
+            colorType = options.colorType;
+          }
+
+          if ('colorFormat' in options) {
+            colorFormat = options.colorFormat;
+            check$1.oneOf(
+              options.colorFormat, colorTextureFormats,
+              'invalid color format for texture');
+          }
+        }
+
+        if ('depth' in options) {
+          params.depth = options.depth;
+        }
+
+        if ('stencil' in options) {
+          params.stencil = options.stencil;
+        }
+
+        if ('depthStencil' in options) {
+          params.depthStencil = options.depthStencil;
+        }
+      }
+
+      var colorCubes;
+      if (colorBuffer) {
+        if (Array.isArray(colorBuffer)) {
+          colorCubes = [];
+          for (i = 0; i < colorBuffer.length; ++i) {
+            colorCubes[i] = colorBuffer[i];
+          }
+        } else {
+          colorCubes = [ colorBuffer ];
+        }
+      } else {
+        colorCubes = Array(colorCount);
+        var cubeMapParams = {
+          radius: radius,
+          format: colorFormat,
+          type: colorType
+        };
+        for (i = 0; i < colorCount; ++i) {
+          colorCubes[i] = textureState.createCube(cubeMapParams);
+        }
+      }
+
+      // Check color cubes
+      params.color = Array(colorCubes.length);
+      for (i = 0; i < colorCubes.length; ++i) {
+        var cube = colorCubes[i];
+        check$1(
+          typeof cube === 'function' && cube._reglType === 'textureCube',
+          'invalid cube map');
+        radius = radius || cube.width;
+        check$1(
+          cube.width === radius && cube.height === radius,
+          'invalid cube map shape');
+        params.color[i] = {
+          target: GL_TEXTURE_CUBE_MAP_POSITIVE_X$1,
+          data: colorCubes[i]
+        };
+      }
+
+      for (i = 0; i < 6; ++i) {
+        for (var j = 0; j < colorCubes.length; ++j) {
+          params.color[j].target = GL_TEXTURE_CUBE_MAP_POSITIVE_X$1 + i;
+        }
+        // reuse depth-stencil attachments across all cube maps
+        if (i > 0) {
+          params.depth = faces[0].depth;
+          params.stencil = faces[0].stencil;
+          params.depthStencil = faces[0].depthStencil;
+        }
+        if (faces[i]) {
+          (faces[i])(params);
+        } else {
+          faces[i] = createFBO(params);
+        }
+      }
+
+      return extend(reglFramebufferCube, {
+        width: radius,
+        height: radius,
+        color: colorCubes
+      })
+    }
+
+    function resize (radius_) {
+      var i;
+      var radius = radius_ | 0;
+      check$1(radius > 0 && radius <= limits.maxCubeMapSize,
+        'invalid radius for cube fbo');
+
+      if (radius === reglFramebufferCube.width) {
+        return reglFramebufferCube
+      }
+
+      var colors = reglFramebufferCube.color;
+      for (i = 0; i < colors.length; ++i) {
+        colors[i].resize(radius);
+      }
+
+      for (i = 0; i < 6; ++i) {
+        faces[i].resize(radius);
+      }
+
+      reglFramebufferCube.width = reglFramebufferCube.height = radius;
+
+      return reglFramebufferCube
+    }
+
+    reglFramebufferCube(options);
+
+    return extend(reglFramebufferCube, {
+      faces: faces,
+      resize: resize,
+      _reglType: 'framebufferCube',
+      destroy: function () {
+        faces.forEach(function (f) {
+          f.destroy();
+        });
+      }
+    })
+  }
+
+  function restoreFramebuffers () {
+    values(framebufferSet).forEach(function (fb) {
+      fb.framebuffer = gl.createFramebuffer();
+      updateFramebuffer(fb);
+    });
+  }
+
+  return extend(framebufferState, {
+    getFramebuffer: function (object) {
+      if (typeof object === 'function' && object._reglType === 'framebuffer') {
+        var fbo = object._framebuffer;
+        if (fbo instanceof REGLFramebuffer) {
+          return fbo
+        }
+      }
+      return null
+    },
+    create: createFBO,
+    createCube: createCubeFBO,
+    clear: function () {
+      values(framebufferSet).forEach(destroy);
+    },
+    restore: restoreFramebuffers
+  })
+}
+
+var GL_FLOAT$5 = 5126;
+
+function AttributeRecord () {
+  this.state = 0;
+
+  this.x = 0.0;
+  this.y = 0.0;
+  this.z = 0.0;
+  this.w = 0.0;
+
+  this.buffer = null;
+  this.size = 0;
+  this.normalized = false;
+  this.type = GL_FLOAT$5;
+  this.offset = 0;
+  this.stride = 0;
+  this.divisor = 0;
+}
+
+function wrapAttributeState (
+  gl,
+  extensions,
+  limits,
+  bufferState,
+  stringStore) {
+  var NUM_ATTRIBUTES = limits.maxAttributes;
+  var attributeBindings = new Array(NUM_ATTRIBUTES);
+  for (var i = 0; i < NUM_ATTRIBUTES; ++i) {
+    attributeBindings[i] = new AttributeRecord();
+  }
+
+  return {
+    Record: AttributeRecord,
+    scope: {},
+    state: attributeBindings
+  }
+}
+
+var GL_FRAGMENT_SHADER = 35632;
+var GL_VERTEX_SHADER = 35633;
+
+var GL_ACTIVE_UNIFORMS = 0x8B86;
+var GL_ACTIVE_ATTRIBUTES = 0x8B89;
+
+function wrapShaderState (gl, stringStore, stats, config) {
+  // ===================================================
+  // glsl compilation and linking
+  // ===================================================
+  var fragShaders = {};
+  var vertShaders = {};
+
+  function ActiveInfo (name, id, location, info) {
+    this.name = name;
+    this.id = id;
+    this.location = location;
+    this.info = info;
+  }
+
+  function insertActiveInfo (list, info) {
+    for (var i = 0; i < list.length; ++i) {
+      if (list[i].id === info.id) {
+        list[i].location = info.location;
+        return
+      }
+    }
+    list.push(info);
+  }
+
+  function getShader (type, id, command) {
+    var cache = type === GL_FRAGMENT_SHADER ? fragShaders : vertShaders;
+    var shader = cache[id];
+
+    if (!shader) {
+      var source = stringStore.str(id);
+      shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      check$1.shaderError(gl, shader, source, type, command);
+      cache[id] = shader;
+    }
+
+    return shader
+  }
+
+  // ===================================================
+  // program linking
+  // ===================================================
+  var programCache = {};
+  var programList = [];
+
+  var PROGRAM_COUNTER = 0;
+
+  function REGLProgram (fragId, vertId) {
+    this.id = PROGRAM_COUNTER++;
+    this.fragId = fragId;
+    this.vertId = vertId;
+    this.program = null;
+    this.uniforms = [];
+    this.attributes = [];
+
+    if (config.profile) {
+      this.stats = {
+        uniformsCount: 0,
+        attributesCount: 0
+      };
+    }
+  }
+
+  function linkProgram (desc, command) {
+    var i, info;
+
+    // -------------------------------
+    // compile & link
+    // -------------------------------
+    var fragShader = getShader(GL_FRAGMENT_SHADER, desc.fragId);
+    var vertShader = getShader(GL_VERTEX_SHADER, desc.vertId);
+
+    var program = desc.program = gl.createProgram();
+    gl.attachShader(program, fragShader);
+    gl.attachShader(program, vertShader);
+    gl.linkProgram(program);
+    check$1.linkError(
+      gl,
+      program,
+      stringStore.str(desc.fragId),
+      stringStore.str(desc.vertId),
+      command);
+
+    // -------------------------------
+    // grab uniforms
+    // -------------------------------
+    var numUniforms = gl.getProgramParameter(program, GL_ACTIVE_UNIFORMS);
+    if (config.profile) {
+      desc.stats.uniformsCount = numUniforms;
+    }
+    var uniforms = desc.uniforms;
+    for (i = 0; i < numUniforms; ++i) {
+      info = gl.getActiveUniform(program, i);
+      if (info) {
+        if (info.size > 1) {
+          for (var j = 0; j < info.size; ++j) {
+            var name = info.name.replace('[0]', '[' + j + ']');
+            insertActiveInfo(uniforms, new ActiveInfo(
+              name,
+              stringStore.id(name),
+              gl.getUniformLocation(program, name),
+              info));
+          }
+        } else {
+          insertActiveInfo(uniforms, new ActiveInfo(
+            info.name,
+            stringStore.id(info.name),
+            gl.getUniformLocation(program, info.name),
+            info));
+        }
+      }
+    }
+
+    // -------------------------------
+    // grab attributes
+    // -------------------------------
+    var numAttributes = gl.getProgramParameter(program, GL_ACTIVE_ATTRIBUTES);
+    if (config.profile) {
+      desc.stats.attributesCount = numAttributes;
+    }
+
+    var attributes = desc.attributes;
+    for (i = 0; i < numAttributes; ++i) {
+      info = gl.getActiveAttrib(program, i);
+      if (info) {
+        insertActiveInfo(attributes, new ActiveInfo(
+          info.name,
+          stringStore.id(info.name),
+          gl.getAttribLocation(program, info.name),
+          info));
+      }
+    }
+  }
+
+  if (config.profile) {
+    stats.getMaxUniformsCount = function () {
+      var m = 0;
+      programList.forEach(function (desc) {
+        if (desc.stats.uniformsCount > m) {
+          m = desc.stats.uniformsCount;
+        }
+      });
+      return m
+    };
+
+    stats.getMaxAttributesCount = function () {
+      var m = 0;
+      programList.forEach(function (desc) {
+        if (desc.stats.attributesCount > m) {
+          m = desc.stats.attributesCount;
+        }
+      });
+      return m
+    };
+  }
+
+  function restoreShaders () {
+    fragShaders = {};
+    vertShaders = {};
+    for (var i = 0; i < programList.length; ++i) {
+      linkProgram(programList[i]);
+    }
+  }
+
+  return {
+    clear: function () {
+      var deleteShader = gl.deleteShader.bind(gl);
+      values(fragShaders).forEach(deleteShader);
+      fragShaders = {};
+      values(vertShaders).forEach(deleteShader);
+      vertShaders = {};
+
+      programList.forEach(function (desc) {
+        gl.deleteProgram(desc.program);
+      });
+      programList.length = 0;
+      programCache = {};
+
+      stats.shaderCount = 0;
+    },
+
+    program: function (vertId, fragId, command) {
+      check$1.command(vertId >= 0, 'missing vertex shader', command);
+      check$1.command(fragId >= 0, 'missing fragment shader', command);
+
+      var cache = programCache[fragId];
+      if (!cache) {
+        cache = programCache[fragId] = {};
+      }
+      var program = cache[vertId];
+      if (!program) {
+        program = new REGLProgram(fragId, vertId);
+        stats.shaderCount++;
+
+        linkProgram(program, command);
+        cache[vertId] = program;
+        programList.push(program);
+      }
+      return program
+    },
+
+    restore: restoreShaders,
+
+    shader: getShader,
+
+    frag: -1,
+    vert: -1
+  }
+}
+
+var GL_RGBA$2 = 6408;
+var GL_UNSIGNED_BYTE$6 = 5121;
+var GL_PACK_ALIGNMENT = 0x0D05;
+var GL_FLOAT$6 = 0x1406; // 5126
+
+function wrapReadPixels (
+  gl,
+  framebufferState,
+  reglPoll,
+  context,
+  glAttributes,
+  extensions) {
+  function readPixelsImpl (input) {
+    var type;
+    if (framebufferState.next === null) {
+      check$1(
+        glAttributes.preserveDrawingBuffer,
+        'you must create a webgl context with "preserveDrawingBuffer":true in order to read pixels from the drawing buffer');
+      type = GL_UNSIGNED_BYTE$6;
+    } else {
+      check$1(
+        framebufferState.next.colorAttachments[0].texture !== null,
+          'You cannot read from a renderbuffer');
+      type = framebufferState.next.colorAttachments[0].texture._texture.type;
+
+      if (extensions.oes_texture_float) {
+        check$1(
+          type === GL_UNSIGNED_BYTE$6 || type === GL_FLOAT$6,
+          'Reading from a framebuffer is only allowed for the types \'uint8\' and \'float\'');
+      } else {
+        check$1(
+          type === GL_UNSIGNED_BYTE$6,
+          'Reading from a framebuffer is only allowed for the type \'uint8\'');
+      }
+    }
+
+    var x = 0;
+    var y = 0;
+    var width = context.framebufferWidth;
+    var height = context.framebufferHeight;
+    var data = null;
+
+    if (isTypedArray(input)) {
+      data = input;
+    } else if (input) {
+      check$1.type(input, 'object', 'invalid arguments to regl.read()');
+      x = input.x | 0;
+      y = input.y | 0;
+      check$1(
+        x >= 0 && x < context.framebufferWidth,
+        'invalid x offset for regl.read');
+      check$1(
+        y >= 0 && y < context.framebufferHeight,
+        'invalid y offset for regl.read');
+      width = (input.width || (context.framebufferWidth - x)) | 0;
+      height = (input.height || (context.framebufferHeight - y)) | 0;
+      data = input.data || null;
+    }
+
+    // sanity check input.data
+    if (data) {
+      if (type === GL_UNSIGNED_BYTE$6) {
+        check$1(
+          data instanceof Uint8Array,
+          'buffer must be \'Uint8Array\' when reading from a framebuffer of type \'uint8\'');
+      } else if (type === GL_FLOAT$6) {
+        check$1(
+          data instanceof Float32Array,
+          'buffer must be \'Float32Array\' when reading from a framebuffer of type \'float\'');
+      }
+    }
+
+    check$1(
+      width > 0 && width + x <= context.framebufferWidth,
+      'invalid width for read pixels');
+    check$1(
+      height > 0 && height + y <= context.framebufferHeight,
+      'invalid height for read pixels');
+
+    // Update WebGL state
+    reglPoll();
+
+    // Compute size
+    var size = width * height * 4;
+
+    // Allocate data
+    if (!data) {
+      if (type === GL_UNSIGNED_BYTE$6) {
+        data = new Uint8Array(size);
+      } else if (type === GL_FLOAT$6) {
+        data = data || new Float32Array(size);
+      }
+    }
+
+    // Type check
+    check$1.isTypedArray(data, 'data buffer for regl.read() must be a typedarray');
+    check$1(data.byteLength >= size, 'data buffer for regl.read() too small');
+
+    // Run read pixels
+    gl.pixelStorei(GL_PACK_ALIGNMENT, 4);
+    gl.readPixels(x, y, width, height, GL_RGBA$2,
+                  type,
+                  data);
+
+    return data
+  }
+
+  function readPixelsFBO (options) {
+    var result;
+    framebufferState.setFBO({
+      framebuffer: options.framebuffer
+    }, function () {
+      result = readPixelsImpl(options);
+    });
+    return result
+  }
+
+  function readPixels (options) {
+    if (!options || !('framebuffer' in options)) {
+      return readPixelsImpl(options)
+    } else {
+      return readPixelsFBO(options)
+    }
+  }
+
+  return readPixels
+}
+
+function slice (x) {
+  return Array.prototype.slice.call(x)
+}
+
+function join (x) {
+  return slice(x).join('')
+}
+
+function createEnvironment () {
+  // Unique variable id counter
+  var varCounter = 0;
+
+  // Linked values are passed from this scope into the generated code block
+  // Calling link() passes a value into the generated scope and returns
+  // the variable name which it is bound to
+  var linkedNames = [];
+  var linkedValues = [];
+  function link (value) {
+    for (var i = 0; i < linkedValues.length; ++i) {
+      if (linkedValues[i] === value) {
+        return linkedNames[i]
+      }
+    }
+
+    var name = 'g' + (varCounter++);
+    linkedNames.push(name);
+    linkedValues.push(value);
+    return name
+  }
+
+  // create a code block
+  function block () {
+    var code = [];
+    function push () {
+      code.push.apply(code, slice(arguments));
+    }
+
+    var vars = [];
+    function def () {
+      var name = 'v' + (varCounter++);
+      vars.push(name);
+
+      if (arguments.length > 0) {
+        code.push(name, '=');
+        code.push.apply(code, slice(arguments));
+        code.push(';');
+      }
+
+      return name
+    }
+
+    return extend(push, {
+      def: def,
+      toString: function () {
+        return join([
+          (vars.length > 0 ? 'var ' + vars + ';' : ''),
+          join(code)
+        ])
+      }
+    })
+  }
+
+  function scope () {
+    var entry = block();
+    var exit = block();
+
+    var entryToString = entry.toString;
+    var exitToString = exit.toString;
+
+    function save (object, prop) {
+      exit(object, prop, '=', entry.def(object, prop), ';');
+    }
+
+    return extend(function () {
+      entry.apply(entry, slice(arguments));
+    }, {
+      def: entry.def,
+      entry: entry,
+      exit: exit,
+      save: save,
+      set: function (object, prop, value) {
+        save(object, prop);
+        entry(object, prop, '=', value, ';');
+      },
+      toString: function () {
+        return entryToString() + exitToString()
+      }
+    })
+  }
+
+  function conditional () {
+    var pred = join(arguments);
+    var thenBlock = scope();
+    var elseBlock = scope();
+
+    var thenToString = thenBlock.toString;
+    var elseToString = elseBlock.toString;
+
+    return extend(thenBlock, {
+      then: function () {
+        thenBlock.apply(thenBlock, slice(arguments));
+        return this
+      },
+      else: function () {
+        elseBlock.apply(elseBlock, slice(arguments));
+        return this
+      },
+      toString: function () {
+        var elseClause = elseToString();
+        if (elseClause) {
+          elseClause = 'else{' + elseClause + '}';
+        }
+        return join([
+          'if(', pred, '){',
+          thenToString(),
+          '}', elseClause
+        ])
+      }
+    })
+  }
+
+  // procedure list
+  var globalBlock = block();
+  var procedures = {};
+  function proc (name, count) {
+    var args = [];
+    function arg () {
+      var name = 'a' + args.length;
+      args.push(name);
+      return name
+    }
+
+    count = count || 0;
+    for (var i = 0; i < count; ++i) {
+      arg();
+    }
+
+    var body = scope();
+    var bodyToString = body.toString;
+
+    var result = procedures[name] = extend(body, {
+      arg: arg,
+      toString: function () {
+        return join([
+          'function(', args.join(), '){',
+          bodyToString(),
+          '}'
+        ])
+      }
+    });
+
+    return result
+  }
+
+  function compile () {
+    var code = ['"use strict";',
+      globalBlock,
+      'return {'];
+    Object.keys(procedures).forEach(function (name) {
+      code.push('"', name, '":', procedures[name].toString(), ',');
+    });
+    code.push('}');
+    var src = join(code)
+      .replace(/;/g, ';\n')
+      .replace(/}/g, '}\n')
+      .replace(/{/g, '{\n');
+    var proc = Function.apply(null, linkedNames.concat(src));
+    return proc.apply(null, linkedValues)
+  }
+
+  return {
+    global: globalBlock,
+    link: link,
+    block: block,
+    proc: proc,
+    scope: scope,
+    cond: conditional,
+    compile: compile
+  }
+}
+
+// "cute" names for vector components
+var CUTE_COMPONENTS = 'xyzw'.split('');
+
+var GL_UNSIGNED_BYTE$7 = 5121;
+
+var ATTRIB_STATE_POINTER = 1;
+var ATTRIB_STATE_CONSTANT = 2;
+
+var DYN_FUNC$1 = 0;
+var DYN_PROP$1 = 1;
+var DYN_CONTEXT$1 = 2;
+var DYN_STATE$1 = 3;
+var DYN_THUNK = 4;
+
+var S_DITHER = 'dither';
+var S_BLEND_ENABLE = 'blend.enable';
+var S_BLEND_COLOR = 'blend.color';
+var S_BLEND_EQUATION = 'blend.equation';
+var S_BLEND_FUNC = 'blend.func';
+var S_DEPTH_ENABLE = 'depth.enable';
+var S_DEPTH_FUNC = 'depth.func';
+var S_DEPTH_RANGE = 'depth.range';
+var S_DEPTH_MASK = 'depth.mask';
+var S_COLOR_MASK = 'colorMask';
+var S_CULL_ENABLE = 'cull.enable';
+var S_CULL_FACE = 'cull.face';
+var S_FRONT_FACE = 'frontFace';
+var S_LINE_WIDTH = 'lineWidth';
+var S_POLYGON_OFFSET_ENABLE = 'polygonOffset.enable';
+var S_POLYGON_OFFSET_OFFSET = 'polygonOffset.offset';
+var S_SAMPLE_ALPHA = 'sample.alpha';
+var S_SAMPLE_ENABLE = 'sample.enable';
+var S_SAMPLE_COVERAGE = 'sample.coverage';
+var S_STENCIL_ENABLE = 'stencil.enable';
+var S_STENCIL_MASK = 'stencil.mask';
+var S_STENCIL_FUNC = 'stencil.func';
+var S_STENCIL_OPFRONT = 'stencil.opFront';
+var S_STENCIL_OPBACK = 'stencil.opBack';
+var S_SCISSOR_ENABLE = 'scissor.enable';
+var S_SCISSOR_BOX = 'scissor.box';
+var S_VIEWPORT = 'viewport';
+
+var S_PROFILE = 'profile';
+
+var S_FRAMEBUFFER = 'framebuffer';
+var S_VERT = 'vert';
+var S_FRAG = 'frag';
+var S_ELEMENTS = 'elements';
+var S_PRIMITIVE = 'primitive';
+var S_COUNT = 'count';
+var S_OFFSET = 'offset';
+var S_INSTANCES = 'instances';
+
+var SUFFIX_WIDTH = 'Width';
+var SUFFIX_HEIGHT = 'Height';
+
+var S_FRAMEBUFFER_WIDTH = S_FRAMEBUFFER + SUFFIX_WIDTH;
+var S_FRAMEBUFFER_HEIGHT = S_FRAMEBUFFER + SUFFIX_HEIGHT;
+var S_VIEWPORT_WIDTH = S_VIEWPORT + SUFFIX_WIDTH;
+var S_VIEWPORT_HEIGHT = S_VIEWPORT + SUFFIX_HEIGHT;
+var S_DRAWINGBUFFER = 'drawingBuffer';
+var S_DRAWINGBUFFER_WIDTH = S_DRAWINGBUFFER + SUFFIX_WIDTH;
+var S_DRAWINGBUFFER_HEIGHT = S_DRAWINGBUFFER + SUFFIX_HEIGHT;
+
+var NESTED_OPTIONS = [
+  S_BLEND_FUNC,
+  S_BLEND_EQUATION,
+  S_STENCIL_FUNC,
+  S_STENCIL_OPFRONT,
+  S_STENCIL_OPBACK,
+  S_SAMPLE_COVERAGE,
+  S_VIEWPORT,
+  S_SCISSOR_BOX,
+  S_POLYGON_OFFSET_OFFSET
+];
+
+var GL_ARRAY_BUFFER$1 = 34962;
+var GL_ELEMENT_ARRAY_BUFFER$1 = 34963;
+
+var GL_FRAGMENT_SHADER$1 = 35632;
+var GL_VERTEX_SHADER$1 = 35633;
+
+var GL_TEXTURE_2D$2 = 0x0DE1;
+var GL_TEXTURE_CUBE_MAP$1 = 0x8513;
+
+var GL_CULL_FACE = 0x0B44;
+var GL_BLEND = 0x0BE2;
+var GL_DITHER = 0x0BD0;
+var GL_STENCIL_TEST = 0x0B90;
+var GL_DEPTH_TEST = 0x0B71;
+var GL_SCISSOR_TEST = 0x0C11;
+var GL_POLYGON_OFFSET_FILL = 0x8037;
+var GL_SAMPLE_ALPHA_TO_COVERAGE = 0x809E;
+var GL_SAMPLE_COVERAGE = 0x80A0;
+
+var GL_FLOAT$7 = 5126;
+var GL_FLOAT_VEC2 = 35664;
+var GL_FLOAT_VEC3 = 35665;
+var GL_FLOAT_VEC4 = 35666;
+var GL_INT$3 = 5124;
+var GL_INT_VEC2 = 35667;
+var GL_INT_VEC3 = 35668;
+var GL_INT_VEC4 = 35669;
+var GL_BOOL = 35670;
+var GL_BOOL_VEC2 = 35671;
+var GL_BOOL_VEC3 = 35672;
+var GL_BOOL_VEC4 = 35673;
+var GL_FLOAT_MAT2 = 35674;
+var GL_FLOAT_MAT3 = 35675;
+var GL_FLOAT_MAT4 = 35676;
+var GL_SAMPLER_2D = 35678;
+var GL_SAMPLER_CUBE = 35680;
+
+var GL_TRIANGLES$1 = 4;
+
+var GL_FRONT = 1028;
+var GL_BACK = 1029;
+var GL_CW = 0x0900;
+var GL_CCW = 0x0901;
+var GL_MIN_EXT = 0x8007;
+var GL_MAX_EXT = 0x8008;
+var GL_ALWAYS = 519;
+var GL_KEEP = 7680;
+var GL_ZERO = 0;
+var GL_ONE = 1;
+var GL_FUNC_ADD = 0x8006;
+var GL_LESS = 513;
+
+var GL_FRAMEBUFFER$1 = 0x8D40;
+var GL_COLOR_ATTACHMENT0$1 = 0x8CE0;
+
+var blendFuncs = {
+  '0': 0,
+  '1': 1,
+  'zero': 0,
+  'one': 1,
+  'src color': 768,
+  'one minus src color': 769,
+  'src alpha': 770,
+  'one minus src alpha': 771,
+  'dst color': 774,
+  'one minus dst color': 775,
+  'dst alpha': 772,
+  'one minus dst alpha': 773,
+  'constant color': 32769,
+  'one minus constant color': 32770,
+  'constant alpha': 32771,
+  'one minus constant alpha': 32772,
+  'src alpha saturate': 776
+};
+
+// There are invalid values for srcRGB and dstRGB. See:
+// https://www.khronos.org/registry/webgl/specs/1.0/#6.13
+// https://github.com/KhronosGroup/WebGL/blob/0d3201f5f7ec3c0060bc1f04077461541f1987b9/conformance-suites/1.0.3/conformance/misc/webgl-specific.html#L56
+var invalidBlendCombinations = [
+  'constant color, constant alpha',
+  'one minus constant color, constant alpha',
+  'constant color, one minus constant alpha',
+  'one minus constant color, one minus constant alpha',
+  'constant alpha, constant color',
+  'constant alpha, one minus constant color',
+  'one minus constant alpha, constant color',
+  'one minus constant alpha, one minus constant color'
+];
+
+var compareFuncs = {
+  'never': 512,
+  'less': 513,
+  '<': 513,
+  'equal': 514,
+  '=': 514,
+  '==': 514,
+  '===': 514,
+  'lequal': 515,
+  '<=': 515,
+  'greater': 516,
+  '>': 516,
+  'notequal': 517,
+  '!=': 517,
+  '!==': 517,
+  'gequal': 518,
+  '>=': 518,
+  'always': 519
+};
+
+var stencilOps = {
+  '0': 0,
+  'zero': 0,
+  'keep': 7680,
+  'replace': 7681,
+  'increment': 7682,
+  'decrement': 7683,
+  'increment wrap': 34055,
+  'decrement wrap': 34056,
+  'invert': 5386
+};
+
+var shaderType = {
+  'frag': GL_FRAGMENT_SHADER$1,
+  'vert': GL_VERTEX_SHADER$1
+};
+
+var orientationType = {
+  'cw': GL_CW,
+  'ccw': GL_CCW
+};
+
+function isBufferArgs (x) {
+  return Array.isArray(x) ||
+    isTypedArray(x) ||
+    isNDArrayLike(x)
+}
+
+// Make sure viewport is processed first
+function sortState (state) {
+  return state.sort(function (a, b) {
+    if (a === S_VIEWPORT) {
+      return -1
+    } else if (b === S_VIEWPORT) {
+      return 1
+    }
+    return (a < b) ? -1 : 1
+  })
+}
+
+function Declaration (thisDep, contextDep, propDep, append) {
+  this.thisDep = thisDep;
+  this.contextDep = contextDep;
+  this.propDep = propDep;
+  this.append = append;
+}
+
+function isStatic (decl) {
+  return decl && !(decl.thisDep || decl.contextDep || decl.propDep)
+}
+
+function createStaticDecl (append) {
+  return new Declaration(false, false, false, append)
+}
+
+function createDynamicDecl (dyn, append) {
+  var type = dyn.type;
+  if (type === DYN_FUNC$1) {
+    var numArgs = dyn.data.length;
+    return new Declaration(
+      true,
+      numArgs >= 1,
+      numArgs >= 2,
+      append)
+  } else if (type === DYN_THUNK) {
+    var data = dyn.data;
+    return new Declaration(
+      data.thisDep,
+      data.contextDep,
+      data.propDep,
+      append)
+  } else {
+    return new Declaration(
+      type === DYN_STATE$1,
+      type === DYN_CONTEXT$1,
+      type === DYN_PROP$1,
+      append)
+  }
+}
+
+var SCOPE_DECL = new Declaration(false, false, false, function () {});
+
+function reglCore (
+  gl,
+  stringStore,
+  extensions,
+  limits,
+  bufferState,
+  elementState,
+  textureState,
+  framebufferState,
+  uniformState,
+  attributeState,
+  shaderState,
+  drawState,
+  contextState,
+  timer,
+  config) {
+  var AttributeRecord = attributeState.Record;
+
+  var blendEquations = {
+    'add': 32774,
+    'subtract': 32778,
+    'reverse subtract': 32779
+  };
+  if (extensions.ext_blend_minmax) {
+    blendEquations.min = GL_MIN_EXT;
+    blendEquations.max = GL_MAX_EXT;
+  }
+
+  var extInstancing = extensions.angle_instanced_arrays;
+  var extDrawBuffers = extensions.webgl_draw_buffers;
+
+  // ===================================================
+  // ===================================================
+  // WEBGL STATE
+  // ===================================================
+  // ===================================================
+  var currentState = {
+    dirty: true,
+    profile: config.profile
+  };
+  var nextState = {};
+  var GL_STATE_NAMES = [];
+  var GL_FLAGS = {};
+  var GL_VARIABLES = {};
+
+  function propName (name) {
+    return name.replace('.', '_')
+  }
+
+  function stateFlag (sname, cap, init) {
+    var name = propName(sname);
+    GL_STATE_NAMES.push(sname);
+    nextState[name] = currentState[name] = !!init;
+    GL_FLAGS[name] = cap;
+  }
+
+  function stateVariable (sname, func, init) {
+    var name = propName(sname);
+    GL_STATE_NAMES.push(sname);
+    if (Array.isArray(init)) {
+      currentState[name] = init.slice();
+      nextState[name] = init.slice();
+    } else {
+      currentState[name] = nextState[name] = init;
+    }
+    GL_VARIABLES[name] = func;
+  }
+
+  // Dithering
+  stateFlag(S_DITHER, GL_DITHER);
+
+  // Blending
+  stateFlag(S_BLEND_ENABLE, GL_BLEND);
+  stateVariable(S_BLEND_COLOR, 'blendColor', [0, 0, 0, 0]);
+  stateVariable(S_BLEND_EQUATION, 'blendEquationSeparate',
+    [GL_FUNC_ADD, GL_FUNC_ADD]);
+  stateVariable(S_BLEND_FUNC, 'blendFuncSeparate',
+    [GL_ONE, GL_ZERO, GL_ONE, GL_ZERO]);
+
+  // Depth
+  stateFlag(S_DEPTH_ENABLE, GL_DEPTH_TEST, true);
+  stateVariable(S_DEPTH_FUNC, 'depthFunc', GL_LESS);
+  stateVariable(S_DEPTH_RANGE, 'depthRange', [0, 1]);
+  stateVariable(S_DEPTH_MASK, 'depthMask', true);
+
+  // Color mask
+  stateVariable(S_COLOR_MASK, S_COLOR_MASK, [true, true, true, true]);
+
+  // Face culling
+  stateFlag(S_CULL_ENABLE, GL_CULL_FACE);
+  stateVariable(S_CULL_FACE, 'cullFace', GL_BACK);
+
+  // Front face orientation
+  stateVariable(S_FRONT_FACE, S_FRONT_FACE, GL_CCW);
+
+  // Line width
+  stateVariable(S_LINE_WIDTH, S_LINE_WIDTH, 1);
+
+  // Polygon offset
+  stateFlag(S_POLYGON_OFFSET_ENABLE, GL_POLYGON_OFFSET_FILL);
+  stateVariable(S_POLYGON_OFFSET_OFFSET, 'polygonOffset', [0, 0]);
+
+  // Sample coverage
+  stateFlag(S_SAMPLE_ALPHA, GL_SAMPLE_ALPHA_TO_COVERAGE);
+  stateFlag(S_SAMPLE_ENABLE, GL_SAMPLE_COVERAGE);
+  stateVariable(S_SAMPLE_COVERAGE, 'sampleCoverage', [1, false]);
+
+  // Stencil
+  stateFlag(S_STENCIL_ENABLE, GL_STENCIL_TEST);
+  stateVariable(S_STENCIL_MASK, 'stencilMask', -1);
+  stateVariable(S_STENCIL_FUNC, 'stencilFunc', [GL_ALWAYS, 0, -1]);
+  stateVariable(S_STENCIL_OPFRONT, 'stencilOpSeparate',
+    [GL_FRONT, GL_KEEP, GL_KEEP, GL_KEEP]);
+  stateVariable(S_STENCIL_OPBACK, 'stencilOpSeparate',
+    [GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP]);
+
+  // Scissor
+  stateFlag(S_SCISSOR_ENABLE, GL_SCISSOR_TEST);
+  stateVariable(S_SCISSOR_BOX, 'scissor',
+    [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight]);
+
+  // Viewport
+  stateVariable(S_VIEWPORT, S_VIEWPORT,
+    [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight]);
+
+  // ===================================================
+  // ===================================================
+  // ENVIRONMENT
+  // ===================================================
+  // ===================================================
+  var sharedState = {
+    gl: gl,
+    context: contextState,
+    strings: stringStore,
+    next: nextState,
+    current: currentState,
+    draw: drawState,
+    elements: elementState,
+    buffer: bufferState,
+    shader: shaderState,
+    attributes: attributeState.state,
+    uniforms: uniformState,
+    framebuffer: framebufferState,
+    extensions: extensions,
+
+    timer: timer,
+    isBufferArgs: isBufferArgs
+  };
+
+  var sharedConstants = {
+    primTypes: primTypes,
+    compareFuncs: compareFuncs,
+    blendFuncs: blendFuncs,
+    blendEquations: blendEquations,
+    stencilOps: stencilOps,
+    glTypes: glTypes,
+    orientationType: orientationType
+  };
+
+  check$1.optional(function () {
+    sharedState.isArrayLike = isArrayLike;
+  });
+
+  if (extDrawBuffers) {
+    sharedConstants.backBuffer = [GL_BACK];
+    sharedConstants.drawBuffer = loop(limits.maxDrawbuffers, function (i) {
+      if (i === 0) {
+        return [0]
+      }
+      return loop(i, function (j) {
+        return GL_COLOR_ATTACHMENT0$1 + j
+      })
+    });
+  }
+
+  var drawCallCounter = 0;
+  function createREGLEnvironment () {
+    var env = createEnvironment();
+    var link = env.link;
+    var global = env.global;
+    env.id = drawCallCounter++;
+
+    env.batchId = '0';
+
+    // link shared state
+    var SHARED = link(sharedState);
+    var shared = env.shared = {
+      props: 'a0'
+    };
+    Object.keys(sharedState).forEach(function (prop) {
+      shared[prop] = global.def(SHARED, '.', prop);
+    });
+
+    // Inject runtime assertion stuff for debug builds
+    check$1.optional(function () {
+      env.CHECK = link(check$1);
+      env.commandStr = check$1.guessCommand();
+      env.command = link(env.commandStr);
+      env.assert = function (block, pred, message) {
+        block(
+          'if(!(', pred, '))',
+          this.CHECK, '.commandRaise(', link(message), ',', this.command, ');');
+      };
+
+      sharedConstants.invalidBlendCombinations = invalidBlendCombinations;
+    });
+
+    // Copy GL state variables over
+    var nextVars = env.next = {};
+    var currentVars = env.current = {};
+    Object.keys(GL_VARIABLES).forEach(function (variable) {
+      if (Array.isArray(currentState[variable])) {
+        nextVars[variable] = global.def(shared.next, '.', variable);
+        currentVars[variable] = global.def(shared.current, '.', variable);
+      }
+    });
+
+    // Initialize shared constants
+    var constants = env.constants = {};
+    Object.keys(sharedConstants).forEach(function (name) {
+      constants[name] = global.def(JSON.stringify(sharedConstants[name]));
+    });
+
+    // Helper function for calling a block
+    env.invoke = function (block, x) {
+      switch (x.type) {
+        case DYN_FUNC$1:
+          var argList = [
+            'this',
+            shared.context,
+            shared.props,
+            env.batchId
+          ];
+          return block.def(
+            link(x.data), '.call(',
+              argList.slice(0, Math.max(x.data.length + 1, 4)),
+             ')')
+        case DYN_PROP$1:
+          return block.def(shared.props, x.data)
+        case DYN_CONTEXT$1:
+          return block.def(shared.context, x.data)
+        case DYN_STATE$1:
+          return block.def('this', x.data)
+        case DYN_THUNK:
+          x.data.append(env, block);
+          return x.data.ref
+      }
+    };
+
+    env.attribCache = {};
+
+    var scopeAttribs = {};
+    env.scopeAttrib = function (name) {
+      var id = stringStore.id(name);
+      if (id in scopeAttribs) {
+        return scopeAttribs[id]
+      }
+      var binding = attributeState.scope[id];
+      if (!binding) {
+        binding = attributeState.scope[id] = new AttributeRecord();
+      }
+      var result = scopeAttribs[id] = link(binding);
+      return result
+    };
+
+    return env
+  }
+
+  // ===================================================
+  // ===================================================
+  // PARSING
+  // ===================================================
+  // ===================================================
+  function parseProfile (options) {
+    var staticOptions = options.static;
+    var dynamicOptions = options.dynamic;
+
+    var profileEnable;
+    if (S_PROFILE in staticOptions) {
+      var value = !!staticOptions[S_PROFILE];
+      profileEnable = createStaticDecl(function (env, scope) {
+        return value
+      });
+      profileEnable.enable = value;
+    } else if (S_PROFILE in dynamicOptions) {
+      var dyn = dynamicOptions[S_PROFILE];
+      profileEnable = createDynamicDecl(dyn, function (env, scope) {
+        return env.invoke(scope, dyn)
+      });
+    }
+
+    return profileEnable
+  }
+
+  function parseFramebuffer (options, env) {
+    var staticOptions = options.static;
+    var dynamicOptions = options.dynamic;
+
+    if (S_FRAMEBUFFER in staticOptions) {
+      var framebuffer = staticOptions[S_FRAMEBUFFER];
+      if (framebuffer) {
+        framebuffer = framebufferState.getFramebuffer(framebuffer);
+        check$1.command(framebuffer, 'invalid framebuffer object');
+        return createStaticDecl(function (env, block) {
+          var FRAMEBUFFER = env.link(framebuffer);
+          var shared = env.shared;
+          block.set(
+            shared.framebuffer,
+            '.next',
+            FRAMEBUFFER);
+          var CONTEXT = shared.context;
+          block.set(
+            CONTEXT,
+            '.' + S_FRAMEBUFFER_WIDTH,
+            FRAMEBUFFER + '.width');
+          block.set(
+            CONTEXT,
+            '.' + S_FRAMEBUFFER_HEIGHT,
+            FRAMEBUFFER + '.height');
+          return FRAMEBUFFER
+        })
+      } else {
+        return createStaticDecl(function (env, scope) {
+          var shared = env.shared;
+          scope.set(
+            shared.framebuffer,
+            '.next',
+            'null');
+          var CONTEXT = shared.context;
+          scope.set(
+            CONTEXT,
+            '.' + S_FRAMEBUFFER_WIDTH,
+            CONTEXT + '.' + S_DRAWINGBUFFER_WIDTH);
+          scope.set(
+            CONTEXT,
+            '.' + S_FRAMEBUFFER_HEIGHT,
+            CONTEXT + '.' + S_DRAWINGBUFFER_HEIGHT);
+          return 'null'
+        })
+      }
+    } else if (S_FRAMEBUFFER in dynamicOptions) {
+      var dyn = dynamicOptions[S_FRAMEBUFFER];
+      return createDynamicDecl(dyn, function (env, scope) {
+        var FRAMEBUFFER_FUNC = env.invoke(scope, dyn);
+        var shared = env.shared;
+        var FRAMEBUFFER_STATE = shared.framebuffer;
+        var FRAMEBUFFER = scope.def(
+          FRAMEBUFFER_STATE, '.getFramebuffer(', FRAMEBUFFER_FUNC, ')');
+
+        check$1.optional(function () {
+          env.assert(scope,
+            '!' + FRAMEBUFFER_FUNC + '||' + FRAMEBUFFER,
+            'invalid framebuffer object');
+        });
+
+        scope.set(
+          FRAMEBUFFER_STATE,
+          '.next',
+          FRAMEBUFFER);
+        var CONTEXT = shared.context;
+        scope.set(
+          CONTEXT,
+          '.' + S_FRAMEBUFFER_WIDTH,
+          FRAMEBUFFER + '?' + FRAMEBUFFER + '.width:' +
+          CONTEXT + '.' + S_DRAWINGBUFFER_WIDTH);
+        scope.set(
+          CONTEXT,
+          '.' + S_FRAMEBUFFER_HEIGHT,
+          FRAMEBUFFER +
+          '?' + FRAMEBUFFER + '.height:' +
+          CONTEXT + '.' + S_DRAWINGBUFFER_HEIGHT);
+        return FRAMEBUFFER
+      })
+    } else {
+      return null
+    }
+  }
+
+  function parseViewportScissor (options, framebuffer, env) {
+    var staticOptions = options.static;
+    var dynamicOptions = options.dynamic;
+
+    function parseBox (param) {
+      if (param in staticOptions) {
+        var box = staticOptions[param];
+        check$1.commandType(box, 'object', 'invalid ' + param, env.commandStr);
+
+        var isStatic = true;
+        var x = box.x | 0;
+        var y = box.y | 0;
+        var w, h;
+        if ('width' in box) {
+          w = box.width | 0;
+          check$1.command(w >= 0, 'invalid ' + param, env.commandStr);
+        } else {
+          isStatic = false;
+        }
+        if ('height' in box) {
+          h = box.height | 0;
+          check$1.command(h >= 0, 'invalid ' + param, env.commandStr);
+        } else {
+          isStatic = false;
+        }
+
+        return new Declaration(
+          !isStatic && framebuffer && framebuffer.thisDep,
+          !isStatic && framebuffer && framebuffer.contextDep,
+          !isStatic && framebuffer && framebuffer.propDep,
+          function (env, scope) {
+            var CONTEXT = env.shared.context;
+            var BOX_W = w;
+            if (!('width' in box)) {
+              BOX_W = scope.def(CONTEXT, '.', S_FRAMEBUFFER_WIDTH, '-', x);
+            }
+            var BOX_H = h;
+            if (!('height' in box)) {
+              BOX_H = scope.def(CONTEXT, '.', S_FRAMEBUFFER_HEIGHT, '-', y);
+            }
+            return [x, y, BOX_W, BOX_H]
+          })
+      } else if (param in dynamicOptions) {
+        var dynBox = dynamicOptions[param];
+        var result = createDynamicDecl(dynBox, function (env, scope) {
+          var BOX = env.invoke(scope, dynBox);
+
+          check$1.optional(function () {
+            env.assert(scope,
+              BOX + '&&typeof ' + BOX + '==="object"',
+              'invalid ' + param);
+          });
+
+          var CONTEXT = env.shared.context;
+          var BOX_X = scope.def(BOX, '.x|0');
+          var BOX_Y = scope.def(BOX, '.y|0');
+          var BOX_W = scope.def(
+            '"width" in ', BOX, '?', BOX, '.width|0:',
+            '(', CONTEXT, '.', S_FRAMEBUFFER_WIDTH, '-', BOX_X, ')');
+          var BOX_H = scope.def(
+            '"height" in ', BOX, '?', BOX, '.height|0:',
+            '(', CONTEXT, '.', S_FRAMEBUFFER_HEIGHT, '-', BOX_Y, ')');
+
+          check$1.optional(function () {
+            env.assert(scope,
+              BOX_W + '>=0&&' +
+              BOX_H + '>=0',
+              'invalid ' + param);
+          });
+
+          return [BOX_X, BOX_Y, BOX_W, BOX_H]
+        });
+        if (framebuffer) {
+          result.thisDep = result.thisDep || framebuffer.thisDep;
+          result.contextDep = result.contextDep || framebuffer.contextDep;
+          result.propDep = result.propDep || framebuffer.propDep;
+        }
+        return result
+      } else if (framebuffer) {
+        return new Declaration(
+          framebuffer.thisDep,
+          framebuffer.contextDep,
+          framebuffer.propDep,
+          function (env, scope) {
+            var CONTEXT = env.shared.context;
+            return [
+              0, 0,
+              scope.def(CONTEXT, '.', S_FRAMEBUFFER_WIDTH),
+              scope.def(CONTEXT, '.', S_FRAMEBUFFER_HEIGHT)]
+          })
+      } else {
+        return null
+      }
+    }
+
+    var viewport = parseBox(S_VIEWPORT);
+
+    if (viewport) {
+      var prevViewport = viewport;
+      viewport = new Declaration(
+        viewport.thisDep,
+        viewport.contextDep,
+        viewport.propDep,
+        function (env, scope) {
+          var VIEWPORT = prevViewport.append(env, scope);
+          var CONTEXT = env.shared.context;
+          scope.set(
+            CONTEXT,
+            '.' + S_VIEWPORT_WIDTH,
+            VIEWPORT[2]);
+          scope.set(
+            CONTEXT,
+            '.' + S_VIEWPORT_HEIGHT,
+            VIEWPORT[3]);
+          return VIEWPORT
+        });
+    }
+
+    return {
+      viewport: viewport,
+      scissor_box: parseBox(S_SCISSOR_BOX)
+    }
+  }
+
+  function parseProgram (options) {
+    var staticOptions = options.static;
+    var dynamicOptions = options.dynamic;
+
+    function parseShader (name) {
+      if (name in staticOptions) {
+        var id = stringStore.id(staticOptions[name]);
+        check$1.optional(function () {
+          shaderState.shader(shaderType[name], id, check$1.guessCommand());
+        });
+        var result = createStaticDecl(function () {
+          return id
+        });
+        result.id = id;
+        return result
+      } else if (name in dynamicOptions) {
+        var dyn = dynamicOptions[name];
+        return createDynamicDecl(dyn, function (env, scope) {
+          var str = env.invoke(scope, dyn);
+          var id = scope.def(env.shared.strings, '.id(', str, ')');
+          check$1.optional(function () {
+            scope(
+              env.shared.shader, '.shader(',
+              shaderType[name], ',',
+              id, ',',
+              env.command, ');');
+          });
+          return id
+        })
+      }
+      return null
+    }
+
+    var frag = parseShader(S_FRAG);
+    var vert = parseShader(S_VERT);
+
+    var program = null;
+    var progVar;
+    if (isStatic(frag) && isStatic(vert)) {
+      program = shaderState.program(vert.id, frag.id);
+      progVar = createStaticDecl(function (env, scope) {
+        return env.link(program)
+      });
+    } else {
+      progVar = new Declaration(
+        (frag && frag.thisDep) || (vert && vert.thisDep),
+        (frag && frag.contextDep) || (vert && vert.contextDep),
+        (frag && frag.propDep) || (vert && vert.propDep),
+        function (env, scope) {
+          var SHADER_STATE = env.shared.shader;
+          var fragId;
+          if (frag) {
+            fragId = frag.append(env, scope);
+          } else {
+            fragId = scope.def(SHADER_STATE, '.', S_FRAG);
+          }
+          var vertId;
+          if (vert) {
+            vertId = vert.append(env, scope);
+          } else {
+            vertId = scope.def(SHADER_STATE, '.', S_VERT);
+          }
+          var progDef = SHADER_STATE + '.program(' + vertId + ',' + fragId;
+          check$1.optional(function () {
+            progDef += ',' + env.command;
+          });
+          return scope.def(progDef + ')')
+        });
+    }
+
+    return {
+      frag: frag,
+      vert: vert,
+      progVar: progVar,
+      program: program
+    }
+  }
+
+  function parseDraw (options, env) {
+    var staticOptions = options.static;
+    var dynamicOptions = options.dynamic;
+
+    function parseElements () {
+      if (S_ELEMENTS in staticOptions) {
+        var elements = staticOptions[S_ELEMENTS];
+        if (isBufferArgs(elements)) {
+          elements = elementState.getElements(elementState.create(elements, true));
+        } else if (elements) {
+          elements = elementState.getElements(elements);
+          check$1.command(elements, 'invalid elements', env.commandStr);
+        }
+        var result = createStaticDecl(function (env, scope) {
+          if (elements) {
+            var result = env.link(elements);
+            env.ELEMENTS = result;
+            return result
+          }
+          env.ELEMENTS = null;
+          return null
+        });
+        result.value = elements;
+        return result
+      } else if (S_ELEMENTS in dynamicOptions) {
+        var dyn = dynamicOptions[S_ELEMENTS];
+        return createDynamicDecl(dyn, function (env, scope) {
+          var shared = env.shared;
+
+          var IS_BUFFER_ARGS = shared.isBufferArgs;
+          var ELEMENT_STATE = shared.elements;
+
+          var elementDefn = env.invoke(scope, dyn);
+          var elements = scope.def('null');
+          var elementStream = scope.def(IS_BUFFER_ARGS, '(', elementDefn, ')');
+
+          var ifte = env.cond(elementStream)
+            .then(elements, '=', ELEMENT_STATE, '.createStream(', elementDefn, ');')
+            .else(elements, '=', ELEMENT_STATE, '.getElements(', elementDefn, ');');
+
+          check$1.optional(function () {
+            env.assert(ifte.else,
+              '!' + elementDefn + '||' + elements,
+              'invalid elements');
+          });
+
+          scope.entry(ifte);
+          scope.exit(
+            env.cond(elementStream)
+              .then(ELEMENT_STATE, '.destroyStream(', elements, ');'));
+
+          env.ELEMENTS = elements;
+
+          return elements
+        })
+      }
+
+      return null
+    }
+
+    var elements = parseElements();
+
+    function parsePrimitive () {
+      if (S_PRIMITIVE in staticOptions) {
+        var primitive = staticOptions[S_PRIMITIVE];
+        check$1.commandParameter(primitive, primTypes, 'invalid primitve', env.commandStr);
+        return createStaticDecl(function (env, scope) {
+          return primTypes[primitive]
+        })
+      } else if (S_PRIMITIVE in dynamicOptions) {
+        var dynPrimitive = dynamicOptions[S_PRIMITIVE];
+        return createDynamicDecl(dynPrimitive, function (env, scope) {
+          var PRIM_TYPES = env.constants.primTypes;
+          var prim = env.invoke(scope, dynPrimitive);
+          check$1.optional(function () {
+            env.assert(scope,
+              prim + ' in ' + PRIM_TYPES,
+              'invalid primitive, must be one of ' + Object.keys(primTypes));
+          });
+          return scope.def(PRIM_TYPES, '[', prim, ']')
+        })
+      } else if (elements) {
+        if (isStatic(elements)) {
+          if (elements.value) {
+            return createStaticDecl(function (env, scope) {
+              return scope.def(env.ELEMENTS, '.primType')
+            })
+          } else {
+            return createStaticDecl(function () {
+              return GL_TRIANGLES$1
+            })
+          }
+        } else {
+          return new Declaration(
+            elements.thisDep,
+            elements.contextDep,
+            elements.propDep,
+            function (env, scope) {
+              var elements = env.ELEMENTS;
+              return scope.def(elements, '?', elements, '.primType:', GL_TRIANGLES$1)
+            })
+        }
+      }
+      return null
+    }
+
+    function parseParam (param, isOffset) {
+      if (param in staticOptions) {
+        var value = staticOptions[param] | 0;
+        check$1.command(!isOffset || value >= 0, 'invalid ' + param, env.commandStr);
+        return createStaticDecl(function (env, scope) {
+          if (isOffset) {
+            env.OFFSET = value;
+          }
+          return value
+        })
+      } else if (param in dynamicOptions) {
+        var dynValue = dynamicOptions[param];
+        return createDynamicDecl(dynValue, function (env, scope) {
+          var result = env.invoke(scope, dynValue);
+          if (isOffset) {
+            env.OFFSET = result;
+            check$1.optional(function () {
+              env.assert(scope,
+                result + '>=0',
+                'invalid ' + param);
+            });
+          }
+          return result
+        })
+      } else if (isOffset && elements) {
+        return createStaticDecl(function (env, scope) {
+          env.OFFSET = '0';
+          return 0
+        })
+      }
+      return null
+    }
+
+    var OFFSET = parseParam(S_OFFSET, true);
+
+    function parseVertCount () {
+      if (S_COUNT in staticOptions) {
+        var count = staticOptions[S_COUNT] | 0;
+        check$1.command(
+          typeof count === 'number' && count >= 0, 'invalid vertex count', env.commandStr);
+        return createStaticDecl(function () {
+          return count
+        })
+      } else if (S_COUNT in dynamicOptions) {
+        var dynCount = dynamicOptions[S_COUNT];
+        return createDynamicDecl(dynCount, function (env, scope) {
+          var result = env.invoke(scope, dynCount);
+          check$1.optional(function () {
+            env.assert(scope,
+              'typeof ' + result + '==="number"&&' +
+              result + '>=0&&' +
+              result + '===(' + result + '|0)',
+              'invalid vertex count');
+          });
+          return result
+        })
+      } else if (elements) {
+        if (isStatic(elements)) {
+          if (elements) {
+            if (OFFSET) {
+              return new Declaration(
+                OFFSET.thisDep,
+                OFFSET.contextDep,
+                OFFSET.propDep,
+                function (env, scope) {
+                  var result = scope.def(
+                    env.ELEMENTS, '.vertCount-', env.OFFSET);
+
+                  check$1.optional(function () {
+                    env.assert(scope,
+                      result + '>=0',
+                      'invalid vertex offset/element buffer too small');
+                  });
+
+                  return result
+                })
+            } else {
+              return createStaticDecl(function (env, scope) {
+                return scope.def(env.ELEMENTS, '.vertCount')
+              })
+            }
+          } else {
+            var result = createStaticDecl(function () {
+              return -1
+            });
+            check$1.optional(function () {
+              result.MISSING = true;
+            });
+            return result
+          }
+        } else {
+          var variable = new Declaration(
+            elements.thisDep || OFFSET.thisDep,
+            elements.contextDep || OFFSET.contextDep,
+            elements.propDep || OFFSET.propDep,
+            function (env, scope) {
+              var elements = env.ELEMENTS;
+              if (env.OFFSET) {
+                return scope.def(elements, '?', elements, '.vertCount-',
+                  env.OFFSET, ':-1')
+              }
+              return scope.def(elements, '?', elements, '.vertCount:-1')
+            });
+          check$1.optional(function () {
+            variable.DYNAMIC = true;
+          });
+          return variable
+        }
+      }
+      return null
+    }
+
+    return {
+      elements: elements,
+      primitive: parsePrimitive(),
+      count: parseVertCount(),
+      instances: parseParam(S_INSTANCES, false),
+      offset: OFFSET
+    }
+  }
+
+  function parseGLState (options, env) {
+    var staticOptions = options.static;
+    var dynamicOptions = options.dynamic;
+
+    var STATE = {};
+
+    GL_STATE_NAMES.forEach(function (prop) {
+      var param = propName(prop);
+
+      function parseParam (parseStatic, parseDynamic) {
+        if (prop in staticOptions) {
+          var value = parseStatic(staticOptions[prop]);
+          STATE[param] = createStaticDecl(function () {
+            return value
+          });
+        } else if (prop in dynamicOptions) {
+          var dyn = dynamicOptions[prop];
+          STATE[param] = createDynamicDecl(dyn, function (env, scope) {
+            return parseDynamic(env, scope, env.invoke(scope, dyn))
+          });
+        }
+      }
+
+      switch (prop) {
+        case S_CULL_ENABLE:
+        case S_BLEND_ENABLE:
+        case S_DITHER:
+        case S_STENCIL_ENABLE:
+        case S_DEPTH_ENABLE:
+        case S_SCISSOR_ENABLE:
+        case S_POLYGON_OFFSET_ENABLE:
+        case S_SAMPLE_ALPHA:
+        case S_SAMPLE_ENABLE:
+        case S_DEPTH_MASK:
+          return parseParam(
+            function (value) {
+              check$1.commandType(value, 'boolean', prop, env.commandStr);
+              return value
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  'typeof ' + value + '==="boolean"',
+                  'invalid flag ' + prop, env.commandStr);
+              });
+              return value
+            })
+
+        case S_DEPTH_FUNC:
+          return parseParam(
+            function (value) {
+              check$1.commandParameter(value, compareFuncs, 'invalid ' + prop, env.commandStr);
+              return compareFuncs[value]
+            },
+            function (env, scope, value) {
+              var COMPARE_FUNCS = env.constants.compareFuncs;
+              check$1.optional(function () {
+                env.assert(scope,
+                  value + ' in ' + COMPARE_FUNCS,
+                  'invalid ' + prop + ', must be one of ' + Object.keys(compareFuncs));
+              });
+              return scope.def(COMPARE_FUNCS, '[', value, ']')
+            })
+
+        case S_DEPTH_RANGE:
+          return parseParam(
+            function (value) {
+              check$1.command(
+                isArrayLike(value) &&
+                value.length === 2 &&
+                typeof value[0] === 'number' &&
+                typeof value[1] === 'number' &&
+                value[0] <= value[1],
+                'depth range is 2d array',
+                env.commandStr);
+              return value
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  env.shared.isArrayLike + '(' + value + ')&&' +
+                  value + '.length===2&&' +
+                  'typeof ' + value + '[0]==="number"&&' +
+                  'typeof ' + value + '[1]==="number"&&' +
+                  value + '[0]<=' + value + '[1]',
+                  'depth range must be a 2d array');
+              });
+
+              var Z_NEAR = scope.def('+', value, '[0]');
+              var Z_FAR = scope.def('+', value, '[1]');
+              return [Z_NEAR, Z_FAR]
+            })
+
+        case S_BLEND_FUNC:
+          return parseParam(
+            function (value) {
+              check$1.commandType(value, 'object', 'blend.func', env.commandStr);
+              var srcRGB = ('srcRGB' in value ? value.srcRGB : value.src);
+              var srcAlpha = ('srcAlpha' in value ? value.srcAlpha : value.src);
+              var dstRGB = ('dstRGB' in value ? value.dstRGB : value.dst);
+              var dstAlpha = ('dstAlpha' in value ? value.dstAlpha : value.dst);
+              check$1.commandParameter(srcRGB, blendFuncs, param + '.srcRGB', env.commandStr);
+              check$1.commandParameter(srcAlpha, blendFuncs, param + '.srcAlpha', env.commandStr);
+              check$1.commandParameter(dstRGB, blendFuncs, param + '.dstRGB', env.commandStr);
+              check$1.commandParameter(dstAlpha, blendFuncs, param + '.dstAlpha', env.commandStr);
+
+              check$1.command(
+                (invalidBlendCombinations.indexOf(srcRGB + ', ' + dstRGB) === -1),
+                'unallowed blending combination (srcRGB, dstRGB) = (' + srcRGB + ', ' + dstRGB + ')', env.commandStr);
+
+              return [
+                blendFuncs[srcRGB],
+                blendFuncs[dstRGB],
+                blendFuncs[srcAlpha],
+                blendFuncs[dstAlpha]
+              ]
+            },
+            function (env, scope, value) {
+              var BLEND_FUNCS = env.constants.blendFuncs;
+
+              check$1.optional(function () {
+                env.assert(scope,
+                  value + '&&typeof ' + value + '==="object"',
+                  'invalid blend func, must be an object');
+              });
+
+              function read (prefix, suffix) {
+                var func = scope.def(
+                  '"', prefix, suffix, '" in ', value,
+                  '?', value, '.', prefix, suffix,
+                  ':', value, '.', prefix);
+
+                check$1.optional(function () {
+                  env.assert(scope,
+                    func + ' in ' + BLEND_FUNCS,
+                    'invalid ' + prop + '.' + prefix + suffix + ', must be one of ' + Object.keys(blendFuncs));
+                });
+
+                return func
+              }
+
+              var srcRGB = read('src', 'RGB');
+              var dstRGB = read('dst', 'RGB');
+
+              check$1.optional(function () {
+                var INVALID_BLEND_COMBINATIONS = env.constants.invalidBlendCombinations;
+
+                env.assert(scope,
+                           INVALID_BLEND_COMBINATIONS +
+                           '.indexOf(' + srcRGB + '+", "+' + dstRGB + ') === -1 ',
+                           'unallowed blending combination for (srcRGB, dstRGB)'
+                          );
+              });
+
+              var SRC_RGB = scope.def(BLEND_FUNCS, '[', srcRGB, ']');
+              var SRC_ALPHA = scope.def(BLEND_FUNCS, '[', read('src', 'Alpha'), ']');
+              var DST_RGB = scope.def(BLEND_FUNCS, '[', dstRGB, ']');
+              var DST_ALPHA = scope.def(BLEND_FUNCS, '[', read('dst', 'Alpha'), ']');
+
+              return [SRC_RGB, DST_RGB, SRC_ALPHA, DST_ALPHA]
+            })
+
+        case S_BLEND_EQUATION:
+          return parseParam(
+            function (value) {
+              if (typeof value === 'string') {
+                check$1.commandParameter(value, blendEquations, 'invalid ' + prop, env.commandStr);
+                return [
+                  blendEquations[value],
+                  blendEquations[value]
+                ]
+              } else if (typeof value === 'object') {
+                check$1.commandParameter(
+                  value.rgb, blendEquations, prop + '.rgb', env.commandStr);
+                check$1.commandParameter(
+                  value.alpha, blendEquations, prop + '.alpha', env.commandStr);
+                return [
+                  blendEquations[value.rgb],
+                  blendEquations[value.alpha]
+                ]
+              } else {
+                check$1.commandRaise('invalid blend.equation', env.commandStr);
+              }
+            },
+            function (env, scope, value) {
+              var BLEND_EQUATIONS = env.constants.blendEquations;
+
+              var RGB = scope.def();
+              var ALPHA = scope.def();
+
+              var ifte = env.cond('typeof ', value, '==="string"');
+
+              check$1.optional(function () {
+                function checkProp (block, name, value) {
+                  env.assert(block,
+                    value + ' in ' + BLEND_EQUATIONS,
+                    'invalid ' + name + ', must be one of ' + Object.keys(blendEquations));
+                }
+                checkProp(ifte.then, prop, value);
+
+                env.assert(ifte.else,
+                  value + '&&typeof ' + value + '==="object"',
+                  'invalid ' + prop);
+                checkProp(ifte.else, prop + '.rgb', value + '.rgb');
+                checkProp(ifte.else, prop + '.alpha', value + '.alpha');
+              });
+
+              ifte.then(
+                RGB, '=', ALPHA, '=', BLEND_EQUATIONS, '[', value, '];');
+              ifte.else(
+                RGB, '=', BLEND_EQUATIONS, '[', value, '.rgb];',
+                ALPHA, '=', BLEND_EQUATIONS, '[', value, '.alpha];');
+
+              scope(ifte);
+
+              return [RGB, ALPHA]
+            })
+
+        case S_BLEND_COLOR:
+          return parseParam(
+            function (value) {
+              check$1.command(
+                isArrayLike(value) &&
+                value.length === 4,
+                'blend.color must be a 4d array', env.commandStr);
+              return loop(4, function (i) {
+                return +value[i]
+              })
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  env.shared.isArrayLike + '(' + value + ')&&' +
+                  value + '.length===4',
+                  'blend.color must be a 4d array');
+              });
+              return loop(4, function (i) {
+                return scope.def('+', value, '[', i, ']')
+              })
+            })
+
+        case S_STENCIL_MASK:
+          return parseParam(
+            function (value) {
+              check$1.commandType(value, 'number', param, env.commandStr);
+              return value | 0
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  'typeof ' + value + '==="number"',
+                  'invalid stencil.mask');
+              });
+              return scope.def(value, '|0')
+            })
+
+        case S_STENCIL_FUNC:
+          return parseParam(
+            function (value) {
+              check$1.commandType(value, 'object', param, env.commandStr);
+              var cmp = value.cmp || 'keep';
+              var ref = value.ref || 0;
+              var mask = 'mask' in value ? value.mask : -1;
+              check$1.commandParameter(cmp, compareFuncs, prop + '.cmp', env.commandStr);
+              check$1.commandType(ref, 'number', prop + '.ref', env.commandStr);
+              check$1.commandType(mask, 'number', prop + '.mask', env.commandStr);
+              return [
+                compareFuncs[cmp],
+                ref,
+                mask
+              ]
+            },
+            function (env, scope, value) {
+              var COMPARE_FUNCS = env.constants.compareFuncs;
+              check$1.optional(function () {
+                function assert () {
+                  env.assert(scope,
+                    Array.prototype.join.call(arguments, ''),
+                    'invalid stencil.func');
+                }
+                assert(value + '&&typeof ', value, '==="object"');
+                assert('!("cmp" in ', value, ')||(',
+                  value, '.cmp in ', COMPARE_FUNCS, ')');
+              });
+              var cmp = scope.def(
+                '"cmp" in ', value,
+                '?', COMPARE_FUNCS, '[', value, '.cmp]',
+                ':', GL_KEEP);
+              var ref = scope.def(value, '.ref|0');
+              var mask = scope.def(
+                '"mask" in ', value,
+                '?', value, '.mask|0:-1');
+              return [cmp, ref, mask]
+            })
+
+        case S_STENCIL_OPFRONT:
+        case S_STENCIL_OPBACK:
+          return parseParam(
+            function (value) {
+              check$1.commandType(value, 'object', param, env.commandStr);
+              var fail = value.fail || 'keep';
+              var zfail = value.zfail || 'keep';
+              var zpass = value.zpass || 'keep';
+              check$1.commandParameter(fail, stencilOps, prop + '.fail', env.commandStr);
+              check$1.commandParameter(zfail, stencilOps, prop + '.zfail', env.commandStr);
+              check$1.commandParameter(zpass, stencilOps, prop + '.zpass', env.commandStr);
+              return [
+                prop === S_STENCIL_OPBACK ? GL_BACK : GL_FRONT,
+                stencilOps[fail],
+                stencilOps[zfail],
+                stencilOps[zpass]
+              ]
+            },
+            function (env, scope, value) {
+              var STENCIL_OPS = env.constants.stencilOps;
+
+              check$1.optional(function () {
+                env.assert(scope,
+                  value + '&&typeof ' + value + '==="object"',
+                  'invalid ' + prop);
+              });
+
+              function read (name) {
+                check$1.optional(function () {
+                  env.assert(scope,
+                    '!("' + name + '" in ' + value + ')||' +
+                    '(' + value + '.' + name + ' in ' + STENCIL_OPS + ')',
+                    'invalid ' + prop + '.' + name + ', must be one of ' + Object.keys(stencilOps));
+                });
+
+                return scope.def(
+                  '"', name, '" in ', value,
+                  '?', STENCIL_OPS, '[', value, '.', name, ']:',
+                  GL_KEEP)
+              }
+
+              return [
+                prop === S_STENCIL_OPBACK ? GL_BACK : GL_FRONT,
+                read('fail'),
+                read('zfail'),
+                read('zpass')
+              ]
+            })
+
+        case S_POLYGON_OFFSET_OFFSET:
+          return parseParam(
+            function (value) {
+              check$1.commandType(value, 'object', param, env.commandStr);
+              var factor = value.factor | 0;
+              var units = value.units | 0;
+              check$1.commandType(factor, 'number', param + '.factor', env.commandStr);
+              check$1.commandType(units, 'number', param + '.units', env.commandStr);
+              return [factor, units]
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  value + '&&typeof ' + value + '==="object"',
+                  'invalid ' + prop);
+              });
+
+              var FACTOR = scope.def(value, '.factor|0');
+              var UNITS = scope.def(value, '.units|0');
+
+              return [FACTOR, UNITS]
+            })
+
+        case S_CULL_FACE:
+          return parseParam(
+            function (value) {
+              var face = 0;
+              if (value === 'front') {
+                face = GL_FRONT;
+              } else if (value === 'back') {
+                face = GL_BACK;
+              }
+              check$1.command(!!face, param, env.commandStr);
+              return face
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  value + '==="front"||' +
+                  value + '==="back"',
+                  'invalid cull.face');
+              });
+              return scope.def(value, '==="front"?', GL_FRONT, ':', GL_BACK)
+            })
+
+        case S_LINE_WIDTH:
+          return parseParam(
+            function (value) {
+              check$1.command(
+                typeof value === 'number' &&
+                value >= limits.lineWidthDims[0] &&
+                value <= limits.lineWidthDims[1],
+                'invalid line width, must positive number between ' +
+                limits.lineWidthDims[0] + ' and ' + limits.lineWidthDims[1], env.commandStr);
+              return value
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  'typeof ' + value + '==="number"&&' +
+                  value + '>=' + limits.lineWidthDims[0] + '&&' +
+                  value + '<=' + limits.lineWidthDims[1],
+                  'invalid line width');
+              });
+
+              return value
+            })
+
+        case S_FRONT_FACE:
+          return parseParam(
+            function (value) {
+              check$1.commandParameter(value, orientationType, param, env.commandStr);
+              return orientationType[value]
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  value + '==="cw"||' +
+                  value + '==="ccw"',
+                  'invalid frontFace, must be one of cw,ccw');
+              });
+              return scope.def(value + '==="cw"?' + GL_CW + ':' + GL_CCW)
+            })
+
+        case S_COLOR_MASK:
+          return parseParam(
+            function (value) {
+              check$1.command(
+                isArrayLike(value) && value.length === 4,
+                'color.mask must be length 4 array', env.commandStr);
+              return value.map(function (v) { return !!v })
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  env.shared.isArrayLike + '(' + value + ')&&' +
+                  value + '.length===4',
+                  'invalid color.mask');
+              });
+              return loop(4, function (i) {
+                return '!!' + value + '[' + i + ']'
+              })
+            })
+
+        case S_SAMPLE_COVERAGE:
+          return parseParam(
+            function (value) {
+              check$1.command(typeof value === 'object' && value, param, env.commandStr);
+              var sampleValue = 'value' in value ? value.value : 1;
+              var sampleInvert = !!value.invert;
+              check$1.command(
+                typeof sampleValue === 'number' &&
+                sampleValue >= 0 && sampleValue <= 1,
+                'sample.coverage.value must be a number between 0 and 1', env.commandStr);
+              return [sampleValue, sampleInvert]
+            },
+            function (env, scope, value) {
+              check$1.optional(function () {
+                env.assert(scope,
+                  value + '&&typeof ' + value + '==="object"',
+                  'invalid sample.coverage');
+              });
+              var VALUE = scope.def(
+                '"value" in ', value, '?+', value, '.value:1');
+              var INVERT = scope.def('!!', value, '.invert');
+              return [VALUE, INVERT]
+            })
+      }
+    });
+
+    return STATE
+  }
+
+  function parseUniforms (uniforms, env) {
+    var staticUniforms = uniforms.static;
+    var dynamicUniforms = uniforms.dynamic;
+
+    var UNIFORMS = {};
+
+    Object.keys(staticUniforms).forEach(function (name) {
+      var value = staticUniforms[name];
+      var result;
+      if (typeof value === 'number' ||
+          typeof value === 'boolean') {
+        result = createStaticDecl(function () {
+          return value
+        });
+      } else if (typeof value === 'function') {
+        var reglType = value._reglType;
+        if (reglType === 'texture2d' ||
+            reglType === 'textureCube') {
+          result = createStaticDecl(function (env) {
+            return env.link(value)
+          });
+        } else if (reglType === 'framebuffer' ||
+                   reglType === 'framebufferCube') {
+          check$1.command(value.color.length > 0,
+            'missing color attachment for framebuffer sent to uniform "' + name + '"', env.commandStr);
+          result = createStaticDecl(function (env) {
+            return env.link(value.color[0])
+          });
+        } else {
+          check$1.commandRaise('invalid data for uniform "' + name + '"', env.commandStr);
+        }
+      } else if (isArrayLike(value)) {
+        result = createStaticDecl(function (env) {
+          var ITEM = env.global.def('[',
+            loop(value.length, function (i) {
+              check$1.command(
+                typeof value[i] === 'number' ||
+                typeof value[i] === 'boolean',
+                'invalid uniform ' + name, env.commandStr);
+              return value[i]
+            }), ']');
+          return ITEM
+        });
+      } else {
+        check$1.commandRaise('invalid or missing data for uniform "' + name + '"', env.commandStr);
+      }
+      result.value = value;
+      UNIFORMS[name] = result;
+    });
+
+    Object.keys(dynamicUniforms).forEach(function (key) {
+      var dyn = dynamicUniforms[key];
+      UNIFORMS[key] = createDynamicDecl(dyn, function (env, scope) {
+        return env.invoke(scope, dyn)
+      });
+    });
+
+    return UNIFORMS
+  }
+
+  function parseAttributes (attributes, env) {
+    var staticAttributes = attributes.static;
+    var dynamicAttributes = attributes.dynamic;
+
+    var attributeDefs = {};
+
+    Object.keys(staticAttributes).forEach(function (attribute) {
+      var value = staticAttributes[attribute];
+      var id = stringStore.id(attribute);
+
+      var record = new AttributeRecord();
+      if (isBufferArgs(value)) {
+        record.state = ATTRIB_STATE_POINTER;
+        record.buffer = bufferState.getBuffer(
+          bufferState.create(value, GL_ARRAY_BUFFER$1, false, true));
+        record.type = 0;
+      } else {
+        var buffer = bufferState.getBuffer(value);
+        if (buffer) {
+          record.state = ATTRIB_STATE_POINTER;
+          record.buffer = buffer;
+          record.type = 0;
+        } else {
+          check$1.command(typeof value === 'object' && value,
+            'invalid data for attribute ' + attribute, env.commandStr);
+          if (value.constant) {
+            var constant = value.constant;
+            record.buffer = 'null';
+            record.state = ATTRIB_STATE_CONSTANT;
+            if (typeof constant === 'number') {
+              record.x = constant;
+            } else {
+              check$1.command(
+                isArrayLike(constant) &&
+                constant.length > 0 &&
+                constant.length <= 4,
+                'invalid constant for attribute ' + attribute, env.commandStr);
+              CUTE_COMPONENTS.forEach(function (c, i) {
+                if (i < constant.length) {
+                  record[c] = constant[i];
+                }
+              });
+            }
+          } else {
+            if (isBufferArgs(value.buffer)) {
+              buffer = bufferState.getBuffer(
+                bufferState.create(value.buffer, GL_ARRAY_BUFFER$1, false, true));
+            } else {
+              buffer = bufferState.getBuffer(value.buffer);
+            }
+            check$1.command(!!buffer, 'missing buffer for attribute "' + attribute + '"', env.commandStr);
+
+            var offset = value.offset | 0;
+            check$1.command(offset >= 0,
+              'invalid offset for attribute "' + attribute + '"', env.commandStr);
+
+            var stride = value.stride | 0;
+            check$1.command(stride >= 0 && stride < 256,
+              'invalid stride for attribute "' + attribute + '", must be integer betweeen [0, 255]', env.commandStr);
+
+            var size = value.size | 0;
+            check$1.command(!('size' in value) || (size > 0 && size <= 4),
+              'invalid size for attribute "' + attribute + '", must be 1,2,3,4', env.commandStr);
+
+            var normalized = !!value.normalized;
+
+            var type = 0;
+            if ('type' in value) {
+              check$1.commandParameter(
+                value.type, glTypes,
+                'invalid type for attribute ' + attribute, env.commandStr);
+              type = glTypes[value.type];
+            }
+
+            var divisor = value.divisor | 0;
+            if ('divisor' in value) {
+              check$1.command(divisor === 0 || extInstancing,
+                'cannot specify divisor for attribute "' + attribute + '", instancing not supported', env.commandStr);
+              check$1.command(divisor >= 0,
+                'invalid divisor for attribute "' + attribute + '"', env.commandStr);
+            }
+
+            check$1.optional(function () {
+              var command = env.commandStr;
+
+              var VALID_KEYS = [
+                'buffer',
+                'offset',
+                'divisor',
+                'normalized',
+                'type',
+                'size',
+                'stride'
+              ];
+
+              Object.keys(value).forEach(function (prop) {
+                check$1.command(
+                  VALID_KEYS.indexOf(prop) >= 0,
+                  'unknown parameter "' + prop + '" for attribute pointer "' + attribute + '" (valid parameters are ' + VALID_KEYS + ')',
+                  command);
+              });
+            });
+
+            record.buffer = buffer;
+            record.state = ATTRIB_STATE_POINTER;
+            record.size = size;
+            record.normalized = normalized;
+            record.type = type || buffer.dtype;
+            record.offset = offset;
+            record.stride = stride;
+            record.divisor = divisor;
+          }
+        }
+      }
+
+      attributeDefs[attribute] = createStaticDecl(function (env, scope) {
+        var cache = env.attribCache;
+        if (id in cache) {
+          return cache[id]
+        }
+        var result = {
+          isStream: false
+        };
+        Object.keys(record).forEach(function (key) {
+          result[key] = record[key];
+        });
+        if (record.buffer) {
+          result.buffer = env.link(record.buffer);
+          result.type = result.type || (result.buffer + '.dtype');
+        }
+        cache[id] = result;
+        return result
+      });
+    });
+
+    Object.keys(dynamicAttributes).forEach(function (attribute) {
+      var dyn = dynamicAttributes[attribute];
+
+      function appendAttributeCode (env, block) {
+        var VALUE = env.invoke(block, dyn);
+
+        var shared = env.shared;
+
+        var IS_BUFFER_ARGS = shared.isBufferArgs;
+        var BUFFER_STATE = shared.buffer;
+
+        // Perform validation on attribute
+        check$1.optional(function () {
+          env.assert(block,
+            VALUE + '&&(typeof ' + VALUE + '==="object"||typeof ' +
+            VALUE + '==="function")&&(' +
+            IS_BUFFER_ARGS + '(' + VALUE + ')||' +
+            BUFFER_STATE + '.getBuffer(' + VALUE + ')||' +
+            BUFFER_STATE + '.getBuffer(' + VALUE + '.buffer)||' +
+            IS_BUFFER_ARGS + '(' + VALUE + '.buffer)||' +
+            '("constant" in ' + VALUE +
+            '&&(typeof ' + VALUE + '.constant==="number"||' +
+            shared.isArrayLike + '(' + VALUE + '.constant))))',
+            'invalid dynamic attribute "' + attribute + '"');
+        });
+
+        // allocate names for result
+        var result = {
+          isStream: block.def(false)
+        };
+        var defaultRecord = new AttributeRecord();
+        defaultRecord.state = ATTRIB_STATE_POINTER;
+        Object.keys(defaultRecord).forEach(function (key) {
+          result[key] = block.def('' + defaultRecord[key]);
+        });
+
+        var BUFFER = result.buffer;
+        var TYPE = result.type;
+        block(
+          'if(', IS_BUFFER_ARGS, '(', VALUE, ')){',
+          result.isStream, '=true;',
+          BUFFER, '=', BUFFER_STATE, '.createStream(', GL_ARRAY_BUFFER$1, ',', VALUE, ');',
+          TYPE, '=', BUFFER, '.dtype;',
+          '}else{',
+          BUFFER, '=', BUFFER_STATE, '.getBuffer(', VALUE, ');',
+          'if(', BUFFER, '){',
+          TYPE, '=', BUFFER, '.dtype;',
+          '}else if("constant" in ', VALUE, '){',
+          result.state, '=', ATTRIB_STATE_CONSTANT, ';',
+          'if(typeof ' + VALUE + '.constant === "number"){',
+          result[CUTE_COMPONENTS[0]], '=', VALUE, '.constant;',
+          CUTE_COMPONENTS.slice(1).map(function (n) {
+            return result[n]
+          }).join('='), '=0;',
+          '}else{',
+          CUTE_COMPONENTS.map(function (name, i) {
+            return (
+              result[name] + '=' + VALUE + '.constant.length>=' + i +
+              '?' + VALUE + '.constant[' + i + ']:0;'
+            )
+          }).join(''),
+          '}}else{',
+          'if(', IS_BUFFER_ARGS, '(', VALUE, '.buffer)){',
+          BUFFER, '=', BUFFER_STATE, '.createStream(', GL_ARRAY_BUFFER$1, ',', VALUE, '.buffer);',
+          '}else{',
+          BUFFER, '=', BUFFER_STATE, '.getBuffer(', VALUE, '.buffer);',
+          '}',
+          TYPE, '="type" in ', VALUE, '?',
+          shared.glTypes, '[', VALUE, '.type]:', BUFFER, '.dtype;',
+          result.normalized, '=!!', VALUE, '.normalized;');
+        function emitReadRecord (name) {
+          block(result[name], '=', VALUE, '.', name, '|0;');
+        }
+        emitReadRecord('size');
+        emitReadRecord('offset');
+        emitReadRecord('stride');
+        emitReadRecord('divisor');
+
+        block('}}');
+
+        block.exit(
+          'if(', result.isStream, '){',
+          BUFFER_STATE, '.destroyStream(', BUFFER, ');',
+          '}');
+
+        return result
+      }
+
+      attributeDefs[attribute] = createDynamicDecl(dyn, appendAttributeCode);
+    });
+
+    return attributeDefs
+  }
+
+  function parseContext (context) {
+    var staticContext = context.static;
+    var dynamicContext = context.dynamic;
+    var result = {};
+
+    Object.keys(staticContext).forEach(function (name) {
+      var value = staticContext[name];
+      result[name] = createStaticDecl(function (env, scope) {
+        if (typeof value === 'number' || typeof value === 'boolean') {
+          return '' + value
+        } else {
+          return env.link(value)
+        }
+      });
+    });
+
+    Object.keys(dynamicContext).forEach(function (name) {
+      var dyn = dynamicContext[name];
+      result[name] = createDynamicDecl(dyn, function (env, scope) {
+        return env.invoke(scope, dyn)
+      });
+    });
+
+    return result
+  }
+
+  function parseArguments (options, attributes, uniforms, context, env) {
+    var staticOptions = options.static;
+    var dynamicOptions = options.dynamic;
+
+    check$1.optional(function () {
+      var KEY_NAMES = [
+        S_FRAMEBUFFER,
+        S_VERT,
+        S_FRAG,
+        S_ELEMENTS,
+        S_PRIMITIVE,
+        S_OFFSET,
+        S_COUNT,
+        S_INSTANCES,
+        S_PROFILE
+      ].concat(GL_STATE_NAMES);
+
+      function checkKeys (dict) {
+        Object.keys(dict).forEach(function (key) {
+          check$1.command(
+            KEY_NAMES.indexOf(key) >= 0,
+            'unknown parameter "' + key + '"',
+            env.commandStr);
+        });
+      }
+
+      checkKeys(staticOptions);
+      checkKeys(dynamicOptions);
+    });
+
+    var framebuffer = parseFramebuffer(options, env);
+    var viewportAndScissor = parseViewportScissor(options, framebuffer, env);
+    var draw = parseDraw(options, env);
+    var state = parseGLState(options, env);
+    var shader = parseProgram(options, env);
+
+    function copyBox (name) {
+      var defn = viewportAndScissor[name];
+      if (defn) {
+        state[name] = defn;
+      }
+    }
+    copyBox(S_VIEWPORT);
+    copyBox(propName(S_SCISSOR_BOX));
+
+    var dirty = Object.keys(state).length > 0;
+
+    var result = {
+      framebuffer: framebuffer,
+      draw: draw,
+      shader: shader,
+      state: state,
+      dirty: dirty
+    };
+
+    result.profile = parseProfile(options, env);
+    result.uniforms = parseUniforms(uniforms, env);
+    result.attributes = parseAttributes(attributes, env);
+    result.context = parseContext(context, env);
+    return result
+  }
+
+  // ===================================================
+  // ===================================================
+  // COMMON UPDATE FUNCTIONS
+  // ===================================================
+  // ===================================================
+  function emitContext (env, scope, context) {
+    var shared = env.shared;
+    var CONTEXT = shared.context;
+
+    var contextEnter = env.scope();
+
+    Object.keys(context).forEach(function (name) {
+      scope.save(CONTEXT, '.' + name);
+      var defn = context[name];
+      contextEnter(CONTEXT, '.', name, '=', defn.append(env, scope), ';');
+    });
+
+    scope(contextEnter);
+  }
+
+  // ===================================================
+  // ===================================================
+  // COMMON DRAWING FUNCTIONS
+  // ===================================================
+  // ===================================================
+  function emitPollFramebuffer (env, scope, framebuffer, skipCheck) {
+    var shared = env.shared;
+
+    var GL = shared.gl;
+    var FRAMEBUFFER_STATE = shared.framebuffer;
+    var EXT_DRAW_BUFFERS;
+    if (extDrawBuffers) {
+      EXT_DRAW_BUFFERS = scope.def(shared.extensions, '.webgl_draw_buffers');
+    }
+
+    var constants = env.constants;
+
+    var DRAW_BUFFERS = constants.drawBuffer;
+    var BACK_BUFFER = constants.backBuffer;
+
+    var NEXT;
+    if (framebuffer) {
+      NEXT = framebuffer.append(env, scope);
+    } else {
+      NEXT = scope.def(FRAMEBUFFER_STATE, '.next');
+    }
+
+    if (!skipCheck) {
+      scope('if(', NEXT, '!==', FRAMEBUFFER_STATE, '.cur){');
+    }
+    scope(
+      'if(', NEXT, '){',
+      GL, '.bindFramebuffer(', GL_FRAMEBUFFER$1, ',', NEXT, '.framebuffer);');
+    if (extDrawBuffers) {
+      scope(EXT_DRAW_BUFFERS, '.drawBuffersWEBGL(',
+        DRAW_BUFFERS, '[', NEXT, '.colorAttachments.length]);');
+    }
+    scope('}else{',
+      GL, '.bindFramebuffer(', GL_FRAMEBUFFER$1, ',null);');
+    if (extDrawBuffers) {
+      scope(EXT_DRAW_BUFFERS, '.drawBuffersWEBGL(', BACK_BUFFER, ');');
+    }
+    scope(
+      '}',
+      FRAMEBUFFER_STATE, '.cur=', NEXT, ';');
+    if (!skipCheck) {
+      scope('}');
+    }
+  }
+
+  function emitPollState (env, scope, args) {
+    var shared = env.shared;
+
+    var GL = shared.gl;
+
+    var CURRENT_VARS = env.current;
+    var NEXT_VARS = env.next;
+    var CURRENT_STATE = shared.current;
+    var NEXT_STATE = shared.next;
+
+    var block = env.cond(CURRENT_STATE, '.dirty');
+
+    GL_STATE_NAMES.forEach(function (prop) {
+      var param = propName(prop);
+      if (param in args.state) {
+        return
+      }
+
+      var NEXT, CURRENT;
+      if (param in NEXT_VARS) {
+        NEXT = NEXT_VARS[param];
+        CURRENT = CURRENT_VARS[param];
+        var parts = loop(currentState[param].length, function (i) {
+          return block.def(NEXT, '[', i, ']')
+        });
+        block(env.cond(parts.map(function (p, i) {
+          return p + '!==' + CURRENT + '[' + i + ']'
+        }).join('||'))
+          .then(
+            GL, '.', GL_VARIABLES[param], '(', parts, ');',
+            parts.map(function (p, i) {
+              return CURRENT + '[' + i + ']=' + p
+            }).join(';'), ';'));
+      } else {
+        NEXT = block.def(NEXT_STATE, '.', param);
+        var ifte = env.cond(NEXT, '!==', CURRENT_STATE, '.', param);
+        block(ifte);
+        if (param in GL_FLAGS) {
+          ifte(
+            env.cond(NEXT)
+                .then(GL, '.enable(', GL_FLAGS[param], ');')
+                .else(GL, '.disable(', GL_FLAGS[param], ');'),
+            CURRENT_STATE, '.', param, '=', NEXT, ';');
+        } else {
+          ifte(
+            GL, '.', GL_VARIABLES[param], '(', NEXT, ');',
+            CURRENT_STATE, '.', param, '=', NEXT, ';');
+        }
+      }
+    });
+    if (Object.keys(args.state).length === 0) {
+      block(CURRENT_STATE, '.dirty=false;');
+    }
+    scope(block);
+  }
+
+  function emitSetOptions (env, scope, options, filter) {
+    var shared = env.shared;
+    var CURRENT_VARS = env.current;
+    var CURRENT_STATE = shared.current;
+    var GL = shared.gl;
+    sortState(Object.keys(options)).forEach(function (param) {
+      var defn = options[param];
+      if (filter && !filter(defn)) {
+        return
+      }
+      var variable = defn.append(env, scope);
+      if (GL_FLAGS[param]) {
+        var flag = GL_FLAGS[param];
+        if (isStatic(defn)) {
+          if (variable) {
+            scope(GL, '.enable(', flag, ');');
+          } else {
+            scope(GL, '.disable(', flag, ');');
+          }
+        } else {
+          scope(env.cond(variable)
+            .then(GL, '.enable(', flag, ');')
+            .else(GL, '.disable(', flag, ');'));
+        }
+        scope(CURRENT_STATE, '.', param, '=', variable, ';');
+      } else if (isArrayLike(variable)) {
+        var CURRENT = CURRENT_VARS[param];
+        scope(
+          GL, '.', GL_VARIABLES[param], '(', variable, ');',
+          variable.map(function (v, i) {
+            return CURRENT + '[' + i + ']=' + v
+          }).join(';'), ';');
+      } else {
+        scope(
+          GL, '.', GL_VARIABLES[param], '(', variable, ');',
+          CURRENT_STATE, '.', param, '=', variable, ';');
+      }
+    });
+  }
+
+  function injectExtensions (env, scope) {
+    if (extInstancing) {
+      env.instancing = scope.def(
+        env.shared.extensions, '.angle_instanced_arrays');
+    }
+  }
+
+  function emitProfile (env, scope, args, useScope, incrementCounter) {
+    var shared = env.shared;
+    var STATS = env.stats;
+    var CURRENT_STATE = shared.current;
+    var TIMER = shared.timer;
+    var profileArg = args.profile;
+
+    function perfCounter () {
+      if (typeof performance === 'undefined') {
+        return 'Date.now()'
+      } else {
+        return 'performance.now()'
+      }
+    }
+
+    var CPU_START, QUERY_COUNTER;
+    function emitProfileStart (block) {
+      CPU_START = scope.def();
+      block(CPU_START, '=', perfCounter(), ';');
+      if (typeof incrementCounter === 'string') {
+        block(STATS, '.count+=', incrementCounter, ';');
+      } else {
+        block(STATS, '.count++;');
+      }
+      if (timer) {
+        if (useScope) {
+          QUERY_COUNTER = scope.def();
+          block(QUERY_COUNTER, '=', TIMER, '.getNumPendingQueries();');
+        } else {
+          block(TIMER, '.beginQuery(', STATS, ');');
+        }
+      }
+    }
+
+    function emitProfileEnd (block) {
+      block(STATS, '.cpuTime+=', perfCounter(), '-', CPU_START, ';');
+      if (timer) {
+        if (useScope) {
+          block(TIMER, '.pushScopeStats(',
+            QUERY_COUNTER, ',',
+            TIMER, '.getNumPendingQueries(),',
+            STATS, ');');
+        } else {
+          block(TIMER, '.endQuery();');
+        }
+      }
+    }
+
+    function scopeProfile (value) {
+      var prev = scope.def(CURRENT_STATE, '.profile');
+      scope(CURRENT_STATE, '.profile=', value, ';');
+      scope.exit(CURRENT_STATE, '.profile=', prev, ';');
+    }
+
+    var USE_PROFILE;
+    if (profileArg) {
+      if (isStatic(profileArg)) {
+        if (profileArg.enable) {
+          emitProfileStart(scope);
+          emitProfileEnd(scope.exit);
+          scopeProfile('true');
+        } else {
+          scopeProfile('false');
+        }
+        return
+      }
+      USE_PROFILE = profileArg.append(env, scope);
+      scopeProfile(USE_PROFILE);
+    } else {
+      USE_PROFILE = scope.def(CURRENT_STATE, '.profile');
+    }
+
+    var start = env.block();
+    emitProfileStart(start);
+    scope('if(', USE_PROFILE, '){', start, '}');
+    var end = env.block();
+    emitProfileEnd(end);
+    scope.exit('if(', USE_PROFILE, '){', end, '}');
+  }
+
+  function emitAttributes (env, scope, args, attributes, filter) {
+    var shared = env.shared;
+
+    function typeLength (x) {
+      switch (x) {
+        case GL_FLOAT_VEC2:
+        case GL_INT_VEC2:
+        case GL_BOOL_VEC2:
+          return 2
+        case GL_FLOAT_VEC3:
+        case GL_INT_VEC3:
+        case GL_BOOL_VEC3:
+          return 3
+        case GL_FLOAT_VEC4:
+        case GL_INT_VEC4:
+        case GL_BOOL_VEC4:
+          return 4
+        default:
+          return 1
+      }
+    }
+
+    function emitBindAttribute (ATTRIBUTE, size, record) {
+      var GL = shared.gl;
+
+      var LOCATION = scope.def(ATTRIBUTE, '.location');
+      var BINDING = scope.def(shared.attributes, '[', LOCATION, ']');
+
+      var STATE = record.state;
+      var BUFFER = record.buffer;
+      var CONST_COMPONENTS = [
+        record.x,
+        record.y,
+        record.z,
+        record.w
+      ];
+
+      var COMMON_KEYS = [
+        'buffer',
+        'normalized',
+        'offset',
+        'stride'
+      ];
+
+      function emitBuffer () {
+        scope(
+          'if(!', BINDING, '.buffer){',
+          GL, '.enableVertexAttribArray(', LOCATION, ');}');
+
+        var TYPE = record.type;
+        var SIZE;
+        if (!record.size) {
+          SIZE = size;
+        } else {
+          SIZE = scope.def(record.size, '||', size);
+        }
+
+        scope('if(',
+          BINDING, '.type!==', TYPE, '||',
+          BINDING, '.size!==', SIZE, '||',
+          COMMON_KEYS.map(function (key) {
+            return BINDING + '.' + key + '!==' + record[key]
+          }).join('||'),
+          '){',
+          GL, '.bindBuffer(', GL_ARRAY_BUFFER$1, ',', BUFFER, '.buffer);',
+          GL, '.vertexAttribPointer(', [
+            LOCATION,
+            SIZE,
+            TYPE,
+            record.normalized,
+            record.stride,
+            record.offset
+          ], ');',
+          BINDING, '.type=', TYPE, ';',
+          BINDING, '.size=', SIZE, ';',
+          COMMON_KEYS.map(function (key) {
+            return BINDING + '.' + key + '=' + record[key] + ';'
+          }).join(''),
+          '}');
+
+        if (extInstancing) {
+          var DIVISOR = record.divisor;
+          scope(
+            'if(', BINDING, '.divisor!==', DIVISOR, '){',
+            env.instancing, '.vertexAttribDivisorANGLE(', [LOCATION, DIVISOR], ');',
+            BINDING, '.divisor=', DIVISOR, ';}');
+        }
+      }
+
+      function emitConstant () {
+        scope(
+          'if(', BINDING, '.buffer){',
+          GL, '.disableVertexAttribArray(', LOCATION, ');',
+          '}if(', CUTE_COMPONENTS.map(function (c, i) {
+            return BINDING + '.' + c + '!==' + CONST_COMPONENTS[i]
+          }).join('||'), '){',
+          GL, '.vertexAttrib4f(', LOCATION, ',', CONST_COMPONENTS, ');',
+          CUTE_COMPONENTS.map(function (c, i) {
+            return BINDING + '.' + c + '=' + CONST_COMPONENTS[i] + ';'
+          }).join(''),
+          '}');
+      }
+
+      if (STATE === ATTRIB_STATE_POINTER) {
+        emitBuffer();
+      } else if (STATE === ATTRIB_STATE_CONSTANT) {
+        emitConstant();
+      } else {
+        scope('if(', STATE, '===', ATTRIB_STATE_POINTER, '){');
+        emitBuffer();
+        scope('}else{');
+        emitConstant();
+        scope('}');
+      }
+    }
+
+    attributes.forEach(function (attribute) {
+      var name = attribute.name;
+      var arg = args.attributes[name];
+      var record;
+      if (arg) {
+        if (!filter(arg)) {
+          return
+        }
+        record = arg.append(env, scope);
+      } else {
+        if (!filter(SCOPE_DECL)) {
+          return
+        }
+        var scopeAttrib = env.scopeAttrib(name);
+        check$1.optional(function () {
+          env.assert(scope,
+            scopeAttrib + '.state',
+            'missing attribute ' + name);
+        });
+        record = {};
+        Object.keys(new AttributeRecord()).forEach(function (key) {
+          record[key] = scope.def(scopeAttrib, '.', key);
+        });
+      }
+      emitBindAttribute(
+        env.link(attribute), typeLength(attribute.info.type), record);
+    });
+  }
+
+  function emitUniforms (env, scope, args, uniforms, filter) {
+    var shared = env.shared;
+    var GL = shared.gl;
+
+    var infix;
+    for (var i = 0; i < uniforms.length; ++i) {
+      var uniform = uniforms[i];
+      var name = uniform.name;
+      var type = uniform.info.type;
+      var arg = args.uniforms[name];
+      var UNIFORM = env.link(uniform);
+      var LOCATION = UNIFORM + '.location';
+
+      var VALUE;
+      if (arg) {
+        if (!filter(arg)) {
+          continue
+        }
+        if (isStatic(arg)) {
+          var value = arg.value;
+          check$1.command(
+            value !== null && typeof value !== 'undefined',
+            'missing uniform "' + name + '"', env.commandStr);
+          if (type === GL_SAMPLER_2D || type === GL_SAMPLER_CUBE) {
+            check$1.command(
+              typeof value === 'function' &&
+              ((type === GL_SAMPLER_2D &&
+                (value._reglType === 'texture2d' ||
+                value._reglType === 'framebuffer')) ||
+              (type === GL_SAMPLER_CUBE &&
+                (value._reglType === 'textureCube' ||
+                value._reglType === 'framebufferCube'))),
+              'invalid texture for uniform ' + name, env.commandStr);
+            var TEX_VALUE = env.link(value._texture || value.color[0]._texture);
+            scope(GL, '.uniform1i(', LOCATION, ',', TEX_VALUE + '.bind());');
+            scope.exit(TEX_VALUE, '.unbind();');
+          } else if (
+            type === GL_FLOAT_MAT2 ||
+            type === GL_FLOAT_MAT3 ||
+            type === GL_FLOAT_MAT4) {
+            check$1.optional(function () {
+              check$1.command(isArrayLike(value),
+                'invalid matrix for uniform ' + name, env.commandStr);
+              check$1.command(
+                (type === GL_FLOAT_MAT2 && value.length === 4) ||
+                (type === GL_FLOAT_MAT3 && value.length === 9) ||
+                (type === GL_FLOAT_MAT4 && value.length === 16),
+                'invalid length for matrix uniform ' + name, env.commandStr);
+            });
+            var MAT_VALUE = env.global.def('new Float32Array([' +
+              Array.prototype.slice.call(value) + '])');
+            var dim = 2;
+            if (type === GL_FLOAT_MAT3) {
+              dim = 3;
+            } else if (type === GL_FLOAT_MAT4) {
+              dim = 4;
+            }
+            scope(
+              GL, '.uniformMatrix', dim, 'fv(',
+              LOCATION, ',false,', MAT_VALUE, ');');
+          } else {
+            switch (type) {
+              case GL_FLOAT$7:
+                check$1.commandType(value, 'number', 'uniform ' + name, env.commandStr);
+                infix = '1f';
+                break
+              case GL_FLOAT_VEC2:
+                check$1.command(
+                  isArrayLike(value) && value.length === 2,
+                  'uniform ' + name, env.commandStr);
+                infix = '2f';
+                break
+              case GL_FLOAT_VEC3:
+                check$1.command(
+                  isArrayLike(value) && value.length === 3,
+                  'uniform ' + name, env.commandStr);
+                infix = '3f';
+                break
+              case GL_FLOAT_VEC4:
+                check$1.command(
+                  isArrayLike(value) && value.length === 4,
+                  'uniform ' + name, env.commandStr);
+                infix = '4f';
+                break
+              case GL_BOOL:
+                check$1.commandType(value, 'boolean', 'uniform ' + name, env.commandStr);
+                infix = '1i';
+                break
+              case GL_INT$3:
+                check$1.commandType(value, 'number', 'uniform ' + name, env.commandStr);
+                infix = '1i';
+                break
+              case GL_BOOL_VEC2:
+                check$1.command(
+                  isArrayLike(value) && value.length === 2,
+                  'uniform ' + name, env.commandStr);
+                infix = '2i';
+                break
+              case GL_INT_VEC2:
+                check$1.command(
+                  isArrayLike(value) && value.length === 2,
+                  'uniform ' + name, env.commandStr);
+                infix = '2i';
+                break
+              case GL_BOOL_VEC3:
+                check$1.command(
+                  isArrayLike(value) && value.length === 3,
+                  'uniform ' + name, env.commandStr);
+                infix = '3i';
+                break
+              case GL_INT_VEC3:
+                check$1.command(
+                  isArrayLike(value) && value.length === 3,
+                  'uniform ' + name, env.commandStr);
+                infix = '3i';
+                break
+              case GL_BOOL_VEC4:
+                check$1.command(
+                  isArrayLike(value) && value.length === 4,
+                  'uniform ' + name, env.commandStr);
+                infix = '4i';
+                break
+              case GL_INT_VEC4:
+                check$1.command(
+                  isArrayLike(value) && value.length === 4,
+                  'uniform ' + name, env.commandStr);
+                infix = '4i';
+                break
+            }
+            scope(GL, '.uniform', infix, '(', LOCATION, ',',
+              isArrayLike(value) ? Array.prototype.slice.call(value) : value,
+              ');');
+          }
+          continue
+        } else {
+          VALUE = arg.append(env, scope);
+        }
+      } else {
+        if (!filter(SCOPE_DECL)) {
+          continue
+        }
+        VALUE = scope.def(shared.uniforms, '[', stringStore.id(name), ']');
+      }
+
+      if (type === GL_SAMPLER_2D) {
+        scope(
+          'if(', VALUE, '&&', VALUE, '._reglType==="framebuffer"){',
+          VALUE, '=', VALUE, '.color[0];',
+          '}');
+      } else if (type === GL_SAMPLER_CUBE) {
+        scope(
+          'if(', VALUE, '&&', VALUE, '._reglType==="framebufferCube"){',
+          VALUE, '=', VALUE, '.color[0];',
+          '}');
+      }
+
+      // perform type validation
+      check$1.optional(function () {
+        function check (pred, message) {
+          env.assert(scope, pred,
+            'bad data or missing for uniform "' + name + '".  ' + message);
+        }
+
+        function checkType (type) {
+          check(
+            'typeof ' + VALUE + '==="' + type + '"',
+            'invalid type, expected ' + type);
+        }
+
+        function checkVector (n, type) {
+          check(
+            shared.isArrayLike + '(' + VALUE + ')&&' + VALUE + '.length===' + n,
+            'invalid vector, should have length ' + n, env.commandStr);
+        }
+
+        function checkTexture (target) {
+          check(
+            'typeof ' + VALUE + '==="function"&&' +
+            VALUE + '._reglType==="texture' +
+            (target === GL_TEXTURE_2D$2 ? '2d' : 'Cube') + '"',
+            'invalid texture type', env.commandStr);
+        }
+
+        switch (type) {
+          case GL_INT$3:
+            checkType('number');
+            break
+          case GL_INT_VEC2:
+            checkVector(2, 'number');
+            break
+          case GL_INT_VEC3:
+            checkVector(3, 'number');
+            break
+          case GL_INT_VEC4:
+            checkVector(4, 'number');
+            break
+          case GL_FLOAT$7:
+            checkType('number');
+            break
+          case GL_FLOAT_VEC2:
+            checkVector(2, 'number');
+            break
+          case GL_FLOAT_VEC3:
+            checkVector(3, 'number');
+            break
+          case GL_FLOAT_VEC4:
+            checkVector(4, 'number');
+            break
+          case GL_BOOL:
+            checkType('boolean');
+            break
+          case GL_BOOL_VEC2:
+            checkVector(2, 'boolean');
+            break
+          case GL_BOOL_VEC3:
+            checkVector(3, 'boolean');
+            break
+          case GL_BOOL_VEC4:
+            checkVector(4, 'boolean');
+            break
+          case GL_FLOAT_MAT2:
+            checkVector(4, 'number');
+            break
+          case GL_FLOAT_MAT3:
+            checkVector(9, 'number');
+            break
+          case GL_FLOAT_MAT4:
+            checkVector(16, 'number');
+            break
+          case GL_SAMPLER_2D:
+            checkTexture(GL_TEXTURE_2D$2);
+            break
+          case GL_SAMPLER_CUBE:
+            checkTexture(GL_TEXTURE_CUBE_MAP$1);
+            break
+        }
+      });
+
+      var unroll = 1;
+      switch (type) {
+        case GL_SAMPLER_2D:
+        case GL_SAMPLER_CUBE:
+          var TEX = scope.def(VALUE, '._texture');
+          scope(GL, '.uniform1i(', LOCATION, ',', TEX, '.bind());');
+          scope.exit(TEX, '.unbind();');
+          continue
+
+        case GL_INT$3:
+        case GL_BOOL:
+          infix = '1i';
+          break
+
+        case GL_INT_VEC2:
+        case GL_BOOL_VEC2:
+          infix = '2i';
+          unroll = 2;
+          break
+
+        case GL_INT_VEC3:
+        case GL_BOOL_VEC3:
+          infix = '3i';
+          unroll = 3;
+          break
+
+        case GL_INT_VEC4:
+        case GL_BOOL_VEC4:
+          infix = '4i';
+          unroll = 4;
+          break
+
+        case GL_FLOAT$7:
+          infix = '1f';
+          break
+
+        case GL_FLOAT_VEC2:
+          infix = '2f';
+          unroll = 2;
+          break
+
+        case GL_FLOAT_VEC3:
+          infix = '3f';
+          unroll = 3;
+          break
+
+        case GL_FLOAT_VEC4:
+          infix = '4f';
+          unroll = 4;
+          break
+
+        case GL_FLOAT_MAT2:
+          infix = 'Matrix2fv';
+          break
+
+        case GL_FLOAT_MAT3:
+          infix = 'Matrix3fv';
+          break
+
+        case GL_FLOAT_MAT4:
+          infix = 'Matrix4fv';
+          break
+      }
+
+      scope(GL, '.uniform', infix, '(', LOCATION, ',');
+      if (infix.charAt(0) === 'M') {
+        var matSize = Math.pow(type - GL_FLOAT_MAT2 + 2, 2);
+        var STORAGE = env.global.def('new Float32Array(', matSize, ')');
+        scope(
+          'false,(Array.isArray(', VALUE, ')||', VALUE, ' instanceof Float32Array)?', VALUE, ':(',
+          loop(matSize, function (i) {
+            return STORAGE + '[' + i + ']=' + VALUE + '[' + i + ']'
+          }), ',', STORAGE, ')');
+      } else if (unroll > 1) {
+        scope(loop(unroll, function (i) {
+          return VALUE + '[' + i + ']'
+        }));
+      } else {
+        scope(VALUE);
+      }
+      scope(');');
+    }
+  }
+
+  function emitDraw (env, outer, inner, args) {
+    var shared = env.shared;
+    var GL = shared.gl;
+    var DRAW_STATE = shared.draw;
+
+    var drawOptions = args.draw;
+
+    function emitElements () {
+      var defn = drawOptions.elements;
+      var ELEMENTS;
+      var scope = outer;
+      if (defn) {
+        if ((defn.contextDep && args.contextDynamic) || defn.propDep) {
+          scope = inner;
+        }
+        ELEMENTS = defn.append(env, scope);
+      } else {
+        ELEMENTS = scope.def(DRAW_STATE, '.', S_ELEMENTS);
+      }
+      if (ELEMENTS) {
+        scope(
+          'if(' + ELEMENTS + ')' +
+          GL + '.bindBuffer(' + GL_ELEMENT_ARRAY_BUFFER$1 + ',' + ELEMENTS + '.buffer.buffer);');
+      }
+      return ELEMENTS
+    }
+
+    function emitCount () {
+      var defn = drawOptions.count;
+      var COUNT;
+      var scope = outer;
+      if (defn) {
+        if ((defn.contextDep && args.contextDynamic) || defn.propDep) {
+          scope = inner;
+        }
+        COUNT = defn.append(env, scope);
+        check$1.optional(function () {
+          if (defn.MISSING) {
+            env.assert(outer, 'false', 'missing vertex count');
+          }
+          if (defn.DYNAMIC) {
+            env.assert(scope, COUNT + '>=0', 'missing vertex count');
+          }
+        });
+      } else {
+        COUNT = scope.def(DRAW_STATE, '.', S_COUNT);
+        check$1.optional(function () {
+          env.assert(scope, COUNT + '>=0', 'missing vertex count');
+        });
+      }
+      return COUNT
+    }
+
+    var ELEMENTS = emitElements();
+    function emitValue (name) {
+      var defn = drawOptions[name];
+      if (defn) {
+        if ((defn.contextDep && args.contextDynamic) || defn.propDep) {
+          return defn.append(env, inner)
+        } else {
+          return defn.append(env, outer)
+        }
+      } else {
+        return outer.def(DRAW_STATE, '.', name)
+      }
+    }
+
+    var PRIMITIVE = emitValue(S_PRIMITIVE);
+    var OFFSET = emitValue(S_OFFSET);
+
+    var COUNT = emitCount();
+    if (typeof COUNT === 'number') {
+      if (COUNT === 0) {
+        return
+      }
+    } else {
+      inner('if(', COUNT, '){');
+      inner.exit('}');
+    }
+
+    var INSTANCES, EXT_INSTANCING;
+    if (extInstancing) {
+      INSTANCES = emitValue(S_INSTANCES);
+      EXT_INSTANCING = env.instancing;
+    }
+
+    var ELEMENT_TYPE = ELEMENTS + '.type';
+
+    var elementsStatic = drawOptions.elements && isStatic(drawOptions.elements);
+
+    function emitInstancing () {
+      function drawElements () {
+        inner(EXT_INSTANCING, '.drawElementsInstancedANGLE(', [
+          PRIMITIVE,
+          COUNT,
+          ELEMENT_TYPE,
+          OFFSET + '<<((' + ELEMENT_TYPE + '-' + GL_UNSIGNED_BYTE$7 + ')>>1)',
+          INSTANCES
+        ], ');');
+      }
+
+      function drawArrays () {
+        inner(EXT_INSTANCING, '.drawArraysInstancedANGLE(',
+          [PRIMITIVE, OFFSET, COUNT, INSTANCES], ');');
+      }
+
+      if (ELEMENTS) {
+        if (!elementsStatic) {
+          inner('if(', ELEMENTS, '){');
+          drawElements();
+          inner('}else{');
+          drawArrays();
+          inner('}');
+        } else {
+          drawElements();
+        }
+      } else {
+        drawArrays();
+      }
+    }
+
+    function emitRegular () {
+      function drawElements () {
+        inner(GL + '.drawElements(' + [
+          PRIMITIVE,
+          COUNT,
+          ELEMENT_TYPE,
+          OFFSET + '<<((' + ELEMENT_TYPE + '-' + GL_UNSIGNED_BYTE$7 + ')>>1)'
+        ] + ');');
+      }
+
+      function drawArrays () {
+        inner(GL + '.drawArrays(' + [PRIMITIVE, OFFSET, COUNT] + ');');
+      }
+
+      if (ELEMENTS) {
+        if (!elementsStatic) {
+          inner('if(', ELEMENTS, '){');
+          drawElements();
+          inner('}else{');
+          drawArrays();
+          inner('}');
+        } else {
+          drawElements();
+        }
+      } else {
+        drawArrays();
+      }
+    }
+
+    if (extInstancing && (typeof INSTANCES !== 'number' || INSTANCES >= 0)) {
+      if (typeof INSTANCES === 'string') {
+        inner('if(', INSTANCES, '>0){');
+        emitInstancing();
+        inner('}else if(', INSTANCES, '<0){');
+        emitRegular();
+        inner('}');
+      } else {
+        emitInstancing();
+      }
+    } else {
+      emitRegular();
+    }
+  }
+
+  function createBody (emitBody, parentEnv, args, program, count) {
+    var env = createREGLEnvironment();
+    var scope = env.proc('body', count);
+    check$1.optional(function () {
+      env.commandStr = parentEnv.commandStr;
+      env.command = env.link(parentEnv.commandStr);
+    });
+    if (extInstancing) {
+      env.instancing = scope.def(
+        env.shared.extensions, '.angle_instanced_arrays');
+    }
+    emitBody(env, scope, args, program);
+    return env.compile().body
+  }
+
+  // ===================================================
+  // ===================================================
+  // DRAW PROC
+  // ===================================================
+  // ===================================================
+  function emitDrawBody (env, draw, args, program) {
+    injectExtensions(env, draw);
+    emitAttributes(env, draw, args, program.attributes, function () {
+      return true
+    });
+    emitUniforms(env, draw, args, program.uniforms, function () {
+      return true
+    });
+    emitDraw(env, draw, draw, args);
+  }
+
+  function emitDrawProc (env, args) {
+    var draw = env.proc('draw', 1);
+
+    injectExtensions(env, draw);
+
+    emitContext(env, draw, args.context);
+    emitPollFramebuffer(env, draw, args.framebuffer);
+
+    emitPollState(env, draw, args);
+    emitSetOptions(env, draw, args.state);
+
+    emitProfile(env, draw, args, false, true);
+
+    var program = args.shader.progVar.append(env, draw);
+    draw(env.shared.gl, '.useProgram(', program, '.program);');
+
+    if (args.shader.program) {
+      emitDrawBody(env, draw, args, args.shader.program);
+    } else {
+      var drawCache = env.global.def('{}');
+      var PROG_ID = draw.def(program, '.id');
+      var CACHED_PROC = draw.def(drawCache, '[', PROG_ID, ']');
+      draw(
+        env.cond(CACHED_PROC)
+          .then(CACHED_PROC, '.call(this,a0);')
+          .else(
+            CACHED_PROC, '=', drawCache, '[', PROG_ID, ']=',
+            env.link(function (program) {
+              return createBody(emitDrawBody, env, args, program, 1)
+            }), '(', program, ');',
+            CACHED_PROC, '.call(this,a0);'));
+    }
+
+    if (Object.keys(args.state).length > 0) {
+      draw(env.shared.current, '.dirty=true;');
+    }
+  }
+
+  // ===================================================
+  // ===================================================
+  // BATCH PROC
+  // ===================================================
+  // ===================================================
+
+  function emitBatchDynamicShaderBody (env, scope, args, program) {
+    env.batchId = 'a1';
+
+    injectExtensions(env, scope);
+
+    function all () {
+      return true
+    }
+
+    emitAttributes(env, scope, args, program.attributes, all);
+    emitUniforms(env, scope, args, program.uniforms, all);
+    emitDraw(env, scope, scope, args);
+  }
+
+  function emitBatchBody (env, scope, args, program) {
+    injectExtensions(env, scope);
+
+    var contextDynamic = args.contextDep;
+
+    var BATCH_ID = scope.def();
+    var PROP_LIST = 'a0';
+    var NUM_PROPS = 'a1';
+    var PROPS = scope.def();
+    env.shared.props = PROPS;
+    env.batchId = BATCH_ID;
+
+    var outer = env.scope();
+    var inner = env.scope();
+
+    scope(
+      outer.entry,
+      'for(', BATCH_ID, '=0;', BATCH_ID, '<', NUM_PROPS, ';++', BATCH_ID, '){',
+      PROPS, '=', PROP_LIST, '[', BATCH_ID, '];',
+      inner,
+      '}',
+      outer.exit);
+
+    function isInnerDefn (defn) {
+      return ((defn.contextDep && contextDynamic) || defn.propDep)
+    }
+
+    function isOuterDefn (defn) {
+      return !isInnerDefn(defn)
+    }
+
+    if (args.needsContext) {
+      emitContext(env, inner, args.context);
+    }
+    if (args.needsFramebuffer) {
+      emitPollFramebuffer(env, inner, args.framebuffer);
+    }
+    emitSetOptions(env, inner, args.state, isInnerDefn);
+
+    if (args.profile && isInnerDefn(args.profile)) {
+      emitProfile(env, inner, args, false, true);
+    }
+
+    if (!program) {
+      var progCache = env.global.def('{}');
+      var PROGRAM = args.shader.progVar.append(env, inner);
+      var PROG_ID = inner.def(PROGRAM, '.id');
+      var CACHED_PROC = inner.def(progCache, '[', PROG_ID, ']');
+      inner(
+        env.shared.gl, '.useProgram(', PROGRAM, '.program);',
+        'if(!', CACHED_PROC, '){',
+        CACHED_PROC, '=', progCache, '[', PROG_ID, ']=',
+        env.link(function (program) {
+          return createBody(
+            emitBatchDynamicShaderBody, env, args, program, 2)
+        }), '(', PROGRAM, ');}',
+        CACHED_PROC, '.call(this,a0[', BATCH_ID, '],', BATCH_ID, ');');
+    } else {
+      emitAttributes(env, outer, args, program.attributes, isOuterDefn);
+      emitAttributes(env, inner, args, program.attributes, isInnerDefn);
+      emitUniforms(env, outer, args, program.uniforms, isOuterDefn);
+      emitUniforms(env, inner, args, program.uniforms, isInnerDefn);
+      emitDraw(env, outer, inner, args);
+    }
+  }
+
+  function emitBatchProc (env, args) {
+    var batch = env.proc('batch', 2);
+    env.batchId = '0';
+
+    injectExtensions(env, batch);
+
+    // Check if any context variables depend on props
+    var contextDynamic = false;
+    var needsContext = true;
+    Object.keys(args.context).forEach(function (name) {
+      contextDynamic = contextDynamic || args.context[name].propDep;
+    });
+    if (!contextDynamic) {
+      emitContext(env, batch, args.context);
+      needsContext = false;
+    }
+
+    // framebuffer state affects framebufferWidth/height context vars
+    var framebuffer = args.framebuffer;
+    var needsFramebuffer = false;
+    if (framebuffer) {
+      if (framebuffer.propDep) {
+        contextDynamic = needsFramebuffer = true;
+      } else if (framebuffer.contextDep && contextDynamic) {
+        needsFramebuffer = true;
+      }
+      if (!needsFramebuffer) {
+        emitPollFramebuffer(env, batch, framebuffer);
+      }
+    } else {
+      emitPollFramebuffer(env, batch, null);
+    }
+
+    // viewport is weird because it can affect context vars
+    if (args.state.viewport && args.state.viewport.propDep) {
+      contextDynamic = true;
+    }
+
+    function isInnerDefn (defn) {
+      return (defn.contextDep && contextDynamic) || defn.propDep
+    }
+
+    // set webgl options
+    emitPollState(env, batch, args);
+    emitSetOptions(env, batch, args.state, function (defn) {
+      return !isInnerDefn(defn)
+    });
+
+    if (!args.profile || !isInnerDefn(args.profile)) {
+      emitProfile(env, batch, args, false, 'a1');
+    }
+
+    // Save these values to args so that the batch body routine can use them
+    args.contextDep = contextDynamic;
+    args.needsContext = needsContext;
+    args.needsFramebuffer = needsFramebuffer;
+
+    // determine if shader is dynamic
+    var progDefn = args.shader.progVar;
+    if ((progDefn.contextDep && contextDynamic) || progDefn.propDep) {
+      emitBatchBody(
+        env,
+        batch,
+        args,
+        null);
+    } else {
+      var PROGRAM = progDefn.append(env, batch);
+      batch(env.shared.gl, '.useProgram(', PROGRAM, '.program);');
+      if (args.shader.program) {
+        emitBatchBody(
+          env,
+          batch,
+          args,
+          args.shader.program);
+      } else {
+        var batchCache = env.global.def('{}');
+        var PROG_ID = batch.def(PROGRAM, '.id');
+        var CACHED_PROC = batch.def(batchCache, '[', PROG_ID, ']');
+        batch(
+          env.cond(CACHED_PROC)
+            .then(CACHED_PROC, '.call(this,a0,a1);')
+            .else(
+              CACHED_PROC, '=', batchCache, '[', PROG_ID, ']=',
+              env.link(function (program) {
+                return createBody(emitBatchBody, env, args, program, 2)
+              }), '(', PROGRAM, ');',
+              CACHED_PROC, '.call(this,a0,a1);'));
+      }
+    }
+
+    if (Object.keys(args.state).length > 0) {
+      batch(env.shared.current, '.dirty=true;');
+    }
+  }
+
+  // ===================================================
+  // ===================================================
+  // SCOPE COMMAND
+  // ===================================================
+  // ===================================================
+  function emitScopeProc (env, args) {
+    var scope = env.proc('scope', 3);
+    env.batchId = 'a2';
+
+    var shared = env.shared;
+    var CURRENT_STATE = shared.current;
+
+    emitContext(env, scope, args.context);
+
+    if (args.framebuffer) {
+      args.framebuffer.append(env, scope);
+    }
+
+    sortState(Object.keys(args.state)).forEach(function (name) {
+      var defn = args.state[name];
+      var value = defn.append(env, scope);
+      if (isArrayLike(value)) {
+        value.forEach(function (v, i) {
+          scope.set(env.next[name], '[' + i + ']', v);
+        });
+      } else {
+        scope.set(shared.next, '.' + name, value);
+      }
+    });
+
+    emitProfile(env, scope, args, true, true)
+
+    ;[S_ELEMENTS, S_OFFSET, S_COUNT, S_INSTANCES, S_PRIMITIVE].forEach(
+      function (opt) {
+        var variable = args.draw[opt];
+        if (!variable) {
+          return
+        }
+        scope.set(shared.draw, '.' + opt, '' + variable.append(env, scope));
+      });
+
+    Object.keys(args.uniforms).forEach(function (opt) {
+      scope.set(
+        shared.uniforms,
+        '[' + stringStore.id(opt) + ']',
+        args.uniforms[opt].append(env, scope));
+    });
+
+    Object.keys(args.attributes).forEach(function (name) {
+      var record = args.attributes[name].append(env, scope);
+      var scopeAttrib = env.scopeAttrib(name);
+      Object.keys(new AttributeRecord()).forEach(function (prop) {
+        scope.set(scopeAttrib, '.' + prop, record[prop]);
+      });
+    });
+
+    function saveShader (name) {
+      var shader = args.shader[name];
+      if (shader) {
+        scope.set(shared.shader, '.' + name, shader.append(env, scope));
+      }
+    }
+    saveShader(S_VERT);
+    saveShader(S_FRAG);
+
+    if (Object.keys(args.state).length > 0) {
+      scope(CURRENT_STATE, '.dirty=true;');
+      scope.exit(CURRENT_STATE, '.dirty=true;');
+    }
+
+    scope('a1(', env.shared.context, ',a0,', env.batchId, ');');
+  }
+
+  function isDynamicObject (object) {
+    if (typeof object !== 'object' || isArrayLike(object)) {
+      return
+    }
+    var props = Object.keys(object);
+    for (var i = 0; i < props.length; ++i) {
+      if (dynamic.isDynamic(object[props[i]])) {
+        return true
+      }
+    }
+    return false
+  }
+
+  function splatObject (env, options, name) {
+    var object = options.static[name];
+    if (!object || !isDynamicObject(object)) {
+      return
+    }
+
+    var globals = env.global;
+    var keys = Object.keys(object);
+    var thisDep = false;
+    var contextDep = false;
+    var propDep = false;
+    var objectRef = env.global.def('{}');
+    keys.forEach(function (key) {
+      var value = object[key];
+      if (dynamic.isDynamic(value)) {
+        if (typeof value === 'function') {
+          value = object[key] = dynamic.unbox(value);
+        }
+        var deps = createDynamicDecl(value, null);
+        thisDep = thisDep || deps.thisDep;
+        propDep = propDep || deps.propDep;
+        contextDep = contextDep || deps.contextDep;
+      } else {
+        globals(objectRef, '.', key, '=');
+        switch (typeof value) {
+          case 'number':
+            globals(value);
+            break
+          case 'string':
+            globals('"', value, '"');
+            break
+          case 'object':
+            if (Array.isArray(value)) {
+              globals('[', value.join(), ']');
+            }
+            break
+          default:
+            globals(env.link(value));
+            break
+        }
+        globals(';');
+      }
+    });
+
+    function appendBlock (env, block) {
+      keys.forEach(function (key) {
+        var value = object[key];
+        if (!dynamic.isDynamic(value)) {
+          return
+        }
+        var ref = env.invoke(block, value);
+        block(objectRef, '.', key, '=', ref, ';');
+      });
+    }
+
+    options.dynamic[name] = new dynamic.DynamicVariable(DYN_THUNK, {
+      thisDep: thisDep,
+      contextDep: contextDep,
+      propDep: propDep,
+      ref: objectRef,
+      append: appendBlock
+    });
+    delete options.static[name];
+  }
+
+  // ===========================================================================
+  // ===========================================================================
+  // MAIN DRAW COMMAND
+  // ===========================================================================
+  // ===========================================================================
+  function compileCommand (options, attributes, uniforms, context, stats) {
+    var env = createREGLEnvironment();
+
+    // link stats, so that we can easily access it in the program.
+    env.stats = env.link(stats);
+
+    // splat options and attributes to allow for dynamic nested properties
+    Object.keys(attributes.static).forEach(function (key) {
+      splatObject(env, attributes, key);
+    });
+    NESTED_OPTIONS.forEach(function (name) {
+      splatObject(env, options, name);
+    });
+
+    var args = parseArguments(options, attributes, uniforms, context, env);
+
+    emitDrawProc(env, args);
+    emitScopeProc(env, args);
+    emitBatchProc(env, args);
+
+    return env.compile()
+  }
+
+  // ===========================================================================
+  // ===========================================================================
+  // POLL / REFRESH
+  // ===========================================================================
+  // ===========================================================================
+  return {
+    next: nextState,
+    current: currentState,
+    procs: (function () {
+      var env = createREGLEnvironment();
+      var poll = env.proc('poll');
+      var refresh = env.proc('refresh');
+      var common = env.block();
+      poll(common);
+      refresh(common);
+
+      var shared = env.shared;
+      var GL = shared.gl;
+      var NEXT_STATE = shared.next;
+      var CURRENT_STATE = shared.current;
+
+      common(CURRENT_STATE, '.dirty=false;');
+
+      emitPollFramebuffer(env, poll);
+      emitPollFramebuffer(env, refresh, null, true);
+
+      // Refresh updates all attribute state changes
+      var extInstancing = gl.getExtension('angle_instanced_arrays');
+      var INSTANCING;
+      if (extInstancing) {
+        INSTANCING = env.link(extInstancing);
+      }
+      for (var i = 0; i < limits.maxAttributes; ++i) {
+        var BINDING = refresh.def(shared.attributes, '[', i, ']');
+        var ifte = env.cond(BINDING, '.buffer');
+        ifte.then(
+          GL, '.enableVertexAttribArray(', i, ');',
+          GL, '.bindBuffer(',
+            GL_ARRAY_BUFFER$1, ',',
+            BINDING, '.buffer.buffer);',
+          GL, '.vertexAttribPointer(',
+            i, ',',
+            BINDING, '.size,',
+            BINDING, '.type,',
+            BINDING, '.normalized,',
+            BINDING, '.stride,',
+            BINDING, '.offset);'
+        ).else(
+          GL, '.disableVertexAttribArray(', i, ');',
+          GL, '.vertexAttrib4f(',
+            i, ',',
+            BINDING, '.x,',
+            BINDING, '.y,',
+            BINDING, '.z,',
+            BINDING, '.w);',
+          BINDING, '.buffer=null;');
+        refresh(ifte);
+        if (extInstancing) {
+          refresh(
+            INSTANCING, '.vertexAttribDivisorANGLE(',
+            i, ',',
+            BINDING, '.divisor);');
+        }
+      }
+
+      Object.keys(GL_FLAGS).forEach(function (flag) {
+        var cap = GL_FLAGS[flag];
+        var NEXT = common.def(NEXT_STATE, '.', flag);
+        var block = env.block();
+        block('if(', NEXT, '){',
+          GL, '.enable(', cap, ')}else{',
+          GL, '.disable(', cap, ')}',
+          CURRENT_STATE, '.', flag, '=', NEXT, ';');
+        refresh(block);
+        poll(
+          'if(', NEXT, '!==', CURRENT_STATE, '.', flag, '){',
+          block,
+          '}');
+      });
+
+      Object.keys(GL_VARIABLES).forEach(function (name) {
+        var func = GL_VARIABLES[name];
+        var init = currentState[name];
+        var NEXT, CURRENT;
+        var block = env.block();
+        block(GL, '.', func, '(');
+        if (isArrayLike(init)) {
+          var n = init.length;
+          NEXT = env.global.def(NEXT_STATE, '.', name);
+          CURRENT = env.global.def(CURRENT_STATE, '.', name);
+          block(
+            loop(n, function (i) {
+              return NEXT + '[' + i + ']'
+            }), ');',
+            loop(n, function (i) {
+              return CURRENT + '[' + i + ']=' + NEXT + '[' + i + '];'
+            }).join(''));
+          poll(
+            'if(', loop(n, function (i) {
+              return NEXT + '[' + i + ']!==' + CURRENT + '[' + i + ']'
+            }).join('||'), '){',
+            block,
+            '}');
+        } else {
+          NEXT = common.def(NEXT_STATE, '.', name);
+          CURRENT = common.def(CURRENT_STATE, '.', name);
+          block(
+            NEXT, ');',
+            CURRENT_STATE, '.', name, '=', NEXT, ';');
+          poll(
+            'if(', NEXT, '!==', CURRENT, '){',
+            block,
+            '}');
+        }
+        refresh(block);
+      });
+
+      return env.compile()
+    })(),
+    compile: compileCommand
+  }
+}
+
+function stats () {
+  return {
+    bufferCount: 0,
+    elementsCount: 0,
+    framebufferCount: 0,
+    shaderCount: 0,
+    textureCount: 0,
+    cubeCount: 0,
+    renderbufferCount: 0,
+
+    maxTextureUnits: 0
+  }
+}
+
+var GL_QUERY_RESULT_EXT = 0x8866;
+var GL_QUERY_RESULT_AVAILABLE_EXT = 0x8867;
+var GL_TIME_ELAPSED_EXT = 0x88BF;
+
+var createTimer = function (gl, extensions) {
+  var extTimer = extensions.ext_disjoint_timer_query;
+
+  if (!extTimer) {
+    return null
+  }
+
+  // QUERY POOL BEGIN
+  var queryPool = [];
+  function allocQuery () {
+    return queryPool.pop() || extTimer.createQueryEXT()
+  }
+  function freeQuery (query) {
+    queryPool.push(query);
+  }
+  // QUERY POOL END
+
+  var pendingQueries = [];
+  function beginQuery (stats) {
+    var query = allocQuery();
+    extTimer.beginQueryEXT(GL_TIME_ELAPSED_EXT, query);
+    pendingQueries.push(query);
+    pushScopeStats(pendingQueries.length - 1, pendingQueries.length, stats);
+  }
+
+  function endQuery () {
+    extTimer.endQueryEXT(GL_TIME_ELAPSED_EXT);
+  }
+
+  //
+  // Pending stats pool.
+  //
+  function PendingStats () {
+    this.startQueryIndex = -1;
+    this.endQueryIndex = -1;
+    this.sum = 0;
+    this.stats = null;
+  }
+  var pendingStatsPool = [];
+  function allocPendingStats () {
+    return pendingStatsPool.pop() || new PendingStats()
+  }
+  function freePendingStats (pendingStats) {
+    pendingStatsPool.push(pendingStats);
+  }
+  // Pending stats pool end
+
+  var pendingStats = [];
+  function pushScopeStats (start, end, stats) {
+    var ps = allocPendingStats();
+    ps.startQueryIndex = start;
+    ps.endQueryIndex = end;
+    ps.sum = 0;
+    ps.stats = stats;
+    pendingStats.push(ps);
+  }
+
+  // we should call this at the beginning of the frame,
+  // in order to update gpuTime
+  var timeSum = [];
+  var queryPtr = [];
+  function update () {
+    var ptr, i;
+
+    var n = pendingQueries.length;
+    if (n === 0) {
+      return
+    }
+
+    // Reserve space
+    queryPtr.length = Math.max(queryPtr.length, n + 1);
+    timeSum.length = Math.max(timeSum.length, n + 1);
+    timeSum[0] = 0;
+    queryPtr[0] = 0;
+
+    // Update all pending timer queries
+    var queryTime = 0;
+    ptr = 0;
+    for (i = 0; i < pendingQueries.length; ++i) {
+      var query = pendingQueries[i];
+      if (extTimer.getQueryObjectEXT(query, GL_QUERY_RESULT_AVAILABLE_EXT)) {
+        queryTime += extTimer.getQueryObjectEXT(query, GL_QUERY_RESULT_EXT);
+        freeQuery(query);
+      } else {
+        pendingQueries[ptr++] = query;
+      }
+      timeSum[i + 1] = queryTime;
+      queryPtr[i + 1] = ptr;
+    }
+    pendingQueries.length = ptr;
+
+    // Update all pending stat queries
+    ptr = 0;
+    for (i = 0; i < pendingStats.length; ++i) {
+      var stats = pendingStats[i];
+      var start = stats.startQueryIndex;
+      var end = stats.endQueryIndex;
+      stats.sum += timeSum[end] - timeSum[start];
+      var startPtr = queryPtr[start];
+      var endPtr = queryPtr[end];
+      if (endPtr === startPtr) {
+        stats.stats.gpuTime += stats.sum / 1e6;
+        freePendingStats(stats);
+      } else {
+        stats.startQueryIndex = startPtr;
+        stats.endQueryIndex = endPtr;
+        pendingStats[ptr++] = stats;
+      }
+    }
+    pendingStats.length = ptr;
+  }
+
+  return {
+    beginQuery: beginQuery,
+    endQuery: endQuery,
+    pushScopeStats: pushScopeStats,
+    update: update,
+    getNumPendingQueries: function () {
+      return pendingQueries.length
+    },
+    clear: function () {
+      queryPool.push.apply(queryPool, pendingQueries);
+      for (var i = 0; i < queryPool.length; i++) {
+        extTimer.deleteQueryEXT(queryPool[i]);
+      }
+      pendingQueries.length = 0;
+      queryPool.length = 0;
+    },
+    restore: function () {
+      pendingQueries.length = 0;
+      queryPool.length = 0;
+    }
+  }
+};
+
+var GL_COLOR_BUFFER_BIT = 16384;
+var GL_DEPTH_BUFFER_BIT = 256;
+var GL_STENCIL_BUFFER_BIT = 1024;
+
+var GL_ARRAY_BUFFER = 34962;
+
+var CONTEXT_LOST_EVENT = 'webglcontextlost';
+var CONTEXT_RESTORED_EVENT = 'webglcontextrestored';
+
+var DYN_PROP = 1;
+var DYN_CONTEXT = 2;
+var DYN_STATE = 3;
+
+function find (haystack, needle) {
+  for (var i = 0; i < haystack.length; ++i) {
+    if (haystack[i] === needle) {
+      return i
+    }
+  }
+  return -1
+}
+
+function wrapREGL (args) {
+  var config = parseArgs(args);
+  if (!config) {
+    return null
+  }
+
+  var gl = config.gl;
+  var glAttributes = gl.getContextAttributes();
+  var contextLost = gl.isContextLost();
+
+  var extensionState = createExtensionCache(gl, config);
+  if (!extensionState) {
+    return null
+  }
+
+  var stringStore = createStringStore();
+  var stats$$1 = stats();
+  var extensions = extensionState.extensions;
+  var timer = createTimer(gl, extensions);
+
+  var START_TIME = clock();
+  var WIDTH = gl.drawingBufferWidth;
+  var HEIGHT = gl.drawingBufferHeight;
+
+  var contextState = {
+    tick: 0,
+    time: 0,
+    viewportWidth: WIDTH,
+    viewportHeight: HEIGHT,
+    framebufferWidth: WIDTH,
+    framebufferHeight: HEIGHT,
+    drawingBufferWidth: WIDTH,
+    drawingBufferHeight: HEIGHT,
+    pixelRatio: config.pixelRatio
+  };
+  var uniformState = {};
+  var drawState = {
+    elements: null,
+    primitive: 4, // GL_TRIANGLES
+    count: -1,
+    offset: 0,
+    instances: -1
+  };
+
+  var limits = wrapLimits(gl, extensions);
+  var bufferState = wrapBufferState(gl, stats$$1, config);
+  var elementState = wrapElementsState(gl, extensions, bufferState, stats$$1);
+  var attributeState = wrapAttributeState(
+    gl,
+    extensions,
+    limits,
+    bufferState,
+    stringStore);
+  var shaderState = wrapShaderState(gl, stringStore, stats$$1, config);
+  var textureState = createTextureSet(
+    gl,
+    extensions,
+    limits,
+    function () { core.procs.poll(); },
+    contextState,
+    stats$$1,
+    config);
+  var renderbufferState = wrapRenderbuffers(gl, extensions, limits, stats$$1, config);
+  var framebufferState = wrapFBOState(
+    gl,
+    extensions,
+    limits,
+    textureState,
+    renderbufferState,
+    stats$$1);
+  var core = reglCore(
+    gl,
+    stringStore,
+    extensions,
+    limits,
+    bufferState,
+    elementState,
+    textureState,
+    framebufferState,
+    uniformState,
+    attributeState,
+    shaderState,
+    drawState,
+    contextState,
+    timer,
+    config);
+  var readPixels = wrapReadPixels(
+    gl,
+    framebufferState,
+    core.procs.poll,
+    contextState,
+    glAttributes, extensions);
+
+  var nextState = core.next;
+  var canvas = gl.canvas;
+
+  var rafCallbacks = [];
+  var lossCallbacks = [];
+  var restoreCallbacks = [];
+  var destroyCallbacks = [config.onDestroy];
+
+  var activeRAF = null;
+  function handleRAF () {
+    if (rafCallbacks.length === 0) {
+      if (timer) {
+        timer.update();
+      }
+      activeRAF = null;
+      return
+    }
+
+    // schedule next animation frame
+    activeRAF = raf.next(handleRAF);
+
+    // poll for changes
+    poll();
+
+    // fire a callback for all pending rafs
+    for (var i = rafCallbacks.length - 1; i >= 0; --i) {
+      var cb = rafCallbacks[i];
+      if (cb) {
+        cb(contextState, null, 0);
+      }
+    }
+
+    // flush all pending webgl calls
+    gl.flush();
+
+    // poll GPU timers *after* gl.flush so we don't delay command dispatch
+    if (timer) {
+      timer.update();
+    }
+  }
+
+  function startRAF () {
+    if (!activeRAF && rafCallbacks.length > 0) {
+      activeRAF = raf.next(handleRAF);
+    }
+  }
+
+  function stopRAF () {
+    if (activeRAF) {
+      raf.cancel(handleRAF);
+      activeRAF = null;
+    }
+  }
+
+  function handleContextLoss (event) {
+    event.preventDefault();
+
+    // set context lost flag
+    contextLost = true;
+
+    // pause request animation frame
+    stopRAF();
+
+    // lose context
+    lossCallbacks.forEach(function (cb) {
+      cb();
+    });
+  }
+
+  function handleContextRestored (event) {
+    // clear error code
+    gl.getError();
+
+    // clear context lost flag
+    contextLost = false;
+
+    // refresh state
+    extensionState.restore();
+    shaderState.restore();
+    bufferState.restore();
+    textureState.restore();
+    renderbufferState.restore();
+    framebufferState.restore();
+    if (timer) {
+      timer.restore();
+    }
+
+    // refresh state
+    core.procs.refresh();
+
+    // restart RAF
+    startRAF();
+
+    // restore context
+    restoreCallbacks.forEach(function (cb) {
+      cb();
+    });
+  }
+
+  if (canvas) {
+    canvas.addEventListener(CONTEXT_LOST_EVENT, handleContextLoss, false);
+    canvas.addEventListener(CONTEXT_RESTORED_EVENT, handleContextRestored, false);
+  }
+
+  function destroy () {
+    rafCallbacks.length = 0;
+    stopRAF();
+
+    if (canvas) {
+      canvas.removeEventListener(CONTEXT_LOST_EVENT, handleContextLoss);
+      canvas.removeEventListener(CONTEXT_RESTORED_EVENT, handleContextRestored);
+    }
+
+    shaderState.clear();
+    framebufferState.clear();
+    renderbufferState.clear();
+    textureState.clear();
+    elementState.clear();
+    bufferState.clear();
+
+    if (timer) {
+      timer.clear();
+    }
+
+    destroyCallbacks.forEach(function (cb) {
+      cb();
+    });
+  }
+
+  function compileProcedure (options) {
+    check$1(!!options, 'invalid args to regl({...})');
+    check$1.type(options, 'object', 'invalid args to regl({...})');
+
+    function flattenNestedOptions (options) {
+      var result = extend({}, options);
+      delete result.uniforms;
+      delete result.attributes;
+      delete result.context;
+
+      if ('stencil' in result && result.stencil.op) {
+        result.stencil.opBack = result.stencil.opFront = result.stencil.op;
+        delete result.stencil.op;
+      }
+
+      function merge (name) {
+        if (name in result) {
+          var child = result[name];
+          delete result[name];
+          Object.keys(child).forEach(function (prop) {
+            result[name + '.' + prop] = child[prop];
+          });
+        }
+      }
+      merge('blend');
+      merge('depth');
+      merge('cull');
+      merge('stencil');
+      merge('polygonOffset');
+      merge('scissor');
+      merge('sample');
+
+      return result
+    }
+
+    function separateDynamic (object) {
+      var staticItems = {};
+      var dynamicItems = {};
+      Object.keys(object).forEach(function (option) {
+        var value = object[option];
+        if (dynamic.isDynamic(value)) {
+          dynamicItems[option] = dynamic.unbox(value, option);
+        } else {
+          staticItems[option] = value;
+        }
+      });
+      return {
+        dynamic: dynamicItems,
+        static: staticItems
+      }
+    }
+
+    // Treat context variables separate from other dynamic variables
+    var context = separateDynamic(options.context || {});
+    var uniforms = separateDynamic(options.uniforms || {});
+    var attributes = separateDynamic(options.attributes || {});
+    var opts = separateDynamic(flattenNestedOptions(options));
+
+    var stats$$1 = {
+      gpuTime: 0.0,
+      cpuTime: 0.0,
+      count: 0
+    };
+
+    var compiled = core.compile(opts, attributes, uniforms, context, stats$$1);
+
+    var draw = compiled.draw;
+    var batch = compiled.batch;
+    var scope = compiled.scope;
+
+    // FIXME: we should modify code generation for batch commands so this
+    // isn't necessary
+    var EMPTY_ARRAY = [];
+    function reserve (count) {
+      while (EMPTY_ARRAY.length < count) {
+        EMPTY_ARRAY.push(null);
+      }
+      return EMPTY_ARRAY
+    }
+
+    function REGLCommand (args, body) {
+      var i;
+      if (contextLost) {
+        check$1.raise('context lost');
+      }
+      if (typeof args === 'function') {
+        return scope.call(this, null, args, 0)
+      } else if (typeof body === 'function') {
+        if (typeof args === 'number') {
+          for (i = 0; i < args; ++i) {
+            scope.call(this, null, body, i);
+          }
+          return
+        } else if (Array.isArray(args)) {
+          for (i = 0; i < args.length; ++i) {
+            scope.call(this, args[i], body, i);
+          }
+          return
+        } else {
+          return scope.call(this, args, body, 0)
+        }
+      } else if (typeof args === 'number') {
+        if (args > 0) {
+          return batch.call(this, reserve(args | 0), args | 0)
+        }
+      } else if (Array.isArray(args)) {
+        if (args.length) {
+          return batch.call(this, args, args.length)
+        }
+      } else {
+        return draw.call(this, args)
+      }
+    }
+
+    return extend(REGLCommand, {
+      stats: stats$$1
+    })
+  }
+
+  var setFBO = framebufferState.setFBO = compileProcedure({
+    framebuffer: dynamic.define.call(null, DYN_PROP, 'framebuffer')
+  });
+
+  function clearImpl (_, options) {
+    var clearFlags = 0;
+    core.procs.poll();
+
+    var c = options.color;
+    if (c) {
+      gl.clearColor(+c[0] || 0, +c[1] || 0, +c[2] || 0, +c[3] || 0);
+      clearFlags |= GL_COLOR_BUFFER_BIT;
+    }
+    if ('depth' in options) {
+      gl.clearDepth(+options.depth);
+      clearFlags |= GL_DEPTH_BUFFER_BIT;
+    }
+    if ('stencil' in options) {
+      gl.clearStencil(options.stencil | 0);
+      clearFlags |= GL_STENCIL_BUFFER_BIT;
+    }
+
+    check$1(!!clearFlags, 'called regl.clear with no buffer specified');
+    gl.clear(clearFlags);
+  }
+
+  function clear (options) {
+    check$1(
+      typeof options === 'object' && options,
+      'regl.clear() takes an object as input');
+    if ('framebuffer' in options) {
+      if (options.framebuffer &&
+          options.framebuffer_reglType === 'framebufferCube') {
+        for (var i = 0; i < 6; ++i) {
+          setFBO(extend({
+            framebuffer: options.framebuffer.faces[i]
+          }, options), clearImpl);
+        }
+      } else {
+        setFBO(options, clearImpl);
+      }
+    } else {
+      clearImpl(null, options);
+    }
+  }
+
+  function frame (cb) {
+    check$1.type(cb, 'function', 'regl.frame() callback must be a function');
+    rafCallbacks.push(cb);
+
+    function cancel () {
+      // FIXME:  should we check something other than equals cb here?
+      // what if a user calls frame twice with the same callback...
+      //
+      var i = find(rafCallbacks, cb);
+      check$1(i >= 0, 'cannot cancel a frame twice');
+      function pendingCancel () {
+        var index = find(rafCallbacks, pendingCancel);
+        rafCallbacks[index] = rafCallbacks[rafCallbacks.length - 1];
+        rafCallbacks.length -= 1;
+        if (rafCallbacks.length <= 0) {
+          stopRAF();
+        }
+      }
+      rafCallbacks[i] = pendingCancel;
+    }
+
+    startRAF();
+
+    return {
+      cancel: cancel
+    }
+  }
+
+  // poll viewport
+  function pollViewport () {
+    var viewport = nextState.viewport;
+    var scissorBox = nextState.scissor_box;
+    viewport[0] = viewport[1] = scissorBox[0] = scissorBox[1] = 0;
+    contextState.viewportWidth =
+      contextState.framebufferWidth =
+      contextState.drawingBufferWidth =
+      viewport[2] =
+      scissorBox[2] = gl.drawingBufferWidth;
+    contextState.viewportHeight =
+      contextState.framebufferHeight =
+      contextState.drawingBufferHeight =
+      viewport[3] =
+      scissorBox[3] = gl.drawingBufferHeight;
+  }
+
+  function poll () {
+    contextState.tick += 1;
+    contextState.time = now();
+    pollViewport();
+    core.procs.poll();
+  }
+
+  function refresh () {
+    pollViewport();
+    core.procs.refresh();
+    if (timer) {
+      timer.update();
+    }
+  }
+
+  function now () {
+    return (clock() - START_TIME) / 1000.0
+  }
+
+  refresh();
+
+  function addListener (event, callback) {
+    check$1.type(callback, 'function', 'listener callback must be a function');
+
+    var callbacks;
+    switch (event) {
+      case 'frame':
+        return frame(callback)
+      case 'lost':
+        callbacks = lossCallbacks;
+        break
+      case 'restore':
+        callbacks = restoreCallbacks;
+        break
+      case 'destroy':
+        callbacks = destroyCallbacks;
+        break
+      default:
+        check$1.raise('invalid event, must be one of frame,lost,restore,destroy');
+    }
+
+    callbacks.push(callback);
+    return {
+      cancel: function () {
+        for (var i = 0; i < callbacks.length; ++i) {
+          if (callbacks[i] === callback) {
+            callbacks[i] = callbacks[callbacks.length - 1];
+            callbacks.pop();
+            return
+          }
+        }
+      }
+    }
+  }
+
+  var regl = extend(compileProcedure, {
+    // Clear current FBO
+    clear: clear,
+
+    // Short cuts for dynamic variables
+    prop: dynamic.define.bind(null, DYN_PROP),
+    context: dynamic.define.bind(null, DYN_CONTEXT),
+    this: dynamic.define.bind(null, DYN_STATE),
+
+    // executes an empty draw command
+    draw: compileProcedure({}),
+
+    // Resources
+    buffer: function (options) {
+      return bufferState.create(options, GL_ARRAY_BUFFER, false, false)
+    },
+    elements: function (options) {
+      return elementState.create(options, false)
+    },
+    texture: textureState.create2D,
+    cube: textureState.createCube,
+    renderbuffer: renderbufferState.create,
+    framebuffer: framebufferState.create,
+    framebufferCube: framebufferState.createCube,
+
+    // Expose context attributes
+    attributes: glAttributes,
+
+    // Frame rendering
+    frame: frame,
+    on: addListener,
+
+    // System limits
+    limits: limits,
+    hasExtension: function (name) {
+      return limits.extensions.indexOf(name.toLowerCase()) >= 0
+    },
+
+    // Read pixels
+    read: readPixels,
+
+    // Destroy regl and all associated resources
+    destroy: destroy,
+
+    // Direct GL state manipulation
+    _gl: gl,
+    _refresh: refresh,
+
+    poll: function () {
+      poll();
+      if (timer) {
+        timer.update();
+      }
+    },
+
+    // Current time
+    now: now,
+
+    // regl Statistics Information
+    stats: stats$$1
+  });
+
+  config.onDone(null, regl);
+
+  return regl
+}
+
+return wrapREGL;
+
+})));
+
+
 },{}],150:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16391,6 +25738,32 @@ function extend() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = getBrandingSvgGeometry;
+function getBrandingSvgGeometry(machineName) {
+  // the geometry in the imported js files was generated using the svgStringAsGeometry tool + some formating
+  // static file size is larger than in the origin svg files, but is faster to load & has better quality
+  var brandingSvgs = {
+    'ultimaker3': require('./um3LogoGeo.js'),
+    'ultimaker3_extended': require('./um3ExtLogoGeo.js')
+  };
+  return brandingSvgs[machineName];
+}
+},{"./um3ExtLogoGeo.js":187,"./um3LogoGeo.js":188}],187:[function(require,module,exports){
+'use strict';
+
+exports.positions = [[0.5940229598203144, -0.043923134514599435, 0], [0.5734339905165959, -0.043923134514599435, 0], [0.5687546793112053, -0.04829049163963062, 0], [0.5687546793112053, -0.0675068629897679, 0], [0.5739799101572247, -0.0718742201147991, 0], [0.5969709258797102, -0.0718742201147991, 0], [0.6021961567257297, -0.07320002495632641, 0], [0.6021961567257297, -0.07903356625904666, 0], [0.5954111554779136, -0.08035937110057399, 0], [0.5655571499875218, -0.08035937110057399, 0], [0.5587721487397055, -0.07701366358871975, 0], [0.5587721487397055, -0.055722797604192645, 0], [0.5587721487397055, -0.02713220613925628, 0], [0.5587721487397055, -0.005841340154729208, 0], [0.5653231844272522, -0.00249563264287496, 0], [0.5941477414524579, -0.00249563264287496, 0], [0.6006987771400047, -0.0038214374844022653, 0], [0.6006987771400047, -0.00965497878712252, 0], [0.5957075118542547, -0.010980783628649852, 0], [0.5737459445969553, -0.010980783628649852, 0], [0.5687546793112053, -0.014802221113052145, 0], [0.5687546793112053, -0.031616546044422225, 0], [0.5734339905165959, -0.03543798352882452, 0], [0.5940229598203144, -0.03543798352882452, 0], [0.5987022710257048, -0.03676378837035185, 0], [0.5987022710257048, -0.0425973296730721, 0], [0.6209134015472921, -0.026328924382330914, 0], [0.6264037933616171, -0.03456451210381831, 0], [0.6291411904167705, -0.03868230596456202, 0], [0.631933179435987, -0.04317444472173695, 0], [0.6332199900174695, -0.04542051410032441, 0], [0.633563139505865, -0.04542051410032441, 0], [0.6350605190915899, -0.04296387571749436, 0], [0.6377121287746443, -0.03861211629648115, 0], [0.6403793361617172, -0.03456451210381831, 0], [0.6458697279760424, -0.026328924382330886, 0], [0.6488332917394564, -0.024457199900174663, 0], [0.656382580484153, -0.024457199900174663, 0], [0.6551347641627157, -0.028668579985026164, 0], [0.6420950836036938, -0.04719865235837284, 0], [0.6421730721237837, -0.05593336660843523, 0], [0.6555559021712005, -0.07583603693536307, 0], [0.6568037184926381, -0.08035937110057396, 0], [0.6489112802595456, -0.08035937110057396, 0], [0.6458697279760417, -0.0784096580983279, 0], [0.6403793361617167, -0.06983092088844518, 0], [0.6376341402545544, -0.0655571499875218, 0], [0.6346393810831044, -0.06072186174195155, 0], [0.6316446219116543, -0.06093243074619416, 0], [0.6286498627402042, -0.06562733965560269, 0], [0.6259046668330419, -0.06983092088844518, 0], [0.6204142750187169, -0.0784096580983279, 0], [0.6172947342151232, -0.08035937110057396, 0], [0.6090591464936359, -0.08035937110057396, 0], [0.6103069628150735, -0.07591402545545294, 0], [0.6240329423508857, -0.05635450461692034, 0], [0.6241889193910655, -0.047619790366857956, 0], [0.6111492388320436, -0.02874656850511599, 0], [0.609979411030696, -0.024457199900174635, 0], [0.6178718492637882, -0.024457199900174635, 0], [0.6820564012977288, -0.010980783628649852, 0], [0.6820564012977288, -0.021961567257299704, 0], [0.6843180683803343, -0.024457199900174663, 0], [0.694269403543798, -0.024457199900174663, 0], [0.6965310706264034, -0.02562702770152232, 0], [0.6965310706264034, -0.030774270027451946, 0], [0.694269403543798, -0.031944097828799575, 0], [0.6843180683803343, -0.031944097828799575, 0], [0.6820564012977288, -0.036623409034190105, 0], [0.6820564012977288, -0.05721237833790861, 0], [0.6824541427501869, -0.06655540304467181, 0], [0.6860572123783377, -0.07213938108310454, 0], [0.6913214374844021, -0.0727944846518592, 0], [0.6943161966558518, -0.07245133516346389, 0], [0.6956108060893433, -0.07354317444472169, 0], [0.6959539555777388, -0.07869041677065132, 0], [0.6943473920638881, -0.08051534814075365, 0], [0.689855253306713, -0.08126403793361613, 0], [0.683787746443723, -0.0810768654854005, 0], [0.6782037684052904, -0.078830796106813, 0], [0.6741795607686547, -0.07425286997753927, 0], [0.6722766408784624, -0.06696874220114796, 0], [0.6720738707262288, -0.05763351634639378, 0], [0.6720738707262288, -0.03670139755427996, 0], [0.6707480658847016, -0.03194409782879955, 0], [0.6649145245819814, -0.03194409782879955, 0], [0.663588719740454, -0.03077427002745192, 0], [0.663588719740454, -0.025627027701522292, 0], [0.6649145245819814, -0.024457199900174635, 0], [0.6707480658847016, -0.024457199900174635, 0], [0.6720738707262288, -0.022351509857748884, 0], [0.6720738707262288, -0.013086473671075575, 0], [0.6736336411280257, -0.010590841028200616, 0], [0.6804966308959319, -0.008875093586224073, 0], [0.7140628899426005, -0.06263258048415271, 0], [0.7242949837783879, -0.07222516845520337, 0], [0.7364845894684302, -0.07311423758422757, 0], [0.7438934988769652, -0.07147647866234091, 0], [0.7471768155727478, -0.07154666833042173, 0], [0.7482062640379337, -0.07669391065635135, 0], [0.7453440853506366, -0.07904136511105561, 0], [0.7361570376840532, -0.08102227352133762, 0], [0.7239206388819568, -0.08083217650361862, 0], [0.713828924382331, -0.0768567116920389, 0], [0.7067319690541554, -0.069488746256551, 0], [0.7030041177938611, -0.05933659065385571, 0], [0.7029807212378338, -0.04739069908909408, 0], [0.7065214000499127, -0.03669262384576987, 0], [0.7132440104816575, -0.02859156632143745, 0], [0.7227742076366361, -0.024070181869228838, 0], [0.7346206638382831, -0.024165717806338874, 0], [0.743636136760669, -0.029065346580983278, 0], [0.7503743448964315, -0.0413573122036436, 0], [0.7514271899176446, -0.0513164462191165, 0], [0.7512244197654108, -0.05356251559770399, 0], [0.7449307461941603, -0.05440479161467427, 0], [0.7185082355877215, -0.05440479161467427, 0], [0.7125031195408036, -0.054326803094584444, 0], [0.7125031195408036, -0.053983653606189154, 0], [0.7418813950586474, -0.04160687546793113, 0], [0.7355019341152982, -0.03210787372098826, 0], [0.7217057649114049, -0.03203768405290742, 0], [0.7141564761667079, -0.04139630646368855, 0], [0.7176035687546791, -0.046917893686049414, 0], [0.7378493885700024, -0.046917893686049414, 0], [0.764903606189169, -0.03519621911654603, 0], [0.7647008360369352, -0.027849700524082834, 0], [0.76581607187422, -0.02445719990017469, 0], [0.7719927626653356, -0.02445719990017469, 0], [0.7734745445470426, -0.02586099326179185, 0], [0.773817694035438, -0.03203768405290742, 0], [0.7767110681307714, -0.029487459445969554, 0], [0.7858981157973544, -0.02382549288744697, 0], [0.7985634514599449, -0.02395807337159967, 0], [0.807644239767906, -0.030661186673321697, 0], [0.8112999516471175, -0.03996521712003992, 0], [0.8118292987272271, -0.051643998003493875, 0], [0.8118292987272271, -0.07463501372597953, 0], [0.8102695283254302, -0.079860244571999, 0], [0.8034065385575242, -0.079860244571999, 0], [0.8018467681557273, -0.07486897928624905, 0], [0.8018467681557273, -0.05290741202894935, 0], [0.8011526703269276, -0.041552283503868255, 0], [0.7948979910157223, -0.03275517843773398, 0], [0.7842369603194406, -0.03224045420514102, 0], [0.7772179935113548, -0.03776204142750186, 0], [0.77510450461692, -0.0430496630895932, 0], [0.7749017344646867, -0.045295732468180694, 0], [0.7748939356126774, -0.051643998003493875, 0], [0.7748939356126774, -0.07463501372597953, 0], [0.7733341652108805, -0.079860244571999, 0], [0.7664711754429745, -0.079860244571999, 0], [0.7649114050411776, -0.07354317444472172, 0], [0.7649114050411776, -0.04574806588470176, 0], [0.8767157474419762, -0.0013979442226104211, 0], [0.8767157474419762, -0.01982273209383578, 0], [0.8767157474419762, -0.04456459009233839, 0], [0.8767157474419762, -0.06298937796356374, 0], [0.8767235462939853, -0.06969054155228346, 0], [0.8769263164462189, -0.07711504866483646, 0], [0.8758110806089343, -0.08035937110057396, 0], [0.8696343898178187, -0.08035937110057396, 0], [0.8681526079361117, -0.07887758921886695, 0], [0.8678094584477163, -0.07235774893935609, 0], [0.8647679061642122, -0.07511854255053654, 0], [0.8550973296730715, -0.0809832792612927, 0], [0.8438660079236333, -0.08133032817569254, 0], [0.835261924444721, -0.07732951709508362, 0], [0.8288337206763161, -0.06986601572248569, 0], [0.825283293299226, -0.05950134140254554, 0], [0.8253261869852755, -0.0468174834664337, 0], [0.8291495741826802, -0.035815252994759114, 0], [0.8359443239955078, -0.028065143810831018, 0], [0.8448213672947338, -0.023988293923134493, 0], [0.8556432493137005, -0.02415304467182429, 0], [0.8642219865235832, -0.02872317194908907, 0], [0.8667332168704762, -0.026718866982780122, 0], [0.8667332168704762, -0.003727851260294475, 0], [0.8682929872722733, 0.001497379585725004, 0], [0.8751559770401796, 0.001497379585725004, 0], [0.8667254180184676, -0.04579485899675566, 0], [0.8665226478662338, -0.04354878961816817, 0], [0.8643935612677811, -0.03781663339156474, 0], [0.8569690541552282, -0.031405977040179694, 0], [0.8447638507611679, -0.0320454829049164, 0], [0.8363878837035188, -0.04329142750187171, 0], [0.8363176940354378, -0.059949775393062114, 0], [0.844553281756925, -0.07079017968555028, 0], [0.8567662840029946, -0.07155446718243073, 0], [0.8645339406039427, -0.06542456950336911, 0], [0.867021774394809, -0.05927127526828049, 0], [0.8672245445470428, -0.05702520588969303, 0], [0.8672323433990516, -0.05449837783878214, 0], [0.8672323433990516, -0.048321687047666574, 0], [0.8671543548789618, -0.046917893686049414, 0], [0.8668112053905663, -0.046917893686049414, 0], [0.900736211629648, -0.06263258048415271, 0], [0.9109683054654354, -0.07222516845520337, 0], [0.9231579111554777, -0.07311423758422757, 0], [0.9305668205640127, -0.07147647866234091, 0], [0.9338501372597954, -0.07154666833042173, 0], [0.9348795857249812, -0.07669391065635135, 0], [0.9320174070376841, -0.07904136511105561, 0], [0.9228303593711005, -0.08102227352133762, 0], [0.9105939605690043, -0.08083217650361862, 0], [0.9005022460693786, -0.0768567116920389, 0], [0.8934052907412029, -0.069488746256551, 0], [0.8896774394809086, -0.05933659065385571, 0], [0.8896540429248814, -0.04739069908909408, 0], [0.8931947217369602, -0.03669262384576987, 0], [0.8999173321687051, -0.02859156632143745, 0], [0.9094475293236837, -0.024070181869228838, 0], [0.9212939855253306, -0.024165717806338874, 0], [0.9303094584477165, -0.029065346580983278, 0], [0.937047666583479, -0.0413573122036436, 0], [0.9381005116046921, -0.0513164462191165, 0], [0.9378977414524583, -0.05356251559770399, 0], [0.9316040678812079, -0.05440479161467427, 0], [0.905181557274769, -0.05440479161467427, 0], [0.8991764412278511, -0.054326803094584444, 0], [0.8991764412278511, -0.053983653606189154, 0], [0.9280555902171197, -0.04160687546793113, 0], [0.9216761292737707, -0.03210787372098826, 0], [0.9078799600698775, -0.03203768405290742, 0], [0.9003306713251804, -0.04139630646368855, 0], [0.9037777639131515, -0.046917893686049414, 0], [0.9240235837284749, -0.046917893686049414, 0], [0.9995008734714248, -0.0013979442226104211, 0], [0.9995008734714248, -0.01982273209383578, 0], [0.9995008734714248, -0.04456459009233839, 0], [0.9995008734714248, -0.06298937796356374, 0], [0.9995086723234337, -0.06969054155228346, 0], [0.9997114424756675, -0.07711504866483646, 0], [0.9985962066383829, -0.08035937110057396, 0], [0.9924195158472673, -0.08035937110057396, 0], [0.9909377339655603, -0.07887758921886695, 0], [0.9905945844771649, -0.07235774893935609, 0], [0.9875530321936608, -0.07511854255053654, 0], [0.9778824557025201, -0.0809832792612927, 0], [0.9666511339530819, -0.08133032817569254, 0], [0.9580470504741696, -0.07732951709508362, 0], [0.9516188467057647, -0.06986601572248569, 0], [0.9480684193286746, -0.05950134140254554, 0], [0.9481113130147241, -0.0468174834664337, 0], [0.9519347002121288, -0.035815252994759114, 0], [0.9587294500249564, -0.028065143810831018, 0], [0.9676064933241824, -0.023988293923134493, 0], [0.9784283753431491, -0.02415304467182429, 0], [0.9870071125530318, -0.02872317194908907, 0], [0.9895183428999248, -0.026718866982780122, 0], [0.9895183428999248, -0.003727851260294475, 0], [0.9910781133017219, 0.001497379585725004, 0], [0.9979411030696281, 0.001497379585725004, 0], [0.989011417519341, -0.04579485899675566, 0], [0.9888086473671074, -0.04354878961816817, 0], [0.9866795607686547, -0.03781663339156474, 0], [0.9792550536561015, -0.031405977040179694, 0], [0.9670498502620415, -0.0320454829049164, 0], [0.9586738832043922, -0.04329142750187171, 0], [0.9586036935363111, -0.059949775393062114, 0], [0.9668392812577986, -0.07079017968555028, 0], [0.979052283503868, -0.07155446718243073, 0], [0.9868199401048163, -0.06542456950336911, 0], [0.9893077738956824, -0.05927127526828049, 0], [0.9895105440479162, -0.05702520588969303, 0], [0.989518342899925, -0.05449837783878214, 0], [0.989518342899925, -0.048321687047666574, 0], [0.9894403543798351, -0.046917893686049414, 0], [0.9890972048914397, -0.046917893686049414, 0], [-0.7808834539555778, -0.09088782131270275, 0], [-0.7808834539555778, -0.0603475168455203, 0], [-0.7808834539555778, -0.053406538557524315, 0], [-0.7808834539555778, -0.05303219366109304, 0], [-0.7808834539555778, -0.05228350386823055, 0], [-0.7808834539555778, -0.05190915897179934, 0], [-0.7808834539555778, -0.050778325430496624, 0], [-0.7808834539555778, -0.048329485899675555, 0], [-0.7808834539555778, -0.046917893686049414, 0], [-0.7808834539555778, -0.042456950336910416, 0], [-0.7808834539555778, -0.01406912902420765, 0], [-0.7808834539555778, 0.024051659595707518, 0], [-0.7808834539555778, 0.05243948090841029, 0], [-0.7824978163214376, 0.06609527077614175, 0], [-0.79414930122286, 0.07774675567756427, 0], [-0.8125389942600449, 0.07774675567756427, 0], [-0.8241904791614674, 0.06609527077614175, 0], [-0.8258048415273271, 0.052267906164212626, 0], [-0.8258048415273271, 0.02278824557025206, 0], [-0.8258048415273271, -0.01679872722735214, 0], [-0.8258048415273271, -0.04627838782131274, 0], [-0.8264989393561268, -0.06032217057649117, 0], [-0.8319113426503619, -0.0750736991514849, 0], [-0.8423774020464188, -0.08463119228849514, 0], [-0.8575227726478662, -0.08927540865984525, 0], [-0.875800357187422, -0.08927540865984525, 0], [-0.8908696889817819, -0.08463119228849514, 0], [-0.9014234854629398, -0.0750736991514849, 0], [-0.9069470223983029, -0.06032217057649117, 0], [-0.9076615922136262, -0.04627838782131274, 0], [-0.9076615922136262, -0.01679872722735214, 0], [-0.9076615922136262, 0.02278824557025206, 0], [-0.9076615922136262, 0.052267906164212626, 0], [-0.9090185924631894, 0.06545576491140505, 0], [-0.9190323184427253, 0.07676410032443225, 0], [-0.9278840154729224, 0.07915054903918142, 0], [-0.9295841652108809, 0.07935331919141503, 0], [-0.933023458946843, 0.07936111804342401, 0], [-0.9483092088844522, 0.07936111804342401, 0], [-0.9688357873720989, 0.07936111804342401, 0], [-0.984121537309708, 0.07936111804342401, 0], [-0.9917878088345395, 0.07830827302221113, 0], [-0.9989471549787872, 0.07114892687796358, 0], [-0.9989471549787872, 0.060620476665834803, 0], [-0.9917878088345395, 0.053461130521587234, 0], [-0.981142375842276, 0.05240828550037436, 0], [-0.9574650611429998, 0.05240828550037436, 0], [-0.9520838532568006, 0.048118916895433, 0], [-0.9520838532568006, 0.02082293486398802, 0], [-0.9520838532568006, -0.015831669578238085, 0], [-0.9520838532568006, -0.04312765160968305, 0], [-0.9505455296980284, -0.06640430028699776, 0], [-0.9387653637384576, -0.0961198761542301, 0], [-0.916550333790866, -0.11533039836536062, 0], [-0.8853042332168705, -0.12464417737709009, 0], [-0.8495289493386573, -0.12482842525580237, 0], [-0.8199868979286249, -0.11693598702271026, 0], [-0.8078362864986275, -0.11004180184676814, 0], [-0.8078362864986275, -0.11107125031195404, 0], [-0.8067834414774145, -0.11656944097828797, 0], [-0.799624095333167, -0.12372878712253556, 0], [-0.7922541801846769, -0.12478163214374842, 0], [-0.7829891439980035, -0.12478163214374842, 0], [-0.7756192288495134, -0.12372878712253556, 0], [-0.7684598827052658, -0.11656944097828797, 0], [-0.7684598827052658, -0.1060409907661592, 0], [-0.7756192288495134, -0.09888164462191162, 0], [0.10528255240828543, -0.08993636136760666, 0], [0.09395471986523574, -0.07465061142999749, 0], [0.07874305902171197, -0.05412403294235087, 0], [0.06741522647866227, -0.0388382830047417, 0], [0.07023646119291227, -0.031600948340404285, 0], [0.09048228100823552, -0.010325680059895183, 0], [0.09749344896431222, -0.002760793611180421, 0], [0.10062858747192416, 0.003072747691539819, 0], [0.09937297229847752, 0.014505864736710767, 0], [0.08886011979036668, 0.02405165959570753, 0], [0.07779354878961797, 0.02484714250062393, 0], [0.0701038807087595, 0.02082293486398805, 0], [0.061174195158472555, 0.011963438981781899, 0], [0.03715373097080099, -0.014459071624656832, 0], [0.03068068380334399, -0.021579423508859448, 0], [0.026219740454204832, -0.03036093087097576, 0], [0.02684364861492372, -0.04673072123783378, 0], [0.034049787871225146, -0.05983279261292735, 0], [0.0373175068629894, -0.0641865017469428, 0], [0.04768998003493863, -0.07878985213376587, 0], [0.06161872972298443, -0.09840006551035682, 0], [0.07199120289493344, -0.11300341589717988, 0], [0.07628837035188374, -0.1186751310207137, 0], [0.08499188919391032, -0.12393155727476911, 0], [0.09897523084601922, -0.1231438732218617, 0], [0.10906694534564476, -0.11256862989767903, 0], [0.11043174444721715, -0.10083135762415768, 0], [0.10831045670077333, -0.09429591964062889, 0], [-0.005537184926378891, 0.07936111804342401, 0], [-0.0059427252308460465, 0.07936111804342401, 0], [-0.006987771400049803, 0.07943910656351386, 0], [-0.008485150985774847, 0.07978225605190917, 0], [-0.012587347142500649, 0.079860244571999, 0], [-0.02734277514349892, 0.079860244571999, 0], [-0.035960506613426535, 0.07880739955078613, 0], [-0.04311985275767405, 0.07164805340653856, 0], [-0.04311985275767405, 0.06111960319440978, 0], [-0.035960506613426535, 0.053960257050162226, 0], [-0.0299163963064637, 0.05290741202894935, 0], [-0.026484901422510587, 0.05290741202894935, 0], [-0.025705016221612254, 0.05114170319129025, 0], [-0.025705016221612254, 0.03839789158035938, 0], [-0.025705016221612254, 0.003160484776640886, 0], [-0.025705016221612254, -0.05457051721986523, 0], [-0.025705016221612254, -0.08980792402358373, 0], [-0.025705016221612254, -0.1025517356345146, 0], [-0.024270027451959164, -0.11291177938607437, 0], [-0.013913151984028094, -0.12298789618168206, 0], [0.0024332418268031564, -0.12298789618168206, 0], [0.012790117294734227, -0.11291177938607437, 0], [0.014225106064387205, -0.10247886511105563, 0], [0.014225106064387205, -0.0892091184177689, 0], [0.014225106064387205, -0.05251746942850014, 0], [0.014225106064387205, 0.007596081856750691, 0], [0.014225106064387205, 0.04428773084601948, 0], [0.014225106064387205, 0.057557477539306214, 0], [0.01314886448714736, 0.06799039181432495, 0], [0.00313513850761149, 0.07806650860993262, 0], [-0.7097579236336412, 0.07943910656351386, 0], [-0.7112553032193663, 0.07978225605190917, 0], [-0.7153574993760918, 0.079860244571999, 0], [-0.7301129273770901, 0.079860244571999, 0], [-0.7387306588470177, 0.07880739955078613, 0], [-0.7458900049912653, 0.07164805340653856, 0], [-0.7458900049912653, 0.06111960319440978, 0], [-0.7387306588470177, 0.053960257050162226, 0], [-0.7329985026204143, 0.05290741202894935, 0], [-0.7309396056900425, 0.05290741202894935, 0], [-0.7304716745695035, 0.05114170319129025, 0], [-0.7304716745695035, 0.03839789158035938, 0], [-0.7304716745695035, 0.003160484776640886, 0], [-0.7304716745695035, -0.05457051721986523, 0], [-0.7304716745695035, -0.08980792402358373, 0], [-0.7304716745695035, -0.1025517356345146, 0], [-0.7290366857998503, -0.11291177938607437, 0], [-0.7186798103319192, -0.12298789618168206, 0], [-0.7023334165210882, -0.12298789618168206, 0], [-0.6919765410531571, -0.11291177938607437, 0], [-0.6905415522835039, -0.10247886511105563, 0], [-0.6905415522835039, -0.0892091184177689, 0], [-0.6905415522835039, -0.05251746942850014, 0], [-0.6905415522835039, 0.007596081856750691, 0], [-0.6905415522835039, 0.04428773084601948, 0], [-0.6905415522835039, 0.057557477539306214, 0], [-0.6916021961567258, 0.06770963314200151, 0], [-0.7012103818317943, 0.07778574993760917, 0], [-0.5343695408035938, 0.013031881707012739, 0], [-0.5284648349762916, 0.021902101010731225, 0], [-0.5206484355502871, 0.025027490953331677, 0], [-0.5100478459570752, 0.025027490953331677, 0], [-0.5022314465310707, 0.021902101010731225, 0], [-0.4963267407037685, 0.013031881707012739, 0], [-0.4953830796106814, 0.0007506395058647337, 0], [-0.4953830796106814, -0.029411420638881944, 0], [-0.4953830796106814, -0.06991475854754182, 0], [-0.4953830796106814, -0.1000768186922885, 0], [-0.4963267407037685, -0.11235806089343647, 0], [-0.5022314465310707, -0.12122828019715497, 0], [-0.5100478459570752, -0.1243536701397554, 0], [-0.5206484355502871, -0.1243536701397554, 0], [-0.5284648349762916, -0.12122828019715497, 0], [-0.5343695408035938, -0.11235806089343647, 0], [-0.5353132018966809, -0.1000768186922885, 0], [-0.5353132018966809, -0.06991475854754182, 0], [-0.5353132018966809, -0.029411420638881944, 0], [-0.5353132018966809, 0.0007506395058647337, 0], [-0.2384011573496383, -0.09293307025205888, 0], [-0.2483641907911157, -0.06495468866982781, 0], [-0.2617431214125281, -0.027383719116546048, 0], [-0.2717061548540055, 0.0005946624656850557, 0], [-0.2773973671075618, 0.012431370102320947, 0], [-0.2908893810831047, 0.021696406288994257, 0], [-0.3074853381582231, 0.021704205141003255, 0], [-0.3206342026453708, 0.01264193910656353, 0], [-0.32573270214624395, 0.0030025580234589485, 0], [-0.33242021774394803, -0.012829111554779124, 0], [-0.34140059583229354, -0.034088782131270264, 0], [-0.3480881114299975, -0.04992045170950838, 0], [-0.35018990204641887, -0.04992045170950838, 0], [-0.35687741764412284, -0.034088782131270264, 0], [-0.36585779573246824, -0.012829111554779124, 0], [-0.3725453113301722, 0.0030025580234589485, 0], [-0.3776438108310457, 0.01264193910656353, 0], [-0.3907926753181933, 0.021704205141003255, 0], [-0.39934801597204894, 0.022959820314449715, 0], [-0.3997535562765161, 0.022959820314449715, 0], [-0.4007986024457201, 0.023037808834539555, 0], [-0.402295982031445, 0.023380958322934884, 0], [-0.40920576491140503, 0.02345894684302472, 0], [-0.4363145744946344, 0.02345894684302472, 0], [-0.44773989268779646, 0.022406101821811845, 0], [-0.454899238832044, 0.015246755677564273, 0], [-0.454899238832044, 0.004718305465435504, 0], [-0.44773989268779646, -0.0024410406788120545, 0], [-0.44013601197903673, -0.0034938857000249442, 0], [-0.4298415273271775, -0.0034938857000249442, 0], [-0.42893881020713753, -0.007504445345645119, 0], [-0.4380829641876717, -0.03302618854504612, 0], [-0.4503622566758174, -0.06729824369852752, 0], [-0.45950641065635145, -0.09281998689792856, 0], [-0.46201959071624665, -0.10466839281257793, 0], [-0.45574931370102334, -0.11809801597204887, 0], [-0.44738894434739207, -0.12286311454953827, 0], [-0.4440510356875468, -0.12326865485400545, 0], [-0.4366421262790118, -0.12237958572498125, 0], [-0.4270339406039432, -0.11570376840529072, 0], [-0.42289275018717254, -0.10717572373346643, 0], [-0.41579579485899687, -0.0872496568505116, 0], [-0.40626559770401804, -0.060491795607686506, 0], [-0.39916864237584226, -0.04056572872473169, 0], [-0.3967237022710257, -0.040587175567756414, 0], [-0.38826194784127777, -0.06064972236086846, 0], [-0.37689902046418766, -0.08759085662590459, 0], [-0.3684372660344397, -0.10765340341901662, 0], [-0.3667332168704768, -0.11155477913651107, 0], [-0.3659845270776142, -0.11305215872223602, 0], [-0.36553219366109313, -0.11387883703518836, 0], [-0.3651890441726978, -0.11422198652358367, 0], [-0.36473671075617675, -0.11475230846019463, 0], [-0.3639880209633142, -0.11584414774145244, 0], [-0.3633173196905417, -0.11659283753431489, 0], [-0.36291177938607444, -0.11699837783878206, 0], [-0.362163089593212, -0.11766907911155476, 0], [-0.3610712503119541, -0.11841776890441724, 0], [-0.36054092837534324, -0.11887010232093828, 0], [-0.36019777888694793, -0.11921325180933362, 0], [-0.3593711005739958, -0.11966558522585473, 0], [-0.35787372098827075, -0.12041427501871721, 0], [-0.3571172323433992, -0.12078861991514843, 0], [-0.3569144621911655, -0.12078861991514843, 0], [-0.3566259046668332, -0.12078861991514843, 0], [-0.3565479161467434, -0.12078861991514843, 0], [-0.3562047666583481, -0.12078861991514843, 0], [-0.35545607686548575, -0.12108497629148984, 0], [-0.3543018467681558, -0.12149051659595703, 0], [-0.3533347891190419, -0.12178687297229841, 0], [-0.35292924881457466, -0.12178687297229841, 0], [-0.35187640379336194, -0.12186486149238826, 0], [-0.3501762540554034, -0.12220801098078359, 0], [-0.34831232842525606, -0.12227820064886445, 0], [-0.3464717993511359, -0.12207543049663087, 0], [-0.34534876466184217, -0.12178687297229841, 0], [-0.344943224357375, -0.12178687297229841, 0], [-0.34397616670826114, -0.12170108560019957, 0], [-0.3428219366109312, -0.12115516595957067, 0], [-0.34207324681806883, -0.12078861991514843, 0], [-0.3417300973296735, -0.12078861991514843, 0], [-0.34165210880958374, -0.12078861991514843, 0], [-0.34164430995757467, -0.12078861991514843, 0], [-0.3414415398053411, -0.12078861991514843, 0], [-0.3404042924881462, -0.12041427501871715, 0], [-0.33890691290242114, -0.11966558522585467, 0], [-0.338080234589469, -0.11921325180933362, 0], [-0.3377370851010737, -0.11887010232093828, 0], [-0.33720676316446263, -0.11841776890441719, 0], [-0.33611492388320485, -0.1176690791115547, 0], [-0.3353662340903425, -0.11699837783878206, 0], [-0.33496069378587523, -0.11659283753431489, 0], [-0.33428999251310276, -0.11584414774145244, 0], [-0.3335413027202402, -0.11475230846019463, 0], [-0.333088969303719, -0.11422198652358367, 0], [-0.3327458198153237, -0.11387883703518836, 0], [-0.33229348639880274, -0.11305215872223602, 0], [-0.33154479660594016, -0.11155477913651107, 0], [-0.3298407474419771, -0.10765340341901662, 0], [-0.32137899301222916, -0.08759085662590459, 0], [-0.31001606563513906, -0.06064972236086841, 0], [-0.3015543112053911, -0.04058717556775636, 0], [-0.29910937110057456, -0.04056572872473163, 0], [-0.2920124157723989, -0.06049179560768645, 0], [-0.28248221861742007, -0.08724965685051152, 0], [-0.2753852632892444, -0.10717572373346637, 0], [-0.2712440728724739, -0.11570376840529069, 0], [-0.26163588719740516, -0.12237958572498123, 0], [-0.25422697778887016, -0.12319846518592452, 0], [-0.25088906912902487, -0.12265254554529564, 0], [-0.24224014225106094, -0.11831638382830041, 0], [-0.23576709508360372, -0.10494915148490139, 0], [0.2041427501871722, -0.05697841277763911, 0], [0.20564012977289736, -0.05732156226603442, 0], [0.2086836317694032, -0.05739955078612428, 0], [0.22328698215622644, -0.05739955078612428, 0], [0.2428971955328174, -0.05739955078612428, 0], [0.25750054591964044, -0.05739955078612428, 0], [0.26054404791614627, -0.0573917519341153, 0], [0.2620414275018714, -0.05718898178188172, 0], [0.2632580484152729, -0.056900424257549286, 0], [0.26531694534564476, -0.056900424257549286, 0], [0.2741998377838777, -0.05613613676066883, 0], [0.2824198278013472, -0.04805652607936111, 0], [0.2820279354878956, -0.027163401547292236, 0], [0.2724626434988766, -0.004265972048914379, 0], [0.25395986710756135, 0.013952146244072884, 0], [0.22717470988270483, 0.024496194160219618, 0], [0.19402861398802052, 0.02451276672073872, 0], [0.16619646088095785, 0.013557329361118047, 0], [0.14685725761167934, -0.006873713189418505, 0], [0.13680648708510068, -0.03523618823309208, 0], [0.13652280384327398, -0.06505022460693785, 0], [0.1450937422011478, -0.09016252807586721, 0], [0.1634912340903414, -0.11059552033940603, 0], [0.19302548664836494, -0.1226057524332418, 0], [0.21924132767656568, -0.1233466433740953, 0], [0.24943848265535284, -0.1192288495133516, 0], [0.2631644621911653, -0.11616390067382079, 0], [0.27258547541801836, -0.10629055403044668, 0], [0.2716730097329674, -0.09350823558772148, 0], [0.2632346518592463, -0.08661405041177939, 0], [0.24943848265535284, -0.08736274020464184, 0], [0.21924132767656568, -0.09182368355378084, 0], [0.20405598795857238, -0.09213173820813571, 0], [0.19038265067382065, -0.08683631769403541, 0], [0.18094409002994727, -0.07714234464686795, 0], [0.17606785781132972, -0.06398568130771148, 0], [0.17509982530571477, -0.04782256051909158, 0], [0.1814870851010728, -0.018869322435737444, 0], [0.19257705265784852, -0.006564196250311949, 0], [0.20439621287746412, -0.002113976322685288, 0], [0.21822942662839995, -0.002090092338407758, 0], [0.22947927065135976, -0.0065510356875467845, 0], [0.2382490797354626, -0.01475542800099825, 0], [0.24388375031195375, -0.02595457948589964, 0], [0.23923758422760133, -0.03244322435737457, 0], [0.21247192413276728, -0.03244322435737457, 0], [0.20177969802844986, -0.033402483154479634, 0], [0.19536904167706481, -0.039813139505864736, 0], [0.1948309208884449, -0.04896899176441229, 0], [0.19960381831794338, -0.05544203893186922, 0], [-0.07112553032193669, -0.07948200024956324, 0], [-0.07112553032193669, -0.061193692288495104, 0], [-0.07112553032193669, -0.03663510731220364, 0], [-0.07112553032193669, -0.018346799351135503, 0], [-0.07247278200648877, -0.005653192850012464, 0], [-0.0830753213127029, 0.009189972236086853, 0], [-0.10383196593461441, 0.018300981095582744, 0], [-0.13427478475168475, 0.022475316633391567, 0], [-0.15844147741452475, 0.022101946593461444, 0], [-0.1824619416021963, 0.018327302221113048, 0], [-0.193996443723484, 0.015745882206139265, 0], [-0.20259077863738462, 0.007993823309208883, 0], [-0.2028715373097082, -0.004133391564761677, 0], [-0.1948387197404544, -0.012400174694285003, 0], [-0.1819940104816572, -0.012041427501871723, 0], [-0.15591464936361388, -0.007923633641128013, 0], [-0.1478818317943601, -0.006987771400049916, 0], [-0.1386167956076868, -0.006987771400049916, 0], [-0.12692631644621943, -0.007401110556526072, 0], [-0.11589776484901448, -0.010814083166957809, 0], [-0.11207437765160999, -0.016111453394060404, 0], [-0.11155477913651135, -0.02760793611180435, 0], [-0.11155477913651135, -0.06123658597454453, 0], [-0.11217673758422786, -0.0744224950087347, 0], [-0.11697693099575768, -0.08461949401048163, 0], [-0.1261288838283009, -0.09261721674569501, 0], [-0.13916466496131785, -0.09719904230097326, 0], [-0.1561096206638385, -0.09651859246318938, 0], [-0.16741795607686571, -0.08772148739705513, 0], [-0.16853611648365374, -0.07718426347641628, 0], [-0.16524305122286032, -0.07059228381582233, 0], [-0.1544250686298978, -0.06430153481407536, 0], [-0.14175193411529852, -0.06131457449463436, 0], [-0.13507611679560794, -0.05473234339905164, 0], [-0.13664563576241606, -0.04354878961816817, 0], [-0.14201514537060156, -0.038994260044921375, 0], [-0.15059583229348672, -0.03730970801098079, 0], [-0.16412586567257326, -0.03905957543049659, 0], [-0.18404998284252583, -0.044813178500124805, 0], [-0.19922459913900692, -0.05526948933117044, 0], [-0.2077311969678065, -0.07206626684552034, 0], [-0.20787547572997278, -0.09227796668330424, 0], [-0.20059329766658374, -0.10727125967057652, 0], [-0.1880468944971303, -0.11791279323683554, 0], [-0.17234195626403814, -0.1235474638133267, 0], [-0.14878649862740245, -0.12307368355378089, 0], [-0.12142812577988538, -0.11185893436486151, 0], [-0.10756956575992038, -0.10975324432243576, 0], [-0.10034880365610221, -0.12015008890691292, 0], [-0.09146006207886226, -0.12378630365610181, 0], [-0.07879180184676837, -0.12312827551784376, 0], [-0.06910562765160999, -0.11501746942850012, 0], [-0.06796699525829808, -0.10453581232842525, 0], [-0.07050942101322699, -0.0928063389069129, 0], [0.39995632642874956, 0.025954579485899684, 0], [0.38417144996256525, 0.025954579485899684, 0], [0.37418112053905617, 0.024886136760668854, 0], [0.3643701647117541, 0.017321250311954108, 0], [0.35914493386573487, 0.017375842276016986, 0], [0.34933397803843236, 0.024114050411779407, 0], [0.3423540054903915, 0.024956326428749696, 0], [0.3419484651859239, 0.024956326428749696, 0], [0.3409034190167204, 0.02503431494883955, 0], [0.33940603943099545, 0.025377464437234865, 0], [0.3353818317943593, 0.025455452957324706, 0], [0.3209695532817567, 0.025455452957324706, 0], [0.31242981033191897, 0.024402607936111827, 0], [0.30527046418767156, 0.017243261791864268, 0], [0.30527046418767156, 0.006714811579735486, 0], [0.31242981033191897, -0.00044453456451205864, 0], [0.3184739206388818, -0.001497379585724948, 0], [0.3219054155228349, -0.001497379585724948, 0], [0.32268530072373336, -0.005936876091839244, 0], [0.32268530072373336, -0.03418821749438479, 0], [0.32268530072373336, -0.07212573309208879, 0], [0.32268530072373336, -0.10037707449463433, 0], [0.32412028949338656, -0.11341090591464933, 0], [0.33447716496131763, -0.12348702271025702, 0], [0.35082355877214844, -0.12348702271025702, 0], [0.3611804342400795, -0.11341090591464933, 0], [0.3626154230097327, -0.10134218243074614, 0], [0.3626154230097327, -0.07923243698527571, 0], [0.3626154230097327, -0.049542207387072615, 0], [0.3626154230097327, -0.027432461941602187, 0], [0.36589094085350626, -0.021462440728724712, 0], [0.3803032193661091, -0.01048165710007486, 0], [0.38662028949338634, -0.0079860244571999, 0], [0.40000311954080336, -0.0079860244571999, 0], [0.41079673072123724, -0.007268530072373342, 0], [0.421434364861492, -0.00040554030446717404, 0], [0.4215123533815823, 0.014162715248315454, 0], [0.41121786872972255, 0.02445719990017472, 0], [-0.5900923384077864, 0.02196156725729973, 0], [-0.5983279261292738, 0.02196156725729973, 0], [-0.60019965061143, 0.025783004741702024, 0], [-0.60019965061143, 0.04259732967307214, 0], [-0.6016346393810832, 0.0550131020713751, 0], [-0.6119915148490143, 0.06508921886698278, 0], [-0.6283379086598453, 0.06508921886698278, 0], [-0.6386947841277765, 0.0550131020713751, 0], [-0.6401297728974296, 0.04259732967307214, 0], [-0.6401297728974296, 0.025783004741702024, 0], [-0.6402077614175194, 0.02196156725729973, 0], [-0.6405509109059146, 0.02196156725729973, 0], [-0.6458931245320689, 0.020908722236086856, 0], [-0.6530524706763166, 0.013749376091839297, 0], [-0.6530524706763166, 0.0032209258797105144, 0], [-0.6458931245320689, -0.003938420264537031, 0], [-0.6405509109059146, -0.00499126528574992, 0], [-0.6402077614175194, -0.00499126528574992, 0], [-0.6401297728974296, -0.009302080733715978, 0], [-0.6401297728974296, -0.036734542675318164, 0], [-0.6401297728974296, -0.07357242013975543, 0], [-0.6401297728974296, -0.10100488208135762, 0], [-0.6386947841277765, -0.1139100324432243, 0], [-0.6283379086598453, -0.12398614923883201, 0], [-0.6119915148490143, -0.12398614923883201, 0], [-0.6016346393810832, -0.1139100324432243, 0], [-0.60019965061143, -0.10098343523833286, 0], [-0.60019965061143, -0.07341449338657345, 0], [-0.60019965061143, -0.036393342899925095, 0], [-0.60019965061143, -0.008824401048165715, 0], [-0.5983279261292738, -0.004492138757174928, 0], [-0.5900923384077864, -0.004492138757174928, 0], [-0.580359371100574, -0.0037980409283753175, 0], [-0.5713750935862242, 0.0024566383828300473, 0], [-0.5713750935862242, 0.014802221113052173, 0], [-0.580359371100574, 0.02125967057649115, 0], [0.4954532692787623, 0.04043704766658349, 0], [0.5066992138757171, 0.037021150486648384, 0], [0.519167628525081, 0.03690221799351137, 0], [0.5277580640129769, 0.04017383641128027, 0], [0.5342681557274767, 0.04864923883204394, 0], [0.5347526594085348, 0.05960955047417021, 0], [0.530707004928874, 0.0669853147616671, 0], [0.5195205265784872, 0.07322342151235339, 0], [0.5091870476665832, 0.07436985275767409, 0], [0.5040398053406536, 0.07436985275767409, 0], [0.502869977539306, 0.07592962315947094, 0], [0.502869977539306, 0.08279261292737711, 0], [0.5040398053406536, 0.08435238332917395, 0], [0.5091870476665832, 0.08435238332917395, 0], [0.517711192912403, 0.08531164212627902, 0], [0.527528972735213, 0.0905670935238333, 0], [0.531286069690541, 0.09681982312203645, 0], [0.5308522585475415, 0.10624376091839281, 0], [0.5225542800099823, 0.114089406039431, 0], [0.509280633890691, 0.11470551534814076, 0], [0.49926690791115536, 0.11108684801597206, 0], [0.4948371599700523, 0.11029136511105565, 0], [0.4924351135512852, 0.11681120539056651, 0], [0.496490516595957, 0.1209367981033192, 0], [0.509436610930871, 0.1251013850761168, 0], [0.516845520339406, 0.12577988520089844, 0], [0.5234706451210382, 0.12526418611180434, 0], [0.5338665148490145, 0.1215421839905166, 0], [0.5426753181931621, 0.11125062390816073, 0], [0.5431744447217368, 0.09566071874220115, 0], [0.534190167207387, 0.08414961317694035, 0], [0.5263289243823308, 0.08028138258048417, 0], [0.5263289243823308, 0.07993823309208885, 0], [0.5347360868480158, 0.07680309458447718, 0], [0.5461224107811329, 0.06413775892188671, 0], [0.547231797479411, 0.04921758017219866, 0], [0.5427903512602945, 0.03894454236336413, 0], [0.5339971456201646, 0.03103455671325182, 0], [0.5209457667831296, 0.02656386479910158, 0], [0.5049522710257048, 0.02654729223858249, 0], [0.4921465560269527, 0.0301659595707512, 0], [0.48852008984277506, 0.03400299475917147, 0], [0.49126528574993733, 0.040865984527077626, 0], [0.20339406039430985, -0.056900424257549286, 0], [-1, 0.06588470177189919, 0], [-0.9865235837284752, 0.05240828550037436, 0], [-0.9865235837284752, 0.07936111804342401, 0], [-0.9520838532568006, -0.047417020214624406, 0], [-0.9520838532568006, 0.05240828550037436, 0], [-0.9306214125280758, 0.07936111804342401, 0], [-0.9271275268280509, 0.07886199151484902, 0], [-0.9076615922136262, 0.0569004242575493, 0], [-0.9076615922136262, -0.05091090591464938, 0], [-0.8667332168704767, -0.08984277514349887, 0], [-0.8667332168704767, -0.12577988520089844, 0], [-0.8258048415273271, -0.05091090591464938, 0], [-0.8258048415273271, 0.0569004242575493, 0], [-0.8078362864986275, -0.11130521587222358, 0], [-0.8078362864986275, -0.10980783628649864, 0], [-0.8033441477414525, 0.07936111804342401, 0], [-0.7943598702271026, -0.12478163214374842, 0], [-0.7808834539555778, 0.0569004242575493, 0], [-0.7808834539555778, -0.09782879960069873, 0], [-0.7808834539555778, -0.12478163214374842, 0], [-0.7674070376840529, -0.11130521587222358, 0], [-0.7469428500124782, 0.06638382830047417, 0], [-0.7334664337409533, 0.05290741202894935, 0], [-0.7334664337409533, 0.079860244571999, 0], [-0.7304716745695035, -0.1043174444721737, 0], [-0.7304716745695035, 0.05290741202894935, 0], [-0.7120039930122286, 0.079860244571999, 0], [-0.7105066134265037, -0.12428250561517343, 0], [-0.7090092338407787, 0.07936111804342401, 0], [-0.6905415522835039, 0.05939605690042426, 0], [-0.6905415522835039, -0.1043174444721737, 0], [-0.6541053156975294, 0.008485150985774906, 0], [-0.6406288994260045, -0.00499126528574992, 0], [-0.6406288994260045, 0.02196156725729973, 0], [-0.6401297728974296, -0.10531569752932365, 0], [-0.6401297728974296, -0.00499126528574992, 0], [-0.6401297728974296, 0.02196156725729973, 0], [-0.6401297728974296, 0.04641876715747442, 0], [-0.6201647117544298, -0.12528075867232338, 0], [-0.6201647117544298, 0.06638382830047418, 0], [-0.60019965061143, -0.004492138757174928, 0], [-0.60019965061143, -0.10531569752932365, 0], [-0.60019965061143, 0.04641876715747442, 0], [-0.60019965061143, 0.02196156725729973, 0], [-0.5882206139256302, 0.02196156725729973, 0], [-0.5882206139256302, -0.004492138757174928, 0], [-0.5702520588969304, 0.008485150985774906, 0], [-0.5363114549538308, 0.05939605690042426, 0], [-0.5353132018966809, -0.10481657100074869, 0], [-0.5353132018966809, 0.00549039181432494, 0], [-0.5346502994759172, 0.05127745195907164, 0], [-0.5346502994759171, 0.06772523084601946, 0], [-0.5234667456950338, 0.07876840529074121, 0], [-0.5234667456950338, 0.040093898178188175, 0], [-0.5153481407536811, -0.12478163214374842, 0], [-0.5153481407536811, 0.02545545295732469, 0], [-0.5153481407536811, 0.038432742700274525, 0], [-0.5153481407536811, 0.080359371100574, 0], [-0.5072295358123284, 0.040093898178188175, 0], [-0.5072295358123284, 0.07869821562266036, 0], [-0.496045982031445, 0.05127745195907163, 0], [-0.496045982031445, 0.0675146618417769, 0], [-0.49438482655353144, 0.05939605690042426, 0], [-0.4953830796106814, -0.10481657100074869, 0], [-0.4953830796106814, 0.00549039181432494, 0], [-0.4609433491390068, -0.09683054654354872, 0], [-0.4559520838532569, 0.009982530571499896, 0], [-0.4489643124532069, -0.12228599950087343, 0], [-0.44247566758173207, -0.12328425255802342, 0], [-0.44247566758173207, -0.0034938857000249442, 0], [-0.44247566758173207, 0.02345894684302472, 0], [-0.4275018717244822, -0.0034938857000249442, 0], [-0.4240079860244572, -0.1103069628150736, 0], [-0.4030446718243075, 0.02345894684302472, 0], [-0.4000499126528575, 0.022959820314449715, 0], [-0.39905165959570754, 0.022959820314449715, 0], [-0.3980534065385576, -0.037434489643124486, 0], [-0.3735962066383829, 0.00549039181432494, 0], [-0.36710756176690795, -0.11080608934364856, 0], [-0.3656101821811829, -0.11380084851509852, 0], [-0.36511105565260804, -0.11429997504367354, 0], [-0.363613676066883, -0.1162964811579735, 0], [-0.36261542300973304, -0.11729473421512349, 0], [-0.36061891689543313, -0.11879211380084846, 0], [-0.36011979036685815, -0.11929124032942345, 0], [-0.35712503119540817, -0.12078861991514843, 0], [-0.3561267781382582, -0.12078861991514843, 0], [-0.3536311454953833, -0.12178687297229841, 0], [-0.35263289243823337, -0.12178687297229841, 0], [-0.3491390067382084, -0.12228599950087343, 0], [-0.3491390067382082, -0.05240828550037433, 0], [-0.34564512103818357, -0.12178687297229841, 0], [-0.3446468679810336, -0.12178687297229841, 0], [-0.3421512353381587, -0.12078861991514843, 0], [-0.34115298228100877, -0.12078861991514843, 0], [-0.3381582231095588, -0.11929124032942345, 0], [-0.3376590965809838, -0.11879211380084846, 0], [-0.3356625904666838, -0.11729473421512349, 0], [-0.33466433740953394, -0.1162964811579735, 0], [-0.3331669578238089, -0.11429997504367354, 0], [-0.3326678312952339, -0.11380084851509852, 0], [-0.3311704517095089, -0.11080608934364856, 0], [-0.3246818068380335, 0.00549039181432494, 0], [-0.30022460693785935, -0.03743448964312446, 0], [-0.29922635388070884, 0.022959820314449715, 0], [-0.2742700274519597, -0.11030696281507354, 0], [-0.2732717743948092, 0.004991265285749934, 0], [-0.255802345894685, -0.12328425255802339, 0], [-0.24931370102321004, -0.1222859995008734, 0], [-0.2368355378088346, -0.09732967307212377, 0], [-0.20888445220863516, -0.08335413027202397, 0], [-0.20389318692288505, 0.00149737958572499, 0], [-0.1879211380084853, -0.01297728974294982, 0], [-0.1879211380084853, 0.017469428500124777, 0], [-0.1689543299226356, -0.08135762415772398, 0], [-0.1639630646368857, -0.12428250561517346, 0], [-0.15298228100823585, -0.03743448964312454, 0], [-0.15298228100823574, 0.022959820314449715, 0], [-0.14998752183678576, -0.006987771400049916, 0], [-0.1469927626653359, -0.09782879960069873, 0], [-0.14349887696531094, -0.061891689543299204, 0], [-0.13651110556526103, -0.006987771400049916, 0], [-0.1350137259795361, -0.047417020214624406, 0], [-0.11155477913651135, -0.06887946094334912, 0], [-0.11155477913651135, -0.019965061142999736, 0], [-0.10905914649363635, -0.10082355877214874, 0], [-0.08560019965061172, -0.12428250561517346, 0], [-0.07112553032193669, -0.015472922385824808, 0], [-0.07112553032193669, -0.08235587721487396, 0], [-0.06763164462191196, -0.10880958322934865, 0], [-0.04417269777888688, 0.06638382830047417, 0], [-0.030696281507362144, 0.05290741202894935, 0], [-0.030696281507362144, 0.079860244571999, 0], [-0.025705016221612254, -0.1043174444721737, 0], [-0.025705016221612254, 0.05290741202894935, 0], [-0.009233840778637314, 0.079860244571999, 0], [-0.006239081607187447, 0.07936111804342401, 0], [-0.005739955078612469, -0.12428250561517343, 0], [-0.005240828550037491, 0.07936111804342401, 0], [0.014225106064387205, 0.05939605690042426, 0], [0.014225106064387205, -0.1043174444721737, 0], [0.025205889693036942, -0.037933616171699505, 0], [0.03169453456451188, -0.020464187671574728, 0], [0.0356875467931117, -0.061891689543299176, 0], [0.06563513850761149, -0.03643623658597453, 0], [0.06663339156476145, 0.017968555028699797, 0], [0.07362116296481136, -0.11529822810082352, 0], [0.08210631395058621, 0.025455452957324706, 0], [0.09158971799351101, -0.12478163214374839, 0], [0.0950836036935363, -0.005490391814324912, 0], [0.10107312203643604, 0.007486897928624922, 0], [0.107062640379336, -0.09233840778637382, 0], [0.11055652607936084, -0.10531569752932365, 0], [0.13551285250811063, -0.05190915897179934, 0], [0.17544297479410997, -0.056401297728974266, 0], [0.1944097828799598, -0.04442226104317443, 0], [0.2063888195657595, -0.03244322435737457, 0], [0.20638881956575972, -0.05739955078612428, 0], [0.21088095832293452, 0.025954579485899684, 0], [0.2118792113800847, -0.001497379585724976, 0], [0.21237833790865968, -0.09283753431494879, 0], [0.21237833790865968, -0.12428250561517343, 0], [0.2453206887946091, -0.03244322435737457, 0], [0.25630147242325907, -0.0863488894434739, 0], [0.25630147242325907, -0.1182929872722735, 0], [0.2597953581232839, -0.05739955078612428, 0], [0.262790117294734, -0.056900424257549286, 0], [0.2657848764661839, -0.056900424257549286, 0], [0.273271774394809, -0.09882705265784875, 0], [0.28325430496630855, -0.03943099575742451, 0], [0.3042176191664585, 0.011979036685799877, 0], [0.31769403543798336, -0.001497379585724948, 0], [0.31769403543798336, 0.025455452957324706, 0], [0.32268530072373336, -0.10481657100074866, 0], [0.32268530072373336, -0.001497379585724948, 0], [0.3386573496381329, 0.025455452957324706, 0], [0.34165210880958274, 0.024956326428749696, 0], [0.3426503618667327, 0.024956326428749696, 0], [0.34265036186673314, -0.12478163214374839, 0], [0.36161716995258253, 0.011479910157224871, 0], [0.3626154230097327, -0.02395807337159967, 0], [0.3626154230097327, -0.10481657100074866, 0], [0.38058397803843236, 0.025954579485899684, 0], [0.38357873720988245, -0.0079860244571999, 0], [0.40304467182430703, -0.0079860244571999, 0], [0.40354379835288223, 0.025954579485899684, 0], [0.4230097329673068, 0.006488644871474924, 0], [0.4878961816820564, 0.03244322435737461, 0], [0.491889193910656, 0.04242575492887449, 0], [0.49188919391065644, 0.11829298727227353, 0], [0.4953830796106813, 0.10880958322934865, 0], [0.502869977539306, 0.08435238332917395, 0], [0.502869977539306, 0.07436985275767409, 0], [0.5103568754679308, 0.08435238332917395, 0], [0.5103568754679308, 0.07436985275767409, 0], [0.512852508110806, 0.025954579485899684, 0], [0.5133516346393809, 0.03643623658597456, 0], [0.5148490142251059, 0.11529822810082357, 0], [0.516845520339406, 0.1207886199151485, 0], [0.5263289243823308, 0.07986024457199901, 0], [0.5263289243823308, 0.080359371100574, 0], [0.5318193161966556, 0.10082355877214874, 0], [0.5353132018966804, 0.05490391814324933, 0], [0.5442974794110307, 0.10282006488644872, 0], [0.5477913651110555, 0.05490391814324933, 0], [0.5587721487397055, -0.00249563264287496, 0], [0.5587721487397055, -0.08035937110057399, 0], [0.5687546793112053, -0.0718742201147991, 0], [0.5687546793112053, -0.043923134514599435, 0], [0.5687546793112053, -0.03543798352882452, 0], [0.5687546793112053, -0.010980783628649852, 0], [0.5987022710257048, -0.043923134514599435, 0], [0.5987022710257048, -0.03543798352882452, 0], [0.6006987771400047, -0.010980783628649852, 0], [0.6006987771400047, -0.00249563264287496, 0], [0.6021961567257297, -0.08035937110057399, 0], [0.6021961567257297, -0.0718742201147991, 0], [0.6071874220114797, -0.08035937110057396, 0], [0.6081856750686296, -0.024457199900174635, 0], [0.6191664586972794, -0.08035937110057396, 0], [0.6196655852258546, -0.02445719990017469, 0], [0.6196655852258546, -0.024457199900174635, 0], [0.6271524831544795, -0.05190915897179931, 0], [0.6271524831544795, -0.06788120788619911, 0], [0.6276516096830547, -0.03643623658597453, 0], [0.6331420014973794, -0.05839780384327423, 0], [0.6331420014973796, -0.04542051410032441, 0], [0.6336411280259546, -0.04542051410032441, 0], [0.6391315198402792, -0.06788120788619911, 0], [0.6391315198402798, -0.05141003244322435, 0], [0.6391315198402798, -0.03643623658597453, 0], [0.6471175442974793, -0.08035937110057396, 0], [0.6471175442974797, -0.024457199900174663, 0], [0.6580983279261297, -0.024457199900174663, 0], [0.6585974544547044, -0.08035937110057396, 0], [0.663588719740454, -0.024457199900174635, 0], [0.663588719740454, -0.03194409782879955, 0], [0.6720738707262288, -0.010980783628649824, 0], [0.6720738707262288, -0.024457199900174635, 0], [0.6720738707262288, -0.03194409782879955, 0], [0.6720738707262288, -0.06239081607187417, 0], [0.6760668829548289, -0.076865485400549, 0], [0.6820564012977288, -0.061891689543299176, 0], [0.6820564012977288, -0.031944097828799575, 0], [0.6820564012977288, -0.024457199900174663, 0], [0.6820564012977288, -0.008485150985774865, 0], [0.6870476665834788, -0.08135762415772392, 0], [0.6895432992263537, -0.07287247317194906, 0], [0.6955328175692534, -0.07237334664337407, 0], [0.6960319440978286, -0.07986024457199897, 0], [0.6965310706264034, -0.031944097828799575, 0], [0.6965310706264034, -0.024457199900174663, 0], [0.702520588969304, -0.053406538557524315, 0], [0.7125031195408036, -0.05440479161467427, 0], [0.7125031195408036, -0.05390566508609931, 0], [0.7125923289292888, -0.05440479161467427, 0], [0.7130022460693783, -0.046917893686049414, 0], [0.7284751684552033, -0.030446718243074596, 0], [0.7284751684552035, -0.02345894684302468, 0], [0.7299725480409285, -0.08135762415772398, 0], [0.7314699276266534, -0.07337159970052405, 0], [0.7424507112553032, -0.046917893686049414, 0], [0.7469428500124782, -0.0703768405290741, 0], [0.7484402295982033, -0.077863738457699, 0], [0.7509358622410782, -0.05440479161467427, 0], [0.7514349887696534, -0.04991265285749934, 0], [0.7644122785126028, -0.02445719990017469, 0], [0.7649114050411778, -0.03943099575742451, 0], [0.7649114050411776, -0.03943099575742451, 0], [0.7649114050411776, -0.079860244571999, 0], [0.7733965560269527, -0.02445719990017469, 0], [0.7738956825555279, -0.03344147741452458, 0], [0.7748939356126774, -0.079860244571999, 0], [0.7748939356126774, -0.046418767157474394, 0], [0.7753930621412526, -0.04192662840029947, 0], [0.7888694784127772, -0.03144497130022461, 0], [0.7923633641128025, -0.022959820314449687, 0], [0.8018467681557273, -0.079860244571999, 0], [0.8018467681557273, -0.0479161467431994, 0], [0.8118292987272271, -0.079860244571999, 0], [0.8118292987272271, -0.046418767157474394, 0], [0.8248065884701767, -0.053406538557524315, 0], [0.8352882455702517, -0.05190915897179934, 0], [0.8487646618417766, -0.08185675068629897, 0], [0.8497629148989265, -0.02345894684302468, 0], [0.8517594210132267, -0.0723733466433741, 0], [0.8517594210132267, -0.030446718243074624, 0], [0.8662340903419012, -0.04242575492887446, 0], [0.8667332168704762, 0.001497379585725004, 0], [0.8667332168704762, -0.031944097828799575, 0], [0.8667332168704764, -0.046917893686049414, 0], [0.8667332168704764, -0.060394309957574256, 0], [0.8672323433990516, -0.046917893686049414, 0], [0.8672323433990516, -0.0559021712003993, 0], [0.8677314699276264, -0.07087596705764909, 0], [0.8682305964562016, -0.08035937110057396, 0], [0.8767157474419762, -0.06588470177189915, 0], [0.8767157474419762, 0.001497379585725004, 0], [0.8772148739705514, -0.08035937110057396, 0], [0.8891939106563516, -0.053406538557524315, 0], [0.8991764412278507, -0.046917893686049414, 0], [0.8991764412278511, -0.05440479161467427, 0], [0.8991764412278511, -0.05390566508609931, 0], [0.8992656506163363, -0.05440479161467427, 0], [0.9146493636136757, -0.030446718243074596, 0], [0.9151484901422511, -0.02345894684302468, 0], [0.916645869727976, -0.08135762415772398, 0], [0.918143249313701, -0.07337159970052405, 0], [0.9286249064137755, -0.046917893686049414, 0], [0.9336161716995257, -0.0703768405290741, 0], [0.9351135512852509, -0.077863738457699, 0], [0.9376091839281258, -0.05440479161467427, 0], [0.938108310456701, -0.04991265285749934, 0], [0.9475917144996253, -0.053406538557524315, 0], [0.9575742450711253, -0.05190915897179934, 0], [0.9715497878712251, -0.08185675068629897, 0], [0.9725480409283751, -0.02345894684302468, 0], [0.9740454205141, -0.0723733466433741, 0], [0.9740454205141, -0.030446718243074624, 0], [0.9885200898427748, -0.04242575492887446, 0], [0.9890192163713498, -0.046917893686049414, 0], [0.9890192163713498, -0.060394309957574256, 0], [0.9895183428999248, 0.001497379585725004, 0], [0.9895183428999248, -0.031944097828799575, 0], [0.989518342899925, -0.046917893686049414, 0], [0.989518342899925, -0.0559021712003993, 0], [0.990516595957075, -0.07087596705764909, 0], [0.99101572248565, -0.08035937110057396, 0], [0.9995008734714248, -0.06588470177189915, 0], [0.9995008734714248, 0.001497379585725004, 0], [1, -0.08035937110057396, 0]];
+exports.cells = [[0, 1, 23], [0, 23, 24], [0, 24, 25], [0, 25, 987], [1, 22, 23], [1, 984, 22], [2, 3, 11], [2, 11, 984], [3, 10, 11], [3, 983, 10], [4, 5, 8], [4, 8, 9], [4, 9, 983], [5, 6, 7], [5, 7, 8], [5, 992, 6], [7, 991, 8], [9, 10, 983], [9, 982, 10], [11, 12, 984], [12, 13, 20], [12, 20, 21], [12, 21, 985], [12, 985, 984], [13, 14, 986], [13, 981, 14], [13, 986, 20], [14, 15, 19], [14, 19, 986], [15, 16, 18], [15, 18, 19], [15, 990, 16], [16, 17, 18], [17, 989, 18], [22, 984, 985], [23, 988, 24], [26, 27, 57], [26, 57, 59], [26, 59, 996], [27, 56, 57], [27, 1000, 56], [28, 29, 56], [28, 56, 1000], [29, 1002, 56], [30, 31, 1005], [30, 1005, 1002], [31, 1003, 1005], [32, 33, 39], [32, 39, 1003], [33, 1006, 39], [34, 35, 38], [34, 38, 39], [34, 39, 1006], [35, 36, 38], [35, 1008, 36], [36, 37, 38], [37, 1009, 38], [39, 1005, 1003], [40, 41, 45], [40, 45, 1004], [40, 46, 47], [40, 47, 1001], [40, 1001, 1005], [40, 1004, 46], [41, 42, 43], [41, 43, 44], [41, 44, 45], [41, 1010, 42], [43, 1007, 44], [48, 49, 55], [48, 55, 1001], [49, 999, 55], [50, 51, 54], [50, 54, 55], [50, 55, 999], [51, 52, 54], [51, 995, 52], [52, 53, 54], [53, 993, 54], [55, 998, 1001], [56, 1002, 998], [57, 58, 59], [57, 994, 58], [59, 997, 996], [60, 61, 91], [60, 91, 92], [60, 92, 93], [60, 93, 1021], [61, 90, 91], [61, 1020, 90], [62, 63, 67], [62, 67, 1019], [62, 1019, 1020], [63, 64, 66], [63, 66, 67], [63, 1027, 64], [64, 65, 66], [65, 1026, 66], [68, 69, 83], [68, 83, 1015], [68, 1015, 1019], [69, 82, 83], [69, 1018, 82], [70, 71, 1017], [70, 80, 81], [70, 81, 1018], [70, 1017, 80], [71, 78, 79], [71, 79, 1017], [71, 1022, 78], [71, 1023, 1022], [72, 73, 74], [72, 74, 75], [72, 75, 76], [72, 76, 77], [72, 77, 1023], [73, 1024, 74], [75, 1025, 76], [77, 1022, 1023], [81, 1016, 1018], [82, 1018, 1016], [84, 85, 89], [84, 89, 1014], [84, 1014, 1015], [85, 86, 88], [85, 88, 89], [85, 1012, 86], [86, 87, 88], [87, 1011, 88], [90, 1020, 1014], [91, 1013, 92], [94, 95, 103], [94, 103, 104], [94, 104, 105], [94, 105, 1029], [94, 1029, 1031], [95, 102, 103], [95, 1036, 102], [96, 97, 100], [96, 100, 101], [96, 101, 1036], [97, 98, 99], [97, 99, 100], [97, 1038, 98], [99, 1039, 100], [101, 1035, 1036], [102, 1036, 1035], [105, 1028, 1029], [106, 107, 1032], [106, 1030, 1028], [106, 1032, 1030], [107, 108, 122], [107, 122, 1032], [108, 109, 121], [108, 121, 122], [109, 1033, 121], [109, 1034, 1033], [110, 111, 120], [110, 120, 1033], [110, 1033, 1034], [111, 112, 119], [111, 119, 120], [112, 1037, 119], [112, 1041, 1037], [113, 114, 115], [113, 115, 1041], [114, 1040, 115], [115, 116, 124], [115, 124, 1037], [115, 1037, 1041], [116, 123, 124], [116, 1030, 123], [116, 1031, 1030], [117, 1028, 118], [117, 1029, 1028], [118, 1028, 1030], [123, 1030, 1032], [125, 126, 130], [125, 130, 1047], [125, 1047, 1043], [126, 127, 128], [126, 128, 129], [126, 129, 130], [126, 1042, 127], [128, 1046, 129], [131, 132, 144], [131, 144, 145], [131, 145, 1047], [132, 1051, 144], [132, 1052, 1051], [133, 134, 143], [133, 143, 1052], [134, 135, 142], [134, 142, 143], [135, 1056, 142], [136, 137, 141], [136, 141, 1054], [136, 1054, 1056], [137, 138, 140], [137, 140, 141], [137, 1055, 138], [138, 139, 140], [139, 1053, 140], [142, 1056, 1054], [143, 1051, 1052], [145, 1050, 1047], [146, 147, 153], [146, 153, 1043], [146, 1043, 1050], [147, 1049, 153], [148, 149, 152], [148, 152, 153], [148, 153, 1049], [149, 150, 151], [149, 151, 152], [149, 1048, 150], [151, 1045, 152], [153, 1044, 1043], [154, 155, 177], [154, 177, 178], [154, 178, 179], [154, 179, 1073], [155, 156, 1065], [155, 176, 177], [155, 1065, 176], [156, 157, 192], [156, 180, 181], [156, 181, 1063], [156, 192, 193], [156, 193, 1068], [156, 1063, 1065], [156, 1068, 180], [157, 190, 191], [157, 191, 1069], [157, 1067, 190], [157, 1069, 192], [157, 1072, 1067], [158, 159, 163], [158, 163, 1070], [158, 1070, 1072], [159, 160, 161], [159, 161, 162], [159, 162, 163], [159, 1074, 160], [161, 1071, 162], [164, 165, 188], [164, 188, 189], [164, 189, 1070], [165, 1059, 1061], [165, 1061, 188], [166, 167, 187], [166, 187, 1059], [167, 168, 187], [168, 169, 186], [168, 186, 187], [169, 1057, 1058], [169, 1058, 186], [170, 171, 185], [170, 185, 1058], [170, 1058, 1057], [171, 172, 185], [172, 173, 184], [172, 184, 185], [173, 1060, 1062], [173, 1062, 184], [174, 175, 183], [174, 183, 1062], [174, 1062, 1060], [175, 1065, 183], [177, 1064, 178], [180, 194, 195], [180, 195, 1066], [180, 1068, 194], [182, 183, 1065], [182, 1065, 1063], [187, 1061, 1059], [189, 1067, 1072], [189, 1072, 1070], [196, 197, 205], [196, 205, 206], [196, 206, 207], [196, 207, 1077], [196, 1077, 1079], [197, 204, 205], [197, 1083, 204], [198, 199, 202], [198, 202, 203], [198, 203, 1083], [199, 200, 201], [199, 201, 202], [199, 1085, 200], [201, 1086, 202], [203, 1082, 1083], [204, 1083, 1082], [207, 1075, 1077], [208, 209, 224], [208, 224, 1076], [208, 1076, 1078], [208, 1078, 1075], [209, 210, 224], [210, 211, 223], [210, 223, 224], [211, 1080, 223], [211, 1081, 1080], [212, 213, 222], [212, 222, 1080], [212, 1080, 1081], [213, 214, 221], [213, 221, 222], [214, 1084, 221], [214, 1088, 1084], [215, 216, 217], [215, 217, 1088], [216, 1087, 217], [217, 218, 226], [217, 226, 1084], [217, 1084, 1088], [218, 225, 226], [218, 1078, 225], [218, 1079, 1078], [219, 1075, 220], [219, 1077, 1075], [220, 1075, 1078], [225, 1078, 1076], [227, 228, 250], [227, 250, 251], [227, 251, 252], [227, 252, 1105], [228, 229, 1099], [228, 249, 250], [228, 1099, 249], [229, 230, 265], [229, 254, 1095], [229, 265, 266], [229, 266, 1100], [229, 1095, 1099], [229, 1100, 254], [230, 263, 264], [230, 264, 1101], [230, 1097, 263], [230, 1101, 265], [230, 1104, 1097], [231, 232, 236], [231, 236, 1102], [231, 1102, 1104], [232, 233, 234], [232, 234, 235], [232, 235, 236], [232, 1106, 233], [234, 1103, 235], [237, 238, 261], [237, 261, 262], [237, 262, 1102], [238, 1091, 1093], [238, 1093, 261], [239, 240, 260], [239, 260, 1093], [239, 1093, 1091], [240, 241, 260], [241, 242, 259], [241, 259, 260], [242, 1089, 1090], [242, 1090, 259], [243, 244, 258], [243, 258, 1090], [243, 1090, 1089], [244, 245, 258], [245, 246, 257], [245, 257, 258], [246, 1092, 1094], [246, 1094, 257], [247, 248, 256], [247, 256, 1094], [247, 1094, 1092], [248, 255, 256], [248, 1099, 255], [250, 1098, 251], [253, 254, 1100], [253, 267, 268], [253, 268, 1096], [253, 1100, 267], [255, 1099, 1095], [262, 1097, 1102], [269, 290, 270], [269, 291, 290], [269, 790, 291], [269, 794, 790], [270, 290, 787], [270, 787, 271], [271, 787, 272], [272, 787, 273], [273, 787, 274], [274, 787, 275], [275, 787, 276], [276, 289, 277], [276, 787, 289], [277, 289, 278], [278, 288, 279], [278, 289, 288], [279, 287, 280], [279, 288, 287], [280, 286, 281], [280, 287, 286], [281, 286, 788], [281, 788, 793], [282, 791, 283], [282, 793, 791], [284, 791, 285], [285, 791, 788], [291, 790, 292], [292, 324, 293], [292, 325, 324], [292, 790, 325], [293, 324, 786], [293, 786, 785], [294, 323, 295], [294, 785, 786], [294, 786, 323], [295, 322, 296], [295, 323, 322], [296, 321, 297], [296, 322, 321], [297, 320, 784], [297, 321, 320], [298, 319, 299], [298, 779, 319], [298, 784, 779], [299, 317, 300], [299, 318, 317], [299, 319, 318], [300, 316, 301], [300, 317, 316], [301, 316, 780], [301, 780, 783], [302, 782, 303], [302, 783, 782], [304, 782, 305], [305, 782, 781], [306, 780, 307], [306, 781, 782], [306, 782, 780], [307, 315, 308], [307, 780, 315], [308, 314, 309], [308, 315, 314], [309, 314, 777], [309, 777, 778], [310, 776, 311], [310, 778, 776], [312, 776, 313], [313, 776, 777], [320, 779, 784], [326, 330, 792], [326, 790, 330], [326, 792, 327], [327, 792, 789], [328, 789, 329], [329, 789, 792], [330, 790, 794], [330, 794, 331], [331, 794, 795], [332, 795, 796], [332, 796, 333], [334, 796, 335], [335, 796, 794], [336, 357, 337], [336, 922, 357], [336, 927, 922], [337, 355, 338], [337, 356, 355], [337, 357, 356], [338, 354, 339], [338, 355, 354], [339, 354, 919], [339, 919, 920], [340, 348, 341], [340, 349, 348], [340, 920, 349], [341, 348, 921], [341, 921, 925], [342, 344, 926], [342, 345, 344], [342, 925, 345], [342, 926, 343], [345, 346, 923], [345, 347, 346], [345, 925, 347], [347, 925, 921], [349, 920, 918], [350, 918, 920], [350, 920, 351], [351, 920, 917], [352, 917, 920], [352, 920, 353], [353, 920, 919], [358, 922, 928], [358, 928, 359], [359, 928, 924], [360, 924, 361], [361, 924, 928], [362, 927, 363], [362, 928, 927], [364, 914, 915], [364, 915, 365], [365, 915, 912], [366, 368, 911], [366, 910, 368], [366, 911, 367], [366, 912, 910], [368, 910, 369], [369, 374, 908], [369, 375, 374], [369, 910, 375], [370, 908, 371], [371, 908, 906], [372, 906, 907], [372, 907, 373], [374, 907, 908], [376, 390, 377], [376, 391, 390], [376, 910, 391], [377, 389, 378], [377, 390, 389], [378, 388, 379], [378, 389, 388], [379, 387, 380], [379, 388, 387], [380, 386, 381], [380, 387, 386], [381, 386, 916], [381, 916, 909], [382, 909, 383], [383, 909, 913], [384, 913, 916], [384, 916, 385], [391, 910, 915], [392, 915, 393], [393, 915, 914], [394, 396, 802], [394, 801, 396], [394, 802, 395], [394, 804, 801], [396, 801, 397], [397, 403, 799], [397, 801, 403], [398, 797, 399], [398, 799, 797], [400, 797, 401], [401, 797, 798], [402, 798, 799], [402, 799, 403], [404, 418, 405], [404, 419, 418], [404, 801, 419], [405, 417, 406], [405, 418, 417], [406, 416, 407], [406, 417, 416], [407, 415, 408], [407, 416, 415], [408, 414, 409], [408, 415, 414], [409, 414, 806], [409, 806, 800], [410, 800, 411], [411, 800, 803], [412, 803, 806], [412, 806, 413], [419, 801, 805], [420, 805, 421], [421, 805, 804], [422, 423, 424], [422, 424, 825], [424, 831, 825], [425, 426, 427], [425, 427, 840], [425, 840, 831], [428, 429, 441], [428, 441, 825], [428, 825, 840], [429, 430, 439], [429, 439, 440], [429, 440, 441], [430, 431, 438], [430, 438, 439], [431, 824, 438], [431, 839, 824], [432, 433, 434], [432, 434, 839], [434, 830, 839], [435, 436, 437], [435, 437, 824], [435, 824, 830], [442, 546, 443], [442, 547, 546], [442, 885, 547], [443, 545, 444], [443, 546, 545], [444, 544, 879], [444, 545, 544], [444, 879, 445], [445, 450, 878], [445, 878, 882], [445, 879, 450], [446, 882, 447], [447, 878, 880], [447, 882, 878], [448, 878, 449], [448, 880, 878], [450, 879, 451], [451, 879, 452], [452, 542, 453], [452, 543, 542], [452, 879, 543], [453, 542, 866], [454, 487, 455], [454, 866, 487], [455, 486, 852], [455, 487, 486], [455, 852, 456], [456, 852, 457], [457, 847, 853], [457, 852, 847], [458, 853, 459], [459, 853, 851], [460, 847, 461], [460, 851, 853], [460, 853, 847], [461, 847, 850], [462, 847, 849], [462, 849, 463], [462, 850, 847], [464, 847, 465], [464, 849, 847], [465, 470, 846], [465, 471, 470], [465, 847, 471], [466, 842, 467], [466, 846, 842], [468, 842, 469], [469, 842, 845], [470, 845, 846], [472, 847, 852], [472, 852, 473], [473, 484, 474], [473, 485, 484], [473, 852, 485], [474, 483, 475], [474, 484, 483], [475, 482, 841], [475, 483, 482], [476, 480, 477], [476, 481, 480], [476, 841, 848], [476, 848, 481], [477, 480, 844], [477, 844, 843], [478, 843, 479], [479, 843, 844], [482, 848, 841], [487, 866, 488], [488, 540, 489], [488, 541, 540], [488, 866, 541], [489, 540, 877], [489, 877, 854], [490, 494, 856], [490, 854, 862], [490, 856, 491], [490, 862, 494], [491, 492, 855], [491, 493, 492], [491, 856, 493], [494, 496, 495], [494, 497, 496], [494, 499, 497], [494, 862, 499], [495, 496, 857], [497, 498, 858], [497, 499, 498], [499, 862, 859], [500, 502, 501], [500, 859, 502], [501, 502, 860], [502, 859, 862], [502, 862, 503], [503, 504, 861], [503, 505, 504], [503, 506, 505], [503, 507, 506], [503, 508, 507], [503, 862, 508], [509, 862, 864], [509, 864, 510], [510, 511, 863], [510, 512, 511], [510, 864, 512], [513, 862, 869], [513, 864, 862], [513, 867, 514], [513, 869, 867], [514, 867, 865], [515, 865, 867], [515, 867, 516], [517, 520, 518], [517, 867, 520], [518, 520, 868], [519, 868, 520], [520, 867, 869], [521, 526, 522], [521, 869, 526], [522, 526, 523], [523, 526, 524], [524, 526, 525], [525, 526, 870], [526, 869, 527], [527, 528, 871], [527, 529, 528], [527, 869, 872], [527, 872, 529], [530, 532, 531], [530, 535, 532], [530, 869, 535], [530, 872, 869], [531, 532, 873], [532, 535, 533], [533, 534, 874], [533, 535, 534], [535, 539, 875], [535, 869, 539], [536, 538, 537], [536, 875, 538], [537, 538, 876], [538, 875, 539], [539, 869, 877], [541, 866, 542], [547, 885, 881], [548, 550, 549], [548, 551, 550], [548, 881, 551], [549, 550, 883], [551, 552, 884], [551, 553, 552], [551, 881, 885], [551, 885, 553], [554, 556, 933], [554, 602, 931], [554, 603, 602], [554, 775, 603], [554, 931, 932], [554, 932, 556], [554, 933, 555], [556, 599, 557], [556, 932, 599], [557, 598, 558], [557, 599, 598], [558, 598, 938], [558, 938, 559], [559, 938, 941], [560, 941, 942], [560, 942, 561], [562, 938, 945], [562, 942, 938], [562, 945, 563], [563, 945, 943], [564, 943, 945], [564, 945, 565], [566, 597, 567], [566, 938, 597], [566, 945, 938], [567, 596, 568], [567, 597, 596], [568, 595, 569], [568, 596, 595], [569, 594, 934], [569, 595, 594], [570, 592, 571], [570, 593, 592], [570, 934, 593], [571, 591, 572], [571, 592, 591], [572, 591, 573], [573, 590, 929], [573, 591, 590], [574, 589, 575], [574, 929, 930], [574, 930, 589], [575, 588, 576], [575, 589, 588], [576, 587, 577], [576, 588, 587], [577, 586, 937], [577, 587, 586], [578, 585, 579], [578, 936, 585], [578, 937, 936], [579, 584, 940], [579, 585, 584], [580, 584, 939], [580, 939, 581], [580, 940, 584], [581, 939, 944], [582, 939, 583], [582, 944, 939], [586, 936, 937], [590, 930, 929], [593, 934, 935], [594, 935, 934], [600, 931, 601], [600, 932, 931], [604, 627, 899], [604, 899, 605], [604, 904, 627], [605, 626, 606], [605, 899, 626], [606, 625, 607], [606, 626, 625], [607, 625, 900], [607, 900, 903], [608, 624, 609], [608, 903, 624], [609, 623, 610], [609, 624, 623], [610, 622, 611], [610, 623, 622], [611, 620, 893], [611, 621, 620], [611, 622, 897], [611, 897, 621], [612, 619, 613], [612, 893, 894], [612, 894, 619], [613, 618, 889], [613, 619, 618], [614, 618, 888], [614, 887, 615], [614, 888, 887], [614, 889, 618], [616, 887, 888], [616, 888, 617], [620, 894, 893], [624, 903, 900], [627, 901, 628], [627, 904, 901], [628, 901, 629], [629, 650, 630], [629, 901, 650], [630, 649, 895], [630, 650, 649], [631, 648, 632], [631, 649, 891], [631, 891, 648], [631, 895, 649], [632, 645, 890], [632, 646, 645], [632, 647, 646], [632, 648, 647], [633, 643, 634], [633, 644, 643], [633, 890, 644], [634, 641, 635], [634, 642, 641], [634, 643, 642], [635, 641, 892], [635, 892, 896], [636, 896, 898], [636, 898, 637], [638, 898, 639], [639, 896, 640], [639, 898, 896], [640, 896, 892], [644, 890, 886], [645, 886, 890], [651, 653, 652], [651, 656, 653], [651, 657, 656], [651, 901, 657], [653, 656, 902], [654, 656, 905], [654, 902, 656], [654, 905, 655], [657, 901, 904], [658, 690, 659], [658, 691, 690], [658, 960, 691], [658, 961, 960], [659, 690, 959], [659, 959, 958], [660, 958, 959], [660, 959, 661], [661, 959, 955], [662, 955, 663], [663, 955, 953], [664, 950, 665], [664, 953, 955], [664, 955, 950], [665, 950, 952], [666, 668, 951], [666, 950, 668], [666, 951, 667], [666, 952, 950], [668, 950, 669], [669, 674, 948], [669, 675, 674], [669, 950, 675], [670, 948, 671], [671, 948, 946], [672, 946, 947], [672, 947, 673], [674, 947, 948], [676, 950, 955], [676, 955, 956], [676, 956, 677], [677, 686, 678], [677, 687, 686], [677, 956, 687], [678, 685, 679], [678, 686, 685], [679, 684, 949], [679, 685, 684], [680, 949, 681], [681, 949, 954], [682, 954, 957], [682, 957, 683], [684, 957, 949], [688, 955, 689], [688, 956, 955], [689, 955, 959], [692, 694, 962], [692, 695, 694], [692, 960, 695], [692, 962, 693], [695, 960, 961], [696, 726, 697], [696, 727, 726], [696, 820, 727], [697, 726, 816], [697, 816, 819], [698, 704, 699], [698, 705, 704], [698, 819, 705], [699, 704, 813], [699, 813, 818], [700, 818, 701], [701, 818, 815], [702, 813, 703], [702, 815, 813], [705, 819, 812], [706, 712, 707], [706, 713, 712], [706, 812, 713], [707, 712, 808], [707, 808, 809], [708, 807, 709], [708, 809, 807], [710, 807, 711], [711, 807, 808], [713, 812, 811], [714, 724, 715], [714, 725, 724], [714, 811, 725], [715, 723, 716], [715, 724, 723], [716, 722, 717], [716, 723, 722], [717, 722, 817], [717, 817, 810], [718, 810, 719], [719, 810, 814], [720, 814, 817], [720, 817, 721], [725, 811, 816], [727, 820, 821], [728, 731, 822], [728, 821, 731], [728, 822, 729], [730, 822, 731], [731, 821, 820], [732, 733, 772], [732, 772, 773], [732, 773, 774], [732, 774, 964], [733, 771, 772], [733, 971, 771], [733, 972, 971], [734, 735, 770], [734, 770, 972], [735, 736, 768], [735, 768, 769], [735, 769, 770], [736, 767, 768], [736, 978, 767], [737, 738, 766], [737, 766, 980], [737, 980, 978], [738, 739, 975], [738, 765, 766], [738, 975, 765], [739, 746, 975], [739, 970, 746], [740, 741, 742], [740, 742, 745], [740, 745, 969], [740, 969, 970], [741, 968, 742], [742, 743, 745], [743, 744, 745], [743, 967, 744], [746, 747, 976], [746, 763, 764], [746, 764, 975], [746, 970, 969], [746, 976, 763], [747, 748, 762], [747, 762, 976], [748, 761, 762], [748, 977, 761], [749, 750, 759], [749, 759, 760], [749, 760, 979], [749, 979, 977], [750, 758, 759], [750, 973, 974], [750, 974, 758], [751, 752, 755], [751, 755, 756], [751, 756, 974], [751, 974, 973], [752, 753, 754], [752, 754, 755], [752, 966, 753], [754, 965, 755], [756, 757, 974], [761, 977, 979], [767, 978, 980], [770, 971, 972], [772, 963, 773], [776, 778, 777], [780, 782, 783], [788, 791, 793], [794, 796, 795], [797, 799, 798], [800, 806, 803], [801, 804, 805], [807, 809, 808], [810, 817, 814], [811, 812, 816], [812, 819, 816], [813, 815, 818], [823, 827, 828], [823, 828, 833], [823, 833, 826], [824, 839, 830], [825, 831, 840], [826, 833, 835], [826, 834, 829], [826, 835, 837], [826, 836, 834], [826, 837, 836], [829, 834, 832], [836, 837, 838], [842, 846, 845], [854, 869, 862], [854, 877, 869], [906, 908, 907], [909, 916, 913], [910, 912, 915], [922, 927, 928], [938, 942, 941], [946, 948, 947], [949, 957, 954], [998, 1002, 1005], [998, 1005, 1001], [1014, 1020, 1015], [1015, 1020, 1019], [1043, 1047, 1050], [1097, 1104, 1102]];
+},{}],188:[function(require,module,exports){
+'use strict';
+
+exports.positions = [[-0.36325983553692365, 0.05180788455336988, 0], [-0.7168655272492744, -0.11744195420831986, 0], [-0.7168655272492744, -0.07797887778136081, 0], [-0.7168655272492744, -0.06900999677523377, 0], [-0.7168655272492744, -0.0685262818445662, 0], [-0.7168655272492744, -0.06755885198323115, 0], [-0.7168655272492744, -0.06707513705256367, 0], [-0.7168655272492744, -0.06561391486617218, 0], [-0.7168655272492744, -0.06244961302805545, 0], [-0.7168655272492744, -0.06062560464366334, 0], [-0.7168655272492744, -0.05486133505320866, 0], [-0.7168655272492744, -0.01817961947758789, 0], [-0.7168655272492744, 0.03107868429538859, 0], [-0.7168655272492744, 0.06776039987100936, 0], [-0.7189515478877782, 0.08540591744598516, 0], [-0.734007175104805, 0.10046154466301194, 0], [-0.7577696710738472, 0.10046154466301194, 0], [-0.7728252982908739, 0.08540591744598516, 0], [-0.7749113189293777, 0.0675386971944534, 0], [-0.7749113189293777, 0.02944614640438568, 0], [-0.7749113189293777, -0.021706707513705265, 0], [-0.7749113189293777, -0.05979925830377302, 0], [-0.7758082070299903, -0.07794612624959694, 0], [-0.7828019187358917, -0.09700751773621412, 0], [-0.7963257820058046, -0.10935736455981941, 0], [-0.8158960819090616, -0.11535845291841339, 0], [-0.8395137153337633, -0.11535845291841339, 0], [-0.8589857606417285, -0.10935736455981941, 0], [-0.8726229945985167, -0.09700751773621412, 0], [-0.8797603091744599, -0.07794612624959694, 0], [-0.8806836504353435, -0.05979925830377302, 0], [-0.8806836504353435, -0.021706707513705265, 0], [-0.8806836504353435, 0.02944614640438568, 0], [-0.8806836504353435, 0.0675386971944534, 0], [-0.8824371170590133, 0.08457957110609482, 0], [-0.8953764914543696, 0.09919179297000968, 0], [-0.9068143340857788, 0.10227547565301515, 0], [-0.9090112060625605, 0.10253748790712673, 0], [-0.9134553369880684, 0.10254756530151564, 0], [-0.9332070299903257, 0.10254756530151564, 0], [-0.9597307320219284, 0.10254756530151564, 0], [-0.9794824250241857, 0.10254756530151564, 0], [-0.9893885037084811, 0.10118711705901322, 0], [-0.9986395517574976, 0.09193606900999679, 0], [-0.9986395517574976, 0.0783315865849726, 0], [-0.9893885037084811, 0.06908053853595615, 0], [-0.9756328603676233, 0.06772009029345374, 0], [-0.9450378910029023, 0.06772009029345374, 0], [-0.9380844888745565, 0.06217752337955499, 0], [-0.9380844888745565, 0.026906643018381166, 0], [-0.9380844888745565, -0.020457110609480817, 0], [-0.9380844888745565, -0.055727990970654624, 0], [-0.9360967228313447, -0.0858052341986456, 0], [-0.920874818606901, -0.12420262616897774, 0], [-0.8921693606901, -0.14902576789745242, 0], [-0.8517942800709448, -0.1610606961464044, 0], [-0.8055667526604321, -0.16129877458884234, 0], [-0.7673935827152532, -0.15110045146726864, 0], [-0.7516930022573364, -0.14219203482747497, 0], [-0.7516930022573364, -0.14352225088681067, 0], [-0.750332554014834, -0.15062681393098998, 0], [-0.7410815059658175, -0.15987786198000645, 0], [-0.7315583682683006, -0.16123831022250884, 0], [-0.7195864237342793, -0.16123831022250884, 0], [-0.7100632860367624, -0.15987786198000645, 0], [-0.7008122379877458, -0.15062681393098998, 0], [-0.7008122379877458, -0.13702233150596577, 0], [-0.7100632860367624, -0.12777128345694932, 0], [0.42820612302483063, -0.11621251209287323, 0], [0.41356870767494347, -0.0964608190906159, 0], [0.39391274991938086, -0.0699371170590132, 0], [0.3792753345694937, -0.05018542405675588, 0], [0.38292083198968063, -0.04083360206385036, 0], [0.40908174782328266, -0.013342470170912607, 0], [0.4181413253789099, -0.0035673976136729917, 0], [0.42219243792325045, 0.003970493389229298, 0], [0.42056997742663627, 0.01874395356336667, 0], [0.4069856497903901, 0.031078684295388608, 0], [0.3926858271525311, 0.0321065785230571, 0], [0.38274951628506915, 0.026906643018381204, 0], [0.37121089970977095, 0.01545872299258306, 0], [0.34017252499193784, -0.01868348919703319, 0], [0.3318082876491453, -0.02788415027410507, 0], [0.32604401805869054, -0.03923129635601415, 0], [0.32685020960980316, -0.060383747178329554, 0], [0.33616172202515293, -0.07731376975169296, 0], [0.34038415027410474, -0.08293947516930017, 0], [0.3537870848113509, -0.10180939616252817, 0], [0.3717853111899383, -0.1271490043534343, 0], [0.38518824572718424, -0.1460189253466623, 0], [0.3907408900354721, -0.15334771041599476, 0], [0.4019872621734921, -0.16013987423411796, 0], [0.42005603031280203, -0.15912205740083837, 0], [0.4330961786520473, -0.14545711060948077, 0], [0.4348597226701063, -0.13029063205417601, 0], [0.43211867139632365, -0.12184577555627214, 0], [0.2850088681070624, 0.10254756530151564, 0], [0.28448484359883897, 0.10254756530151564, 0], [0.2831344727507257, 0.10264833924540472, 0], [0.28119961302805563, 0.10309174459851661, 0], [0.27589890357949054, 0.10319251854240567, 0], [0.25683247339567883, 0.10319251854240567, 0], [0.2456969525959367, 0.10183207029990325, 0], [0.2364459045469205, 0.0925810222508868, 0], [0.2364459045469205, 0.07897653982586263, 0], [0.2456969525959367, 0.06972549177684619, 0], [0.25350693324733964, 0.06836504353434376, 0], [0.25794098677845856, 0.06836504353434376, 0], [0.2589487262173493, 0.06608345846098033, 0], [0.2589487262173493, 0.04961636619235731, 0], [0.2589487262173493, 0.004083864076104492, 0], [0.2589487262173493, -0.07051404788777813, 0], [0.2589487262173493, -0.11604655000403095, 0], [0.2589487262173493, -0.13251364227265397, 0], [0.2608029667849081, -0.1459005159625927, 0], [0.27418574653337613, -0.1589205095130603, 0], [0.2953079651725252, -0.1589205095130603, 0], [0.30869074492099324, -0.1459005159625927, 0], [0.31054498548855203, -0.1324194816188326, 0], [0.31054498548855203, -0.1152727950661077, 0], [0.31054498548855203, -0.06786117381489844, 0], [0.31054498548855203, 0.009815382134795233, 0], [0.31054498548855203, 0.05722700338600453, 0], [0.31054498548855203, 0.07437368993872943, 0], [0.3091543050628829, 0.08785472428248954, 0], [0.2962149306675266, 0.10087471783295711, 0], [-0.6249596904224445, 0.10264833924540472, 0], [-0.6268945501451145, 0.10309174459851661, 0], [-0.6321952595936795, 0.10319251854240567, 0], [-0.6512616897774912, 0.10319251854240567, 0], [-0.6623972105772331, 0.10183207029990325, 0], [-0.6716482586262497, 0.0925810222508868, 0], [-0.6716482586262497, 0.07897653982586263, 0], [-0.6623972105772331, 0.06972549177684619, 0], [-0.6549903257013867, 0.06836504353434376, 0], [-0.6523298935827153, 0.06836504353434376, 0], [-0.6517252499193809, 0.06608345846098033, 0], [-0.6517252499193809, 0.04961636619235731, 0], [-0.6517252499193809, 0.004083864076104492, 0], [-0.6517252499193809, -0.07051404788777813, 0], [-0.6517252499193809, -0.11604655000403095, 0], [-0.6517252499193809, -0.13251364227265397, 0], [-0.6498710093518221, -0.1459005159625927, 0], [-0.6364882296033538, -0.1589205095130603, 0], [-0.6153660109642052, -0.1589205095130603, 0], [-0.6019832312157369, -0.1459005159625927, 0], [-0.600128990648178, -0.1324194816188326, 0], [-0.600128990648178, -0.1152727950661077, 0], [-0.600128990648178, -0.06786117381489844, 0], [-0.600128990648178, 0.009815382134795233, 0], [-0.600128990648178, 0.05722700338600453, 0], [-0.600128990648178, 0.07437368993872943, 0], [-0.6014995162850694, 0.08749193808448888, 0], [-0.6139148661722025, 0.10051193163495646, 0], [-0.39832916801031926, 0.016839326023863285, 0], [-0.39069932078361824, 0.028301102466946153, 0], [-0.3805992522573364, 0.032339618268300556, 0], [-0.36690155393421486, 0.032339618268300556, 0], [-0.356801485407933, 0.028301102466946153, 0], [-0.349171638181232, 0.016839326023863285, 0], [-0.3479522734601742, 0.0009699492099322759, 0], [-0.3479522734601742, -0.038004373589164774, 0], [-0.3479522734601742, -0.09034132134795231, 0], [-0.3479522734601742, -0.12931564414704935, 0], [-0.349171638181232, -0.1451850209609803, 0], [-0.356801485407933, -0.1566467974040632, 0], [-0.36690155393421486, -0.16068531320541757, 0], [-0.3805992522573364, -0.16068531320541757, 0], [-0.39069932078361824, -0.1566467974040632, 0], [-0.39832916801031926, -0.1451850209609803, 0], [-0.399548532731377, -0.12931564414704935, 0], [-0.399548532731377, -0.09034132134795231, 0], [-0.399548532731377, -0.038004373589164774, 0], [-0.399548532731377, 0.0009699492099322759, 0], [-0.015889531602708895, -0.12008475088681068, 0], [-0.028763402934537385, -0.08393209851660756, 0], [-0.04605117300870687, -0.03538425104804902, 0], [-0.05892504434053536, 0.0007684013221541495, 0], [-0.06627902289584009, 0.01606336665591746, 0], [-0.08371291518864887, 0.028035311189938725, 0], [-0.10515761044824246, 0.028045388584327646, 0], [-0.12214809738793964, 0.01633545630441795, 0], [-0.12873619396968705, 0.0038797968397291218, 0], [-0.13737755965817466, -0.01657731376975168, 0], [-0.1489816792970009, -0.04404829087391162, 0], [-0.15762304498548851, -0.06450540148339248, 0], [-0.16033890277329899, -0.06450540148339248, 0], [-0.1689802684617866, -0.04404829087391162, 0], [-0.18058438810061272, -0.01657731376975168, 0], [-0.18922575378910034, 0.0038797968397291218, 0], [-0.19581385037084809, 0.01633545630441795, 0], [-0.21280433731054504, 0.028045388584327646, 0], [-0.22385923895517568, 0.029667849080941635, 0], [-0.22438326346339887, 0.029667849080941635, 0], [-0.2257336343115125, 0.029768623024830698, 0], [-0.22766849403418254, 0.030212028377942624, 0], [-0.23659706546275394, 0.030312802321831686, 0], [-0.27162608835859403, 0.030312802321831686, 0], [-0.28638947113834246, 0.028952354079329272, 0], [-0.295640519187359, 0.019701306030312817, 0], [-0.295640519187359, 0.006096823605288638, 0], [-0.28638947113834246, -0.003154224443727798, 0], [-0.27656401160915833, -0.004514672686230232, 0], [-0.26326185101580135, -0.004514672686230232, 0], [-0.26209539261528547, -0.009696972750725568, 0], [-0.2739111375362787, -0.04267524588842302, 0], [-0.2897779950016125, -0.08696035553047397, 0], [-0.30159373992260574, -0.11993862866817147, 0], [-0.30484118026443086, -0.13524871009351813, 0], [-0.2967389551757499, -0.15260198323121568, 0], [-0.28593598839084156, -0.15875927120283775, 0], [-0.2816228635923895, -0.1592832957110609, 0], [-0.27204933892292815, -0.15813447275072554, 0], [-0.25963398903579504, -0.1495082231538213, 0], [-0.25428289261528547, -0.13848859238955175, 0], [-0.2451124637213803, -0.11274084972589486, 0], [-0.23279788777813615, -0.07816530957755558, 0], [-0.22362745888423097, -0.0524175669138987, 0], [-0.22046819574330856, -0.05244527974846822, 0], [-0.2095342228313447, -0.07836937681393097, 0], [-0.19485145920670743, -0.11318173573040943, 0], [-0.18391748629474358, -0.1391058327958722, 0], [-0.18171557562076757, -0.1441470493389229, 0], [-0.18074814575943243, -0.14608190906159296, 0], [-0.1801636568848759, -0.1471501128668171, 0], [-0.17972025153176396, -0.147593518219929, 0], [-0.17913576265720743, -0.14827878103837466, 0], [-0.1781683327958723, -0.14968961625282162, 0], [-0.17730167687842646, -0.15065704611415665, 0], [-0.17677765237020326, -0.1511810706223798, 0], [-0.17581022250886813, -0.15204772653982582, 0], [-0.17439938729442117, -0.15301515640116087, 0], [-0.17371412447597556, -0.1535996452757174, 0], [-0.17327071912286374, -0.15404305062882936, 0], [-0.17220251531763975, -0.15462753950338595, 0], [-0.1702676555949696, -0.155594969364721, 0], [-0.1692901483392455, -0.15607868429538851, 0], [-0.1690281360851339, -0.15607868429538851, 0], [-0.16865527249274448, -0.15607868429538851, 0], [-0.1685544985488554, -0.15607868429538851, 0], [-0.16811109319574358, -0.15607868429538851, 0], [-0.16714366333440867, -0.15646162528216698, 0], [-0.1656522089648501, -0.15698564979039012, 0], [-0.1644026120606259, -0.15736859077716855, 0], [-0.1638785875524027, -0.15736859077716855, 0], [-0.16251813930990044, -0.15746936472105766, 0], [-0.1603212673331188, -0.15791277007416957, 0], [-0.15791277007416993, -0.15800346662366974, 0], [-0.15553450499838817, -0.1577414543695582, 0], [-0.15408336020638558, -0.15736859077716855, 0], [-0.15355933569816238, -0.15736859077716855, 0], [-0.15230973879393817, -0.15725773943889057, 0], [-0.1508182844243796, -0.1565523218316671, 0], [-0.1498508545630447, -0.15607868429538851, 0], [-0.14940744920993287, -0.15607868429538851, 0], [-0.1493066752660438, -0.15607868429538851, 0], [-0.14929659787165483, -0.15607868429538851, 0], [-0.14903458561754324, -0.15607868429538851, 0], [-0.14769429216381869, -0.15559496936472095, 0], [-0.14575943244114853, -0.1546275395033859, 0], [-0.14469122863592454, -0.15404305062882936, 0], [-0.14424782328281271, -0.1535996452757174, 0], [-0.14356256046436688, -0.1530151564011608, 0], [-0.14215172524991992, -0.15204772653982576, 0], [-0.141184295388585, -0.1511810706223798, 0], [-0.14066027088036182, -0.15065704611415665, 0], [-0.13979361496291598, -0.14968961625282162, 0], [-0.13882618510158085, -0.14827878103837466, 0], [-0.1382416962270242, -0.147593518219929, 0], [-0.13779829087391238, -0.1471501128668171, 0], [-0.13721380199935584, -0.14608190906159296, 0], [-0.1362463721380207, -0.1441470493389229, 0], [-0.13404446146404458, -0.1391058327958722, 0], [-0.12311048855208062, -0.11318173573040943, 0], [-0.10842772492744335, -0.07836937681393089, 0], [-0.0974937520154795, -0.052445279748468146, 0], [-0.09433448887455731, -0.05241756691389863, 0], [-0.08516405998065213, -0.0781653095775555, 0], [-0.07284948403740799, -0.11274084972589475, 0], [-0.0636790551435028, -0.13848859238955166, 0], [-0.058327958722993456, -0.14950822315382128, 0], [-0.045912608835860125, -0.15813447275072548, 0], [-0.03633908416639875, -0.15919259916156064, 0], [-0.03202595936794661, -0.1584871815543372, 0], [-0.02085012899064853, -0.15288415027410504, 0], [-0.012485891647855518, -0.1356114962915188, 0], [0.5559496936472104, -0.07362544340535308, 0], [0.5578845533698806, -0.07406884875846499, 0], [0.5618172565301514, -0.07416962270235407, 0], [0.5806871775233793, -0.07416962270235407, 0], [0.6060267857142856, -0.07416962270235407, 0], [0.6248967067075135, -0.07416962270235407, 0], [0.6288294098677842, -0.07415954530796516, 0], [0.6307642695904543, -0.07389753305385362, 0], [0.6323363431151239, -0.07352466946146403, 0], [0.6349967752337953, -0.07352466946146403, 0], [0.6464749274427599, -0.07253708481135118, 0], [0.6570965011286678, -0.06209690422444372, 0], [0.656590112060625, -0.035099564656562394, 0], [0.6442301878426311, -0.0055123347307319956, 0], [0.6203215696549498, 0.01802845856175429, 0], [0.5857107586262491, 0.03165309577555628, 0], [0.5428805727990966, 0.031674510238632714, 0], [0.5069168715736854, 0.01751829047081587, 0], [0.4819274528377939, -0.008881963479522718, 0], [0.4689402108190903, -0.04553092752337954, 0], [0.4685736455981937, -0.08405554659787164, 0], [0.4796487020316025, -0.11650475653015153, 0], [0.5034212753950333, -0.1429075298290874, 0], [0.5415843679458234, -0.15842671718800383, 0], [0.5754595291841338, -0.15938406965494997, 0], [0.6144792002579811, -0.15406320541760715, 0], [0.632215414382457, -0.15010278942276684, 0], [0.6443889068042565, -0.13734480812641078, 0], [0.6432098516607547, -0.12082795872299258, 0], [0.6323061109319574, -0.11191954208319896, 0], [0.6144792002579811, -0.11288697194453398, 0], [0.5754595291841338, -0.11865124153498866, 0], [0.5558375826346338, -0.11904929861335047, 0], [0.5381693909222831, -0.11220674782328278, 0], [0.5259732243631083, -0.09968054659787162, 0], [0.5196723335214444, -0.08267998226378584, 0], [0.5184214769429214, -0.06179458239277651, 0], [0.5266748629474358, -0.02438225572395999, 0], [0.5410049177684615, -0.00848201688971299, 0], [0.5562772089648498, -0.002731603716543034, 0], [0.5741519872621732, -0.002700741696226987, 0], [0.5886886286681712, -0.008465011286681704, 0], [0.6000206586584971, -0.01906643018381167, 0], [0.6073015761044822, -0.0335375685262818, 0], [0.601297968397291, -0.04192196065785227, 0], [0.5667123508545626, -0.04192196065785227, 0], [0.5528962431473714, -0.04316148016768781, 0], [0.5446126249596899, -0.05144509835536923, 0], [0.5439172847468556, -0.06327595936794583, 0], [0.5500846501128667, -0.07164019671073846, 0], [0.20025798129635586, -0.10270376491454365, 0], [0.20025798129635586, -0.0790722750725572, 0], [0.20025798129635586, -0.0473385601418897, 0], [0.20025798129635586, -0.023707070299903245, 0], [0.1985171114156723, -0.007304851257658801, 0], [0.18481689374395338, 0.011874949613028062, 0], [0.15799590857787815, 0.023647865607868447, 0], [0.11865879958078018, 0.0290417909545308, 0], [0.08743147371815518, 0.028559335698161888, 0], [0.0563930990003223, 0.023681876813930983, 0], [0.04148863269912928, 0.02034625927120285, 0], [0.030383344082554054, 0.010329329248629471, 0], [0.030020557884553156, -0.005341019026120619, 0], [0.040400274105127254, -0.01602305707836182, 0], [0.05699774266365676, -0.015559496936472106, 0], [0.09069654950016104, -0.010238632699129295, 0], [0.10107626572073514, -0.009029345372460501, 0], [0.11304821025475631, -0.009029345372460501, 0], [0.12815422444372748, -0.009563447275072549, 0], [0.14240491978394032, -0.013973566994517878, 0], [0.14734536238310203, -0.020818637133182858, 0], [0.14801676878426284, -0.035673976136730096, 0], [0.14801676878426284, -0.07912770074169621, 0], [0.14721309658174753, -0.09616605530474037, 0], [0.14101046033537545, -0.10934224846823602, 0], [0.12918463801999303, -0.11967661641405995, 0], [0.11234027329893559, -0.12559708561754268, 0], [0.09044461464043829, -0.12471783295711054, 0], [0.07583239277652343, -0.11335053208642369, 0], [0.07438754635601397, -0.09973471259271204, 0], [0.07864272613672973, -0.09121679498548858, 0], [0.09262133182844234, -0.08308811673653659, 0], [0.10899709771041555, -0.07922847468558525, 0], [0.11762334730731983, -0.07072315382134793, 0], [0.11559527168655248, -0.05627217026765554, 0], [0.10865698564979032, -0.050386971944534, 0], [0.09756933247339528, -0.04821025475653016, 0], [0.08008631288294077, -0.05047137012254106, 0], [0.054341089567881085, -0.057905967832957136, 0], [0.03473299943566577, -0.0714172343598839, 0], [0.023741081505965544, -0.09312142252499193, 0], [0.023554649709770725, -0.11923824975814257, 0], [0.032964416720412615, -0.1386120404708159, 0], [0.04917642494356622, -0.1523626451144792, 0], [0.06946977789422748, -0.15964356256046439, 0], [0.09990728797162163, -0.1590313608513383, 0], [0.13525878748790698, -0.14454006772009032, 0], [0.15316631731699437, -0.14181917123508547, 0], [0.1624967248468232, -0.15525359762979685, 0], [0.17398243510157996, -0.15995218276362463, 0], [0.19035190261206036, -0.15910190261206061, 0], [0.20286802644308244, -0.14862141244759755, 0], [0.20433932602386307, -0.1350773943889068, 0], [0.2010540954530795, -0.11992099322799095, 0], [0.8089729119638824, 0.033537568526281855, 0], [0.7885762657207349, 0.033537568526281855, 0], [0.775667123508545, 0.032156965495001646, 0], [0.7629897613673005, 0.02238189293776205, 0], [0.7562379071267331, 0.022452434698484378, 0], [0.7435605449854881, 0.031159303450499862, 0], [0.7345412770074164, 0.03224766204450179, 0], [0.734017252499193, 0.03224766204450179, 0], [0.73266688165108, 0.032348435988390864, 0], [0.7307320219284099, 0.03279184134150277, 0], [0.7255320864237338, 0.032892615285391835, 0], [0.7069090615930345, 0.032892615285391835, 0], [0.6958743147371815, 0.03153216704288942, 0], [0.6866232666881651, 0.022281118993872986, 0], [0.6866232666881651, 0.008676636568848789, 0], [0.6958743147371815, -0.0005744114801676294, 0], [0.7036842953885842, -0.0019348597226700635, 0], [0.7081183489197032, -0.0019348597226700635, 0], [0.7091260883585939, -0.0076714164785552565, 0], [0.7091260883585939, -0.04417677765237016, 0], [0.7091260883585939, -0.09319826265720728, 0], [0.7091260883585939, -0.12970362383102219, 0], [0.7109803289261529, -0.14654546920348271, 0], [0.724363108674621, -0.15956546275395028, 0], [0.7454853273137696, -0.15956546275395028, 0], [0.7588681070622376, -0.14654546920348271, 0], [0.7607223476297966, -0.1309507013866494, 0], [0.7607223476297966, -0.10238128829409861, 0], [0.7607223476297966, -0.06401664785553046, 0], [0.7607223476297966, -0.035447234762979674, 0], [0.7649548532731376, -0.0277329893582715, 0], [0.7835778781038372, -0.013544018058690733, 0], [0.7917405675588518, -0.010319251854240567, 0], [0.8090333763302158, -0.010319251854240567, 0], [0.8229804901644624, -0.009392131570461135, 0], [0.8367260561109315, -0.0005240245082231429, 0], [0.8368268300548214, 0.018300548210254765, 0], [0.8235246694614635, 0.03160270880361177, 0], [-0.47033215091905844, 0.028377942599161567, 0], [-0.48097387939374403, 0.028377942599161567, 0], [-0.48339245404708164, 0.0333158658497259, 0], [-0.48339245404708164, 0.055042728152208995, 0], [-0.48524669461464043, 0.0710859400193486, 0], [-0.4986294743631088, 0.08410593356981619, 0], [-0.5197516930022574, 0.08410593356981619, 0], [-0.5331344727507257, 0.0710859400193486, 0], [-0.5349887133182845, 0.055042728152208995, 0], [-0.5349887133182845, 0.0333158658497259, 0], [-0.5350894872621735, 0.028377942599161567, 0], [-0.5355328926152854, 0.028377942599161567, 0], [-0.5424359077716866, 0.027017494356659153, 0], [-0.551686955820703, 0.017766446307642715, 0], [-0.551686955820703, 0.00416196388261852, 0], [-0.5424359077716866, -0.005089084166397898, 0], [-0.5355328926152854, -0.006449532408900332, 0], [-0.5350894872621735, -0.006449532408900332, 0], [-0.5349887133182845, -0.012019812157368564, 0], [-0.5349887133182845, -0.047467046920348234, 0], [-0.5349887133182845, -0.09506761931634956, 0], [-0.5349887133182845, -0.13051485407932925, 0], [-0.5331344727507257, -0.1471904224443727, 0], [-0.5197516930022574, -0.16021041599484032, 0], [-0.4986294743631088, -0.16021041599484032, 0], [-0.48524669461464043, -0.1471904224443727, 0], [-0.48339245404708164, -0.13048714124475969, 0], [-0.48339245404708164, -0.09486355207997414, 0], [-0.48339245404708164, -0.04702616091583356, 0], [-0.48339245404708164, -0.011402571751048056, 0], [-0.48097387939374403, -0.005804579168010299, 0], [-0.47033215091905844, -0.005804579168010299, 0], [-0.4577555627217027, -0.00490769106739758, 0], [-0.4461464043856821, 0.0031743792325056434, 0], [-0.4461464043856821, 0.019126894550145133, 0], [-0.4577555627217027, 0.027470977104159962, 0], [0.9323706062560466, 0.05225128990648179, 0], [0.9469022089648496, 0.047837391164140625, 0], [0.9630134432441146, 0.04768371089970979, 0], [0.9741136931634953, 0.05191117784585619, 0], [0.9825257981296354, 0.06286278619800066, 0], [0.9831518562560462, 0.07702530433731056, 0], [0.9779242079168007, 0.08655600008061916, 0], [0.9634694453402124, 0.094616655917446, 0], [0.950116897774911, 0.0960980328926153, 0], [0.9434658174782324, 0.0960980328926153, 0], [0.9419542083198964, 0.09811351177039666, 0], [0.9419542083198964, 0.10698161883263466, 0], [0.9434658174782324, 0.108997097710416, 0], [0.950116897774911, 0.108997097710416, 0], [0.961131489841986, 0.11023661722025155, 0], [0.9738176697033212, 0.11702752136407611, 0], [0.978672454450177, 0.12510707231538215, 0], [0.9781118993872939, 0.1372843437600774, 0], [0.9673895517574973, 0.14742220251531765, 0], [0.9502378265075779, 0.14821831667204127, 0], [0.9372984521122218, 0.1435424056755885, 0], [0.9315744920993227, 0.14251451144792004, 0], [0.9284706546275396, 0.15093921315704611, 0], [0.9337108997097712, 0.15627015478877782, 0], [0.9504393743953563, 0.16165148339245405, 0], [0.9600128990648178, 0.16252821670428894, 0], [0.9685736455981944, 0.1618618490003225, 0], [0.9820068123186074, 0.1570524125282167, 0], [0.9933892292808773, 0.14375403095775557, 0], [0.9940341825217671, 0.12360931957433087, 0], [0.9824250241857464, 0.10873508545630442, 0], [0.9722670106417284, 0.10373669783940666, 0], [0.9722670106417284, 0.10329329248629475, 0], [0.9831304417929698, 0.09924217994195422, 0], [0.9978434376007739, 0.08287649145436957, 0], [0.999276946952596, 0.06359717631409224, 0], [0.9935378708481135, 0.05032272855530476, 0], [0.9821756086746212, 0.040101731296356025, 0], [0.9653110891647858, 0.034324864962915196, 0], [0.9446448726217347, 0.034303450499838774, 0], [0.92809779103515, 0.03897936149629153, 0], [0.9234118026443083, 0.04393743953563369, 0], [0.9269590454692032, 0.052805546597871664, 0], [-1, 0.08513382779748468, 0], [-0.982586262495969, 0.06772009029345374, 0], [-0.982586262495969, 0.10254756530151564, 0], [-0.9380844888745565, -0.06127055788455337, 0], [-0.9380844888745565, 0.06772009029345374, 0], [-0.9103514995162851, 0.10254756530151564, 0], [-0.9058368268300548, 0.1019026120606256, 0], [-0.8806836504353435, 0.07352466946146405, 0], [-0.8806836504353435, -0.06578523057078364, 0], [-0.8277974846823606, -0.11609158336020638, 0], [-0.8277974846823606, -0.16252821670428894, 0], [-0.7749113189293777, -0.06578523057078364, 0], [-0.7749113189293777, 0.07352466946146405, 0], [-0.7516930022573364, -0.14382457271847787, 0], [-0.7516930022573364, -0.1418897129958078, 0], [-0.7458884230893261, 0.10254756530151564, 0], [-0.7342792647533054, -0.16123831022250884, 0], [-0.7168655272492744, 0.07352466946146405, 0], [-0.7168655272492744, -0.1264108352144469, 0], [-0.7168655272492744, -0.16123831022250884, 0], [-0.6994517897452435, -0.14382457271847787, 0], [-0.673008706868752, 0.0857787810383747, 0], [-0.6555949693647212, 0.06836504353434376, 0], [-0.6555949693647212, 0.10319251854240567, 0], [-0.6517252499193809, -0.1347952273460174, 0], [-0.6517252499193809, 0.06836504353434376, 0], [-0.6278619800064495, 0.10319251854240567, 0], [-0.6259271202837795, -0.1605933569816188, 0], [-0.6239922605611093, 0.10254756530151564, 0], [-0.600128990648178, 0.07674943566591422, 0], [-0.600128990648178, -0.1347952273460174, 0], [-0.5530474040632054, 0.010964205095130618, 0], [-0.5356336665591745, -0.006449532408900332, 0], [-0.5356336665591745, 0.028377942599161567, 0], [-0.5349887133182845, -0.13608513382779744, 0], [-0.5349887133182845, -0.006449532408900332, 0], [-0.5349887133182845, 0.028377942599161567, 0], [-0.5349887133182845, 0.059980651402773304, 0], [-0.5091905836826831, -0.16188326346339885, 0], [-0.5091905836826831, 0.08577878103837472, 0], [-0.48339245404708164, -0.005804579168010299, 0], [-0.48339245404708164, -0.13608513382779744, 0], [-0.48339245404708164, 0.059980651402773304, 0], [-0.48339245404708164, 0.028377942599161567, 0], [-0.4679135762657207, 0.028377942599161567, 0], [-0.4679135762657207, -0.005804579168010299, 0], [-0.4446952595936795, 0.010964205095130618, 0], [-0.4008384392131571, 0.07674943566591422, 0], [-0.399548532731377, -0.13544018058690743, 0], [-0.399548532731377, 0.007094485649790401, 0], [-0.39869195420831993, 0.06625886810706226, 0], [-0.39869195420831993, 0.08751209287326668, 0], [-0.3842409706546277, 0.10178168332795873, 0], [-0.3842409706546277, 0.05180788455336988, 0], [-0.3737504030957757, -0.16123831022250884, 0], [-0.3737504030957757, 0.03289261528539182, 0], [-0.3737504030957757, 0.049661399548532735, 0], [-0.3737504030957757, 0.10383747178329572, 0], [-0.36325983553692365, 0.10169098677845857, 0], [-0.3488088519832313, 0.06625886810706225, 0], [-0.3488088519832313, 0.08724000322476622, 0], [-0.34666236697839414, 0.07674943566591422, 0], [-0.3479522734601742, -0.13544018058690743, 0], [-0.3479522734601742, 0.007094485649790401, 0], [-0.3034504998387617, -0.1251209287326668, 0], [-0.2970009674298614, 0.012899064817800737, 0], [-0.2879716220574009, -0.15801354401805864, 0], [-0.2795872299258304, -0.1593034504998387, 0], [-0.2795872299258304, -0.004514672686230232, 0], [-0.2795872299258304, 0.030312802321831686, 0], [-0.2602386326991294, -0.004514672686230232, 0], [-0.2557239600128991, -0.1425346662366978, 0], [-0.22863592389551757, 0.030312802321831686, 0], [-0.22476620445017736, 0.029667849080941635, 0], [-0.2234762979683973, 0.029667849080941635, 0], [-0.22218639148661723, -0.0483714930667526, 0], [-0.19058368268300552, 0.007094485649790401, 0], [-0.18219929055143502, -0.1431796194775878, 0], [-0.18026443082876487, -0.147049338922928, 0], [-0.1796194775878749, -0.14769429216381808, 0], [-0.17768461786520484, -0.1502741051273782, 0], [-0.17639471138342477, -0.15156401160915828, 0], [-0.17381489841986464, -0.15349887133182838, 0], [-0.17316994517897466, -0.1541438245727184, 0], [-0.16930022573363446, -0.15607868429538851, 0], [-0.1680103192518545, -0.15607868429538851, 0], [-0.16478555304740428, -0.15736859077716855, 0], [-0.16349564656562432, -0.15736859077716855, 0], [-0.15898097387939414, -0.15801354401805864, 0], [-0.1589809738793938, -0.0677200902934537, 0], [-0.15446630119316396, -0.15736859077716855, 0], [-0.153176394711384, -0.15736859077716855, 0], [-0.14995162850693378, -0.15607868429538851, 0], [-0.14866172202515382, -0.15607868429538851, 0], [-0.14479200257981362, -0.1541438245727184, 0], [-0.14414704933892364, -0.15349887133182838, 0], [-0.1415672363753634, -0.15156401160915828, 0], [-0.14027732989358344, -0.1502741051273782, 0], [-0.13834247017091328, -0.14769429216381808, 0], [-0.1376975169300233, -0.147049338922928, 0], [-0.13576265720735303, -0.1431796194775878, 0], [-0.12737826507578198, 0.007094485649790401, 0], [-0.09577555627217094, -0.04837149306675256, 0], [-0.0944856497903902, 0.029667849080941635, 0], [-0.06223798774588918, -0.14253466623669772, 0], [-0.060948081264108445, 0.00644953240890035, 0], [-0.03837471783295798, -0.15930345049983866, 0], [-0.029990325701387377, -0.1580135440180586, 0], [-0.01386649467913581, -0.1257658819735569, 0], [0.02225088681070586, -0.10770719122863594, 0], [0.028700419219606532, 0.0019348597226701177, 0], [0.049338922928087614, -0.0167687842631409, 0], [0.049338922928087614, 0.022573363431151235, 0], [0.07384714608190879, -0.10512737826507577, 0], [0.08029667849080924, -0.16059335698161883, 0], [0.09448564979038987, -0.04837149306675267, 0], [0.09448564979039009, 0.029667849080941635, 0], [0.09835536923573018, -0.009029345372460501, 0], [0.1022250886810705, -0.1264108352144469, 0], [0.10673976136730068, -0.07997420187036437, 0], [0.11576910673976104, -0.009029345372460501, 0], [0.11770396646243109, -0.06127055788455337, 0], [0.14801676878426284, -0.08900354724282487, 0], [0.14801676878426284, -0.0257981296356014, 0], [0.15124153498871307, -0.13028055465978716, 0], [0.1815543373105446, -0.16059335698161883, 0], [0.20025798129635586, -0.0199935504675911, 0], [0.20025798129635586, -0.10641728474685584, 0], [0.20477265398258582, -0.14059980651402773, 0], [0.23508545630441802, 0.0857787810383747, 0], [0.2524991938084489, 0.06836504353434376, 0], [0.2524991938084489, 0.10319251854240567, 0], [0.2589487262173493, -0.1347952273460174, 0], [0.2589487262173493, 0.06836504353434376, 0], [0.2802321831667205, 0.10319251854240567, 0], [0.2841019026120606, 0.10254756530151564, 0], [0.2847468558529507, -0.1605933569816188, 0], [0.28539180909384076, 0.10254756530151564, 0], [0.31054498548855203, 0.07674943566591422, 0], [0.31054498548855203, -0.1347952273460174, 0], [0.32473395678813266, -0.049016446307642667, 0], [0.33311834891970316, -0.026443082876491435, 0], [0.3382779748468234, -0.07997420187036433, 0], [0.3769751693002257, -0.047081586584972565, 0], [0.37826507578200563, 0.023218316672041304, 0], [0.387294421154466, -0.14898419864559814, 0], [0.3982586262495966, 0.032892615285391835, 0], [0.4105127378265072, -0.1612383102225088, 0], [0.41502741051273784, -0.007094485649790365, 0], [0.422766849403418, 0.009674298613350552, 0], [0.43050628829409865, -0.11931634956465653, 0], [0.4350209609803286, -0.13608513382779744, 0], [0.4672686230248304, -0.06707513705256367, 0], [0.5188648822960333, -0.07287971622057397, 0], [0.5433731054498545, -0.057400838439213134, 0], [0.5549822637858755, -0.07352466946146403, 0], [0.5588519832312153, -0.04192196065785227, 0], [0.5588519832312155, -0.07416962270235407, 0], [0.5646565623992257, 0.033537568526281855, 0], [0.5659464688810059, -0.0019348597226700995, 0], [0.566591422121896, -0.11996130280554654, 0], [0.566591422121896, -0.1605933569816188, 0], [0.6091583360206383, -0.04192196065785227, 0], [0.6233473073202191, -0.1115769106739761, 0], [0.6233473073202191, -0.15285391809093837, 0], [0.6278619800064493, -0.07416962270235407, 0], [0.6317316994517894, -0.07352466946146403, 0], [0.6356014188971295, -0.07352466946146403, 0], [0.6452757175104804, -0.127700741696227, 0], [0.6581747823282809, -0.0509513060303128, 0], [0.6852628184456626, 0.015478877781360886, 0], [0.7026765559496935, -0.0019348597226700635, 0], [0.7026765559496935, 0.032892615285391835, 0], [0.7091260883585939, -0.1354401805869074, 0], [0.7091260883585939, -0.0019348597226700635, 0], [0.7297645920670746, 0.032892615285391835, 0], [0.7336343115124149, 0.03224766204450179, 0], [0.7349242179941948, 0.03224766204450179, 0], [0.7349242179941953, -0.1612383102225088, 0], [0.7594324411480164, 0.014833924540470835, 0], [0.7607223476297966, -0.030957755562721664, 0], [0.7607223476297966, -0.1354401805869074, 0], [0.7839406643018378, 0.033537568526281855, 0], [0.7878103837471782, -0.010319251854240567, 0], [0.8129635601418894, -0.010319251854240567, 0], [0.8136085133827795, 0.033537568526281855, 0], [0.8387616897774908, 0.008384392131570467, 0], [0.9226056110931957, 0.04192196065785232, 0], [0.9277652370203158, 0.05482102547565304, 0], [0.9277652370203162, 0.1528539180909384, 0], [0.9322799097065462, 0.14059980651402773, 0], [0.9419542083198964, 0.108997097710416, 0], [0.9419542083198964, 0.0960980328926153, 0], [0.9516285069332471, 0.108997097710416, 0], [0.9516285069332471, 0.0960980328926153, 0], [0.9548532731376975, 0.033537568526281855, 0], [0.9554982263785874, 0.04708158658497261, 0], [0.9574330861012574, 0.1489841986455982, 0], [0.9600128990648178, 0.1560786842953886, 0], [0.9722670106417284, 0.10319251854240569, 0], [0.9722670106417284, 0.10383747178329572, 0], [0.9793614962915185, 0.13028055465978716, 0], [0.9838761689777487, 0.07094485649790393, 0], [0.9954853273137698, 0.1328603676233473, 0], [1, 0.07094485649790393, 0]];
+exports.cells = [[0, 557, 566], [0, 560, 557], [0, 563, 560], [1, 22, 2], [1, 23, 22], [1, 521, 23], [1, 525, 521], [2, 22, 518], [2, 518, 3], [3, 518, 4], [4, 518, 5], [5, 518, 6], [6, 518, 7], [7, 518, 8], [8, 21, 9], [8, 518, 21], [9, 21, 10], [10, 20, 11], [10, 21, 20], [11, 19, 12], [11, 20, 19], [12, 18, 13], [12, 19, 18], [13, 18, 519], [13, 519, 524], [14, 522, 15], [14, 524, 522], [16, 522, 17], [17, 522, 519], [23, 521, 24], [24, 56, 25], [24, 57, 56], [24, 521, 57], [25, 56, 517], [25, 517, 516], [26, 55, 27], [26, 516, 517], [26, 517, 55], [27, 54, 28], [27, 55, 54], [28, 53, 29], [28, 54, 53], [29, 52, 515], [29, 53, 52], [30, 51, 31], [30, 510, 51], [30, 515, 510], [31, 49, 32], [31, 50, 49], [31, 51, 50], [32, 48, 33], [32, 49, 48], [33, 48, 511], [33, 511, 514], [34, 513, 35], [34, 514, 513], [36, 513, 37], [37, 513, 512], [38, 511, 39], [38, 512, 513], [38, 513, 511], [39, 47, 40], [39, 511, 47], [40, 46, 41], [40, 47, 46], [41, 46, 508], [41, 508, 509], [42, 507, 43], [42, 509, 507], [44, 507, 45], [45, 507, 508], [52, 510, 515], [58, 62, 523], [58, 521, 62], [58, 523, 59], [59, 523, 520], [60, 520, 61], [61, 520, 523], [62, 521, 525], [62, 525, 63], [63, 525, 526], [64, 526, 527], [64, 527, 65], [66, 527, 67], [67, 527, 525], [68, 89, 69], [68, 652, 89], [68, 657, 652], [69, 87, 70], [69, 88, 87], [69, 89, 88], [70, 86, 71], [70, 87, 86], [71, 86, 649], [71, 649, 650], [72, 80, 73], [72, 81, 80], [72, 650, 81], [73, 80, 651], [73, 651, 655], [74, 76, 656], [74, 77, 76], [74, 655, 77], [74, 656, 75], [77, 78, 653], [77, 79, 78], [77, 655, 79], [79, 655, 651], [81, 650, 648], [82, 648, 650], [82, 650, 83], [83, 650, 647], [84, 647, 650], [84, 650, 85], [85, 650, 649], [90, 652, 658], [90, 658, 91], [91, 658, 654], [92, 654, 93], [93, 654, 658], [94, 657, 95], [94, 658, 657], [96, 644, 645], [96, 645, 97], [97, 645, 642], [98, 100, 641], [98, 640, 100], [98, 641, 99], [98, 642, 640], [100, 640, 101], [101, 106, 638], [101, 107, 106], [101, 640, 107], [102, 638, 103], [103, 638, 636], [104, 636, 637], [104, 637, 105], [106, 637, 638], [108, 122, 109], [108, 123, 122], [108, 640, 123], [109, 121, 110], [109, 122, 121], [110, 120, 111], [110, 121, 120], [111, 119, 112], [111, 120, 119], [112, 118, 113], [112, 119, 118], [113, 118, 646], [113, 646, 639], [114, 639, 115], [115, 639, 643], [116, 643, 646], [116, 646, 117], [123, 640, 645], [124, 645, 125], [125, 645, 644], [126, 128, 533], [126, 532, 128], [126, 533, 127], [126, 535, 532], [128, 532, 129], [129, 135, 530], [129, 532, 135], [130, 528, 131], [130, 530, 528], [132, 528, 133], [133, 528, 529], [134, 529, 530], [134, 530, 135], [136, 150, 137], [136, 151, 150], [136, 532, 151], [137, 149, 138], [137, 150, 149], [138, 148, 139], [138, 149, 148], [139, 147, 140], [139, 148, 147], [140, 146, 141], [140, 147, 146], [141, 146, 537], [141, 537, 531], [142, 531, 143], [143, 531, 534], [144, 534, 537], [144, 537, 145], [151, 532, 536], [152, 536, 153], [153, 536, 535], [154, 155, 156], [154, 156, 556], [156, 562, 556], [157, 158, 159], [157, 159, 570], [157, 570, 562], [160, 161, 173], [160, 173, 556], [160, 556, 570], [161, 162, 171], [161, 171, 172], [161, 172, 173], [162, 163, 170], [162, 170, 171], [163, 555, 170], [163, 569, 555], [164, 165, 166], [164, 166, 569], [166, 561, 569], [167, 168, 169], [167, 169, 555], [167, 555, 561], [174, 278, 175], [174, 279, 278], [174, 615, 279], [175, 277, 176], [175, 278, 277], [176, 276, 609], [176, 277, 276], [176, 609, 177], [177, 182, 608], [177, 608, 612], [177, 609, 182], [178, 612, 179], [179, 608, 610], [179, 612, 608], [180, 608, 181], [180, 610, 608], [182, 609, 183], [183, 609, 184], [184, 274, 185], [184, 275, 274], [184, 609, 275], [185, 274, 596], [186, 219, 187], [186, 596, 219], [187, 218, 582], [187, 219, 218], [187, 582, 188], [188, 582, 189], [189, 577, 583], [189, 582, 577], [190, 583, 191], [191, 583, 581], [192, 577, 193], [192, 581, 583], [192, 583, 577], [193, 577, 580], [194, 577, 579], [194, 579, 195], [194, 580, 577], [196, 577, 197], [196, 579, 577], [197, 202, 576], [197, 203, 202], [197, 577, 203], [198, 572, 199], [198, 576, 572], [200, 572, 201], [201, 572, 575], [202, 575, 576], [204, 577, 582], [204, 582, 205], [205, 216, 206], [205, 217, 216], [205, 582, 217], [206, 215, 207], [206, 216, 215], [207, 214, 571], [207, 215, 214], [208, 212, 209], [208, 213, 212], [208, 571, 578], [208, 578, 213], [209, 212, 574], [209, 574, 573], [210, 573, 211], [211, 573, 574], [214, 578, 571], [219, 596, 220], [220, 272, 221], [220, 273, 272], [220, 596, 273], [221, 272, 607], [221, 607, 584], [222, 226, 586], [222, 584, 592], [222, 586, 223], [222, 592, 226], [223, 224, 585], [223, 225, 224], [223, 586, 225], [226, 228, 227], [226, 229, 228], [226, 231, 229], [226, 592, 231], [227, 228, 587], [229, 230, 588], [229, 231, 230], [231, 592, 589], [232, 234, 233], [232, 589, 234], [233, 234, 590], [234, 589, 592], [234, 592, 235], [235, 236, 591], [235, 237, 236], [235, 238, 237], [235, 239, 238], [235, 240, 239], [235, 592, 240], [241, 592, 594], [241, 594, 242], [242, 243, 593], [242, 244, 243], [242, 594, 244], [245, 592, 599], [245, 594, 592], [245, 597, 246], [245, 599, 597], [246, 597, 595], [247, 595, 597], [247, 597, 248], [249, 252, 250], [249, 597, 252], [250, 252, 598], [251, 598, 252], [252, 597, 599], [253, 258, 254], [253, 599, 258], [254, 258, 255], [255, 258, 256], [256, 258, 257], [257, 258, 600], [258, 599, 259], [259, 260, 601], [259, 261, 260], [259, 599, 602], [259, 602, 261], [262, 264, 263], [262, 267, 264], [262, 599, 267], [262, 602, 599], [263, 264, 603], [264, 267, 265], [265, 266, 604], [265, 267, 266], [267, 271, 605], [267, 599, 271], [268, 270, 269], [268, 605, 270], [269, 270, 606], [270, 605, 271], [271, 599, 607], [273, 596, 274], [279, 615, 611], [280, 282, 281], [280, 283, 282], [280, 611, 283], [281, 282, 613], [283, 284, 614], [283, 285, 284], [283, 611, 615], [283, 615, 285], [286, 288, 664], [286, 334, 661], [286, 335, 334], [286, 661, 663], [286, 662, 335], [286, 663, 288], [286, 664, 287], [288, 331, 289], [288, 663, 331], [289, 330, 290], [289, 331, 330], [290, 330, 669], [290, 669, 291], [291, 669, 672], [292, 672, 673], [292, 673, 293], [294, 669, 676], [294, 673, 669], [294, 676, 295], [295, 676, 674], [296, 674, 676], [296, 676, 297], [298, 329, 299], [298, 669, 329], [298, 676, 669], [299, 328, 300], [299, 329, 328], [300, 327, 301], [300, 328, 327], [301, 326, 665], [301, 327, 326], [302, 324, 303], [302, 325, 324], [302, 665, 325], [303, 323, 304], [303, 324, 323], [304, 323, 305], [305, 322, 659], [305, 323, 322], [306, 321, 307], [306, 659, 660], [306, 660, 321], [307, 320, 308], [307, 321, 320], [308, 319, 309], [308, 320, 319], [309, 318, 668], [309, 319, 318], [310, 317, 311], [310, 667, 317], [310, 668, 667], [311, 316, 671], [311, 317, 316], [312, 316, 670], [312, 670, 313], [312, 671, 316], [313, 670, 675], [314, 670, 315], [314, 675, 670], [318, 667, 668], [322, 660, 659], [325, 665, 666], [326, 666, 665], [332, 661, 333], [332, 663, 661], [336, 359, 629], [336, 629, 337], [336, 634, 359], [337, 358, 338], [337, 629, 358], [338, 357, 339], [338, 358, 357], [339, 357, 630], [339, 630, 633], [340, 356, 341], [340, 633, 356], [341, 355, 342], [341, 356, 355], [342, 354, 343], [342, 355, 354], [343, 352, 623], [343, 353, 352], [343, 354, 627], [343, 627, 353], [344, 351, 345], [344, 623, 624], [344, 624, 351], [345, 350, 619], [345, 351, 350], [346, 350, 618], [346, 617, 347], [346, 618, 617], [346, 619, 350], [348, 617, 618], [348, 618, 349], [352, 624, 623], [356, 633, 630], [359, 631, 360], [359, 634, 631], [360, 631, 361], [361, 382, 362], [361, 631, 382], [362, 381, 625], [362, 382, 381], [363, 380, 364], [363, 381, 621], [363, 621, 380], [363, 625, 381], [364, 377, 620], [364, 378, 377], [364, 379, 378], [364, 380, 379], [365, 375, 366], [365, 376, 375], [365, 620, 376], [366, 373, 367], [366, 374, 373], [366, 375, 374], [367, 373, 622], [367, 622, 626], [368, 626, 628], [368, 628, 369], [370, 628, 371], [371, 626, 372], [371, 628, 626], [372, 626, 622], [376, 620, 616], [377, 616, 620], [383, 385, 384], [383, 388, 385], [383, 389, 388], [383, 631, 389], [385, 388, 632], [386, 388, 635], [386, 632, 388], [386, 635, 387], [389, 631, 634], [390, 422, 391], [390, 423, 422], [390, 691, 423], [390, 692, 691], [391, 422, 690], [391, 690, 689], [392, 689, 690], [392, 690, 393], [393, 690, 686], [394, 686, 395], [395, 686, 684], [396, 681, 397], [396, 684, 686], [396, 686, 681], [397, 681, 683], [398, 400, 682], [398, 681, 400], [398, 682, 399], [398, 683, 681], [400, 681, 401], [401, 406, 679], [401, 407, 406], [401, 681, 407], [402, 679, 403], [403, 679, 677], [404, 677, 678], [404, 678, 405], [406, 678, 679], [408, 681, 686], [408, 686, 687], [408, 687, 409], [409, 418, 410], [409, 419, 418], [409, 687, 419], [410, 417, 411], [410, 418, 417], [411, 416, 680], [411, 417, 416], [412, 680, 413], [413, 680, 685], [414, 685, 688], [414, 688, 415], [416, 688, 680], [420, 686, 421], [420, 687, 686], [421, 686, 690], [424, 426, 693], [424, 427, 426], [424, 691, 427], [424, 693, 425], [427, 691, 692], [428, 458, 429], [428, 459, 458], [428, 551, 459], [429, 458, 547], [429, 547, 550], [430, 436, 431], [430, 437, 436], [430, 550, 437], [431, 436, 544], [431, 544, 549], [432, 549, 433], [433, 549, 546], [434, 544, 435], [434, 546, 544], [437, 550, 543], [438, 444, 439], [438, 445, 444], [438, 543, 445], [439, 444, 539], [439, 539, 540], [440, 538, 441], [440, 540, 538], [442, 538, 443], [443, 538, 539], [445, 543, 542], [446, 456, 447], [446, 457, 456], [446, 542, 457], [447, 455, 448], [447, 456, 455], [448, 454, 449], [448, 455, 454], [449, 454, 548], [449, 548, 541], [450, 541, 451], [451, 541, 545], [452, 545, 548], [452, 548, 453], [457, 542, 547], [459, 551, 552], [460, 463, 553], [460, 552, 463], [460, 553, 461], [462, 553, 463], [463, 552, 551], [464, 465, 504], [464, 504, 505], [464, 505, 506], [464, 506, 695], [465, 503, 504], [465, 702, 503], [465, 703, 702], [466, 467, 502], [466, 502, 703], [467, 468, 500], [467, 500, 501], [467, 501, 502], [468, 499, 500], [468, 709, 499], [469, 470, 498], [469, 498, 711], [469, 711, 709], [470, 471, 706], [470, 497, 498], [470, 706, 497], [471, 478, 706], [471, 701, 478], [472, 473, 474], [472, 474, 477], [472, 477, 700], [472, 700, 701], [473, 699, 474], [474, 475, 477], [475, 476, 477], [475, 698, 476], [478, 479, 707], [478, 495, 496], [478, 496, 706], [478, 701, 700], [478, 707, 495], [479, 480, 494], [479, 494, 707], [480, 493, 494], [480, 708, 493], [481, 482, 491], [481, 491, 492], [481, 492, 710], [481, 710, 708], [482, 490, 491], [482, 704, 705], [482, 705, 490], [483, 484, 487], [483, 487, 488], [483, 488, 705], [483, 705, 704], [484, 485, 486], [484, 486, 487], [484, 697, 485], [486, 696, 487], [488, 489, 705], [493, 708, 710], [499, 709, 711], [502, 702, 703], [504, 694, 505], [507, 509, 508], [511, 513, 514], [519, 522, 524], [525, 527, 526], [528, 530, 529], [531, 537, 534], [532, 535, 536], [538, 540, 539], [541, 548, 545], [542, 543, 547], [543, 550, 547], [544, 546, 549], [554, 558, 559], [554, 559, 564], [554, 564, 557], [555, 569, 561], [556, 562, 570], [557, 564, 565], [557, 565, 567], [557, 567, 566], [566, 567, 568], [572, 576, 575], [584, 599, 592], [584, 607, 599], [636, 638, 637], [639, 646, 643], [640, 642, 645], [652, 657, 658], [669, 673, 672], [677, 679, 678], [680, 688, 685]];
+},{}],189:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = boundingBox;
 // modified version of https://github.com/thibauts/vertices-bounding-box that also works with non nested positions
 function boundingBox(positions) {
@@ -16429,7 +25802,7 @@ function boundingBox(positions) {
 
   return [min, max];
 }
-},{}],187:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16500,7 +25873,7 @@ function boundingSphereFromBoundingBox() {
   }
   return Math.sqrt(maxRadiusSq);
 }
-},{"gl-vec3":56}],188:[function(require,module,exports){
+},{"gl-vec3":56}],191:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16561,7 +25934,7 @@ function computeBounds(object) {
     size: size
   };
 }
-},{"./boundingBox":186,"./boundingSphere":187,"gl-vec3":56}],189:[function(require,module,exports){
+},{"./boundingBox":189,"./boundingSphere":190,"gl-vec3":56}],192:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16575,26 +25948,24 @@ function isObjectOutsideBounds(machine, entity) {
   var machine_volume = machine.machine_volume;
   var printable_area = machine.printable_area; // machine volume assumed to be centered around [0,0,0]
 
-  var headSize = [0, 0, 0]; // computeSizeOfPoints(machine_head_with_fans_polygon)
-
   var adjustedVolume = [printable_area[0], printable_area[1], machine_volume[2]]; // adjustedMachineVolumeByDissallowerAreas(machine)
   var halfVolume = adjustedVolume.map(function (x) {
     return x * 0.5;
   });
+  halfVolume[2] *= 2; // z is ABOVE the build plate , so not actually centered around 0
 
   // basic check based on machn dimensions
   var aabbout = pos.reduce(function (acc, val, idx) {
-    // const printHeadOffset = headSize[idx] * 0.75
-    var printHeadOffset = 0;
-    var cur = val + bounds.min[idx] - printHeadOffset <= -halfVolume[idx] || val + bounds.max[idx] + printHeadOffset >= halfVolume[idx];
-
-    /*const objOffsetMin = val + bounds.min[idx] - printHeadOffset
+    var cur = val + bounds.min[idx] <= -halfVolume[idx] || val + bounds.max[idx] >= halfVolume[idx];
+    // console.log('halfVolume along',idx, halfVolume[idx])
+    /*const objOffsetMin = val + bounds.min[idx]
     const halfVol = -halfVolume[idx]
     const result = objOffsetMin <= halfVol
     console.log('min', objOffsetMin, halfVol, result)
-     const objOffsetMax = val + bounds.max[idx] + printHeadOffset
+     const objOffsetMax = val + bounds.max[idx]
     const halfVol2 = halfVolume[idx]
     const result2 = objOffsetMax >= halfVol2
+    console.log('halfVolume along',idx, halfVol)
     console.log('max', objOffsetMax, halfVol2, result2)*/
 
     return acc || cur;
@@ -16602,25 +25973,173 @@ function isObjectOutsideBounds(machine, entity) {
 
   return aabbout;
 }
-},{}],190:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var camera = {
+  position: [150, 250, 200],
+  target: [0, 0, 0],
+  fov: Math.PI / 4,
+  aspect: 1,
+
   projection: new Float32Array(16),
   view: new Float32Array(16),
+  near: 10, // 0.01,
+  far: 1300,
 
   thetaDelta: 0,
   phiDelta: 0,
-  scale: 1,
-
-  position: [150, 250, 200],
-  target: [0, 0, 0]
+  scale: 1
 };
 exports.default = camera;
-},{}],191:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = cameraOffsetToEntityBoundsCenter;
+
+var _glVec = require('gl-vec3');
+
+var _glVec2 = _interopRequireDefault(_glVec);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+/**
+ * offsets camera & camera target to align to objects's 'center of gravity' (center of bounds)
+ * on the Z axis only !!
+ * @param  {Object} camera the camera we are using
+ * @param  {Object} bounds the current bounds of the entity
+ */
+function cameraOffsetToEntityBoundsCenter(_ref) {
+  var camera = _ref.camera;
+  var bounds = _ref.bounds;
+  var transforms = _ref.transforms;
+  var axis = _ref.axis;
+
+  if (!bounds || !camera) {
+    throw new Error('No camera/bounds specified!');
+  }
+  var target = camera.target;
+  var position = camera.position;
+
+
+  var boundsCenter = bounds.max.map(function (pos, idx) {
+    return pos - bounds.min[idx];
+  });
+  //FIXME : do we need to offset things by transforms here or not ?
+  var focusPoint = _glVec2.default.add([], _glVec2.default.fromValues.apply(_glVec2.default, _toConsumableArray(transforms.pos)), _glVec2.default.fromValues.apply(_glVec2.default, _toConsumableArray(boundsCenter)));
+
+  var diff = _glVec2.default.subtract([], focusPoint, target);
+  var zOffset = [0, 0, diff[axis] * 0.5];
+  target = _glVec2.default.add([], target, zOffset);
+  position = _glVec2.default.add([], position, zOffset);
+
+  return {
+    position: position,
+    target: target
+  };
+}
+},{"gl-vec3":56}],195:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = computeCameraToFitBounds;
+
+var _glVec = require('gl-vec3');
+
+var _glVec2 = _interopRequireDefault(_glVec);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+// import mat4 from 'gl-mat4'
+// import project from 'camera-project'
+
+/**
+ * zooms in on an object trying to fit its bounds on the (2d) screen
+ * assumes the bounds CENTER is not in world space for now, hence transforms needing to be passed
+ * @param  {Object} camera the camera we are using
+ * @param  {Object} bounds the current bounds of the entity
+ */
+function computeCameraToFitBounds(_ref) {
+  var camera = _ref.camera;
+  var bounds = _ref.bounds;
+  var transforms = _ref.transforms;
+
+  /*
+  bounds: {
+    dia: 40,
+    center: [0,20,8],
+    min: [9, 10, 0],
+    max: [15, 10, 4]
+  },*/
+  if (!bounds || !camera) {
+    throw new Error('No camera/bounds specified!');
+  }
+
+  // const {projection, view} = camera
+  // const radius = bounds.dia / 2
+  // we use radius so that we can be shape indenpdant : a sphere seen from any angle is a sphere...
+  var radius = Math.max.apply(Math, _toConsumableArray(bounds.size)) * 0.5; // we find the biggest dimension, and use it as a basis
+  // console.log('bounds', bounds.size, bounds.min, bounds.max, radius)
+
+  var entityPosition = _glVec2.default.add([], bounds.center, transforms.pos); // TODO: apply transforms to center , here or elswhere ??
+
+  var targetOffset = _glVec2.default.subtract([], entityPosition, camera.target); // offset between target position & camera's target
+
+  // move camera to base position
+  // compute new camera position
+  var camNewPos = _glVec2.default.fromValues.apply(_glVec2.default, _toConsumableArray(camera.position));
+  var camNewTgt = _glVec2.default.fromValues.apply(_glVec2.default, _toConsumableArray(camera.target));
+  camNewPos = _glVec2.default.add(camNewPos, camNewPos, targetOffset);
+  camNewTgt = _glVec2.default.fromValues.apply(_glVec2.default, _toConsumableArray(entityPosition));
+
+  // and move it away from the boundingSphere of the object
+  /*const width = 640
+  const height = 480
+  const combinedProjView = mat4.multiply([], projection, view)
+  const viewport = [0, 0, width, height]
+  // project entityPosition onto 2d plane
+  const projectedEntityPosition = project([], entityPosition, viewport, combinedProjView)
+  console.log('projectedEntityPosition', projectedEntityPosition)
+  // project top, bottom, left & right onto 2d plane
+  //console.log('camera can see width', 2 * vec3.distance(entityPosition, camNewPos) * Math.tan(camera.fov / 2))*/
+
+  /*let halfMinFovRad = 0.5 * camera.fov
+  if (camera.aspect > 1.0)// fov in x is smaller
+  { //console.log('fov x smaller')
+    halfMinFovRad = Math.atan(camera.aspect * Math.tan(halfMinFovRad))
+  }*/
+
+  var fovY = Math.atan(camera.aspect * Math.tan(camera.fov));
+  var halfMinFovRad = Math.sin(Math.min(camera.fov, fovY) * 0.5);
+  var dist = _glVec2.default.distance(entityPosition, camNewPos) - radius * 1.5 / halfMinFovRad; // Math.sin(halfMinFovRad)
+  // console.log('dist', dist, 'aspect', camera.aspect, 'fov', camera.fov, 'halfMinFovRad', halfMinFovRad)
+  // const dist = // vec3.distance(entityPosition, camNewPos) - radius * 4 // FIXME: this needs to use the projection info/perspective
+
+  var vec = _glVec2.default.create();
+  vec = _glVec2.default.subtract(vec, camNewPos, camNewTgt);
+  vec = _glVec2.default.normalize(vec, vec);
+  vec = _glVec2.default.scale(vec, vec, dist);
+
+  camNewPos = _glVec2.default.subtract(camNewPos, camNewPos, vec);
+
+  return {
+    position: [].concat(_toConsumableArray(camNewPos)),
+    target: [].concat(_toConsumableArray(camNewTgt))
+  };
+}
+},{"gl-vec3":56}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16630,29 +26149,45 @@ exports.default = controlsStream;
 
 var _orbitControls = require('./orbitControls');
 
-var _most = require('most');
+var _computeCameraToFitBounds = require('../cameraEffects/computeCameraToFitBounds');
 
-var _pointerGestures = require('../interactions/pointerGestures');
+var _computeCameraToFitBounds2 = _interopRequireDefault(_computeCameraToFitBounds);
+
+var _cameraOffsetToEntityBoundsCenter = require('../cameraEffects/cameraOffsetToEntityBoundsCenter');
+
+var _cameraOffsetToEntityBoundsCenter2 = _interopRequireDefault(_cameraOffsetToEntityBoundsCenter);
 
 var _modelUtils = require('../utils/modelUtils');
 
-var _animationFrames = require('../utils/animationFrames');
+var _animationFrames = require('../utils/most/animationFrames');
 
-var _animationFrames2 = _interopRequireDefault(_animationFrames);
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+var _limitFlow = require('../utils/most/limitFlow');
+
+var _limitFlow2 = _interopRequireDefault(_limitFlow);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function controlsStream(interactions, cameraData, params) {
+function controlsStream(interactions, cameraData, focuses$, entityFocuses$, projection$) {
   var settings = cameraData.settings;
   var camera = cameraData.camera;
   var gestures = interactions.gestures;
 
 
-  var rate$ = (0, _animationFrames2.default)(); // heartBeat
-  // const heartBeat$ = most.periodic(16, 'x')
-  // sample(world, rate)
+  var rate$ = (0, _animationFrames.rafStream)(); // heartBeat
 
-  var mobileReductor = 5.0; // how much we want to divide touch deltas to get movements on mobile
+  /*let i = 0
+  var newdiv = document.createElement("DIV")
+  newdiv.style.zIndex = 99
+  newdiv.style.position = 'absolute'
+  newdiv.style.color = 'red'
+  newdiv.style.top = '40px'
+  let textNode = document.createTextNode("some text"+i)
+  newdiv.appendChild(textNode)
+  document.body.appendChild(newdiv)*/
 
   var dragMoves$ = gestures.dragMoves
   // .throttle(16) // FIXME: not sure, could be optimized some more
@@ -16671,42 +26206,84 @@ function controlsStream(interactions, cameraData, params) {
     return x.map(function (y) {
       return y * 0.1;
     });
-  }) // empirical reduction factor
-  .map(function (x) {
-    return x.map(function (y) {
-      return y * window.devicePixelRatio;
-    });
-  });
+  }); // empirical reduction factor
 
   var zooms$ = gestures.zooms.map(function (x) {
     return -x;
   }) // we invert zoom direction
   .startWith(0).filter(function (x) {
     return !isNaN(x);
-  }).throttle(10);
+  }).map(function (x) {
+    return x * 2.5;
+  });
+  //.throttle(10)
 
   // model/ state/ reducers
-
   function makeCameraModel() {
+    function setProjection(state, input) {
+      var projection = _glMat2.default.perspective([], state.fov, input.width / input.height, // context.viewportWidth / context.viewportHeight,
+      state.near, state.far);
+      //state = Object.assign({}, state, {projection})
+      state.projection = projection;
+      state.aspect = input.width / input.height;
+      //state = Object.assign({}, state, update(settings, state)) // not sure
+      return state;
+    }
+
     function applyRotation(state, angles) {
+      //textNode.nodeValue= 'applyRotation'
       state = (0, _orbitControls.rotate)(settings, state, angles); // mutating, meh
-      state = (0, _orbitControls.update)(settings, state); // not sure
       return state;
     }
 
     function applyZoom(state, zooms) {
-      // console.log('applyZoom', zooms)
       state = (0, _orbitControls.zoom)(settings, state, zooms); // mutating, meh
-      state = (0, _orbitControls.update)(settings, state); // not sure
       return state;
     }
 
-    function updateState(state) {
-      return (0, _orbitControls.update)(settings, state);
+    function applyFocusOn(state, focuses) {
+      state = (0, _orbitControls.setFocus)(settings, state, focuses); // mutating, meh
+      return state;
     }
 
-    var updateFunctions = { applyZoom: applyZoom, applyRotation: applyRotation, updateState: updateState };
-    var actions = { applyZoom: zooms$, applyRotation: dragMoves$, updateState: rate$ };
+    function zoomToFit(state, input) {
+      //console.log('zoomToFit', state.position, state.target,  input)
+      var camera = state;
+      var bounds = input.bounds;
+      var transforms = input.transforms;
+
+      var offsetTargetAndPosition = (0, _cameraOffsetToEntityBoundsCenter2.default)({ camera: camera, bounds: bounds, transforms: transforms, axis: 2 });
+      camera = Object.assign({}, state, offsetTargetAndPosition);
+      var phase2 = (0, _computeCameraToFitBounds2.default)({ camera: camera, bounds: bounds, transforms: transforms });
+      state.targetTgt = phase2.target;
+      state.positionTgt = phase2.position;
+      return state;
+    }
+
+    //this is used for 'continuous updates' for things like spin effects, autoRotate etc
+    function updateState(state) {
+      //i++
+      //textNode.nodeValue= 'foo'+i
+      //return state
+      return Object.assign({}, state, (0, _orbitControls.update)(settings, state));
+    }
+
+    var updateFunctions = {
+      setProjection: setProjection,
+      applyZoom: applyZoom,
+      applyRotation: applyRotation,
+      //applyFocusOn,
+      zoomToFit: zoomToFit,
+      updateState: updateState
+    };
+    var actions = {
+      setProjection: projection$,
+      applyZoom: zooms$,
+      applyRotation: dragMoves$,
+      //applyFocusOn: focuses$,
+      zoomToFit: entityFocuses$,
+      updateState: rate$
+    };
 
     var cameraState$ = (0, _modelUtils.model)(camera, actions, updateFunctions);
 
@@ -16715,13 +26292,14 @@ function controlsStream(interactions, cameraData, params) {
 
   var cameraState$ = makeCameraModel();
 
-  return cameraState$.sample(function (x) {
-    return x;
-  }, rate$).filter(function (x) {
-    return x.changed;
-  }).merge(cameraState$);
+  return cameraState$.thru((0, _limitFlow2.default)(33));
+  /*return rate$.sample(x => x,
+    cameraState$
+      .filter(x => x.changed)
+      .merge(cameraState$.take(1))
+  )*/
 }
-},{"../interactions/pointerGestures":193,"../utils/animationFrames":199,"../utils/modelUtils":202,"./orbitControls":192,"most":117}],192:[function(require,module,exports){
+},{"../cameraEffects/cameraOffsetToEntityBoundsCenter":194,"../cameraEffects/computeCameraToFitBounds":195,"../utils/modelUtils":207,"../utils/most/animationFrames":208,"../utils/most/limitFlow":210,"./orbitControls":197,"gl-mat4":30}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16730,6 +26308,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.update = update;
 exports.rotate = rotate;
 exports.zoom = zoom;
+exports.setFocus = setFocus;
 var vec3 = require('gl-vec3');
 var mat4 = require('gl-mat4');
 var max = Math.max;
@@ -16763,8 +26342,8 @@ var params = exports.params = {
     speed: 2.0 // 30 seconds per round when fps is 60
   },
   limits: {
-    minDistance: 2,
-    maxDistance: 4000
+    minDistance: 30,
+    maxDistance: 800
   },
   EPS: 0.000001,
   drag: 0.27, // Decrease the momentum by 1% each iteration
@@ -16781,12 +26360,15 @@ function update(settings, state) {
   var position = camera.position;
   var target = camera.target;
   var view = camera.view;
+  var targetTgt = camera.targetTgt;
+  var positionTgt = camera.positionTgt;
+
 
   var curThetaDelta = camera.thetaDelta;
   var curPhiDelta = camera.phiDelta;
   var curScale = camera.scale;
 
-  var offset = vec3.subtract(vec3.create(), position, target);
+  var offset = vec3.subtract([], position, target);
   var theta = void 0;
   var phi = void 0;
 
@@ -16831,6 +26413,18 @@ function update(settings, state) {
   quat.fromMat3(this.rotation, camMat)
   lookAt(view, this.position, this.target, this.up)
   */
+
+  // temporary setup for camera 'move/zoom to fit'
+  if (targetTgt && positionTgt) {
+    var posDiff = vec3.subtract([], positionTgt, newPosition);
+    var tgtDiff = vec3.subtract([], targetTgt, newTarget);
+    //console.log('posDiff', newPosition, positionTgt, newTarget, targetTgt)
+    if (vec3.length(posDiff) > 0.1 && vec3.length(tgtDiff) > 0.1) {
+      newPosition = vec3.scaleAndAdd(newPosition, newPosition, posDiff, 0.1);
+      newTarget = vec3.scaleAndAdd(newTarget, newTarget, tgtDiff, 0.1);
+    }
+  }
+
   var dragEffect = 1 - max(min(drag, 1.0), 0.01);
 
   var positionChanged = vec3.distance(position, newPosition) > 0; // TODO optimise
@@ -16846,28 +26440,95 @@ function update(settings, state) {
   };
 }
 
-function rotate(params, cameraState, angle) {
+function rotate(params, camera, angle) {
   var reductionFactor = 500;
   if (params.userControl.rotate) {
-    cameraState.thetaDelta += angle[0] / reductionFactor;
-    cameraState.phiDelta += angle[1] / reductionFactor;
+    camera.thetaDelta += angle[0] / reductionFactor;
+    camera.phiDelta += angle[1] / reductionFactor;
   }
 
-  return cameraState;
+  return camera;
 }
 
-function zoom(params, cameraState, zoomScale) {
+function zoom(params, camera, zoomScale) {
   if (params.userControl.zoom) {
     zoomScale = zoomScale * 0.001; // Math.min(Math.max(zoomScale, -0.1), 0.1)
     var amount = Math.abs(zoomScale) === 1 ? Math.pow(0.95, params.userControl.zoomSpeed) : zoomScale;
-    var scale = zoomScale < 0 ? cameraState.scale / amount : cameraState.scale * amount;
-    // console.log('zoomScale',zoomScale,scale)
+    var scale = zoomScale < 0 ? camera.scale / amount : camera.scale * amount;
+    camera.scale += amount;
 
-    cameraState.scale += amount;
+    // these are empirical values , after a LOT of testing
+    camera.near += amount * 0.5;
+    camera.near = Math.min(Math.max(10, camera.near), 12);
+    camera.far += amount * 500;
+    camera.far = Math.max(Math.min(2000, camera.far), 150);
+    // console.log('near ', camera.near, 'far', camera.far)
+
+    var projection = mat4.perspective([], camera.fov, camera.aspect, // context.viewportWidth / context.viewportHeight,
+    camera.near, camera.far);
+    camera.projection = projection;
   }
-  return cameraState;
+  return camera;
 }
-},{"gl-mat4":30,"gl-vec3":56}],193:[function(require,module,exports){
+
+function setFocus(params, camera, focusPoint) {
+  var sub = function sub(a, b) {
+    return a.map(function (a1, i) {
+      return a1 - b[i];
+    });
+  };
+  var add = function add(a, b) {
+    return a.map(function (a1, i) {
+      return a1 + b[i];
+    });
+  }; // NOTE: NO typedArray.map support on old browsers, polyfilled
+  var camTarget = camera.target;
+  var diff = sub(focusPoint, camTarget); // [ focusPoint[0] - camTarget[0],
+  var zOffset = [0, 0, diff[2] * 0.5];
+  camera.target = add(camTarget, zOffset);
+  camera.position = add(camera.position, zOffset);
+  return camera;
+}
+
+/*
+function setObservables (observables) {
+  let {dragMoves$, zooms$} = observables
+  dragMoves$
+    .subscribe(function (e) {
+      let delta = e.delta
+      let angle = {x: 0,y: 0}
+      angle[0] = 2 * Math.PI * delta[0] / PIXELS_PER_ROUND * scope.userRotateSpeed
+      angle[1] = -2 * Math.PI * delta[1] / PIXELS_PER_ROUND * scope.userRotateSpeed
+      rotate(self.objects, angle)
+    })
+}*/
+},{"gl-mat4":30,"gl-vec3":56}],198:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.elementSize = elementSize;
+
+var _most = require('most');
+
+// element resize event stream, throttled by throttle amount (250ms default)
+function elementSize(element) {
+  var throttle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 25;
+
+  var pixelRatio = window.devicePixelRatio;
+  function extractSize(x) {
+    x = element;
+    var width = Math.floor(element.clientWidth * pixelRatio);
+    var height = Math.floor(element.clientHeight * pixelRatio);
+    var bRect = element.getBoundingClientRect ? element.getBoundingClientRect() : { left: 0, top: 0, bottom: 0, right: 0, width: 0, height: 0 };
+    return { width: width, height: height, aspect: width / height, bRect: bRect };
+  }
+
+  return (0, _most.fromEvent)('resize', window) //only window fires resize events...
+  .throttle(throttle /* ms */).map(extractSize).startWith(extractSize());
+}
+},{"most":117}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16902,12 +26563,6 @@ function preventDefault(event) {
   return event;
 }
 
-// for gesture vs touch events
-function isNotIos(event) {
-  var ios = /iphone|ipod|ipad/.test(window.navigator.userAgent.toLowerCase());
-  return ios === false;
-}
-
 function interactionsFromEvents(targetEl) {
   var mouseDowns$ = (0, _most.fromEvent)('mousedown', targetEl);
   var mouseUps$ = (0, _most.fromEvent)('mouseup', targetEl);
@@ -16922,15 +26577,18 @@ function interactionsFromEvents(targetEl) {
   });
   var touchEnd$ = (0, _most.fromEvent)('touchend', targetEl);
 
-  var gestureChange$ = (0, _most.fromEvent)('gesturechange', targetEl);
-  var gestureStart$ = (0, _most.fromEvent)('gesturestart', targetEl);
-  var gestureEnd$ = (0, _most.fromEvent)('gestureend', targetEl);
+  // const gestureChange$ = fromEvent('gesturechange', targetEl)
+  // const gestureStart$ = fromEvent('gesturestart', targetEl)
+  // const gestureEnd$ = fromEvent('gestureend', targetEl)
 
   var pointerDowns$ = (0, _most.merge)(mouseDowns$, touchStart$); // mouse & touch interactions starts
   var pointerUps$ = (0, _most.merge)(mouseUps$, touchEnd$); // mouse & touch interactions ends
   var pointerMoves$ = (0, _most.merge)(mouseMoves$, touchMoves$);
 
-  var zooms$ = (0, _most.merge)((0, _most.merge)(pinchZooms(gestureChange$, gestureStart$, gestureEnd$), pinchZoomsFromTouch(touchStart$, (0, _most.fromEvent)('touchmove', targetEl), touchEnd$)), (0, _most.merge)((0, _most.fromEvent)('wheel', targetEl), (0, _most.fromEvent)('DOMMouseScroll', targetEl), (0, _most.fromEvent)('mousewheel', targetEl)).map(_utils.normalizeWheel));
+  var zooms$ = (0, _most.merge)((0, _most.merge)(
+  // pinchZooms(gestureChange$, gestureStart$, gestureEnd$),// for Ios
+  pinchZoomsFromTouch(touchStart$, (0, _most.fromEvent)('touchmove', targetEl), touchEnd$) // for Android (no gestureXX events)
+  ), (0, _most.merge)((0, _most.fromEvent)('wheel', targetEl), (0, _most.fromEvent)('DOMMouseScroll', targetEl), (0, _most.fromEvent)('mousewheel', targetEl)).map(_utils.normalizeWheel));
 
   function preventScroll(targetEl) {
     (0, _most.fromEvent)('mousewheel', targetEl).forEach(preventDefault);
@@ -16964,19 +26622,19 @@ function mouseDrags(mouseDowns$, mouseUps, mouseMoves, settings) {
 
   return mouseDowns$.flatMap(function (md) {
     // calculate offsets when mouse down
-    var startX = md.offsetX;
-    var startY = md.offsetY;
+    var startX = md.offsetX * window.devicePixelRatio;
+    var startY = md.offsetY * window.devicePixelRatio;
     // Calculate delta with mousemove until mouseup
-    var prevX = md.offsetX;
-    var prevY = md.offsetY;
+    var prevX = startX;
+    var prevY = startY;
 
     return mouseMoves.map(function (e) {
-      var curX = e.clientX;
-      var curY = e.clientY;
+      var curX = e.clientX * window.devicePixelRatio;
+      var curY = e.clientY * window.devicePixelRatio;
 
       var delta = {
-        left: e.clientX - startX,
-        top: e.clientY - startY,
+        left: curX - startX,
+        top: curY - startY,
         x: prevX - curX,
         y: curY - prevY
       };
@@ -16984,7 +26642,7 @@ function mouseDrags(mouseDowns$, mouseUps, mouseMoves, settings) {
       prevX = curX;
       prevY = curY;
 
-      var normalized = { x: e.clientX, y: e.clientY };
+      var normalized = { x: curX, y: curY };
       return { mouseEvent: e, delta: delta, normalized: normalized, type: 'mouse' };
     }).takeUntil(mouseUps);
   });
@@ -16992,18 +26650,18 @@ function mouseDrags(mouseDowns$, mouseUps, mouseMoves, settings) {
 
 function touchDrags(touchStart$, touchEnd$, touchMove$, settings) {
   return touchStart$.flatMap(function (ts) {
-    var startX = ts.touches[0].pageX;
-    var startY = ts.touches[0].pageY;
+    var startX = ts.touches[0].pageX * window.devicePixelRatio;
+    var startY = ts.touches[0].pageY * window.devicePixelRatio;
 
-    var prevX = ts.touches[0].pageX;
-    var prevY = ts.touches[0].pageY;
+    var prevX = startX;
+    var prevY = startY;
 
     return touchMove$.map(function (e) {
-      var x = e.touches[0].pageX - startX;
-      var y = e.touches[0].pageY - startY;
+      var curX = e.touches[0].pageX * window.devicePixelRatio;
+      var curY = e.touches[0].pageY * window.devicePixelRatio;
 
-      var curX = e.touches[0].pageX;
-      var curY = e.touches[0].pageY;
+      var x = curX - startX;
+      var y = curY - startY;
 
       var delta = {
         left: x,
@@ -17016,58 +26674,58 @@ function touchDrags(touchStart$, touchEnd$, touchMove$, settings) {
       prevY = curY;
 
       // let output = assign({}, e, {delta})
-      var normalized = { x: e.touches[0].pageX, y: e.touches[0].pageY };
+      var normalized = { x: curX, y: curY };
       return { mouseEvent: e, delta: delta, normalized: normalized, type: 'touch' };
     }).takeUntil(touchEnd$);
   });
 }
 
-function pinchZooms(gestureChange$, gestureStart$, gestureEnd$) {
-  return gestureStart$.flatMap(function (gs) {
-    return gestureChange$.map(function (x) {
-      return x.scale;
-    }).loop(function (prev, cur) {
-      return { seed: cur, value: prev ? cur - prev : prev };
-    }, undefined).filter(function (x) {
-      return x !== undefined;
-    })
-    //.map(x => x / x)
-    .takeUntil(gestureEnd$);
-  });
-}
-
 function pinchZoomsFromTouch(touchStart$, touchMoves$, touchEnd$) {
   // for android , custom gesture handling
-  //very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
+  // very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
   return touchStart$.filter(function (t) {
     return t.touches.length === 2;
-  }).filter(isNotIos).flatMap(function (ts) {
+  }) // .filter(isNotIos)
+  .flatMap(function (ts) {
+    var startX1 = ts.touches[0].pageX * window.devicePixelRatio;
+    var startY1 = ts.touches[0].pageY * window.devicePixelRatio;
+
+    var startX2 = ts.touches[1].pageX * window.devicePixelRatio;
+    var startY2 = ts.touches[1].pageY * window.devicePixelRatio;
+
+    var startDist = startX1 - startX2 * startX1 - startX2 + (startY1 - startY2 * startY1 - startY2);
+
     return touchMoves$.tap(function (e) {
       return e.preventDefault();
     }).filter(function (t) {
       return t.touches.length === 2;
-    }).filter(isNotIos).map(function (e) {
-      return (e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) + (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY);
-    }).skipRepeats()
-    // .loop((prev, cur) => ({seed: cur, value: prev && Math.abs(prev - cur) > 150 ? cur : prev}), undefined)
-    .loop(function (prev, cur) {
-      var value = void 0;
+    })
+    // .tap(e => console.log('touchMoves BEFORE', e))
+    .map(function (e) {
+      var curX1 = e.touches[0].pageX * window.devicePixelRatio;
+      var curY1 = e.touches[0].pageY * window.devicePixelRatio;
+
+      var curX2 = e.touches[1].pageX * window.devicePixelRatio;
+      var curY2 = e.touches[1].pageY * window.devicePixelRatio;
+
+      var currentDist = curX1 - curX2 * curX1 - curX2 + (curY1 - curY2 * curY1 - curY2);
+      return currentDist;
+    }).loop(function (prev, cur) {
       if (prev) {
-        var diff = Math.abs(prev - cur);
-        if (diff > 150) {
-          value = cur < prev ? -cur : cur;
-          return { seed: cur, value: value };
-        }
+        return { seed: cur, value: cur - prev };
       }
-      return { seed: cur };
+      return { seed: cur, value: cur - startDist };
     }, undefined).filter(function (x) {
       return x !== undefined;
-    }).map(function (e) {
-      var scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e));
-      return { scale: scale };
     }).map(function (x) {
-      return x.scale * 0.0004;
-    }).takeUntil(touchEnd$);
+      return x * 0.000005;
+    }) // arbitrary, in order to harmonise desktop /mobile up to a point
+    // .filter(isNotIos)
+    /*.map(function (e) {
+      const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
+      return scale
+    })*/
+    .takeUntil(touchEnd$);
   });
 }
 
@@ -17281,7 +26939,7 @@ function pointerGestures(baseInteractions) {
     pointerMoves: baseInteractions.pointerMoves$
   };
 }
-},{"./utils":194,"@most/prelude":3,"fast.js/object/assign":14,"most":117}],194:[function(require,module,exports){
+},{"./utils":200,"@most/prelude":3,"fast.js/object/assign":14,"most":117}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17312,7 +26970,7 @@ function normalizeWheel(event) {
   delta = delta >= 0 ? 1 : -1;
   return delta;
 }
-},{}],195:[function(require,module,exports){
+},{}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17323,6 +26981,7 @@ var mobileCaller = {
   interfaceName: 'JAMDroid',
 
   call: function call(method) {
+    //console.log('method', method)
     if (eval('typeof ' + this.interfaceName) !== 'undefined') {
       new Function(this.interfaceName + '.' + method)();
     }
@@ -17331,27 +26990,21 @@ var mobileCaller = {
 
 function makeAndroidInterface() {
   return {
-    onLoadModelError: function onLoadModelError() {
-      return mobileCaller.call('onLoadModel(false)');
-    },
-    onLoadModelSuccess: function onLoadModelSuccess() {
-      return mobileCaller.call('onLoadModel(true)');
-    },
-    onBoundsExceeded: function onBoundsExceeded() {
-      return mobileCaller.call('onBoundsExceeded()');
-    },
-    onViewerReady: function onViewerReady() {
+    viewerReady: function viewerReady() {
       return mobileCaller.call('onViewerReady()');
     },
-    onMachineParamsError: function onMachineParamsError() {
-      return mobileCaller.call('onMachineParamsResult(false)');
+    modelLoaded: function modelLoaded(value) {
+      return mobileCaller.call('onLoadModel(' + value + ')');
     },
-    onMachineParamsSuccess: function onMachineParamsSuccess() {
-      return mobileCaller.call('onMachineParamsResult(true)');
+    machineParamsLoaded: function machineParamsLoaded(value) {
+      return mobileCaller.call('onMachineParamsResult(' + value + ')');
+    },
+    objectFitsPrintableVolume: function objectFitsPrintableVolume(value) {
+      return mobileCaller.call('objectFitsPrintableVolume(' + value + ')');
     }
   };
 }
-},{}],196:[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17375,7 +27028,7 @@ function detectPlatform() {
     return 'android';
   }
 }
-},{}],197:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17402,7 +27055,7 @@ function makeInterface() {
   var actions = platform === 'ios' ? (0, _iosInterface.makeIosInterface)() : (0, _androidInterface.makeAndroidInterface)();
   return actions;
 }
-},{"./androidInterface":195,"./detector":196,"./iosInterface":198}],198:[function(require,module,exports){
+},{"./androidInterface":201,"./detector":202,"./iosInterface":204}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17411,103 +27064,30 @@ Object.defineProperty(exports, "__esModule", {
 exports.makeIosInterface = makeIosInterface;
 function callNativeApp(path, payload) {
   try {
-    console.log('calling native app', path);
+    //console.log('calling native app', path, payload)
     window.webkit.messageHandlers[path].postMessage(payload);
   } catch (err) {
-    console.log('Not native');
+    // console.log('Not native')
   }
 }
 
 function makeIosInterface() {
   return {
-    onLoadModelError: function onLoadModelError() {
-      return callNativeApp('loadModel', 'error');
-    },
-    onLoadModelSuccess: function onLoadModelSuccess() {
-      return callNativeApp('loadModel', 'success');
-    },
-    onBoundsExceeded: function onBoundsExceeded() {
-      return callNativeApp('objectBounds', 'exceeded');
-    },
-    onViewerReady: function onViewerReady() {
+    viewerReady: function viewerReady() {
       return callNativeApp('viewer', 'ready');
     },
-    onMachineParamsError: function onMachineParamsError() {
-      return callNativeApp('machineParams', 'error');
+    modelLoaded: function modelLoaded(value) {
+      return callNativeApp('loadModel', value ? 'success' : 'error');
     },
-    onMachineParamsSuccess: function onMachineParamsSuccess() {
-      return callNativeApp('machineParams', 'success');
+    machineParamsLoaded: function machineParamsLoaded(value) {
+      return callNativeApp('machineParams', value ? 'success' : 'error');
+    },
+    objectFitsPrintableVolume: function objectFitsPrintableVolume(value) {
+      return callNativeApp('objectFitsPrintableVolume', '' + value);
     }
   };
 }
-},{}],199:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //taken from https://github.com/briancavalier/most-behavior/blob/2888b2b69fe2c8e44617c611eb5fdaf512d52007/src/animationFrames.js
-
-
-var _most = require('most');
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/* global requestAnimationFrame, cancelAnimationFrame */
-
-exports.default = function () {
-  return new _most.Stream(new AnimationFramesSource());
-};
-
-var recurse = function recurse(cancel, schedule) {
-  return function (sink, scheduler) {
-    var canceler = new Cancel(cancel);
-    var onNext = function onNext(x) {
-      sink.event(scheduler.now(), x);
-      cancel.key = schedule(onNext);
-    };
-    cancel.key = schedule(onNext);
-
-    return canceler;
-  };
-};
-
-var animationFrames = recurse(cancelAnimationFrame, requestAnimationFrame);
-
-var AnimationFramesSource = function () {
-  function AnimationFramesSource() {
-    _classCallCheck(this, AnimationFramesSource);
-  }
-
-  _createClass(AnimationFramesSource, [{
-    key: 'run',
-    value: function run(sink, scheduler) {
-      return animationFrames(sink, scheduler);
-    }
-  }]);
-
-  return AnimationFramesSource;
-}();
-
-var Cancel = function () {
-  function Cancel(cancel) {
-    _classCallCheck(this, Cancel);
-
-    this.cancel = cancel;
-    this.key = undefined;
-  }
-
-  _createClass(Cancel, [{
-    key: 'dispose',
-    value: function dispose() {
-      this.cancel(this.key);
-    }
-  }]);
-
-  return Cancel;
-}();
-},{"most":117}],200:[function(require,module,exports){
+},{}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17561,7 +27141,7 @@ function centerGeometry(geometry, bounds, transforms) {
   transform(geometry.positions, translateMat);
   return geometry;
 }
-},{"gl-mat4":30,"gl-vec3":56}],201:[function(require,module,exports){
+},{"gl-mat4":30,"gl-vec3":56}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17599,7 +27179,7 @@ function computeTMatrixFromTransforms(params) {
 
   return transforms;
 }
-},{"gl-mat4":30}],202:[function(require,module,exports){
+},{"gl-mat4":30}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17649,7 +27229,95 @@ function model(defaults, actions, updateFunctions) {
   // .distinctUntilChanged()
   .multicast();
 }
-},{"most":117}],203:[function(require,module,exports){
+},{"most":117}],208:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // taken from https://github.com/briancavalier/most-behavior/blob/2888b2b69fe2c8e44617c611eb5fdaf512d52007/src/animationFrames.js
+
+
+exports.animationFrames = animationFrames;
+exports.rafStream = rafStream;
+
+var _most = require('most');
+
+var _create = require('@most/create');
+
+var _create2 = _interopRequireDefault(_create);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function animationFrames() {
+  return new _most.Stream(new AnimationFramesSource());
+}
+
+var recurse = function recurse(cancel, schedule) {
+  return function (sink, scheduler) {
+    var canceler = new Cancel(cancel);
+    var onNext = function onNext(x) {
+      sink.event(scheduler.now(), x);
+      cancel.key = schedule(onNext);
+    };
+    cancel.key = schedule(onNext);
+
+    return canceler;
+  };
+};
+
+var _animationFrames = recurse(cancelAnimationFrame, requestAnimationFrame);
+
+var AnimationFramesSource = function () {
+  function AnimationFramesSource() {
+    _classCallCheck(this, AnimationFramesSource);
+  }
+
+  _createClass(AnimationFramesSource, [{
+    key: 'run',
+    value: function run(sink, scheduler) {
+      return _animationFrames(sink, scheduler);
+    }
+  }]);
+
+  return AnimationFramesSource;
+}();
+
+var Cancel = function () {
+  function Cancel(cancel) {
+    _classCallCheck(this, Cancel);
+
+    this.cancel = cancel;
+    this.key = undefined;
+  }
+
+  _createClass(Cancel, [{
+    key: 'dispose',
+    value: function dispose() {
+      this.cancel(this.key);
+    }
+  }]);
+
+  return Cancel;
+}();
+
+/* alternative version */
+
+
+function rafStream() {
+  var stream = (0, _create2.default)(function (add, end, error) {
+    function step(timestamp) {
+      add(null);
+      window.requestAnimationFrame(step);
+    }
+    window.requestAnimationFrame(step);
+  });
+  return stream;
+}
+},{"@most/create":1,"most":117}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17675,7 +27343,7 @@ function callBackToStream() {
   });
   return { stream: stream, callback: callback };
 }
-},{"@most/create":1}],204:[function(require,module,exports){
+},{"@most/create":1}],210:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17801,7 +27469,7 @@ var RateLimitTask = function () {
 
   return RateLimitTask;
 }();
-},{}],205:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17823,7 +27491,7 @@ function offsetTransformsByBounds(transforms, bounds) {
   var offsetPos = [0.5 * (bounds.max[0] - bounds.min[0]) * axes[0] + pos[0], 0.5 * (bounds.max[1] - bounds.min[1]) * axes[1] + pos[1], 0.5 * (bounds.max[2] - bounds.min[2]) * axes[2] + pos[2]];
   return Object.assign({}, transforms, { pos: offsetPos });
 }
-},{}],206:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17832,13 +27500,14 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = formatRawMachineData;
 function formatRawMachineData(rawData) {
   return {
+    name: rawData.name,
     machine_volume: [rawData.machine_width, rawData.machine_depth, rawData.machine_height],
     machine_head_with_fans_polygon: [], // rawData.machine_head_with_fans_polygon.default_value,
     machine_disallowed_areas: [], // rawData.machine_disallowed_areas.default_value,
     printable_area: rawData.printable_area
   };
 }
-},{}],207:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17879,7 +27548,7 @@ function drawCuboid(regl, params) {
   });
 
   return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n //fragNormal = normal;\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
     frag: "precision mediump float;\n#define GLSLIFY 1\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
 
     attributes: {
@@ -17907,7 +27576,7 @@ function drawCuboid(regl, params) {
     }
   });
 }
-},{"gl-mat4":30}],208:[function(require,module,exports){
+},{"gl-mat4":30}],214:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17975,7 +27644,7 @@ function drawCuboidFromCoords(regl, params) {
     }
   });
 }
-},{"gl-mat4":30}],209:[function(require,module,exports){
+},{"gl-mat4":30}],215:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17983,73 +27652,106 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = makeDrawEnclosure;
 
-var _index = require('./drawGrid/index');
+var _drawGrid = require('./drawGrid');
 
-var _index2 = _interopRequireDefault(_index);
+var _drawGrid2 = _interopRequireDefault(_drawGrid);
 
-var _index3 = require('./drawTri/index');
+var _drawTri = require('./drawTri');
 
-var _index4 = _interopRequireDefault(_index3);
+var _drawTri2 = _interopRequireDefault(_drawTri);
 
-var _index5 = require('./drawCuboid/index');
+var _drawCuboid = require('./drawCuboid');
 
-var _index6 = _interopRequireDefault(_index5);
+var _drawCuboid2 = _interopRequireDefault(_drawCuboid);
 
-var _index7 = require('./drawCuboidFromCoords/index');
+var _drawCuboidFromCoords = require('./drawCuboidFromCoords');
 
-var _index8 = _interopRequireDefault(_index7);
+var _drawCuboidFromCoords2 = _interopRequireDefault(_drawCuboidFromCoords);
+
+var _drawStaticMesh = require('./drawStaticMesh');
+
+var _drawStaticMesh2 = _interopRequireDefault(_drawStaticMesh);
 
 var _computeTMatrixFromTransforms = require('../../common/utils/computeTMatrixFromTransforms');
 
 var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
 
+var _getBrandingSvgGeometry = require('../../branding/getBrandingSvgGeometry');
+
+var _getBrandingSvgGeometry2 = _interopRequireDefault(_getBrandingSvgGeometry);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import getBrandingSvg from '../../branding/getBrandingSvg'
+// import makeDrawImgPlane from './drawImgPlane'
+
 
 function makeDrawEnclosure(regl, params) {
   var machine_disallowed_areas = params.machine_disallowed_areas;
   var machine_volume = params.machine_volume;
+  var name = params.name;
 
-  // generate a dynamic uniform from the data above
 
-  var dynDisalowerAreasUniform = machine_disallowed_areas.map(function (area, index) {
-    var def = 'vec2 disArea_' + index + '[' + area.length + ']\n';
-    var asgnments = area.map(function (a, i) {
-      return 'disArea_' + index + '[' + i + '] = vec2(' + a[0] + ', ' + a[1] + ')\n';
-    }); // '[' + area.map(a => `vec2(${a[0]}, ${a[1]})`).join(',') + ']'
-    return def + asgnments;
-  });
-  // console.log('dynDisalowerAreasUniform', dynDisalowerAreasUniform)
-  // vec2 foo[1]
-  // foo[0] = vec2(0.,1.)
-  // foo[1] = vec2(1.,0.)
-
-  // const mGridSize = [21.3, 22]
-  var drawGrid = (0, _index2.default)(regl, { size: machine_volume, ticks: 50, centered: true });
-  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.2] });
+  var drawGrid = (0, _drawGrid2.default)(regl, { size: machine_volume, ticks: 50, centered: true });
+  var drawGridDense = (0, _drawGrid2.default)(regl, { size: machine_volume, ticks: 10, centered: true });
+  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, 0.1] });
+  var gridOffsetD = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, 0.5] });
 
   var triSize = { width: 50, height: 20 };
-  var drawTri = (0, _index4.default)(regl, { width: triSize.width, height: triSize.height });
-  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, machine_volume[1] * 0.5, 0.5] });
+  var drawTri = (0, _drawTri2.default)(regl, { width: triSize.width, height: triSize.height });
+  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, machine_volume[1] * 0.5, 0.1] });
 
   var containerSize = [machine_volume[0], machine_volume[1], machine_volume[2]];
-  var drawCuboid = (0, _index6.default)(regl, { size: containerSize });
+  var drawCuboid = (0, _drawCuboid2.default)(regl, { size: containerSize });
   var containerCuboidMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, machine_volume[2] * 0.5] });
 
-  var dissalowedVolumes = machine_disallowed_areas.map(function (area) {
-    return (0, _index8.default)(regl, { height: machine_volume[2], coords: area });
+  var buildPlaneGeo = {
+    positions: [[-1, +1, 0], [+1, +1, 0], [+1, -1, 0], [-1, -1, 0]],
+    cells: [[2, 1, 0], [2, 0, 3]]
+  };
+  var planeReducer = 0.5; // fudge value in order to prevent overlaps with bounds (z fighting)
+  var buildPlaneModel = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.15], sca: [machine_volume[0] * 0.5 - planeReducer, machine_volume[1] * 0.5 - planeReducer, 1] });
+  var drawBuildPlane = (0, _drawStaticMesh2.default)(regl, {
+    geometry: buildPlaneGeo,
+    extras: {
+      cull: {
+        enable: true,
+        face: 'back'
+      }
+    }
   });
+
+  // branding
+  // const logoTexure = svgStringAsReglTexture(regl, getBrandingSvg(name))
+  // const logoPlane = makeDrawImgPlane(regl, {texture: logoTexure})
+  // logoTexure.width * logoScale, logoTexure.height * logoScale
+  var logoMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 60, 1], rot: [Math.PI / 2, Math.PI, 0] });
+  var logoMesh = (0, _getBrandingSvgGeometry2.default)(name);
+  // const logoMesh = svgStringAsGeometry(logoImg)
+  var drawLogoMesh = (0, _drawStaticMesh2.default)(regl, { geometry: logoMesh });
+
+  //const dissalowedVolumes = machine_disallowed_areas
+  //  .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
 
   return function (_ref) {
     var view = _ref.view;
     var camera = _ref.camera;
 
     drawGrid({ view: view, camera: camera, color: [0, 0, 0, 0.2], model: gridOffset });
-    drawTri({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: triMatrix });
+    drawGridDense({ view: view, camera: camera, color: [0, 0, 0, 0.06], model: gridOffsetD });
+
+    // drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
+    drawBuildPlane({ view: view, camera: camera, color: [1, 1, 1, 1], model: buildPlaneModel });
     drawCuboid({ view: view, camera: camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix });
     // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
+    // logoPlane({view, camera, color: [0.4, 0.4, 0.4, 1], model: logoMatrix2})
+    drawLogoMesh({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: logoMatrix });
   };
 }
-},{"../../common/utils/computeTMatrixFromTransforms":201,"./drawCuboid/index":207,"./drawCuboidFromCoords/index":208,"./drawGrid/index":210,"./drawTri/index":213}],210:[function(require,module,exports){
+
+// import svgStringAsReglTexture from '../../common/utils/image/svgStringAsReglTexture'
+// import svgStringAsGeometry from '../../common/utils/geometry/svgStringAsGeometry'
+},{"../../branding/getBrandingSvgGeometry":186,"../../common/utils/computeTMatrixFromTransforms":206,"./drawCuboid":213,"./drawCuboidFromCoords":214,"./drawGrid":216,"./drawStaticMesh":218,"./drawTri":220}],216:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18092,16 +27794,21 @@ function prepareDrawGrid(regl) {
     var lengthStart = -halfLength + remLength;
     var lengthEnd = -lengthStart;
 
-    for (var i = widthStart; i <= widthEnd; i += ticks) {
-      positions.push(lengthStart, i, 0);
-      positions.push(lengthEnd, i, 0);
-      positions.push(lengthStart, i, 0);
-    }
+    var skipEvery = 0;
 
-    for (var _i = lengthStart; _i <= lengthEnd; _i += ticks) {
-      positions.push(_i, widthStart, 0);
-      positions.push(_i, widthEnd, 0);
-      positions.push(_i, widthStart, 0);
+    for (var i = widthStart, j = 0; i <= widthEnd; i += ticks, j += 1) {
+      if (j % skipEvery !== 0) {
+        positions.push(lengthStart, i, 0);
+        positions.push(lengthEnd, i, 0);
+        positions.push(lengthStart, i, 0);
+      }
+    }
+    for (var _i = lengthStart, _j = 0; _i <= lengthEnd; _i += ticks, _j += 1) {
+      if (_j % skipEvery !== 0) {
+        positions.push(_i, widthStart, 0);
+        positions.push(_i, widthEnd, 0);
+        positions.push(_i, widthStart, 0);
+      }
     }
   } else {
     for (var _i2 = -width * 0.5; _i2 <= width * 0.5; _i2 += ticks) {
@@ -18117,10 +27824,10 @@ function prepareDrawGrid(regl) {
     }
   }
 
-  var frag = infinite ? "precision mediump float;\n#define GLSLIFY 1\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\n#define FOG_DENSITY 0.03\nfloat fogFactorExp2(\n  const float dist,\n  const float density\n) {\n  const float LOG2 = -1.442695;\n  float d = density * dist;\n  return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);\n}\n\nfloat fogFactorExp(\n  const float dist,\n  const float density\n) {\n  return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);\n}\n\nvoid main() {\n  float fogDistance = gl_FragCoord.z / gl_FragCoord.w;\n  float fogAmount = fogFactorExp(fogDistance * 0.1, FOG_DENSITY);\n  const vec4 fogColor = vec4(1.0); // white\n\n  //vec4 mainColor = mix( vec4(light, 1), color, 0.6);\n  vec4 mainColor = color;\n  gl_FragColor = mix(mainColor, fogColor, fogAmount);\n}\n" : "precision mediump float;\n#define GLSLIFY 1\nvarying vec3  fragPosition;\nuniform vec4 color;\nvoid main() {\n  gl_FragColor = color;\n}\n";
+  var frag = infinite ? "precision mediump float;\n#define GLSLIFY 1\nuniform vec4 color;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\n#define FOG_DENSITY 0.03\nfloat fogFactorExp(\n  const float dist,\n  const float density\n) {\n  return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);\n}\n\nuniform vec4 fogColor;\n\nvoid main() {\n  float fogDistance = gl_FragCoord.z / gl_FragCoord.w;\n  float fogAmount = fogFactorExp(fogDistance * 0.1, FOG_DENSITY);\n\n  float dist = distance( vec2(0.,0.), vec2(worldPosition.x,worldPosition.y));\n  dist *= 0.0016;\n  dist = clamp(dist, 0.0, 1.0);\n  //0 ===> 200\n  //\n  //vec4 col = vec4(fogColor.r, color.g, color.b, 0.);\n  //gl_FragColor = col;//mix(color, fogColor, fogAmount);\n  gl_FragColor = mix(color, fogColor, dist);\n}\n" : "precision mediump float;\n#define GLSLIFY 1\nvarying vec3  fragPosition;\nuniform vec4 color;\nvoid main() {\n  gl_FragColor = color;\n}\n";
 
   return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nuniform mat4 model, view, projection;\nvarying vec3 fragPosition;\n\nvoid main() {\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
     frag: frag,
 
     attributes: {
@@ -18137,10 +27844,13 @@ function prepareDrawGrid(regl) {
       _projection: function _projection(context, props) {
         return _glMat2.default.ortho([], -300, 300, 350, -350, 0.01, 1000);
       },
-      color: regl.prop('color')
+      color: regl.prop('color'),
+      fogColor: function fogColor(context, props) {
+        return props.fogColor || [1, 1, 1, 1];
+      }
     },
     lineWidth: 2,
-    primitive: 'line strip',
+    primitive: 'lines',
     cull: {
       enable: true,
       face: 'front'
@@ -18155,7 +27865,7 @@ function prepareDrawGrid(regl) {
 
   });
 }
-},{"gl-mat4":30}],211:[function(require,module,exports){
+},{"gl-mat4":30}],217:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18206,7 +27916,7 @@ function drawPrintheadShadow(regl, params) {
     }
   });
 }
-},{"gl-mat4":30}],212:[function(require,module,exports){
+},{"gl-mat4":30}],218:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18228,8 +27938,53 @@ function drawMesh(regl) {
   var geometry = params.geometry;
 
   var commandParams = {
-    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position, normal;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvarying vec4 _worldSpacePosition;\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  _worldSpacePosition = worldSpacePosition;\n  gl_Position = projection * view * worldSpacePosition;\n}\n",
-    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvarying vec4 _worldSpacePosition;\n\nuniform vec2 printableArea;\n\nvec4 errorColor = vec4(0.15, 0.15, 0.15, 0.3);//vec4(0.15, 0.15, 0.15, 0.3);\n\nvoid main () {\n  vec4 depth = gl_FragCoord;\n\n  float v = 0.8; // shadow value\n  vec4 endColor = color;\n\n  //if anything is outside the printable area, shade differently\n  /*if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){\n    endColor = errorColor;\n  }\n  if(_worldSpacePosition.y>printableArea.y*0.5 || _worldSpacePosition.y<printableArea.y*-0.5) {\n    endColor = errorColor;\n  }*/\n\n  vec3 ambient = ambientLightAmount * endColor.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * endColor.rgb * clamp(cosTheta , 0.0, 1.0 );\n  gl_FragColor = vec4((ambient + diffuse * v), endColor.a);\n}\n",
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: prop('color')
+    },
+    attributes: {
+      position: buffer(geometry.positions)
+    },
+    elements: geometry.cells,
+    cull: {
+      enable: false,
+      face: 'front'
+    }
+  };
+
+  // Splice in any extra params
+  commandParams = Object.assign({}, commandParams, params.extras);
+  return regl(commandParams);
+}
+},{"gl-mat4":30}],219:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = drawMesh;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function drawMesh(regl) {
+  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { extras: {} };
+  var prop = regl.prop;
+  var buffer = regl.buffer;
+  var geometry = params.geometry;
+
+  var commandParams = {
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position, normal;\n\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 _worldSpacePosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  _worldSpacePosition = worldSpacePosition;\n  gl_Position = projection * view * worldSpacePosition;\n\n  vec4 glPosition = projection * view * model * vec4(position, 1);\n  //gl_Position = glPosition;\n  gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n\n}\n",
+    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvarying vec4 _worldSpacePosition;\n\nuniform vec2 printableArea;\n\nvec4 errorColor = vec4(0.15, 0.15, 0.15, 0.3);//vec4(0.15, 0.15, 0.15, 0.3);\n\nvoid main () {\n  vec4 depth = gl_FragCoord;\n\n  float v = 0.8; // shadow value\n  vec4 endColor = color;\n\n  //if anything is outside the printable area, shade differently\n  /*if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){\n    endColor = errorColor;\n  }\n  if(_worldSpacePosition.y>printableArea.y*0.5 || _worldSpacePosition.y<printableArea.y*-0.5) {\n    endColor = errorColor;\n  }*/\n\n  vec3 ambient = ambientLightAmount * endColor.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * endColor.rgb * clamp(cosTheta , 0.0, 1.0 );\n\n  float cosTheta2 = dot(fragNormal, vec3(-lightDir.x, -lightDir.y, lightDir.z));\n  vec3 diffuse2 = diffuseLightAmount * endColor.rgb * clamp(cosTheta2 , 0.0, 1.0 );\n\n  gl_FragColor = vec4((ambient + diffuse + diffuse2 * v), endColor.a);\n}\n",
 
     uniforms: {
       model: function model(context, props) {
@@ -18262,7 +28017,7 @@ function drawMesh(regl) {
   commandParams = Object.assign({}, commandParams, params.extras);
   return regl(commandParams);
 }
-},{"gl-mat4":30}],213:[function(require,module,exports){
+},{"gl-mat4":30}],220:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18282,7 +28037,7 @@ function drawTri(regl, params) {
   var height = params.height;
 
   return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\n\nattribute vec3 position;\nuniform mat4 model, view, projection;\nvarying vec3 fragPosition;\n\nvoid main() {\n  fragPosition = position;\n  gl_Position = projection * view * model * vec4(position, 1);\n}\n\n/*\nprecision mediump float;\nattribute vec2 position;\nuniform float angle;\nvoid main() {\n  gl_Position = vec4(\n    cos(angle) * position.x + sin(angle) * position.y,\n    -sin(angle) * position.x + cos(angle) * position.y, 0, 1);\n}*/\n",
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
     frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
 
     attributes: {
@@ -18301,7 +28056,7 @@ function drawTri(regl, params) {
     }
   });
 }
-},{"gl-mat4":30}],214:[function(require,module,exports){
+},{"gl-mat4":30}],221:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18335,7 +28090,7 @@ function prepareRender(regl, params) {
   // infinite grid
   var gridSize = [1220, 1200]; // size of 'infinite grid'
   var drawInfiniGrid = (0, _index2.default)(regl, { size: gridSize, ticks: 10, infinite: true });
-  var infiniGridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.4] });
+  var infiniGridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -1.8] });
 
   var command = function command(props) {
     var entities = props.entities;
@@ -18351,7 +28106,7 @@ function prepareRender(regl, params) {
         color: background,
         depth: 1
       });
-      drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1], model: infiniGridOffset });
+      drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1], fogColor: background, model: infiniGridOffset });
 
       entities.map(function (entity) {
         //use this for colors that change outside build area
@@ -18382,15 +28137,13 @@ function prepareRender(regl, params) {
 
   return function render(data) {
     command(data);
-
     // boilerplate etc
     tick += 0.01;
     // for stats
     // regl.poll()
-    return;
   };
 }
-},{"../../common/utils/computeTMatrixFromTransforms":201,"./drawGrid/index":210,"./drawPrintheadShadow":211,"./wrapperScope":215}],215:[function(require,module,exports){
+},{"../../common/utils/computeTMatrixFromTransforms":206,"./drawGrid/index":216,"./drawPrintheadShadow":217,"./wrapperScope":222}],222:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18414,7 +28167,7 @@ function wrapperScope(regl) {
       enable: true
     },
     context: {
-      lightDir: [.39, 0.87, 0.29]
+      lightDir: [0.39, 0.87, 0.29]
     },
     uniforms: {
       lightDir: function lightDir(context) {
@@ -18432,7 +28185,13 @@ function wrapperScope(regl) {
         return props.view;
       },
       projection: function projection(context, props) {
-        return _glMat2.default.perspective([], Math.PI / 4, context.viewportWidth / context.viewportHeight, 10, 10000);
+        return props.camera.projection;
+      },
+      camNear: function camNear(context, props) {
+        return props.camera.near;
+      },
+      camFar: function camFar(context, props) {
+        return props.camera.far;
       }
     },
     framebuffer: fbo
@@ -18441,7 +28200,7 @@ function wrapperScope(regl) {
   commandParams = Object.assign({}, commandParams, params.extras);
   return regl(commandParams);
 }
-},{"gl-mat4":30}],216:[function(require,module,exports){
+},{"gl-mat4":30}],223:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18461,10 +28220,17 @@ var _prepPipeline = require('./prepPipeline');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* Pipeline:
+  - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
+  - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
+  - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
+*/
+
 function entityPrep(rawGeometry$) {
+  //NOTE : rotation needs to be manually inverted , or an additional geometry transformation applied
   var addedEntities$ = rawGeometry$.map(function (geometry) {
     return {
-      transforms: { pos: [0, 0, 0], rot: [0, 0, 0], sca: [1, 1, 1] }, // [0.2, 1.125, 1.125]},
+      transforms: { pos: [0, 0, 0], rot: [0, 0, Math.PI], sca: [1, 1, 1] }, // [0.2, 1.125, 1.125]},
       geometry: geometry,
       visuals: {
         type: 'mesh',
@@ -18486,7 +28252,7 @@ function entityPrep(rawGeometry$) {
 
   return addedEntities$;
 } // helpers
-},{"../common/utils/centerGeometry":200,"../common/utils/offsetTransformsByBounds":205,"./prepPipeline":219}],217:[function(require,module,exports){
+},{"../common/utils/centerGeometry":205,"../common/utils/offsetTransformsByBounds":211,"./prepPipeline":226}],224:[function(require,module,exports){
 'use strict';
 
 var _render = require('./drawCommands/render');
@@ -18515,6 +28281,8 @@ var _controlsStream2 = _interopRequireDefault(_controlsStream);
 
 var _pointerGestures = require('../common/interactions/pointerGestures');
 
+var _elementSizing = require('../common/interactions/elementSizing');
+
 var _adressBarDriver = require('./sideEffects/adressBarDriver');
 
 var _adressBarDriver2 = _interopRequireDefault(_adressBarDriver);
@@ -18541,6 +28309,8 @@ var _nativeApiDriver2 = _interopRequireDefault(_nativeApiDriver);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//perhaps needed for simplicity: npm module
+//require('typedarray-methods')
 var reglM = require('regl');
 // use this one for server side render
 // const regl = require('regl')(require('gl')(256, 256))
@@ -18560,12 +28330,10 @@ var reglM = require('regl');
 // ////////////
 var _makeInterface = (0, _interface2.default)();
 
-var onLoadModelError = _makeInterface.onLoadModelError;
-var onLoadModelSuccess = _makeInterface.onLoadModelSuccess;
-var onBoundsExceeded = _makeInterface.onBoundsExceeded;
-var onViewerReady = _makeInterface.onViewerReady;
-var onMachineParamsError = _makeInterface.onMachineParamsError;
-var onMachineParamsSuccess = _makeInterface.onMachineParamsSuccess;
+var viewerReady = _makeInterface.viewerReady;
+var modelLoaded = _makeInterface.modelLoaded;
+var objectFitsPrintableVolume = _makeInterface.objectFitsPrintableVolume;
+var machineParamsLoaded = _makeInterface.machineParamsLoaded;
 
 var nativeApi = (0, _nativeApiDriver2.default)();
 
@@ -18579,16 +28347,10 @@ var regl = reglM({
 
 var container = document.querySelector('canvas');
 /* --------------------- */
-/* Pipeline:
-  - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall
-  - every object with a fundamentall different 'look' (beyond what can be done with shader parameters) => different (VS) & PS
-  - even if regl can 'combine' various uniforms, attributes, props etc, the rule above still applies
-*/
 
-// ///////
 var modelUri$ = (0, _most.merge)(_adressBarDriver2.default, nativeApi.modelUri$).flatMapError(function (error) {
   // console.log('error', error)
-  onLoadModelError(error);
+  modelLoaded(false); // error)
   return (0, _most.just)(null);
 }).filter(function (x) {
   return x !== null;
@@ -18596,25 +28358,20 @@ var modelUri$ = (0, _most.merge)(_adressBarDriver2.default, nativeApi.modelUri$)
 
 var setMachineParams$ = (0, _most.merge)(nativeApi.machineParams$).flatMapError(function (error) {
   // console.log('error', error)
-  onMachineParamsError(error);
+  machineParamsLoaded(false); // error)
   return (0, _most.just)(null);
 }).filter(function (x) {
   return x !== null;
 }).tap(function (e) {
-  return onMachineParamsSuccess(true);
+  return machineParamsLoaded(true);
 }).multicast();
 
 var parsedSTL$ = modelUri$.flatMap(_loader2.default).flatMapError(function (error) {
-  onLoadModelError(error);
+  modelLoaded(false); // error)
   return (0, _most.just)(undefined);
 }).filter(function (x) {
   return x !== undefined;
 }).multicast();
-
-// interactions : camera controls
-var baseInteractions$ = (0, _pointerGestures.interactionsFromEvents)(container);
-var gestures = (0, _pointerGestures.pointerGestures)(baseInteractions$);
-var camState$ = (0, _controlsStream2.default)({ gestures: gestures }, { settings: _orbitControls.params, camera: _camera2.default });
 
 var render = (0, _render2.default)(regl);
 var addEntities$ = (0, _entityPrep2.default)(parsedSTL$);
@@ -18625,39 +28382,58 @@ var setEntityBoundsStatus$ = (0, _most.merge)(setMachineParams$, addEntities$.sa
 var entities$ = (0, _state.makeEntitiesModel)({ addEntities: addEntities$, setEntityBoundsStatus: setEntityBoundsStatus$ });
 var machine$ = (0, _state.makeMachineModel)({ setMachineParams: setMachineParams$ });
 
-var appState$ = (0, _state.makeState)(machine$, entities$);
+var appState$ = (0, _state.makeState)(machine$, entities$).forEach(function (x) {
+  return x;
+});
 
-var visualState$ = (0, _visualState.makeVisualState)(regl, machine$, entities$, camState$).thru((0, _limitFlow2.default)(33)).flatMapError(function (error) {
-  console.error('error in rendering', error);
+// interactions : camera controls
+var baseInteractions$ = (0, _pointerGestures.interactionsFromEvents)(container);
+var gestures = (0, _pointerGestures.pointerGestures)(baseInteractions$);
+var focuses$ = addEntities$.map(function (nEntity) {
+  var mid = nEntity.bounds.max.map(function (pos, idx) {
+    return pos - nEntity.bounds.min[idx];
+  });
+  return mid;
+});
+
+var entityFocuses$ = addEntities$;
+var projection$ = (0, _elementSizing.elementSize)(container);
+/*baseInteractions$.taps
+focuses.forEach(e=>console.log('tapping'))*/
+var camState$ = (0, _controlsStream2.default)({ gestures: gestures }, { settings: _orbitControls.params, camera: _camera2.default }, focuses$, entityFocuses$, projection$);
+
+var visualState$ = (0, _visualState.makeVisualState)(regl, machine$, entities$, camState$).multicast().flatMapError(function (error) {
+  console.error('error in visualState', error);
   return (0, _most.just)(null);
 }).filter(function (x) {
   return x !== null;
-}).tap(function (x) {
+});
+
+visualState$.thru((0, _limitFlow2.default)(33)).tap(function (x) {
   return regl.poll();
+}).tap(render).flatMapError(function (error) {
+  console.error('error in render', error);
+  return (0, _most.just)(null);
 }).forEach(function (x) {
-  return render(x);
+  return x;
 });
 
 // boundsExceeded
-var boundsExceeded$ = (0, _most.combine)(function (entity, machineParams) {
-  // console.log('boundsExceeded', entity, machineParams)
-  return (0, _isObjectOutsideBounds2.default)(machineParams, entity);
-}, addEntities$, setMachineParams$)
-// .map((entity) => isObjectOutsideBounds(machineParams, entity))
-.tap(function (e) {
-  return console.log('outOfBounds??', e);
-}).filter(function (x) {
-  return x === true;
-});
+var objectFitsPrintableVolume$ = (0, _most.combine)(function (entity, machineParams) {
+  // console.log('objectFitsPrintableArea', entity, machineParams)
+  return !(0, _isObjectOutsideBounds2.default)(machineParams, entity);
+}, addEntities$, setMachineParams$).tap(function (e) {
+  return console.log('objectFitsPrintableVolume??', e);
+}).multicast();
 
-onViewerReady();
+viewerReady();
 
 // OUTPUTS (sink side effects)
 addEntities$.forEach(function (m) {
-  return onLoadModelSuccess();
+  return modelLoaded(true);
 }); // side effect => dispatch to callback)
-boundsExceeded$.forEach(onBoundsExceeded);
-},{"../common/bounds/isObjectOutsideBounds":189,"../common/camera":190,"../common/controls/controlsStream":191,"../common/controls/orbitControls":192,"../common/interactions/pointerGestures":193,"../common/mobilePlatforms/interface":197,"../common/utils/most/limitFlow":204,"./drawCommands/render":214,"./entityPrep":216,"./loader":218,"./sideEffects/adressBarDriver":220,"./sideEffects/nativeApiDriver":221,"./state":222,"./visualState":223,"most":117,"regl":149}],218:[function(require,module,exports){
+objectFitsPrintableVolume$.forEach(objectFitsPrintableVolume);
+},{"../common/bounds/isObjectOutsideBounds":192,"../common/camera":193,"../common/controls/controlsStream":196,"../common/controls/orbitControls":197,"../common/interactions/elementSizing":198,"../common/interactions/pointerGestures":199,"../common/mobilePlatforms/interface":203,"../common/utils/most/limitFlow":210,"./drawCommands/render":221,"./entityPrep":223,"./loader":225,"./sideEffects/adressBarDriver":227,"./sideEffects/nativeApiDriver":228,"./state":229,"./visualState":230,"most":117,"regl":149}],225:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -18693,7 +28469,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // require("web-streams-polyfill/dist/polyfill.min.js")
 // import 'whatwg-fetch'
 // import { ReadableStream } from "web-streams-polyfill"
-
 var Duplex = require('stream').Duplex;
 var Readable = require('stream').Readable;
 
@@ -18713,7 +28488,7 @@ function supportsStreaming() {
 }
 
 function loadTest(uri) {
-  //console.log(`loading model from: ${uri}`)
+  // console.log(`loading model from: ${uri}`)
   var stlStream = (0, _uscoStlParser2.default)({ useWorker: true });
 
   var debugHelper = new Duplex({
@@ -18755,7 +28530,6 @@ function loadTest(uri) {
         // console.log('SOURCE chunk', data , value, done)
 
         if (done) {
-          // finish()
           end();
         } else {
           push(Buffer(value));
@@ -18774,11 +28548,19 @@ function loadTest(uri) {
         });
       }
 
+      _this.readyData;
+      _this.lenToSend = undefined;
+
       function noStreams() {
         function onLoad(e) {
-          var value = e.target.response;
-          push(Buffer(value));
-          setTimeout(end, 0.0001); // don't call end directly !
+          console.log('onload', e.target.response);
+          var value = Buffer(e.target.response);
+          self.lenToSend = value.byteLength;
+          self.readyData = value;
+
+          push(value);
+          push(null); // DO NOT fire some event, this way value => null are
+          //handled in the correct order
         }
 
         function onError(e) {
@@ -18787,26 +28569,52 @@ function loadTest(uri) {
 
         var xhr = new XMLHttpRequest();
         xhr.responseType = 'arraybuffer';
-        xhr.addEventListener('load', onLoad);
+        xhr.addEventListener('load', onLoad.bind(this));
         xhr.addEventListener('error', onError);
         xhr.open('GET', uri, true);
         xhr.send();
       }
 
       if (supportsStreaming()) {
+        _this.streamMode = true;
         streams();
       } else {
+        _this.streamMode = false;
         noStreams();
       }
-      // if (!this.push(chunk)){
-      // }
       return _this;
     }
 
     _createClass(HttpSourceStream, [{
       key: '_read',
       value: function _read(size) {
-        // console.log('_read')
+        /*console.log('_read', size, this.lenToSend, this)
+        // this.push(this.readyData)
+        // setTimeout(this.end, 1,true) // don't call end directly !
+        let ready = true
+        if (this.streamMode) {
+          return
+        }
+        while(ready) {
+          if (size && this.lenToSend !== undefined && this.lenToSend > 0) {
+            size = Math.min(size, this.readyData.length)
+            const workChunk = this.readyData
+            const chunk = workChunk.slice(0, size)
+            ready = this.push(chunk)
+            this.lenToSend -= size // this.lenToSend//size
+            this.readyData = workChunk.slice(size)
+            console.log('sent', chunk)
+          } else {
+            ready = false
+          }
+          console.log('here')
+          if (this.lenToSend !== undefined && this.lenToSend <= 0) {
+            console.log('done')
+            ready = false
+            // this.emit('end')
+            setTimeout(this.end, 1, true) // don't call end directly !
+          }
+        }*/
         // signal the source that it can start again
       }
     }]);
@@ -18818,18 +28626,16 @@ function loadTest(uri) {
 
   return (0, _create2.default)(function (add, end, error) {
     function streamErrorHandler(_error) {
-      // console.log('error in load stream')
       error(_error);
     }
 
     new HttpSourceStream(uri).on('error', streamErrorHandler).pipe((0, _uscoStlParser2.default)({ useWorker: true })).on('error', streamErrorHandler).pipe((0, _uscoStlParser.concatStream)(function (data) {
       return add(data);
     })).on('error', streamErrorHandler);
-    // FIXME: TODO: add error handling here
   });
 }
 }).call(this,require("buffer").Buffer)
-},{"@most/create":1,"buffer":9,"fetch-readablestream":16,"stream":150,"usco-stl-parser":176}],219:[function(require,module,exports){
+},{"@most/create":1,"buffer":9,"fetch-readablestream":16,"stream":150,"usco-stl-parser":176}],226:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18877,7 +28683,7 @@ function injectNormals(entity) {
   var result = Object.assign({}, entity, { geometry: geometry });
   return result;
 }
-},{"../common/bounds/computeBounds":188,"../common/utils/computeTMatrixFromTransforms":201,"angle-normals":5}],220:[function(require,module,exports){
+},{"../common/bounds/computeBounds":191,"../common/utils/computeTMatrixFromTransforms":206,"angle-normals":5}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18907,7 +28713,7 @@ var adressBarDriver = (0, _create2.default)(function (add, end, error) {
 });
 
 exports.default = adressBarDriver;
-},{"@most/create":1}],221:[function(require,module,exports){
+},{"@most/create":1}],228:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18943,7 +28749,7 @@ function nativeApiDriver(out$) {
     modelUri$: modelUri$
   };
 }
-},{"../../common/utils/most/callBackToStream":203,"../../common/utils/printing/formatRawMachineData":206}],222:[function(require,module,exports){
+},{"../../common/utils/most/callBackToStream":209,"../../common/utils/printing/formatRawMachineData":212}],229:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18978,13 +28784,10 @@ function makeEntitiesModel(actions) {
     });
   }
   function setEntityBoundsStatus(state, input) {
-    console.log('setEntityBoundsStatus');
-    var outOfBoundsColor = [1, 0, 0, 1];
+    //console.log('setEntityBoundsStatus')
     return state.map(function (entity) {
       var outOfBounds = (0, _isObjectOutsideBounds2.default)(input, entity);
-      var color = outOfBounds ? outOfBoundsColor : entity.visuals.color;
       var bounds = Object.assign({}, entity.bounds, { outOfBounds: outOfBounds });
-      //const visuals = Object.assign({}, entity.visuals, {color})
       return Object.assign({}, entity, { bounds: bounds });
     });
   }
@@ -19012,7 +28815,7 @@ function makeState(machine$, entities$) {
   }, [entities$, machine$]);
   return appState$;
 }
-},{"../common/bounds/isObjectOutsideBounds":189,"../common/utils/modelUtils":202,"most":117}],223:[function(require,module,exports){
+},{"../common/bounds/isObjectOutsideBounds":192,"../common/utils/modelUtils":207,"most":117}],230:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19050,11 +28853,14 @@ function makeVisualState(regl, machine$, entities$, camState$) {
     });
   });
 
+  // const outOfBoundsColor = [1., 0.6, 0.16, 1. ]//(red: 255, green: 140, blue: 16
+  // const background = [1,1,1,1]
+
   var outOfBoundsColor = [0.15, 0.15, 0.15, 0.3];
-  var background = [1, 1, 1, 1];
+  var background = [0.96, 0.96, 0.96, 1];
   return (0, _most.combineArray)(function (entities, machine, camera) {
     var view = camera.view;
     return { entities: entities, machine: machine, view: view, camera: camera, background: background, outOfBoundsColor: outOfBoundsColor };
   }, [entitiesWithVisuals$, machineWithVisuals$, camState$]);
 }
-},{"./drawCommands/drawEnclosure":209,"./drawCommands/drawStaticMesh2/index":212,"most":117}]},{},[217]);
+},{"./drawCommands/drawEnclosure":215,"./drawCommands/drawStaticMesh2/index":219,"most":117}]},{},[224]);
