@@ -10,7 +10,10 @@
     "watch": "watchify src/main -o dist/index.js -t [ babelify]",
     "start-dev": "budo src/main/index.js:dist/bundle.js --port=8080 --live -- -t babelify",
     "test-render": "node src/serverSide/launch.js",
-    "host": "http-server -p 8090"
+    "host": "http-server -p 8090",
+    "release-patch": "git checkout master; npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
+    "release-minor": "git checkout master; npm version minor && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
+    "release-major": "git checkout master; npm version major && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
