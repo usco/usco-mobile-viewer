@@ -51,9 +51,10 @@ export default function makeDrawEnclosure (regl, params) {
   // logoTexure.width * logoScale, logoTexure.height * logoScale
   const logoMatrix = model({pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 60, 1], rot: [Math.PI / 2, Math.PI, 0]})
   const logoMesh = getBrandingSvgGeometry(name)
-  // const logoMesh = svgStringAsGeometry(logoImg)
-  const drawLogoMesh = makeDrawStaticMesh(regl, {geometry: logoMesh})
+  if(!logoMesh) console.warn(`no logo found for machine called: '${name}' `)
+  const drawLogoMesh = logoMesh ? makeDrawStaticMesh(regl, {geometry: logoMesh}) : () => {}
 
+  // const logoMesh = svgStringAsGeometry(logoImg)
   //const dissalowedVolumes = machine_disallowed_areas
   //  .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
 
