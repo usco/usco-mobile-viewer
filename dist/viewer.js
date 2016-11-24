@@ -153,7 +153,7 @@
   return index;
 
 }));
-},{"@most/multicast":2,"most":117}],2:[function(require,module,exports){
+},{"@most/multicast":2,"most":116}],2:[function(require,module,exports){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@most/prelude')) :
   typeof define === 'function' && define.amd ? define(['exports', '@most/prelude'], factory) :
@@ -603,98 +603,6 @@ module.exports = function (fn, options) {
 },{}],5:[function(require,module,exports){
 'use strict'
 
-module.exports = angleNormals
-
-function hypot(x, y, z) {
-  return Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2))
-}
-
-function weight(s, r, a) {
-  return Math.atan2(r, (s - a))
-}
-
-function mulAdd(dest, s, x, y, z) {
-  dest[0] += s * x
-  dest[1] += s * y
-  dest[2] += s * z
-}
-
-function angleNormals(cells, positions) {
-  var numVerts = positions.length
-  var numCells = cells.length
-
-  //Allocate normal array
-  var normals = new Array(numVerts)
-  for(var i=0; i<numVerts; ++i) {
-    normals[i] = [0,0,0]
-  }
-
-  //Scan cells, and
-  for(var i=0; i<numCells; ++i) {
-    var cell = cells[i]
-    var a = positions[cell[0]]
-    var b = positions[cell[1]]
-    var c = positions[cell[2]]
-
-    var abx = a[0] - b[0]
-    var aby = a[1] - b[1]
-    var abz = a[2] - b[2]
-    var ab = hypot(abx, aby, abz)
-
-    var bcx = b[0] - c[0]
-    var bcy = b[1] - c[1]
-    var bcz = b[2] - c[2]
-    var bc = hypot(bcx, bcy, bcz)
-
-    var cax = c[0] - a[0]
-    var cay = c[1] - a[1]
-    var caz = c[2] - a[2]
-    var ca = hypot(cax, cay, caz)
-
-    if(Math.min(ab, bc, ca) < 1e-6) {
-      continue
-    }
-
-    var s = 0.5 * (ab + bc + ca)
-    var r = Math.sqrt((s - ab)*(s - bc)*(s - ca)/s)
-
-    var nx = aby * bcz - abz * bcy
-    var ny = abz * bcx - abx * bcz
-    var nz = abx * bcy - aby * bcx
-    var nl = hypot(nx, ny, nz)
-    nx /= nl
-    ny /= nl
-    nz /= nl
-
-    mulAdd(normals[cell[0]], weight(s, r, bc), nx, ny, nz)
-    mulAdd(normals[cell[1]], weight(s, r, ca), nx, ny, nz)
-    mulAdd(normals[cell[2]], weight(s, r, ab), nx, ny, nz)
-  }
-
-  //Normalize all the normals
-  for(var i=0; i<numVerts; ++i) {
-    var n = normals[i]
-    var l = Math.sqrt(
-      Math.pow(n[0], 2) +
-      Math.pow(n[1], 2) +
-      Math.pow(n[2], 2))
-    if(l < 1e-8) {
-      n[0] = 1
-      n[1] = 0
-      n[2] = 0
-      continue
-    }
-    n[0] /= l
-    n[1] /= l
-    n[2] /= l
-  }
-
-  return normals
-}
-
-},{}],6:[function(require,module,exports){
-'use strict'
-
 exports.byteLength = byteLength
 exports.toByteArray = toByteArray
 exports.fromByteArray = fromByteArray
@@ -808,9 +716,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -922,7 +830,7 @@ exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"buffer":9}],9:[function(require,module,exports){
+},{"buffer":8}],8:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -2715,14 +2623,14 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":6,"ieee754":78,"isarray":10}],10:[function(require,module,exports){
+},{"base64-js":5,"ieee754":77,"isarray":9}],9:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (process){
 (function () {
   // Hueristics.
@@ -2737,7 +2645,7 @@ module.exports = Array.isArray || function (arr) {
   detect.isModule = isModule;
 }).call(this);
 }).call(this,require('_process'))
-},{"_process":148}],12:[function(require,module,exports){
+},{"_process":147}],11:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2848,7 +2756,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":80}],13:[function(require,module,exports){
+},{"../../is-buffer/index.js":79}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3152,7 +3060,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3188,7 +3096,7 @@ module.exports = function fastAssign (target) {
   return target;
 };
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3260,10 +3168,10 @@ function supportsXhrResponseType(type) {
   return false;
 }
 
-},{"./fetch":17,"./xhr":20}],16:[function(require,module,exports){
+},{"./fetch":16,"./xhr":19}],15:[function(require,module,exports){
 module.exports = require("./index").default;
 
-},{"./index":18}],17:[function(require,module,exports){
+},{"./index":17}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3284,7 +3192,7 @@ function fetchRequest(url, options) {
     };
   });
 }
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3312,7 +3220,7 @@ function fetchStream(url) {
 // override this function to delegate to an alternative transport function selection
 // strategy; useful when testing.
 fetchStream.transportFactory = _defaultTransportFactory2.default;
-},{"./defaultTransportFactory":15}],19:[function(require,module,exports){
+},{"./defaultTransportFactory":14}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3418,7 +3326,7 @@ function makeIterator(items) {
     return this;
   });
 }
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3561,7 +3469,7 @@ function parseResposneHeaders(str) {
   }
   return hdrs;
 }
-},{"./polyfill/Headers":19}],21:[function(require,module,exports){
+},{"./polyfill/Headers":18}],20:[function(require,module,exports){
 module.exports = adjoint;
 
 /**
@@ -3595,7 +3503,7 @@ function adjoint(out, a) {
     out[15] =  (a00 * (a11 * a22 - a12 * a21) - a10 * (a01 * a22 - a02 * a21) + a20 * (a01 * a12 - a02 * a11));
     return out;
 };
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = clone;
 
 /**
@@ -3624,7 +3532,7 @@ function clone(a) {
     out[15] = a[15];
     return out;
 };
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = copy;
 
 /**
@@ -3653,7 +3561,7 @@ function copy(out, a) {
     out[15] = a[15];
     return out;
 };
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = create;
 
 /**
@@ -3681,7 +3589,7 @@ function create() {
     out[15] = 1;
     return out;
 };
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = determinant;
 
 /**
@@ -3712,7 +3620,7 @@ function determinant(a) {
     // Calculate the determinant
     return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 };
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = fromQuat;
 
 /**
@@ -3760,7 +3668,7 @@ function fromQuat(out, q) {
 
     return out;
 };
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = fromRotationTranslation;
 
 /**
@@ -3814,7 +3722,7 @@ function fromRotationTranslation(out, q, v) {
     
     return out;
 };
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = frustum;
 
 /**
@@ -3851,7 +3759,7 @@ function frustum(out, left, right, bottom, top, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = identity;
 
 /**
@@ -3879,7 +3787,7 @@ function identity(out) {
     out[15] = 1;
     return out;
 };
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = {
   create: require('./create')
   , clone: require('./clone')
@@ -3905,7 +3813,7 @@ module.exports = {
   , lookAt: require('./lookAt')
   , str: require('./str')
 }
-},{"./adjoint":21,"./clone":22,"./copy":23,"./create":24,"./determinant":25,"./fromQuat":26,"./fromRotationTranslation":27,"./frustum":28,"./identity":29,"./invert":31,"./lookAt":32,"./multiply":33,"./ortho":34,"./perspective":35,"./perspectiveFromFieldOfView":36,"./rotate":37,"./rotateX":38,"./rotateY":39,"./rotateZ":40,"./scale":41,"./str":42,"./translate":43,"./transpose":44}],31:[function(require,module,exports){
+},{"./adjoint":20,"./clone":21,"./copy":22,"./create":23,"./determinant":24,"./fromQuat":25,"./fromRotationTranslation":26,"./frustum":27,"./identity":28,"./invert":30,"./lookAt":31,"./multiply":32,"./ortho":33,"./perspective":34,"./perspectiveFromFieldOfView":35,"./rotate":36,"./rotateX":37,"./rotateY":38,"./rotateZ":39,"./scale":40,"./str":41,"./translate":42,"./transpose":43}],30:[function(require,module,exports){
 module.exports = invert;
 
 /**
@@ -3961,7 +3869,7 @@ function invert(out, a) {
 
     return out;
 };
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var identity = require('./identity');
 
 module.exports = lookAt;
@@ -4052,7 +3960,7 @@ function lookAt(out, eye, center, up) {
 
     return out;
 };
-},{"./identity":29}],33:[function(require,module,exports){
+},{"./identity":28}],32:[function(require,module,exports){
 module.exports = multiply;
 
 /**
@@ -4095,7 +4003,7 @@ function multiply(out, a, b) {
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
     return out;
 };
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = ortho;
 
 /**
@@ -4132,7 +4040,7 @@ function ortho(out, left, right, bottom, top, near, far) {
     out[15] = 1;
     return out;
 };
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = perspective;
 
 /**
@@ -4166,7 +4074,7 @@ function perspective(out, fovy, aspect, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = perspectiveFromFieldOfView;
 
 /**
@@ -4208,7 +4116,7 @@ function perspectiveFromFieldOfView(out, fov, near, far) {
 }
 
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = rotate;
 
 /**
@@ -4273,7 +4181,7 @@ function rotate(out, a, rad, axis) {
     }
     return out;
 };
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = rotateX;
 
 /**
@@ -4318,7 +4226,7 @@ function rotateX(out, a, rad) {
     out[11] = a23 * c - a13 * s;
     return out;
 };
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = rotateY;
 
 /**
@@ -4363,7 +4271,7 @@ function rotateY(out, a, rad) {
     out[11] = a03 * s + a23 * c;
     return out;
 };
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = rotateZ;
 
 /**
@@ -4408,7 +4316,7 @@ function rotateZ(out, a, rad) {
     out[7] = a13 * c - a03 * s;
     return out;
 };
-},{}],41:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = scale;
 
 /**
@@ -4440,7 +4348,7 @@ function scale(out, a, v) {
     out[15] = a[15];
     return out;
 };
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = str;
 
 /**
@@ -4455,7 +4363,7 @@ function str(a) {
                     a[8] + ', ' + a[9] + ', ' + a[10] + ', ' + a[11] + ', ' + 
                     a[12] + ', ' + a[13] + ', ' + a[14] + ', ' + a[15] + ')';
 };
-},{}],43:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = translate;
 
 /**
@@ -4494,7 +4402,7 @@ function translate(out, a, v) {
 
     return out;
 };
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = transpose;
 
 /**
@@ -4544,7 +4452,7 @@ function transpose(out, a) {
     
     return out;
 };
-},{}],45:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = add;
 
 /**
@@ -4561,7 +4469,7 @@ function add(out, a, b) {
     out[2] = a[2] + b[2]
     return out
 }
-},{}],46:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = angle
 
 var fromValues = require('./fromValues')
@@ -4590,7 +4498,7 @@ function angle(a, b) {
     }     
 }
 
-},{"./dot":53,"./fromValues":55,"./normalize":64}],47:[function(require,module,exports){
+},{"./dot":52,"./fromValues":54,"./normalize":63}],46:[function(require,module,exports){
 module.exports = clone;
 
 /**
@@ -4606,7 +4514,7 @@ function clone(a) {
     out[2] = a[2]
     return out
 }
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = copy;
 
 /**
@@ -4622,7 +4530,7 @@ function copy(out, a) {
     out[2] = a[2]
     return out
 }
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = create;
 
 /**
@@ -4637,7 +4545,7 @@ function create() {
     out[2] = 0
     return out
 }
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = cross;
 
 /**
@@ -4657,7 +4565,7 @@ function cross(out, a, b) {
     out[2] = ax * by - ay * bx
     return out
 }
-},{}],51:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = distance;
 
 /**
@@ -4673,7 +4581,7 @@ function distance(a, b) {
         z = b[2] - a[2]
     return Math.sqrt(x*x + y*y + z*z)
 }
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = divide;
 
 /**
@@ -4690,7 +4598,7 @@ function divide(out, a, b) {
     out[2] = a[2] / b[2]
     return out
 }
-},{}],53:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = dot;
 
 /**
@@ -4703,7 +4611,7 @@ module.exports = dot;
 function dot(a, b) {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 }
-},{}],54:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 module.exports = forEach;
 
 var vec = require('./create')()
@@ -4748,7 +4656,7 @@ function forEach(a, stride, offset, count, fn, arg) {
         
         return a
 }
-},{"./create":49}],55:[function(require,module,exports){
+},{"./create":48}],54:[function(require,module,exports){
 module.exports = fromValues;
 
 /**
@@ -4766,7 +4674,7 @@ function fromValues(x, y, z) {
     out[2] = z
     return out
 }
-},{}],56:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = {
   create: require('./create')
   , clone: require('./clone')
@@ -4801,7 +4709,7 @@ module.exports = {
   , rotateZ: require('./rotateZ')
   , forEach: require('./forEach')
 }
-},{"./add":45,"./angle":46,"./clone":47,"./copy":48,"./create":49,"./cross":50,"./distance":51,"./divide":52,"./dot":53,"./forEach":54,"./fromValues":55,"./inverse":57,"./length":58,"./lerp":59,"./max":60,"./min":61,"./multiply":62,"./negate":63,"./normalize":64,"./random":65,"./rotateX":66,"./rotateY":67,"./rotateZ":68,"./scale":69,"./scaleAndAdd":70,"./set":71,"./squaredDistance":72,"./squaredLength":73,"./subtract":74,"./transformMat3":75,"./transformMat4":76,"./transformQuat":77}],57:[function(require,module,exports){
+},{"./add":44,"./angle":45,"./clone":46,"./copy":47,"./create":48,"./cross":49,"./distance":50,"./divide":51,"./dot":52,"./forEach":53,"./fromValues":54,"./inverse":56,"./length":57,"./lerp":58,"./max":59,"./min":60,"./multiply":61,"./negate":62,"./normalize":63,"./random":64,"./rotateX":65,"./rotateY":66,"./rotateZ":67,"./scale":68,"./scaleAndAdd":69,"./set":70,"./squaredDistance":71,"./squaredLength":72,"./subtract":73,"./transformMat3":74,"./transformMat4":75,"./transformQuat":76}],56:[function(require,module,exports){
 module.exports = inverse;
 
 /**
@@ -4817,7 +4725,7 @@ function inverse(out, a) {
   out[2] = 1.0 / a[2]
   return out
 }
-},{}],58:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = length;
 
 /**
@@ -4832,7 +4740,7 @@ function length(a) {
         z = a[2]
     return Math.sqrt(x*x + y*y + z*z)
 }
-},{}],59:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = lerp;
 
 /**
@@ -4853,7 +4761,7 @@ function lerp(out, a, b, t) {
     out[2] = az + t * (b[2] - az)
     return out
 }
-},{}],60:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = max;
 
 /**
@@ -4870,7 +4778,7 @@ function max(out, a, b) {
     out[2] = Math.max(a[2], b[2])
     return out
 }
-},{}],61:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = min;
 
 /**
@@ -4887,7 +4795,7 @@ function min(out, a, b) {
     out[2] = Math.min(a[2], b[2])
     return out
 }
-},{}],62:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports = multiply;
 
 /**
@@ -4904,7 +4812,7 @@ function multiply(out, a, b) {
     out[2] = a[2] * b[2]
     return out
 }
-},{}],63:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports = negate;
 
 /**
@@ -4920,7 +4828,7 @@ function negate(out, a) {
     out[2] = -a[2]
     return out
 }
-},{}],64:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = normalize;
 
 /**
@@ -4944,7 +4852,7 @@ function normalize(out, a) {
     }
     return out
 }
-},{}],65:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = random;
 
 /**
@@ -4966,7 +4874,7 @@ function random(out, scale) {
     out[2] = z * scale
     return out
 }
-},{}],66:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 module.exports = rotateX;
 
 /**
@@ -4996,7 +4904,7 @@ function rotateX(out, a, b, c){
 
     return out
 }
-},{}],67:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports = rotateY;
 
 /**
@@ -5026,7 +4934,7 @@ function rotateY(out, a, b, c){
   
     return out
 }
-},{}],68:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports = rotateZ;
 
 /**
@@ -5056,7 +4964,7 @@ function rotateZ(out, a, b, c){
   
     return out
 }
-},{}],69:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = scale;
 
 /**
@@ -5073,7 +4981,7 @@ function scale(out, a, b) {
     out[2] = a[2] * b
     return out
 }
-},{}],70:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 module.exports = scaleAndAdd;
 
 /**
@@ -5091,7 +4999,7 @@ function scaleAndAdd(out, a, b, scale) {
     out[2] = a[2] + (b[2] * scale)
     return out
 }
-},{}],71:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 module.exports = set;
 
 /**
@@ -5109,7 +5017,7 @@ function set(out, x, y, z) {
     out[2] = z
     return out
 }
-},{}],72:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 module.exports = squaredDistance;
 
 /**
@@ -5125,7 +5033,7 @@ function squaredDistance(a, b) {
         z = b[2] - a[2]
     return x*x + y*y + z*z
 }
-},{}],73:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports = squaredLength;
 
 /**
@@ -5140,7 +5048,7 @@ function squaredLength(a) {
         z = a[2]
     return x*x + y*y + z*z
 }
-},{}],74:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 module.exports = subtract;
 
 /**
@@ -5157,7 +5065,7 @@ function subtract(out, a, b) {
     out[2] = a[2] - b[2]
     return out
 }
-},{}],75:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 module.exports = transformMat3;
 
 /**
@@ -5175,7 +5083,7 @@ function transformMat3(out, a, m) {
     out[2] = x * m[2] + y * m[5] + z * m[8]
     return out
 }
-},{}],76:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 module.exports = transformMat4;
 
 /**
@@ -5196,7 +5104,7 @@ function transformMat4(out, a, m) {
     out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
     return out
 }
-},{}],77:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 module.exports = transformQuat;
 
 /**
@@ -5225,7 +5133,7 @@ function transformQuat(out, a, q) {
     out[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx
     return out
 }
-},{}],78:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -5311,7 +5219,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],79:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5336,7 +5244,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -5359,7 +5267,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],81:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5441,7 +5349,7 @@ LinkedList.prototype.dispose = function () {
 
   return Promise.all(promises);
 };
-},{}],82:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5455,7 +5363,7 @@ exports.isPromise = isPromise;
 function isPromise(p) {
   return p !== null && typeof p === 'object' && typeof p.then === 'function';
 }
-},{}],83:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5524,7 +5432,7 @@ function copy(src, srcIndex, dst, dstIndex, len) {
     src[j + srcIndex] = void 0;
   }
 }
-},{}],84:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5538,7 +5446,7 @@ exports.default = Stream;
 function Stream(source) {
   this.source = source;
 }
-},{}],85:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5650,7 +5558,7 @@ ReduceSink.prototype.error = _Pipe2.default.prototype.error;
 ReduceSink.prototype.end = function (t) {
   this.sink.end(t, this.value);
 };
-},{"../Stream":84,"../disposable/dispose":112,"../runSource":123,"../scheduler/PropagateTask":125,"../sink/Pipe":132}],86:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../runSource":122,"../scheduler/PropagateTask":124,"../sink/Pipe":131}],85:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5679,7 +5587,7 @@ var _prelude = require('@most/prelude');
 function ap(fs, xs) {
   return (0, _combine.combine)(_prelude.apply, fs, xs);
 }
-},{"./combine":88,"@most/prelude":3}],87:[function(require,module,exports){
+},{"./combine":87,"@most/prelude":3}],86:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5716,7 +5624,7 @@ function concat(left, right) {
     return right;
   }, left);
 }
-},{"../source/core":136,"./continueWith":90}],88:[function(require,module,exports){
+},{"../source/core":135,"./continueWith":89}],87:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5867,7 +5775,7 @@ CombineSink.prototype.end = function (t, indexedValue) {
     this.sink.end(t, indexedValue.value);
   }
 };
-},{"../Stream":84,"../disposable/dispose":112,"../invoke":118,"../sink/IndexSink":131,"../sink/Pipe":132,"../source/core":136,"./transform":108,"@most/prelude":3}],89:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../invoke":117,"../sink/IndexSink":130,"../sink/Pipe":131,"../source/core":135,"./transform":107,"@most/prelude":3}],88:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5893,7 +5801,7 @@ function concatMap(f, stream) {
 } /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
-},{"./mergeConcurrently":98}],90:[function(require,module,exports){
+},{"./mergeConcurrently":97}],89:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5974,7 +5882,7 @@ ContinueWithSink.prototype.dispose = function () {
   this.active = false;
   return this.disposable.dispose();
 };
-},{"../Stream":84,"../disposable/dispose":112,"../sink/Pipe":132}],91:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../sink/Pipe":131}],90:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6047,7 +5955,7 @@ DelaySink.prototype.end = function (t, x) {
 };
 
 DelaySink.prototype.error = _Pipe2.default.prototype.error;
-},{"../Stream":84,"../disposable/dispose":112,"../scheduler/PropagateTask":125,"../sink/Pipe":132}],92:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../scheduler/PropagateTask":124,"../sink/Pipe":131}],91:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6164,7 +6072,7 @@ RecoverWithSink.prototype._continue = function (f, x, sink) {
 RecoverWithSink.prototype.dispose = function () {
   return this.disposable.dispose();
 };
-},{"../Stream":84,"../disposable/dispose":112,"../scheduler/PropagateTask":125,"../sink/SafeSink":133,"../source/tryEvent":144}],93:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../scheduler/PropagateTask":124,"../sink/SafeSink":132,"../source/tryEvent":143}],92:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6254,7 +6162,7 @@ SkipRepeatsSink.prototype.event = function (t, x) {
 function same(a, b) {
   return a === b;
 }
-},{"../Stream":84,"../fusion/Filter":114,"../sink/Pipe":132}],94:[function(require,module,exports){
+},{"../Stream":83,"../fusion/Filter":113,"../sink/Pipe":131}],93:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6289,7 +6197,7 @@ function flatMap(f, stream) {
 function join(stream) {
   return (0, _mergeConcurrently.mergeConcurrently)(Infinity, stream);
 }
-},{"./mergeConcurrently":98}],95:[function(require,module,exports){
+},{"./mergeConcurrently":97}],94:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6434,7 +6342,7 @@ DebounceSink.prototype._clearTimer = function () {
   this.timer = null;
   return true;
 };
-},{"../Stream":84,"../disposable/dispose":112,"../fusion/Map":116,"../scheduler/PropagateTask":125,"../sink/Pipe":132}],96:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../fusion/Map":115,"../scheduler/PropagateTask":124,"../sink/Pipe":131}],95:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6498,7 +6406,7 @@ LoopSink.prototype.event = function (t, x) {
 LoopSink.prototype.end = function (t) {
   this.sink.end(t, this.seed);
 };
-},{"../Stream":84,"../sink/Pipe":132}],97:[function(require,module,exports){
+},{"../Stream":83,"../sink/Pipe":131}],96:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6617,7 +6525,7 @@ MergeSink.prototype.end = function (t, indexedValue) {
     this.sink.end(t, indexedValue.value);
   }
 };
-},{"../Stream":84,"../disposable/dispose":112,"../sink/IndexSink":131,"../sink/Pipe":132,"../source/core":136,"@most/prelude":3}],98:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../sink/IndexSink":130,"../sink/Pipe":131,"../source/core":135,"@most/prelude":3}],97:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6764,7 +6672,7 @@ Inner.prototype.error = function (t, e) {
 Inner.prototype.dispose = function () {
   return this.disposable.dispose();
 };
-},{"../LinkedList":81,"../Stream":84,"../disposable/dispose":112,"@most/prelude":3}],99:[function(require,module,exports){
+},{"../LinkedList":80,"../Stream":83,"../disposable/dispose":111,"@most/prelude":3}],98:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6802,7 +6710,7 @@ function observe(f, stream) {
 function drain(stream) {
   return (0, _runSource.withDefaultScheduler)(stream.source);
 }
-},{"../runSource":123,"./transform":108}],100:[function(require,module,exports){
+},{"../runSource":122,"./transform":107}],99:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6906,7 +6814,7 @@ AwaitSink.prototype._event = function (promise) {
 AwaitSink.prototype._end = function (x) {
   return Promise.resolve(x).then(this._endBound);
 };
-},{"../Stream":84,"../fatalError":113,"../source/core":136}],101:[function(require,module,exports){
+},{"../Stream":83,"../fatalError":112,"../source/core":135}],100:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7043,7 +6951,7 @@ function hasValue(hold) {
 function getValue(hold) {
   return hold.value;
 }
-},{"../Stream":84,"../disposable/dispose":112,"../invoke":118,"../sink/Pipe":132,"@most/prelude":3}],102:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../invoke":117,"../sink/Pipe":131,"@most/prelude":3}],101:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7244,7 +7152,7 @@ SkipWhileSink.prototype.event = function (t, x) {
 
   this.sink.event(t, x);
 };
-},{"../Stream":84,"../disposable/dispose":112,"../fusion/Map":116,"../sink/Pipe":132,"../source/core":136}],103:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../fusion/Map":115,"../sink/Pipe":131,"../source/core":135}],102:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7373,7 +7281,7 @@ Segment.prototype._dispose = function (t) {
   this.max = t;
   dispose.tryDispose(t, this.disposable, this.sink);
 };
-},{"../Stream":84,"../disposable/dispose":112}],104:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111}],103:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7387,7 +7295,7 @@ exports.thru = thru;
 function thru(f, stream) {
   return f(stream);
 }
-},{}],105:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7522,7 +7430,7 @@ UpperBound.prototype.dispose = function () {
 };
 
 function noop() {}
-},{"../Stream":84,"../combinator/flatMap":94,"../disposable/dispose":112,"../sink/Pipe":132}],106:[function(require,module,exports){
+},{"../Stream":83,"../combinator/flatMap":93,"../disposable/dispose":111,"../sink/Pipe":131}],105:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7566,7 +7474,7 @@ TimestampSink.prototype.error = _Pipe2.default.prototype.error;
 TimestampSink.prototype.event = function (t, x) {
   this.sink.event(t, { time: t, value: x });
 };
-},{"../Stream":84,"../sink/Pipe":132}],107:[function(require,module,exports){
+},{"../Stream":83,"../sink/Pipe":131}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7693,7 +7601,7 @@ LegacyTxAdapter.prototype.isReduced = function (x) {
 LegacyTxAdapter.prototype.getResult = function (x) {
   return x.value;
 };
-},{"../Stream":84}],108:[function(require,module,exports){
+},{"../Stream":83}],107:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7776,7 +7684,7 @@ TapSink.prototype.event = function (t, x) {
   f(x);
   this.sink.event(t, x);
 };
-},{"../Stream":84,"../fusion/Map":116,"../sink/Pipe":132}],109:[function(require,module,exports){
+},{"../Stream":83,"../fusion/Map":115,"../sink/Pipe":131}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7945,7 +7853,7 @@ function ready(buffers) {
   }
   return true;
 }
-},{"../Queue":83,"../Stream":84,"../disposable/dispose":112,"../invoke":118,"../sink/IndexSink":131,"../sink/Pipe":132,"../source/core":136,"./transform":108,"@most/prelude":3}],110:[function(require,module,exports){
+},{"../Queue":82,"../Stream":83,"../disposable/dispose":111,"../invoke":117,"../sink/IndexSink":130,"../sink/Pipe":131,"../source/core":135,"./transform":107,"@most/prelude":3}],109:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7970,7 +7878,7 @@ function Disposable(dispose, data) {
 Disposable.prototype.dispose = function () {
   return this._dispose(this._data);
 };
-},{}],111:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8017,7 +7925,7 @@ SettableDisposable.prototype.dispose = function () {
 
   return this.result;
 };
-},{}],112:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8160,7 +8068,7 @@ function disposeMemoized(memoized) {
 function memoized(disposable) {
   return { disposed: false, disposable: disposable, value: void 0 };
 }
-},{"../Promise":82,"./Disposable":110,"./SettableDisposable":111,"@most/prelude":3}],113:[function(require,module,exports){
+},{"../Promise":81,"./Disposable":109,"./SettableDisposable":110,"@most/prelude":3}],112:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8176,7 +8084,7 @@ function fatalError(e) {
     throw e;
   }, 0);
 }
-},{}],114:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8235,7 +8143,7 @@ function and(p, q) {
     return p(x) && q(x);
   };
 }
-},{"../sink/Pipe":132}],115:[function(require,module,exports){
+},{"../sink/Pipe":131}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8275,7 +8183,7 @@ FilterMapSink.prototype.event = function (t, x) {
 
 FilterMapSink.prototype.end = _Pipe2.default.prototype.end;
 FilterMapSink.prototype.error = _Pipe2.default.prototype.error;
-},{"../sink/Pipe":132}],116:[function(require,module,exports){
+},{"../sink/Pipe":131}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8348,7 +8256,7 @@ MapSink.prototype.event = function (t, x) {
   var f = this.f;
   this.sink.event(t, f(x));
 };
-},{"../sink/Pipe":132,"./Filter":114,"./FilterMap":115,"@most/prelude":3}],117:[function(require,module,exports){
+},{"../sink/Pipe":131,"./Filter":113,"./FilterMap":114,"@most/prelude":3}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9125,7 +9033,7 @@ exports.multicast = _multicast2.default;
 _Stream2.default.prototype.multicast = function () {
   return (0, _multicast2.default)(this);
 };
-},{"./Stream":84,"./combinator/accumulate":85,"./combinator/applicative":86,"./combinator/build":87,"./combinator/combine":88,"./combinator/concatMap":89,"./combinator/continueWith":90,"./combinator/delay":91,"./combinator/errors":92,"./combinator/filter":93,"./combinator/flatMap":94,"./combinator/limit":95,"./combinator/loop":96,"./combinator/merge":97,"./combinator/mergeConcurrently":98,"./combinator/observe":99,"./combinator/promises":100,"./combinator/sample":101,"./combinator/slice":102,"./combinator/switch":103,"./combinator/thru":104,"./combinator/timeslice":105,"./combinator/timestamp":106,"./combinator/transduce":107,"./combinator/transform":108,"./combinator/zip":109,"./observable/subscribe":122,"./source/core":136,"./source/from":137,"./source/fromEvent":139,"./source/generate":141,"./source/iterate":142,"./source/periodic":143,"./source/unfold":145,"@most/multicast":2,"@most/prelude":3,"symbol-observable":164}],118:[function(require,module,exports){
+},{"./Stream":83,"./combinator/accumulate":84,"./combinator/applicative":85,"./combinator/build":86,"./combinator/combine":87,"./combinator/concatMap":88,"./combinator/continueWith":89,"./combinator/delay":90,"./combinator/errors":91,"./combinator/filter":92,"./combinator/flatMap":93,"./combinator/limit":94,"./combinator/loop":95,"./combinator/merge":96,"./combinator/mergeConcurrently":97,"./combinator/observe":98,"./combinator/promises":99,"./combinator/sample":100,"./combinator/slice":101,"./combinator/switch":102,"./combinator/thru":103,"./combinator/timeslice":104,"./combinator/timestamp":105,"./combinator/transduce":106,"./combinator/transform":107,"./combinator/zip":108,"./observable/subscribe":121,"./source/core":135,"./source/from":136,"./source/fromEvent":138,"./source/generate":140,"./source/iterate":141,"./source/periodic":142,"./source/unfold":144,"@most/multicast":2,"@most/prelude":3,"symbol-observable":163}],117:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9155,7 +9063,7 @@ function invoke(f, args) {
       return f.apply(void 0, args);
   }
 }
-},{}],119:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9190,7 +9098,7 @@ function makeIterable(f, o) {
   o[iteratorSymbol] = f;
   return o;
 }
-},{}],120:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9255,7 +9163,7 @@ SubscriberSink.prototype.error = function (e) {
 function unsubscribe(subscription) {
   return subscription.unsubscribe();
 }
-},{"../Stream":84,"../disposable/dispose":112}],121:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9287,7 +9195,7 @@ function getObservable(o) {
 } /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
-},{"symbol-observable":164}],122:[function(require,module,exports){
+},{"symbol-observable":163}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9369,7 +9277,7 @@ function doDispose(fatal, subscriber, complete, error, disposable, x) {
     }
   }).catch(fatal);
 }
-},{"../disposable/dispose":112,"../fatalError":113,"../scheduler/defaultScheduler":129}],123:[function(require,module,exports){
+},{"../disposable/dispose":111,"../fatalError":112,"../scheduler/defaultScheduler":128}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9438,7 +9346,7 @@ function disposeThen(end, error, disposable, x) {
     end(x);
   }, error);
 }
-},{"./disposable/dispose":112,"./scheduler/defaultScheduler":129}],124:[function(require,module,exports){
+},{"./disposable/dispose":111,"./scheduler/defaultScheduler":128}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9486,7 +9394,7 @@ function runAsap(f) {
   (0, _task.defer)(task);
   return task;
 }
-},{"../task":146}],125:[function(require,module,exports){
+},{"../task":145}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9550,7 +9458,7 @@ function emit(t, x, sink) {
 function end(t, x, sink) {
   sink.end(t, x);
 }
-},{"../fatalError":113}],126:[function(require,module,exports){
+},{"../fatalError":112}],125:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9581,7 +9489,7 @@ ScheduledTask.prototype.dispose = function () {
   this.scheduler.cancel(this);
   return this.task.dispose();
 };
-},{}],127:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9691,7 +9599,7 @@ Scheduler.prototype._runReadyTasks = function (now) {
   this.timeline.runTasks(now, _task.runTask);
   this._scheduleNextRun(this.now());
 };
-},{"../task":146,"./ScheduledTask":126}],128:[function(require,module,exports){
+},{"../task":145,"./ScheduledTask":125}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9833,7 +9741,7 @@ function binarySearch(t, sortedArray) {
 function newTimeslot(t, events) {
   return { time: t, events: events };
 }
-},{"@most/prelude":3}],129:[function(require,module,exports){
+},{"@most/prelude":3}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9859,7 +9767,7 @@ var defaultScheduler = new _Scheduler2.default(new _ClockTimer2.default(), new _
 /** @author John Hann */
 
 exports.default = defaultScheduler;
-},{"./ClockTimer":124,"./Scheduler":127,"./Timeline":128}],130:[function(require,module,exports){
+},{"./ClockTimer":123,"./Scheduler":126,"./Timeline":127}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9959,7 +9867,7 @@ ErrorTask.prototype.run = function () {
 ErrorTask.prototype.error = function (e) {
   throw e;
 };
-},{"../task":146}],131:[function(require,module,exports){
+},{"../task":145}],130:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9999,7 +9907,7 @@ IndexSink.prototype.end = function (t, x) {
 };
 
 IndexSink.prototype.error = _Pipe2.default.prototype.error;
-},{"./Pipe":132}],132:[function(require,module,exports){
+},{"./Pipe":131}],131:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10031,7 +9939,7 @@ Pipe.prototype.end = function (t, x) {
 Pipe.prototype.error = function (t, e) {
   return this.sink.error(t, e);
 };
-},{}],133:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10071,7 +9979,7 @@ SafeSink.prototype.disable = function () {
   this.active = false;
   return this.sink;
 };
-},{}],134:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10134,7 +10042,7 @@ function disposeEventEmitter(info) {
   var target = info.target;
   target.source.removeListener(target.event, info.addEvent);
 }
-},{"../disposable/dispose":112,"../sink/DeferredSink":130,"./tryEvent":144}],135:[function(require,module,exports){
+},{"../disposable/dispose":111,"../sink/DeferredSink":129,"./tryEvent":143}],134:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10176,7 +10084,7 @@ function disposeEventTarget(info) {
   var target = info.target;
   target.source.removeEventListener(target.event, info.addEvent, target.capture);
 }
-},{"../disposable/dispose":112,"./tryEvent":144}],136:[function(require,module,exports){
+},{"../disposable/dispose":111,"./tryEvent":143}],135:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10264,7 +10172,7 @@ NeverSource.prototype.run = function () {
 };
 
 var NEVER = new _Stream2.default(new NeverSource());
-},{"../Stream":84,"../disposable/dispose":112,"../scheduler/PropagateTask":125}],137:[function(require,module,exports){
+},{"../Stream":83,"../disposable/dispose":111,"../scheduler/PropagateTask":124}],136:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10315,7 +10223,7 @@ function from(a) {
 } /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
-},{"../Stream":84,"../iterable":119,"../observable/fromObservable":120,"../observable/getObservable":121,"./fromArray":138,"./fromIterable":140,"@most/prelude":3}],138:[function(require,module,exports){
+},{"../Stream":83,"../iterable":118,"../observable/fromObservable":119,"../observable/getObservable":120,"./fromArray":137,"./fromIterable":139,"@most/prelude":3}],137:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10360,7 +10268,7 @@ function runProducer(t, array, sink) {
     sink.end(t);
   }
 }
-},{"../Stream":84,"../scheduler/PropagateTask":125}],139:[function(require,module,exports){
+},{"../Stream":83,"../scheduler/PropagateTask":124}],138:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10411,7 +10319,7 @@ function fromEvent(event, source, capture) {
 } /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
-},{"../Stream":84,"./EventEmitterSource":134,"./EventTargetSource":135}],140:[function(require,module,exports){
+},{"../Stream":83,"./EventEmitterSource":133,"./EventTargetSource":134}],139:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10466,7 +10374,7 @@ function runProducer(t, producer, sink) {
 
   producer.scheduler.asap(producer.task);
 }
-},{"../Stream":84,"../iterable":119,"../scheduler/PropagateTask":125}],141:[function(require,module,exports){
+},{"../Stream":83,"../iterable":118,"../scheduler/PropagateTask":124}],140:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10551,7 +10459,7 @@ function error(generate, e) {
 Generate.prototype.dispose = function () {
   this.active = false;
 };
-},{"../Stream":84,"@most/prelude":3}],142:[function(require,module,exports){
+},{"../Stream":83,"@most/prelude":3}],141:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10627,7 +10535,7 @@ function stepIterate(iterate, x) {
 function continueIterate(iterate, x) {
   return !iterate.active ? iterate.value : stepIterate(iterate, x);
 }
-},{"../Stream":84}],143:[function(require,module,exports){
+},{"../Stream":83}],142:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10667,7 +10575,7 @@ function Periodic(period, value) {
 Periodic.prototype.run = function (sink, scheduler) {
   return scheduler.periodic(this.period, _PropagateTask2.default.event(this.value, sink));
 };
-},{"../Stream":84,"../scheduler/PropagateTask":125}],144:[function(require,module,exports){
+},{"../Stream":83,"../scheduler/PropagateTask":124}],143:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10694,7 +10602,7 @@ function tryEnd(t, x, sink) {
     sink.error(t, e);
   }
 }
-},{}],145:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10775,7 +10683,7 @@ function continueUnfold(unfold, tuple) {
   }
   return stepUnfold(unfold, tuple.seed);
 }
-},{"../Stream":84}],146:[function(require,module,exports){
+},{"../Stream":83}],145:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10798,7 +10706,7 @@ function runTask(task) {
     return task.error(e);
   }
 }
-},{}],147:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -10845,7 +10753,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":148}],148:[function(require,module,exports){
+},{"_process":147}],147:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -11027,7 +10935,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],149:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -20532,7 +20440,7 @@ return wrapREGL;
 })));
 
 
-},{}],150:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -20661,12 +20569,12 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":13,"inherits":79,"readable-stream/duplex.js":152,"readable-stream/passthrough.js":159,"readable-stream/readable.js":160,"readable-stream/transform.js":161,"readable-stream/writable.js":162}],151:[function(require,module,exports){
-arguments[4][10][0].apply(exports,arguments)
-},{"dup":10}],152:[function(require,module,exports){
+},{"events":12,"inherits":78,"readable-stream/duplex.js":151,"readable-stream/passthrough.js":158,"readable-stream/readable.js":159,"readable-stream/transform.js":160,"readable-stream/writable.js":161}],150:[function(require,module,exports){
+arguments[4][9][0].apply(exports,arguments)
+},{"dup":9}],151:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":153}],153:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":152}],152:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -20742,7 +20650,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":155,"./_stream_writable":157,"core-util-is":12,"inherits":79,"process-nextick-args":147}],154:[function(require,module,exports){
+},{"./_stream_readable":154,"./_stream_writable":156,"core-util-is":11,"inherits":78,"process-nextick-args":146}],153:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -20769,7 +20677,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":156,"core-util-is":12,"inherits":79}],155:[function(require,module,exports){
+},{"./_stream_transform":155,"core-util-is":11,"inherits":78}],154:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -21709,7 +21617,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":153,"./internal/streams/BufferList":158,"_process":148,"buffer":9,"buffer-shims":8,"core-util-is":12,"events":13,"inherits":79,"isarray":151,"process-nextick-args":147,"string_decoder/":163,"util":7}],156:[function(require,module,exports){
+},{"./_stream_duplex":152,"./internal/streams/BufferList":157,"_process":147,"buffer":8,"buffer-shims":7,"core-util-is":11,"events":12,"inherits":78,"isarray":150,"process-nextick-args":146,"string_decoder/":162,"util":6}],155:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -21890,7 +21798,7 @@ function done(stream, er) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":153,"core-util-is":12,"inherits":79}],157:[function(require,module,exports){
+},{"./_stream_duplex":152,"core-util-is":11,"inherits":78}],156:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -22419,7 +22327,7 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":153,"_process":148,"buffer":9,"buffer-shims":8,"core-util-is":12,"events":13,"inherits":79,"process-nextick-args":147,"util-deprecate":181}],158:[function(require,module,exports){
+},{"./_stream_duplex":152,"_process":147,"buffer":8,"buffer-shims":7,"core-util-is":11,"events":12,"inherits":78,"process-nextick-args":146,"util-deprecate":180}],157:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('buffer').Buffer;
@@ -22484,10 +22392,10 @@ BufferList.prototype.concat = function (n) {
   }
   return ret;
 };
-},{"buffer":9,"buffer-shims":8}],159:[function(require,module,exports){
+},{"buffer":8,"buffer-shims":7}],158:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":154}],160:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":153}],159:[function(require,module,exports){
 (function (process){
 var Stream = (function (){
   try {
@@ -22507,13 +22415,13 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
 }
 
 }).call(this,require('_process'))
-},{"./lib/_stream_duplex.js":153,"./lib/_stream_passthrough.js":154,"./lib/_stream_readable.js":155,"./lib/_stream_transform.js":156,"./lib/_stream_writable.js":157,"_process":148}],161:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":152,"./lib/_stream_passthrough.js":153,"./lib/_stream_readable.js":154,"./lib/_stream_transform.js":155,"./lib/_stream_writable.js":156,"_process":147}],160:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":156}],162:[function(require,module,exports){
+},{"./lib/_stream_transform.js":155}],161:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":157}],163:[function(require,module,exports){
+},{"./lib/_stream_writable.js":156}],162:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -22736,10 +22644,10 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":9}],164:[function(require,module,exports){
+},{"buffer":8}],163:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":165}],165:[function(require,module,exports){
+},{"./lib/index":164}],164:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -22769,7 +22677,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":166}],166:[function(require,module,exports){
+},{"./ponyfill":165}],165:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22793,11 +22701,11 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],167:[function(require,module,exports){
-arguments[4][10][0].apply(exports,arguments)
-},{"dup":10}],168:[function(require,module,exports){
-arguments[4][153][0].apply(exports,arguments)
-},{"./_stream_readable":169,"./_stream_writable":171,"core-util-is":12,"dup":153,"inherits":79,"process-nextick-args":147}],169:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
+arguments[4][9][0].apply(exports,arguments)
+},{"dup":9}],167:[function(require,module,exports){
+arguments[4][152][0].apply(exports,arguments)
+},{"./_stream_readable":168,"./_stream_writable":170,"core-util-is":11,"dup":152,"inherits":78,"process-nextick-args":146}],168:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -23680,7 +23588,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":168,"_process":148,"buffer":9,"core-util-is":12,"events":13,"inherits":79,"isarray":167,"process-nextick-args":147,"string_decoder/":163,"util":7}],170:[function(require,module,exports){
+},{"./_stream_duplex":167,"_process":147,"buffer":8,"core-util-is":11,"events":12,"inherits":78,"isarray":166,"process-nextick-args":146,"string_decoder/":162,"util":6}],169:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -23861,7 +23769,7 @@ function done(stream, er) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":168,"core-util-is":12,"inherits":79}],171:[function(require,module,exports){
+},{"./_stream_duplex":167,"core-util-is":11,"inherits":78}],170:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -24380,9 +24288,9 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":168,"_process":148,"buffer":9,"core-util-is":12,"events":13,"inherits":79,"process-nextick-args":147,"util-deprecate":181}],172:[function(require,module,exports){
-arguments[4][161][0].apply(exports,arguments)
-},{"./lib/_stream_transform.js":170,"dup":161}],173:[function(require,module,exports){
+},{"./_stream_duplex":167,"_process":147,"buffer":8,"core-util-is":11,"events":12,"inherits":78,"process-nextick-args":146,"util-deprecate":180}],171:[function(require,module,exports){
+arguments[4][160][0].apply(exports,arguments)
+},{"./lib/_stream_transform.js":169,"dup":160}],172:[function(require,module,exports){
 (function (process){
 var Transform = require('readable-stream/transform')
   , inherits  = require('util').inherits
@@ -24482,7 +24390,7 @@ module.exports.obj = through2(function (options, transform, flush) {
 })
 
 }).call(this,require('_process'))
-},{"_process":148,"readable-stream/transform":172,"util":184,"xtend":185}],174:[function(require,module,exports){
+},{"_process":147,"readable-stream/transform":171,"util":183,"xtend":184}],173:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -24604,7 +24512,7 @@ var WorkerStream = function (_Duplex) {
 exports.default = WorkerStream;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":9,"stream":150}],175:[function(require,module,exports){
+},{"buffer":8,"stream":149}],174:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -24717,7 +24625,7 @@ function concatStream(processorFn) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":9,"stream":150}],176:[function(require,module,exports){
+},{"buffer":8,"stream":149}],175:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24767,7 +24675,7 @@ function makeStlStream() {
   return useWorker ? (0, _workerSpawner2.default)() : (0, _through2.default)((0, _parseStream2.default)());
 }
 
-},{"./concatStream":175,"./parseStream":177,"./workerSpawner":180,"composite-detect":11,"through2":173}],177:[function(require,module,exports){
+},{"./concatStream":174,"./parseStream":176,"./workerSpawner":179,"composite-detect":10,"through2":172}],176:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -24932,7 +24840,7 @@ function parseASCIIChunk(workChunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./utils":179,"buffer":9}],178:[function(require,module,exports){
+},{"./utils":178,"buffer":8}],177:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -24954,7 +24862,7 @@ module.exports = function (self) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./parseStream":177,"buffer":9}],179:[function(require,module,exports){
+},{"./parseStream":176,"buffer":8}],178:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25015,7 +24923,7 @@ function isDataBinaryRobust(data) {
   return isBinary;
 }
 
-},{}],180:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25041,7 +24949,7 @@ function workerSpawner() {
   return ws;
 }
 
-},{"./WorkerStream":174,"./stlStreamWorker.src.js":178,"WebWorkify":4}],181:[function(require,module,exports){
+},{"./WorkerStream":173,"./stlStreamWorker.src.js":177,"WebWorkify":4}],180:[function(require,module,exports){
 (function (global){
 
 /**
@@ -25112,16 +25020,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],182:[function(require,module,exports){
-arguments[4][79][0].apply(exports,arguments)
-},{"dup":79}],183:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],182:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],184:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -25711,7 +25619,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":183,"_process":148,"inherits":182}],185:[function(require,module,exports){
+},{"./support/isBuffer":182,"_process":147,"inherits":181}],184:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -25732,7 +25640,7 @@ function extend() {
     return target
 }
 
-},{}],186:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25748,17 +25656,17 @@ function getBrandingSvgGeometry(machineName) {
   };
   return brandingSvgs[machineName];
 }
-},{"./um3ExtLogoGeo.js":187,"./um3LogoGeo.js":188}],187:[function(require,module,exports){
+},{"./um3ExtLogoGeo.js":186,"./um3LogoGeo.js":187}],186:[function(require,module,exports){
 'use strict';
 
 exports.positions = [[0.5940229598203144, -0.043923134514599435, 0], [0.5734339905165959, -0.043923134514599435, 0], [0.5687546793112053, -0.04829049163963062, 0], [0.5687546793112053, -0.0675068629897679, 0], [0.5739799101572247, -0.0718742201147991, 0], [0.5969709258797102, -0.0718742201147991, 0], [0.6021961567257297, -0.07320002495632641, 0], [0.6021961567257297, -0.07903356625904666, 0], [0.5954111554779136, -0.08035937110057399, 0], [0.5655571499875218, -0.08035937110057399, 0], [0.5587721487397055, -0.07701366358871975, 0], [0.5587721487397055, -0.055722797604192645, 0], [0.5587721487397055, -0.02713220613925628, 0], [0.5587721487397055, -0.005841340154729208, 0], [0.5653231844272522, -0.00249563264287496, 0], [0.5941477414524579, -0.00249563264287496, 0], [0.6006987771400047, -0.0038214374844022653, 0], [0.6006987771400047, -0.00965497878712252, 0], [0.5957075118542547, -0.010980783628649852, 0], [0.5737459445969553, -0.010980783628649852, 0], [0.5687546793112053, -0.014802221113052145, 0], [0.5687546793112053, -0.031616546044422225, 0], [0.5734339905165959, -0.03543798352882452, 0], [0.5940229598203144, -0.03543798352882452, 0], [0.5987022710257048, -0.03676378837035185, 0], [0.5987022710257048, -0.0425973296730721, 0], [0.6209134015472921, -0.026328924382330914, 0], [0.6264037933616171, -0.03456451210381831, 0], [0.6291411904167705, -0.03868230596456202, 0], [0.631933179435987, -0.04317444472173695, 0], [0.6332199900174695, -0.04542051410032441, 0], [0.633563139505865, -0.04542051410032441, 0], [0.6350605190915899, -0.04296387571749436, 0], [0.6377121287746443, -0.03861211629648115, 0], [0.6403793361617172, -0.03456451210381831, 0], [0.6458697279760424, -0.026328924382330886, 0], [0.6488332917394564, -0.024457199900174663, 0], [0.656382580484153, -0.024457199900174663, 0], [0.6551347641627157, -0.028668579985026164, 0], [0.6420950836036938, -0.04719865235837284, 0], [0.6421730721237837, -0.05593336660843523, 0], [0.6555559021712005, -0.07583603693536307, 0], [0.6568037184926381, -0.08035937110057396, 0], [0.6489112802595456, -0.08035937110057396, 0], [0.6458697279760417, -0.0784096580983279, 0], [0.6403793361617167, -0.06983092088844518, 0], [0.6376341402545544, -0.0655571499875218, 0], [0.6346393810831044, -0.06072186174195155, 0], [0.6316446219116543, -0.06093243074619416, 0], [0.6286498627402042, -0.06562733965560269, 0], [0.6259046668330419, -0.06983092088844518, 0], [0.6204142750187169, -0.0784096580983279, 0], [0.6172947342151232, -0.08035937110057396, 0], [0.6090591464936359, -0.08035937110057396, 0], [0.6103069628150735, -0.07591402545545294, 0], [0.6240329423508857, -0.05635450461692034, 0], [0.6241889193910655, -0.047619790366857956, 0], [0.6111492388320436, -0.02874656850511599, 0], [0.609979411030696, -0.024457199900174635, 0], [0.6178718492637882, -0.024457199900174635, 0], [0.6820564012977288, -0.010980783628649852, 0], [0.6820564012977288, -0.021961567257299704, 0], [0.6843180683803343, -0.024457199900174663, 0], [0.694269403543798, -0.024457199900174663, 0], [0.6965310706264034, -0.02562702770152232, 0], [0.6965310706264034, -0.030774270027451946, 0], [0.694269403543798, -0.031944097828799575, 0], [0.6843180683803343, -0.031944097828799575, 0], [0.6820564012977288, -0.036623409034190105, 0], [0.6820564012977288, -0.05721237833790861, 0], [0.6824541427501869, -0.06655540304467181, 0], [0.6860572123783377, -0.07213938108310454, 0], [0.6913214374844021, -0.0727944846518592, 0], [0.6943161966558518, -0.07245133516346389, 0], [0.6956108060893433, -0.07354317444472169, 0], [0.6959539555777388, -0.07869041677065132, 0], [0.6943473920638881, -0.08051534814075365, 0], [0.689855253306713, -0.08126403793361613, 0], [0.683787746443723, -0.0810768654854005, 0], [0.6782037684052904, -0.078830796106813, 0], [0.6741795607686547, -0.07425286997753927, 0], [0.6722766408784624, -0.06696874220114796, 0], [0.6720738707262288, -0.05763351634639378, 0], [0.6720738707262288, -0.03670139755427996, 0], [0.6707480658847016, -0.03194409782879955, 0], [0.6649145245819814, -0.03194409782879955, 0], [0.663588719740454, -0.03077427002745192, 0], [0.663588719740454, -0.025627027701522292, 0], [0.6649145245819814, -0.024457199900174635, 0], [0.6707480658847016, -0.024457199900174635, 0], [0.6720738707262288, -0.022351509857748884, 0], [0.6720738707262288, -0.013086473671075575, 0], [0.6736336411280257, -0.010590841028200616, 0], [0.6804966308959319, -0.008875093586224073, 0], [0.7140628899426005, -0.06263258048415271, 0], [0.7242949837783879, -0.07222516845520337, 0], [0.7364845894684302, -0.07311423758422757, 0], [0.7438934988769652, -0.07147647866234091, 0], [0.7471768155727478, -0.07154666833042173, 0], [0.7482062640379337, -0.07669391065635135, 0], [0.7453440853506366, -0.07904136511105561, 0], [0.7361570376840532, -0.08102227352133762, 0], [0.7239206388819568, -0.08083217650361862, 0], [0.713828924382331, -0.0768567116920389, 0], [0.7067319690541554, -0.069488746256551, 0], [0.7030041177938611, -0.05933659065385571, 0], [0.7029807212378338, -0.04739069908909408, 0], [0.7065214000499127, -0.03669262384576987, 0], [0.7132440104816575, -0.02859156632143745, 0], [0.7227742076366361, -0.024070181869228838, 0], [0.7346206638382831, -0.024165717806338874, 0], [0.743636136760669, -0.029065346580983278, 0], [0.7503743448964315, -0.0413573122036436, 0], [0.7514271899176446, -0.0513164462191165, 0], [0.7512244197654108, -0.05356251559770399, 0], [0.7449307461941603, -0.05440479161467427, 0], [0.7185082355877215, -0.05440479161467427, 0], [0.7125031195408036, -0.054326803094584444, 0], [0.7125031195408036, -0.053983653606189154, 0], [0.7418813950586474, -0.04160687546793113, 0], [0.7355019341152982, -0.03210787372098826, 0], [0.7217057649114049, -0.03203768405290742, 0], [0.7141564761667079, -0.04139630646368855, 0], [0.7176035687546791, -0.046917893686049414, 0], [0.7378493885700024, -0.046917893686049414, 0], [0.764903606189169, -0.03519621911654603, 0], [0.7647008360369352, -0.027849700524082834, 0], [0.76581607187422, -0.02445719990017469, 0], [0.7719927626653356, -0.02445719990017469, 0], [0.7734745445470426, -0.02586099326179185, 0], [0.773817694035438, -0.03203768405290742, 0], [0.7767110681307714, -0.029487459445969554, 0], [0.7858981157973544, -0.02382549288744697, 0], [0.7985634514599449, -0.02395807337159967, 0], [0.807644239767906, -0.030661186673321697, 0], [0.8112999516471175, -0.03996521712003992, 0], [0.8118292987272271, -0.051643998003493875, 0], [0.8118292987272271, -0.07463501372597953, 0], [0.8102695283254302, -0.079860244571999, 0], [0.8034065385575242, -0.079860244571999, 0], [0.8018467681557273, -0.07486897928624905, 0], [0.8018467681557273, -0.05290741202894935, 0], [0.8011526703269276, -0.041552283503868255, 0], [0.7948979910157223, -0.03275517843773398, 0], [0.7842369603194406, -0.03224045420514102, 0], [0.7772179935113548, -0.03776204142750186, 0], [0.77510450461692, -0.0430496630895932, 0], [0.7749017344646867, -0.045295732468180694, 0], [0.7748939356126774, -0.051643998003493875, 0], [0.7748939356126774, -0.07463501372597953, 0], [0.7733341652108805, -0.079860244571999, 0], [0.7664711754429745, -0.079860244571999, 0], [0.7649114050411776, -0.07354317444472172, 0], [0.7649114050411776, -0.04574806588470176, 0], [0.8767157474419762, -0.0013979442226104211, 0], [0.8767157474419762, -0.01982273209383578, 0], [0.8767157474419762, -0.04456459009233839, 0], [0.8767157474419762, -0.06298937796356374, 0], [0.8767235462939853, -0.06969054155228346, 0], [0.8769263164462189, -0.07711504866483646, 0], [0.8758110806089343, -0.08035937110057396, 0], [0.8696343898178187, -0.08035937110057396, 0], [0.8681526079361117, -0.07887758921886695, 0], [0.8678094584477163, -0.07235774893935609, 0], [0.8647679061642122, -0.07511854255053654, 0], [0.8550973296730715, -0.0809832792612927, 0], [0.8438660079236333, -0.08133032817569254, 0], [0.835261924444721, -0.07732951709508362, 0], [0.8288337206763161, -0.06986601572248569, 0], [0.825283293299226, -0.05950134140254554, 0], [0.8253261869852755, -0.0468174834664337, 0], [0.8291495741826802, -0.035815252994759114, 0], [0.8359443239955078, -0.028065143810831018, 0], [0.8448213672947338, -0.023988293923134493, 0], [0.8556432493137005, -0.02415304467182429, 0], [0.8642219865235832, -0.02872317194908907, 0], [0.8667332168704762, -0.026718866982780122, 0], [0.8667332168704762, -0.003727851260294475, 0], [0.8682929872722733, 0.001497379585725004, 0], [0.8751559770401796, 0.001497379585725004, 0], [0.8667254180184676, -0.04579485899675566, 0], [0.8665226478662338, -0.04354878961816817, 0], [0.8643935612677811, -0.03781663339156474, 0], [0.8569690541552282, -0.031405977040179694, 0], [0.8447638507611679, -0.0320454829049164, 0], [0.8363878837035188, -0.04329142750187171, 0], [0.8363176940354378, -0.059949775393062114, 0], [0.844553281756925, -0.07079017968555028, 0], [0.8567662840029946, -0.07155446718243073, 0], [0.8645339406039427, -0.06542456950336911, 0], [0.867021774394809, -0.05927127526828049, 0], [0.8672245445470428, -0.05702520588969303, 0], [0.8672323433990516, -0.05449837783878214, 0], [0.8672323433990516, -0.048321687047666574, 0], [0.8671543548789618, -0.046917893686049414, 0], [0.8668112053905663, -0.046917893686049414, 0], [0.900736211629648, -0.06263258048415271, 0], [0.9109683054654354, -0.07222516845520337, 0], [0.9231579111554777, -0.07311423758422757, 0], [0.9305668205640127, -0.07147647866234091, 0], [0.9338501372597954, -0.07154666833042173, 0], [0.9348795857249812, -0.07669391065635135, 0], [0.9320174070376841, -0.07904136511105561, 0], [0.9228303593711005, -0.08102227352133762, 0], [0.9105939605690043, -0.08083217650361862, 0], [0.9005022460693786, -0.0768567116920389, 0], [0.8934052907412029, -0.069488746256551, 0], [0.8896774394809086, -0.05933659065385571, 0], [0.8896540429248814, -0.04739069908909408, 0], [0.8931947217369602, -0.03669262384576987, 0], [0.8999173321687051, -0.02859156632143745, 0], [0.9094475293236837, -0.024070181869228838, 0], [0.9212939855253306, -0.024165717806338874, 0], [0.9303094584477165, -0.029065346580983278, 0], [0.937047666583479, -0.0413573122036436, 0], [0.9381005116046921, -0.0513164462191165, 0], [0.9378977414524583, -0.05356251559770399, 0], [0.9316040678812079, -0.05440479161467427, 0], [0.905181557274769, -0.05440479161467427, 0], [0.8991764412278511, -0.054326803094584444, 0], [0.8991764412278511, -0.053983653606189154, 0], [0.9280555902171197, -0.04160687546793113, 0], [0.9216761292737707, -0.03210787372098826, 0], [0.9078799600698775, -0.03203768405290742, 0], [0.9003306713251804, -0.04139630646368855, 0], [0.9037777639131515, -0.046917893686049414, 0], [0.9240235837284749, -0.046917893686049414, 0], [0.9995008734714248, -0.0013979442226104211, 0], [0.9995008734714248, -0.01982273209383578, 0], [0.9995008734714248, -0.04456459009233839, 0], [0.9995008734714248, -0.06298937796356374, 0], [0.9995086723234337, -0.06969054155228346, 0], [0.9997114424756675, -0.07711504866483646, 0], [0.9985962066383829, -0.08035937110057396, 0], [0.9924195158472673, -0.08035937110057396, 0], [0.9909377339655603, -0.07887758921886695, 0], [0.9905945844771649, -0.07235774893935609, 0], [0.9875530321936608, -0.07511854255053654, 0], [0.9778824557025201, -0.0809832792612927, 0], [0.9666511339530819, -0.08133032817569254, 0], [0.9580470504741696, -0.07732951709508362, 0], [0.9516188467057647, -0.06986601572248569, 0], [0.9480684193286746, -0.05950134140254554, 0], [0.9481113130147241, -0.0468174834664337, 0], [0.9519347002121288, -0.035815252994759114, 0], [0.9587294500249564, -0.028065143810831018, 0], [0.9676064933241824, -0.023988293923134493, 0], [0.9784283753431491, -0.02415304467182429, 0], [0.9870071125530318, -0.02872317194908907, 0], [0.9895183428999248, -0.026718866982780122, 0], [0.9895183428999248, -0.003727851260294475, 0], [0.9910781133017219, 0.001497379585725004, 0], [0.9979411030696281, 0.001497379585725004, 0], [0.989011417519341, -0.04579485899675566, 0], [0.9888086473671074, -0.04354878961816817, 0], [0.9866795607686547, -0.03781663339156474, 0], [0.9792550536561015, -0.031405977040179694, 0], [0.9670498502620415, -0.0320454829049164, 0], [0.9586738832043922, -0.04329142750187171, 0], [0.9586036935363111, -0.059949775393062114, 0], [0.9668392812577986, -0.07079017968555028, 0], [0.979052283503868, -0.07155446718243073, 0], [0.9868199401048163, -0.06542456950336911, 0], [0.9893077738956824, -0.05927127526828049, 0], [0.9895105440479162, -0.05702520588969303, 0], [0.989518342899925, -0.05449837783878214, 0], [0.989518342899925, -0.048321687047666574, 0], [0.9894403543798351, -0.046917893686049414, 0], [0.9890972048914397, -0.046917893686049414, 0], [-0.7808834539555778, -0.09088782131270275, 0], [-0.7808834539555778, -0.0603475168455203, 0], [-0.7808834539555778, -0.053406538557524315, 0], [-0.7808834539555778, -0.05303219366109304, 0], [-0.7808834539555778, -0.05228350386823055, 0], [-0.7808834539555778, -0.05190915897179934, 0], [-0.7808834539555778, -0.050778325430496624, 0], [-0.7808834539555778, -0.048329485899675555, 0], [-0.7808834539555778, -0.046917893686049414, 0], [-0.7808834539555778, -0.042456950336910416, 0], [-0.7808834539555778, -0.01406912902420765, 0], [-0.7808834539555778, 0.024051659595707518, 0], [-0.7808834539555778, 0.05243948090841029, 0], [-0.7824978163214376, 0.06609527077614175, 0], [-0.79414930122286, 0.07774675567756427, 0], [-0.8125389942600449, 0.07774675567756427, 0], [-0.8241904791614674, 0.06609527077614175, 0], [-0.8258048415273271, 0.052267906164212626, 0], [-0.8258048415273271, 0.02278824557025206, 0], [-0.8258048415273271, -0.01679872722735214, 0], [-0.8258048415273271, -0.04627838782131274, 0], [-0.8264989393561268, -0.06032217057649117, 0], [-0.8319113426503619, -0.0750736991514849, 0], [-0.8423774020464188, -0.08463119228849514, 0], [-0.8575227726478662, -0.08927540865984525, 0], [-0.875800357187422, -0.08927540865984525, 0], [-0.8908696889817819, -0.08463119228849514, 0], [-0.9014234854629398, -0.0750736991514849, 0], [-0.9069470223983029, -0.06032217057649117, 0], [-0.9076615922136262, -0.04627838782131274, 0], [-0.9076615922136262, -0.01679872722735214, 0], [-0.9076615922136262, 0.02278824557025206, 0], [-0.9076615922136262, 0.052267906164212626, 0], [-0.9090185924631894, 0.06545576491140505, 0], [-0.9190323184427253, 0.07676410032443225, 0], [-0.9278840154729224, 0.07915054903918142, 0], [-0.9295841652108809, 0.07935331919141503, 0], [-0.933023458946843, 0.07936111804342401, 0], [-0.9483092088844522, 0.07936111804342401, 0], [-0.9688357873720989, 0.07936111804342401, 0], [-0.984121537309708, 0.07936111804342401, 0], [-0.9917878088345395, 0.07830827302221113, 0], [-0.9989471549787872, 0.07114892687796358, 0], [-0.9989471549787872, 0.060620476665834803, 0], [-0.9917878088345395, 0.053461130521587234, 0], [-0.981142375842276, 0.05240828550037436, 0], [-0.9574650611429998, 0.05240828550037436, 0], [-0.9520838532568006, 0.048118916895433, 0], [-0.9520838532568006, 0.02082293486398802, 0], [-0.9520838532568006, -0.015831669578238085, 0], [-0.9520838532568006, -0.04312765160968305, 0], [-0.9505455296980284, -0.06640430028699776, 0], [-0.9387653637384576, -0.0961198761542301, 0], [-0.916550333790866, -0.11533039836536062, 0], [-0.8853042332168705, -0.12464417737709009, 0], [-0.8495289493386573, -0.12482842525580237, 0], [-0.8199868979286249, -0.11693598702271026, 0], [-0.8078362864986275, -0.11004180184676814, 0], [-0.8078362864986275, -0.11107125031195404, 0], [-0.8067834414774145, -0.11656944097828797, 0], [-0.799624095333167, -0.12372878712253556, 0], [-0.7922541801846769, -0.12478163214374842, 0], [-0.7829891439980035, -0.12478163214374842, 0], [-0.7756192288495134, -0.12372878712253556, 0], [-0.7684598827052658, -0.11656944097828797, 0], [-0.7684598827052658, -0.1060409907661592, 0], [-0.7756192288495134, -0.09888164462191162, 0], [0.10528255240828543, -0.08993636136760666, 0], [0.09395471986523574, -0.07465061142999749, 0], [0.07874305902171197, -0.05412403294235087, 0], [0.06741522647866227, -0.0388382830047417, 0], [0.07023646119291227, -0.031600948340404285, 0], [0.09048228100823552, -0.010325680059895183, 0], [0.09749344896431222, -0.002760793611180421, 0], [0.10062858747192416, 0.003072747691539819, 0], [0.09937297229847752, 0.014505864736710767, 0], [0.08886011979036668, 0.02405165959570753, 0], [0.07779354878961797, 0.02484714250062393, 0], [0.0701038807087595, 0.02082293486398805, 0], [0.061174195158472555, 0.011963438981781899, 0], [0.03715373097080099, -0.014459071624656832, 0], [0.03068068380334399, -0.021579423508859448, 0], [0.026219740454204832, -0.03036093087097576, 0], [0.02684364861492372, -0.04673072123783378, 0], [0.034049787871225146, -0.05983279261292735, 0], [0.0373175068629894, -0.0641865017469428, 0], [0.04768998003493863, -0.07878985213376587, 0], [0.06161872972298443, -0.09840006551035682, 0], [0.07199120289493344, -0.11300341589717988, 0], [0.07628837035188374, -0.1186751310207137, 0], [0.08499188919391032, -0.12393155727476911, 0], [0.09897523084601922, -0.1231438732218617, 0], [0.10906694534564476, -0.11256862989767903, 0], [0.11043174444721715, -0.10083135762415768, 0], [0.10831045670077333, -0.09429591964062889, 0], [-0.005537184926378891, 0.07936111804342401, 0], [-0.0059427252308460465, 0.07936111804342401, 0], [-0.006987771400049803, 0.07943910656351386, 0], [-0.008485150985774847, 0.07978225605190917, 0], [-0.012587347142500649, 0.079860244571999, 0], [-0.02734277514349892, 0.079860244571999, 0], [-0.035960506613426535, 0.07880739955078613, 0], [-0.04311985275767405, 0.07164805340653856, 0], [-0.04311985275767405, 0.06111960319440978, 0], [-0.035960506613426535, 0.053960257050162226, 0], [-0.0299163963064637, 0.05290741202894935, 0], [-0.026484901422510587, 0.05290741202894935, 0], [-0.025705016221612254, 0.05114170319129025, 0], [-0.025705016221612254, 0.03839789158035938, 0], [-0.025705016221612254, 0.003160484776640886, 0], [-0.025705016221612254, -0.05457051721986523, 0], [-0.025705016221612254, -0.08980792402358373, 0], [-0.025705016221612254, -0.1025517356345146, 0], [-0.024270027451959164, -0.11291177938607437, 0], [-0.013913151984028094, -0.12298789618168206, 0], [0.0024332418268031564, -0.12298789618168206, 0], [0.012790117294734227, -0.11291177938607437, 0], [0.014225106064387205, -0.10247886511105563, 0], [0.014225106064387205, -0.0892091184177689, 0], [0.014225106064387205, -0.05251746942850014, 0], [0.014225106064387205, 0.007596081856750691, 0], [0.014225106064387205, 0.04428773084601948, 0], [0.014225106064387205, 0.057557477539306214, 0], [0.01314886448714736, 0.06799039181432495, 0], [0.00313513850761149, 0.07806650860993262, 0], [-0.7097579236336412, 0.07943910656351386, 0], [-0.7112553032193663, 0.07978225605190917, 0], [-0.7153574993760918, 0.079860244571999, 0], [-0.7301129273770901, 0.079860244571999, 0], [-0.7387306588470177, 0.07880739955078613, 0], [-0.7458900049912653, 0.07164805340653856, 0], [-0.7458900049912653, 0.06111960319440978, 0], [-0.7387306588470177, 0.053960257050162226, 0], [-0.7329985026204143, 0.05290741202894935, 0], [-0.7309396056900425, 0.05290741202894935, 0], [-0.7304716745695035, 0.05114170319129025, 0], [-0.7304716745695035, 0.03839789158035938, 0], [-0.7304716745695035, 0.003160484776640886, 0], [-0.7304716745695035, -0.05457051721986523, 0], [-0.7304716745695035, -0.08980792402358373, 0], [-0.7304716745695035, -0.1025517356345146, 0], [-0.7290366857998503, -0.11291177938607437, 0], [-0.7186798103319192, -0.12298789618168206, 0], [-0.7023334165210882, -0.12298789618168206, 0], [-0.6919765410531571, -0.11291177938607437, 0], [-0.6905415522835039, -0.10247886511105563, 0], [-0.6905415522835039, -0.0892091184177689, 0], [-0.6905415522835039, -0.05251746942850014, 0], [-0.6905415522835039, 0.007596081856750691, 0], [-0.6905415522835039, 0.04428773084601948, 0], [-0.6905415522835039, 0.057557477539306214, 0], [-0.6916021961567258, 0.06770963314200151, 0], [-0.7012103818317943, 0.07778574993760917, 0], [-0.5343695408035938, 0.013031881707012739, 0], [-0.5284648349762916, 0.021902101010731225, 0], [-0.5206484355502871, 0.025027490953331677, 0], [-0.5100478459570752, 0.025027490953331677, 0], [-0.5022314465310707, 0.021902101010731225, 0], [-0.4963267407037685, 0.013031881707012739, 0], [-0.4953830796106814, 0.0007506395058647337, 0], [-0.4953830796106814, -0.029411420638881944, 0], [-0.4953830796106814, -0.06991475854754182, 0], [-0.4953830796106814, -0.1000768186922885, 0], [-0.4963267407037685, -0.11235806089343647, 0], [-0.5022314465310707, -0.12122828019715497, 0], [-0.5100478459570752, -0.1243536701397554, 0], [-0.5206484355502871, -0.1243536701397554, 0], [-0.5284648349762916, -0.12122828019715497, 0], [-0.5343695408035938, -0.11235806089343647, 0], [-0.5353132018966809, -0.1000768186922885, 0], [-0.5353132018966809, -0.06991475854754182, 0], [-0.5353132018966809, -0.029411420638881944, 0], [-0.5353132018966809, 0.0007506395058647337, 0], [-0.2384011573496383, -0.09293307025205888, 0], [-0.2483641907911157, -0.06495468866982781, 0], [-0.2617431214125281, -0.027383719116546048, 0], [-0.2717061548540055, 0.0005946624656850557, 0], [-0.2773973671075618, 0.012431370102320947, 0], [-0.2908893810831047, 0.021696406288994257, 0], [-0.3074853381582231, 0.021704205141003255, 0], [-0.3206342026453708, 0.01264193910656353, 0], [-0.32573270214624395, 0.0030025580234589485, 0], [-0.33242021774394803, -0.012829111554779124, 0], [-0.34140059583229354, -0.034088782131270264, 0], [-0.3480881114299975, -0.04992045170950838, 0], [-0.35018990204641887, -0.04992045170950838, 0], [-0.35687741764412284, -0.034088782131270264, 0], [-0.36585779573246824, -0.012829111554779124, 0], [-0.3725453113301722, 0.0030025580234589485, 0], [-0.3776438108310457, 0.01264193910656353, 0], [-0.3907926753181933, 0.021704205141003255, 0], [-0.39934801597204894, 0.022959820314449715, 0], [-0.3997535562765161, 0.022959820314449715, 0], [-0.4007986024457201, 0.023037808834539555, 0], [-0.402295982031445, 0.023380958322934884, 0], [-0.40920576491140503, 0.02345894684302472, 0], [-0.4363145744946344, 0.02345894684302472, 0], [-0.44773989268779646, 0.022406101821811845, 0], [-0.454899238832044, 0.015246755677564273, 0], [-0.454899238832044, 0.004718305465435504, 0], [-0.44773989268779646, -0.0024410406788120545, 0], [-0.44013601197903673, -0.0034938857000249442, 0], [-0.4298415273271775, -0.0034938857000249442, 0], [-0.42893881020713753, -0.007504445345645119, 0], [-0.4380829641876717, -0.03302618854504612, 0], [-0.4503622566758174, -0.06729824369852752, 0], [-0.45950641065635145, -0.09281998689792856, 0], [-0.46201959071624665, -0.10466839281257793, 0], [-0.45574931370102334, -0.11809801597204887, 0], [-0.44738894434739207, -0.12286311454953827, 0], [-0.4440510356875468, -0.12326865485400545, 0], [-0.4366421262790118, -0.12237958572498125, 0], [-0.4270339406039432, -0.11570376840529072, 0], [-0.42289275018717254, -0.10717572373346643, 0], [-0.41579579485899687, -0.0872496568505116, 0], [-0.40626559770401804, -0.060491795607686506, 0], [-0.39916864237584226, -0.04056572872473169, 0], [-0.3967237022710257, -0.040587175567756414, 0], [-0.38826194784127777, -0.06064972236086846, 0], [-0.37689902046418766, -0.08759085662590459, 0], [-0.3684372660344397, -0.10765340341901662, 0], [-0.3667332168704768, -0.11155477913651107, 0], [-0.3659845270776142, -0.11305215872223602, 0], [-0.36553219366109313, -0.11387883703518836, 0], [-0.3651890441726978, -0.11422198652358367, 0], [-0.36473671075617675, -0.11475230846019463, 0], [-0.3639880209633142, -0.11584414774145244, 0], [-0.3633173196905417, -0.11659283753431489, 0], [-0.36291177938607444, -0.11699837783878206, 0], [-0.362163089593212, -0.11766907911155476, 0], [-0.3610712503119541, -0.11841776890441724, 0], [-0.36054092837534324, -0.11887010232093828, 0], [-0.36019777888694793, -0.11921325180933362, 0], [-0.3593711005739958, -0.11966558522585473, 0], [-0.35787372098827075, -0.12041427501871721, 0], [-0.3571172323433992, -0.12078861991514843, 0], [-0.3569144621911655, -0.12078861991514843, 0], [-0.3566259046668332, -0.12078861991514843, 0], [-0.3565479161467434, -0.12078861991514843, 0], [-0.3562047666583481, -0.12078861991514843, 0], [-0.35545607686548575, -0.12108497629148984, 0], [-0.3543018467681558, -0.12149051659595703, 0], [-0.3533347891190419, -0.12178687297229841, 0], [-0.35292924881457466, -0.12178687297229841, 0], [-0.35187640379336194, -0.12186486149238826, 0], [-0.3501762540554034, -0.12220801098078359, 0], [-0.34831232842525606, -0.12227820064886445, 0], [-0.3464717993511359, -0.12207543049663087, 0], [-0.34534876466184217, -0.12178687297229841, 0], [-0.344943224357375, -0.12178687297229841, 0], [-0.34397616670826114, -0.12170108560019957, 0], [-0.3428219366109312, -0.12115516595957067, 0], [-0.34207324681806883, -0.12078861991514843, 0], [-0.3417300973296735, -0.12078861991514843, 0], [-0.34165210880958374, -0.12078861991514843, 0], [-0.34164430995757467, -0.12078861991514843, 0], [-0.3414415398053411, -0.12078861991514843, 0], [-0.3404042924881462, -0.12041427501871715, 0], [-0.33890691290242114, -0.11966558522585467, 0], [-0.338080234589469, -0.11921325180933362, 0], [-0.3377370851010737, -0.11887010232093828, 0], [-0.33720676316446263, -0.11841776890441719, 0], [-0.33611492388320485, -0.1176690791115547, 0], [-0.3353662340903425, -0.11699837783878206, 0], [-0.33496069378587523, -0.11659283753431489, 0], [-0.33428999251310276, -0.11584414774145244, 0], [-0.3335413027202402, -0.11475230846019463, 0], [-0.333088969303719, -0.11422198652358367, 0], [-0.3327458198153237, -0.11387883703518836, 0], [-0.33229348639880274, -0.11305215872223602, 0], [-0.33154479660594016, -0.11155477913651107, 0], [-0.3298407474419771, -0.10765340341901662, 0], [-0.32137899301222916, -0.08759085662590459, 0], [-0.31001606563513906, -0.06064972236086841, 0], [-0.3015543112053911, -0.04058717556775636, 0], [-0.29910937110057456, -0.04056572872473163, 0], [-0.2920124157723989, -0.06049179560768645, 0], [-0.28248221861742007, -0.08724965685051152, 0], [-0.2753852632892444, -0.10717572373346637, 0], [-0.2712440728724739, -0.11570376840529069, 0], [-0.26163588719740516, -0.12237958572498123, 0], [-0.25422697778887016, -0.12319846518592452, 0], [-0.25088906912902487, -0.12265254554529564, 0], [-0.24224014225106094, -0.11831638382830041, 0], [-0.23576709508360372, -0.10494915148490139, 0], [0.2041427501871722, -0.05697841277763911, 0], [0.20564012977289736, -0.05732156226603442, 0], [0.2086836317694032, -0.05739955078612428, 0], [0.22328698215622644, -0.05739955078612428, 0], [0.2428971955328174, -0.05739955078612428, 0], [0.25750054591964044, -0.05739955078612428, 0], [0.26054404791614627, -0.0573917519341153, 0], [0.2620414275018714, -0.05718898178188172, 0], [0.2632580484152729, -0.056900424257549286, 0], [0.26531694534564476, -0.056900424257549286, 0], [0.2741998377838777, -0.05613613676066883, 0], [0.2824198278013472, -0.04805652607936111, 0], [0.2820279354878956, -0.027163401547292236, 0], [0.2724626434988766, -0.004265972048914379, 0], [0.25395986710756135, 0.013952146244072884, 0], [0.22717470988270483, 0.024496194160219618, 0], [0.19402861398802052, 0.02451276672073872, 0], [0.16619646088095785, 0.013557329361118047, 0], [0.14685725761167934, -0.006873713189418505, 0], [0.13680648708510068, -0.03523618823309208, 0], [0.13652280384327398, -0.06505022460693785, 0], [0.1450937422011478, -0.09016252807586721, 0], [0.1634912340903414, -0.11059552033940603, 0], [0.19302548664836494, -0.1226057524332418, 0], [0.21924132767656568, -0.1233466433740953, 0], [0.24943848265535284, -0.1192288495133516, 0], [0.2631644621911653, -0.11616390067382079, 0], [0.27258547541801836, -0.10629055403044668, 0], [0.2716730097329674, -0.09350823558772148, 0], [0.2632346518592463, -0.08661405041177939, 0], [0.24943848265535284, -0.08736274020464184, 0], [0.21924132767656568, -0.09182368355378084, 0], [0.20405598795857238, -0.09213173820813571, 0], [0.19038265067382065, -0.08683631769403541, 0], [0.18094409002994727, -0.07714234464686795, 0], [0.17606785781132972, -0.06398568130771148, 0], [0.17509982530571477, -0.04782256051909158, 0], [0.1814870851010728, -0.018869322435737444, 0], [0.19257705265784852, -0.006564196250311949, 0], [0.20439621287746412, -0.002113976322685288, 0], [0.21822942662839995, -0.002090092338407758, 0], [0.22947927065135976, -0.0065510356875467845, 0], [0.2382490797354626, -0.01475542800099825, 0], [0.24388375031195375, -0.02595457948589964, 0], [0.23923758422760133, -0.03244322435737457, 0], [0.21247192413276728, -0.03244322435737457, 0], [0.20177969802844986, -0.033402483154479634, 0], [0.19536904167706481, -0.039813139505864736, 0], [0.1948309208884449, -0.04896899176441229, 0], [0.19960381831794338, -0.05544203893186922, 0], [-0.07112553032193669, -0.07948200024956324, 0], [-0.07112553032193669, -0.061193692288495104, 0], [-0.07112553032193669, -0.03663510731220364, 0], [-0.07112553032193669, -0.018346799351135503, 0], [-0.07247278200648877, -0.005653192850012464, 0], [-0.0830753213127029, 0.009189972236086853, 0], [-0.10383196593461441, 0.018300981095582744, 0], [-0.13427478475168475, 0.022475316633391567, 0], [-0.15844147741452475, 0.022101946593461444, 0], [-0.1824619416021963, 0.018327302221113048, 0], [-0.193996443723484, 0.015745882206139265, 0], [-0.20259077863738462, 0.007993823309208883, 0], [-0.2028715373097082, -0.004133391564761677, 0], [-0.1948387197404544, -0.012400174694285003, 0], [-0.1819940104816572, -0.012041427501871723, 0], [-0.15591464936361388, -0.007923633641128013, 0], [-0.1478818317943601, -0.006987771400049916, 0], [-0.1386167956076868, -0.006987771400049916, 0], [-0.12692631644621943, -0.007401110556526072, 0], [-0.11589776484901448, -0.010814083166957809, 0], [-0.11207437765160999, -0.016111453394060404, 0], [-0.11155477913651135, -0.02760793611180435, 0], [-0.11155477913651135, -0.06123658597454453, 0], [-0.11217673758422786, -0.0744224950087347, 0], [-0.11697693099575768, -0.08461949401048163, 0], [-0.1261288838283009, -0.09261721674569501, 0], [-0.13916466496131785, -0.09719904230097326, 0], [-0.1561096206638385, -0.09651859246318938, 0], [-0.16741795607686571, -0.08772148739705513, 0], [-0.16853611648365374, -0.07718426347641628, 0], [-0.16524305122286032, -0.07059228381582233, 0], [-0.1544250686298978, -0.06430153481407536, 0], [-0.14175193411529852, -0.06131457449463436, 0], [-0.13507611679560794, -0.05473234339905164, 0], [-0.13664563576241606, -0.04354878961816817, 0], [-0.14201514537060156, -0.038994260044921375, 0], [-0.15059583229348672, -0.03730970801098079, 0], [-0.16412586567257326, -0.03905957543049659, 0], [-0.18404998284252583, -0.044813178500124805, 0], [-0.19922459913900692, -0.05526948933117044, 0], [-0.2077311969678065, -0.07206626684552034, 0], [-0.20787547572997278, -0.09227796668330424, 0], [-0.20059329766658374, -0.10727125967057652, 0], [-0.1880468944971303, -0.11791279323683554, 0], [-0.17234195626403814, -0.1235474638133267, 0], [-0.14878649862740245, -0.12307368355378089, 0], [-0.12142812577988538, -0.11185893436486151, 0], [-0.10756956575992038, -0.10975324432243576, 0], [-0.10034880365610221, -0.12015008890691292, 0], [-0.09146006207886226, -0.12378630365610181, 0], [-0.07879180184676837, -0.12312827551784376, 0], [-0.06910562765160999, -0.11501746942850012, 0], [-0.06796699525829808, -0.10453581232842525, 0], [-0.07050942101322699, -0.0928063389069129, 0], [0.39995632642874956, 0.025954579485899684, 0], [0.38417144996256525, 0.025954579485899684, 0], [0.37418112053905617, 0.024886136760668854, 0], [0.3643701647117541, 0.017321250311954108, 0], [0.35914493386573487, 0.017375842276016986, 0], [0.34933397803843236, 0.024114050411779407, 0], [0.3423540054903915, 0.024956326428749696, 0], [0.3419484651859239, 0.024956326428749696, 0], [0.3409034190167204, 0.02503431494883955, 0], [0.33940603943099545, 0.025377464437234865, 0], [0.3353818317943593, 0.025455452957324706, 0], [0.3209695532817567, 0.025455452957324706, 0], [0.31242981033191897, 0.024402607936111827, 0], [0.30527046418767156, 0.017243261791864268, 0], [0.30527046418767156, 0.006714811579735486, 0], [0.31242981033191897, -0.00044453456451205864, 0], [0.3184739206388818, -0.001497379585724948, 0], [0.3219054155228349, -0.001497379585724948, 0], [0.32268530072373336, -0.005936876091839244, 0], [0.32268530072373336, -0.03418821749438479, 0], [0.32268530072373336, -0.07212573309208879, 0], [0.32268530072373336, -0.10037707449463433, 0], [0.32412028949338656, -0.11341090591464933, 0], [0.33447716496131763, -0.12348702271025702, 0], [0.35082355877214844, -0.12348702271025702, 0], [0.3611804342400795, -0.11341090591464933, 0], [0.3626154230097327, -0.10134218243074614, 0], [0.3626154230097327, -0.07923243698527571, 0], [0.3626154230097327, -0.049542207387072615, 0], [0.3626154230097327, -0.027432461941602187, 0], [0.36589094085350626, -0.021462440728724712, 0], [0.3803032193661091, -0.01048165710007486, 0], [0.38662028949338634, -0.0079860244571999, 0], [0.40000311954080336, -0.0079860244571999, 0], [0.41079673072123724, -0.007268530072373342, 0], [0.421434364861492, -0.00040554030446717404, 0], [0.4215123533815823, 0.014162715248315454, 0], [0.41121786872972255, 0.02445719990017472, 0], [-0.5900923384077864, 0.02196156725729973, 0], [-0.5983279261292738, 0.02196156725729973, 0], [-0.60019965061143, 0.025783004741702024, 0], [-0.60019965061143, 0.04259732967307214, 0], [-0.6016346393810832, 0.0550131020713751, 0], [-0.6119915148490143, 0.06508921886698278, 0], [-0.6283379086598453, 0.06508921886698278, 0], [-0.6386947841277765, 0.0550131020713751, 0], [-0.6401297728974296, 0.04259732967307214, 0], [-0.6401297728974296, 0.025783004741702024, 0], [-0.6402077614175194, 0.02196156725729973, 0], [-0.6405509109059146, 0.02196156725729973, 0], [-0.6458931245320689, 0.020908722236086856, 0], [-0.6530524706763166, 0.013749376091839297, 0], [-0.6530524706763166, 0.0032209258797105144, 0], [-0.6458931245320689, -0.003938420264537031, 0], [-0.6405509109059146, -0.00499126528574992, 0], [-0.6402077614175194, -0.00499126528574992, 0], [-0.6401297728974296, -0.009302080733715978, 0], [-0.6401297728974296, -0.036734542675318164, 0], [-0.6401297728974296, -0.07357242013975543, 0], [-0.6401297728974296, -0.10100488208135762, 0], [-0.6386947841277765, -0.1139100324432243, 0], [-0.6283379086598453, -0.12398614923883201, 0], [-0.6119915148490143, -0.12398614923883201, 0], [-0.6016346393810832, -0.1139100324432243, 0], [-0.60019965061143, -0.10098343523833286, 0], [-0.60019965061143, -0.07341449338657345, 0], [-0.60019965061143, -0.036393342899925095, 0], [-0.60019965061143, -0.008824401048165715, 0], [-0.5983279261292738, -0.004492138757174928, 0], [-0.5900923384077864, -0.004492138757174928, 0], [-0.580359371100574, -0.0037980409283753175, 0], [-0.5713750935862242, 0.0024566383828300473, 0], [-0.5713750935862242, 0.014802221113052173, 0], [-0.580359371100574, 0.02125967057649115, 0], [0.4954532692787623, 0.04043704766658349, 0], [0.5066992138757171, 0.037021150486648384, 0], [0.519167628525081, 0.03690221799351137, 0], [0.5277580640129769, 0.04017383641128027, 0], [0.5342681557274767, 0.04864923883204394, 0], [0.5347526594085348, 0.05960955047417021, 0], [0.530707004928874, 0.0669853147616671, 0], [0.5195205265784872, 0.07322342151235339, 0], [0.5091870476665832, 0.07436985275767409, 0], [0.5040398053406536, 0.07436985275767409, 0], [0.502869977539306, 0.07592962315947094, 0], [0.502869977539306, 0.08279261292737711, 0], [0.5040398053406536, 0.08435238332917395, 0], [0.5091870476665832, 0.08435238332917395, 0], [0.517711192912403, 0.08531164212627902, 0], [0.527528972735213, 0.0905670935238333, 0], [0.531286069690541, 0.09681982312203645, 0], [0.5308522585475415, 0.10624376091839281, 0], [0.5225542800099823, 0.114089406039431, 0], [0.509280633890691, 0.11470551534814076, 0], [0.49926690791115536, 0.11108684801597206, 0], [0.4948371599700523, 0.11029136511105565, 0], [0.4924351135512852, 0.11681120539056651, 0], [0.496490516595957, 0.1209367981033192, 0], [0.509436610930871, 0.1251013850761168, 0], [0.516845520339406, 0.12577988520089844, 0], [0.5234706451210382, 0.12526418611180434, 0], [0.5338665148490145, 0.1215421839905166, 0], [0.5426753181931621, 0.11125062390816073, 0], [0.5431744447217368, 0.09566071874220115, 0], [0.534190167207387, 0.08414961317694035, 0], [0.5263289243823308, 0.08028138258048417, 0], [0.5263289243823308, 0.07993823309208885, 0], [0.5347360868480158, 0.07680309458447718, 0], [0.5461224107811329, 0.06413775892188671, 0], [0.547231797479411, 0.04921758017219866, 0], [0.5427903512602945, 0.03894454236336413, 0], [0.5339971456201646, 0.03103455671325182, 0], [0.5209457667831296, 0.02656386479910158, 0], [0.5049522710257048, 0.02654729223858249, 0], [0.4921465560269527, 0.0301659595707512, 0], [0.48852008984277506, 0.03400299475917147, 0], [0.49126528574993733, 0.040865984527077626, 0], [0.20339406039430985, -0.056900424257549286, 0], [-1, 0.06588470177189919, 0], [-0.9865235837284752, 0.05240828550037436, 0], [-0.9865235837284752, 0.07936111804342401, 0], [-0.9520838532568006, -0.047417020214624406, 0], [-0.9520838532568006, 0.05240828550037436, 0], [-0.9306214125280758, 0.07936111804342401, 0], [-0.9271275268280509, 0.07886199151484902, 0], [-0.9076615922136262, 0.0569004242575493, 0], [-0.9076615922136262, -0.05091090591464938, 0], [-0.8667332168704767, -0.08984277514349887, 0], [-0.8667332168704767, -0.12577988520089844, 0], [-0.8258048415273271, -0.05091090591464938, 0], [-0.8258048415273271, 0.0569004242575493, 0], [-0.8078362864986275, -0.11130521587222358, 0], [-0.8078362864986275, -0.10980783628649864, 0], [-0.8033441477414525, 0.07936111804342401, 0], [-0.7943598702271026, -0.12478163214374842, 0], [-0.7808834539555778, 0.0569004242575493, 0], [-0.7808834539555778, -0.09782879960069873, 0], [-0.7808834539555778, -0.12478163214374842, 0], [-0.7674070376840529, -0.11130521587222358, 0], [-0.7469428500124782, 0.06638382830047417, 0], [-0.7334664337409533, 0.05290741202894935, 0], [-0.7334664337409533, 0.079860244571999, 0], [-0.7304716745695035, -0.1043174444721737, 0], [-0.7304716745695035, 0.05290741202894935, 0], [-0.7120039930122286, 0.079860244571999, 0], [-0.7105066134265037, -0.12428250561517343, 0], [-0.7090092338407787, 0.07936111804342401, 0], [-0.6905415522835039, 0.05939605690042426, 0], [-0.6905415522835039, -0.1043174444721737, 0], [-0.6541053156975294, 0.008485150985774906, 0], [-0.6406288994260045, -0.00499126528574992, 0], [-0.6406288994260045, 0.02196156725729973, 0], [-0.6401297728974296, -0.10531569752932365, 0], [-0.6401297728974296, -0.00499126528574992, 0], [-0.6401297728974296, 0.02196156725729973, 0], [-0.6401297728974296, 0.04641876715747442, 0], [-0.6201647117544298, -0.12528075867232338, 0], [-0.6201647117544298, 0.06638382830047418, 0], [-0.60019965061143, -0.004492138757174928, 0], [-0.60019965061143, -0.10531569752932365, 0], [-0.60019965061143, 0.04641876715747442, 0], [-0.60019965061143, 0.02196156725729973, 0], [-0.5882206139256302, 0.02196156725729973, 0], [-0.5882206139256302, -0.004492138757174928, 0], [-0.5702520588969304, 0.008485150985774906, 0], [-0.5363114549538308, 0.05939605690042426, 0], [-0.5353132018966809, -0.10481657100074869, 0], [-0.5353132018966809, 0.00549039181432494, 0], [-0.5346502994759172, 0.05127745195907164, 0], [-0.5346502994759171, 0.06772523084601946, 0], [-0.5234667456950338, 0.07876840529074121, 0], [-0.5234667456950338, 0.040093898178188175, 0], [-0.5153481407536811, -0.12478163214374842, 0], [-0.5153481407536811, 0.02545545295732469, 0], [-0.5153481407536811, 0.038432742700274525, 0], [-0.5153481407536811, 0.080359371100574, 0], [-0.5072295358123284, 0.040093898178188175, 0], [-0.5072295358123284, 0.07869821562266036, 0], [-0.496045982031445, 0.05127745195907163, 0], [-0.496045982031445, 0.0675146618417769, 0], [-0.49438482655353144, 0.05939605690042426, 0], [-0.4953830796106814, -0.10481657100074869, 0], [-0.4953830796106814, 0.00549039181432494, 0], [-0.4609433491390068, -0.09683054654354872, 0], [-0.4559520838532569, 0.009982530571499896, 0], [-0.4489643124532069, -0.12228599950087343, 0], [-0.44247566758173207, -0.12328425255802342, 0], [-0.44247566758173207, -0.0034938857000249442, 0], [-0.44247566758173207, 0.02345894684302472, 0], [-0.4275018717244822, -0.0034938857000249442, 0], [-0.4240079860244572, -0.1103069628150736, 0], [-0.4030446718243075, 0.02345894684302472, 0], [-0.4000499126528575, 0.022959820314449715, 0], [-0.39905165959570754, 0.022959820314449715, 0], [-0.3980534065385576, -0.037434489643124486, 0], [-0.3735962066383829, 0.00549039181432494, 0], [-0.36710756176690795, -0.11080608934364856, 0], [-0.3656101821811829, -0.11380084851509852, 0], [-0.36511105565260804, -0.11429997504367354, 0], [-0.363613676066883, -0.1162964811579735, 0], [-0.36261542300973304, -0.11729473421512349, 0], [-0.36061891689543313, -0.11879211380084846, 0], [-0.36011979036685815, -0.11929124032942345, 0], [-0.35712503119540817, -0.12078861991514843, 0], [-0.3561267781382582, -0.12078861991514843, 0], [-0.3536311454953833, -0.12178687297229841, 0], [-0.35263289243823337, -0.12178687297229841, 0], [-0.3491390067382084, -0.12228599950087343, 0], [-0.3491390067382082, -0.05240828550037433, 0], [-0.34564512103818357, -0.12178687297229841, 0], [-0.3446468679810336, -0.12178687297229841, 0], [-0.3421512353381587, -0.12078861991514843, 0], [-0.34115298228100877, -0.12078861991514843, 0], [-0.3381582231095588, -0.11929124032942345, 0], [-0.3376590965809838, -0.11879211380084846, 0], [-0.3356625904666838, -0.11729473421512349, 0], [-0.33466433740953394, -0.1162964811579735, 0], [-0.3331669578238089, -0.11429997504367354, 0], [-0.3326678312952339, -0.11380084851509852, 0], [-0.3311704517095089, -0.11080608934364856, 0], [-0.3246818068380335, 0.00549039181432494, 0], [-0.30022460693785935, -0.03743448964312446, 0], [-0.29922635388070884, 0.022959820314449715, 0], [-0.2742700274519597, -0.11030696281507354, 0], [-0.2732717743948092, 0.004991265285749934, 0], [-0.255802345894685, -0.12328425255802339, 0], [-0.24931370102321004, -0.1222859995008734, 0], [-0.2368355378088346, -0.09732967307212377, 0], [-0.20888445220863516, -0.08335413027202397, 0], [-0.20389318692288505, 0.00149737958572499, 0], [-0.1879211380084853, -0.01297728974294982, 0], [-0.1879211380084853, 0.017469428500124777, 0], [-0.1689543299226356, -0.08135762415772398, 0], [-0.1639630646368857, -0.12428250561517346, 0], [-0.15298228100823585, -0.03743448964312454, 0], [-0.15298228100823574, 0.022959820314449715, 0], [-0.14998752183678576, -0.006987771400049916, 0], [-0.1469927626653359, -0.09782879960069873, 0], [-0.14349887696531094, -0.061891689543299204, 0], [-0.13651110556526103, -0.006987771400049916, 0], [-0.1350137259795361, -0.047417020214624406, 0], [-0.11155477913651135, -0.06887946094334912, 0], [-0.11155477913651135, -0.019965061142999736, 0], [-0.10905914649363635, -0.10082355877214874, 0], [-0.08560019965061172, -0.12428250561517346, 0], [-0.07112553032193669, -0.015472922385824808, 0], [-0.07112553032193669, -0.08235587721487396, 0], [-0.06763164462191196, -0.10880958322934865, 0], [-0.04417269777888688, 0.06638382830047417, 0], [-0.030696281507362144, 0.05290741202894935, 0], [-0.030696281507362144, 0.079860244571999, 0], [-0.025705016221612254, -0.1043174444721737, 0], [-0.025705016221612254, 0.05290741202894935, 0], [-0.009233840778637314, 0.079860244571999, 0], [-0.006239081607187447, 0.07936111804342401, 0], [-0.005739955078612469, -0.12428250561517343, 0], [-0.005240828550037491, 0.07936111804342401, 0], [0.014225106064387205, 0.05939605690042426, 0], [0.014225106064387205, -0.1043174444721737, 0], [0.025205889693036942, -0.037933616171699505, 0], [0.03169453456451188, -0.020464187671574728, 0], [0.0356875467931117, -0.061891689543299176, 0], [0.06563513850761149, -0.03643623658597453, 0], [0.06663339156476145, 0.017968555028699797, 0], [0.07362116296481136, -0.11529822810082352, 0], [0.08210631395058621, 0.025455452957324706, 0], [0.09158971799351101, -0.12478163214374839, 0], [0.0950836036935363, -0.005490391814324912, 0], [0.10107312203643604, 0.007486897928624922, 0], [0.107062640379336, -0.09233840778637382, 0], [0.11055652607936084, -0.10531569752932365, 0], [0.13551285250811063, -0.05190915897179934, 0], [0.17544297479410997, -0.056401297728974266, 0], [0.1944097828799598, -0.04442226104317443, 0], [0.2063888195657595, -0.03244322435737457, 0], [0.20638881956575972, -0.05739955078612428, 0], [0.21088095832293452, 0.025954579485899684, 0], [0.2118792113800847, -0.001497379585724976, 0], [0.21237833790865968, -0.09283753431494879, 0], [0.21237833790865968, -0.12428250561517343, 0], [0.2453206887946091, -0.03244322435737457, 0], [0.25630147242325907, -0.0863488894434739, 0], [0.25630147242325907, -0.1182929872722735, 0], [0.2597953581232839, -0.05739955078612428, 0], [0.262790117294734, -0.056900424257549286, 0], [0.2657848764661839, -0.056900424257549286, 0], [0.273271774394809, -0.09882705265784875, 0], [0.28325430496630855, -0.03943099575742451, 0], [0.3042176191664585, 0.011979036685799877, 0], [0.31769403543798336, -0.001497379585724948, 0], [0.31769403543798336, 0.025455452957324706, 0], [0.32268530072373336, -0.10481657100074866, 0], [0.32268530072373336, -0.001497379585724948, 0], [0.3386573496381329, 0.025455452957324706, 0], [0.34165210880958274, 0.024956326428749696, 0], [0.3426503618667327, 0.024956326428749696, 0], [0.34265036186673314, -0.12478163214374839, 0], [0.36161716995258253, 0.011479910157224871, 0], [0.3626154230097327, -0.02395807337159967, 0], [0.3626154230097327, -0.10481657100074866, 0], [0.38058397803843236, 0.025954579485899684, 0], [0.38357873720988245, -0.0079860244571999, 0], [0.40304467182430703, -0.0079860244571999, 0], [0.40354379835288223, 0.025954579485899684, 0], [0.4230097329673068, 0.006488644871474924, 0], [0.4878961816820564, 0.03244322435737461, 0], [0.491889193910656, 0.04242575492887449, 0], [0.49188919391065644, 0.11829298727227353, 0], [0.4953830796106813, 0.10880958322934865, 0], [0.502869977539306, 0.08435238332917395, 0], [0.502869977539306, 0.07436985275767409, 0], [0.5103568754679308, 0.08435238332917395, 0], [0.5103568754679308, 0.07436985275767409, 0], [0.512852508110806, 0.025954579485899684, 0], [0.5133516346393809, 0.03643623658597456, 0], [0.5148490142251059, 0.11529822810082357, 0], [0.516845520339406, 0.1207886199151485, 0], [0.5263289243823308, 0.07986024457199901, 0], [0.5263289243823308, 0.080359371100574, 0], [0.5318193161966556, 0.10082355877214874, 0], [0.5353132018966804, 0.05490391814324933, 0], [0.5442974794110307, 0.10282006488644872, 0], [0.5477913651110555, 0.05490391814324933, 0], [0.5587721487397055, -0.00249563264287496, 0], [0.5587721487397055, -0.08035937110057399, 0], [0.5687546793112053, -0.0718742201147991, 0], [0.5687546793112053, -0.043923134514599435, 0], [0.5687546793112053, -0.03543798352882452, 0], [0.5687546793112053, -0.010980783628649852, 0], [0.5987022710257048, -0.043923134514599435, 0], [0.5987022710257048, -0.03543798352882452, 0], [0.6006987771400047, -0.010980783628649852, 0], [0.6006987771400047, -0.00249563264287496, 0], [0.6021961567257297, -0.08035937110057399, 0], [0.6021961567257297, -0.0718742201147991, 0], [0.6071874220114797, -0.08035937110057396, 0], [0.6081856750686296, -0.024457199900174635, 0], [0.6191664586972794, -0.08035937110057396, 0], [0.6196655852258546, -0.02445719990017469, 0], [0.6196655852258546, -0.024457199900174635, 0], [0.6271524831544795, -0.05190915897179931, 0], [0.6271524831544795, -0.06788120788619911, 0], [0.6276516096830547, -0.03643623658597453, 0], [0.6331420014973794, -0.05839780384327423, 0], [0.6331420014973796, -0.04542051410032441, 0], [0.6336411280259546, -0.04542051410032441, 0], [0.6391315198402792, -0.06788120788619911, 0], [0.6391315198402798, -0.05141003244322435, 0], [0.6391315198402798, -0.03643623658597453, 0], [0.6471175442974793, -0.08035937110057396, 0], [0.6471175442974797, -0.024457199900174663, 0], [0.6580983279261297, -0.024457199900174663, 0], [0.6585974544547044, -0.08035937110057396, 0], [0.663588719740454, -0.024457199900174635, 0], [0.663588719740454, -0.03194409782879955, 0], [0.6720738707262288, -0.010980783628649824, 0], [0.6720738707262288, -0.024457199900174635, 0], [0.6720738707262288, -0.03194409782879955, 0], [0.6720738707262288, -0.06239081607187417, 0], [0.6760668829548289, -0.076865485400549, 0], [0.6820564012977288, -0.061891689543299176, 0], [0.6820564012977288, -0.031944097828799575, 0], [0.6820564012977288, -0.024457199900174663, 0], [0.6820564012977288, -0.008485150985774865, 0], [0.6870476665834788, -0.08135762415772392, 0], [0.6895432992263537, -0.07287247317194906, 0], [0.6955328175692534, -0.07237334664337407, 0], [0.6960319440978286, -0.07986024457199897, 0], [0.6965310706264034, -0.031944097828799575, 0], [0.6965310706264034, -0.024457199900174663, 0], [0.702520588969304, -0.053406538557524315, 0], [0.7125031195408036, -0.05440479161467427, 0], [0.7125031195408036, -0.05390566508609931, 0], [0.7125923289292888, -0.05440479161467427, 0], [0.7130022460693783, -0.046917893686049414, 0], [0.7284751684552033, -0.030446718243074596, 0], [0.7284751684552035, -0.02345894684302468, 0], [0.7299725480409285, -0.08135762415772398, 0], [0.7314699276266534, -0.07337159970052405, 0], [0.7424507112553032, -0.046917893686049414, 0], [0.7469428500124782, -0.0703768405290741, 0], [0.7484402295982033, -0.077863738457699, 0], [0.7509358622410782, -0.05440479161467427, 0], [0.7514349887696534, -0.04991265285749934, 0], [0.7644122785126028, -0.02445719990017469, 0], [0.7649114050411778, -0.03943099575742451, 0], [0.7649114050411776, -0.03943099575742451, 0], [0.7649114050411776, -0.079860244571999, 0], [0.7733965560269527, -0.02445719990017469, 0], [0.7738956825555279, -0.03344147741452458, 0], [0.7748939356126774, -0.079860244571999, 0], [0.7748939356126774, -0.046418767157474394, 0], [0.7753930621412526, -0.04192662840029947, 0], [0.7888694784127772, -0.03144497130022461, 0], [0.7923633641128025, -0.022959820314449687, 0], [0.8018467681557273, -0.079860244571999, 0], [0.8018467681557273, -0.0479161467431994, 0], [0.8118292987272271, -0.079860244571999, 0], [0.8118292987272271, -0.046418767157474394, 0], [0.8248065884701767, -0.053406538557524315, 0], [0.8352882455702517, -0.05190915897179934, 0], [0.8487646618417766, -0.08185675068629897, 0], [0.8497629148989265, -0.02345894684302468, 0], [0.8517594210132267, -0.0723733466433741, 0], [0.8517594210132267, -0.030446718243074624, 0], [0.8662340903419012, -0.04242575492887446, 0], [0.8667332168704762, 0.001497379585725004, 0], [0.8667332168704762, -0.031944097828799575, 0], [0.8667332168704764, -0.046917893686049414, 0], [0.8667332168704764, -0.060394309957574256, 0], [0.8672323433990516, -0.046917893686049414, 0], [0.8672323433990516, -0.0559021712003993, 0], [0.8677314699276264, -0.07087596705764909, 0], [0.8682305964562016, -0.08035937110057396, 0], [0.8767157474419762, -0.06588470177189915, 0], [0.8767157474419762, 0.001497379585725004, 0], [0.8772148739705514, -0.08035937110057396, 0], [0.8891939106563516, -0.053406538557524315, 0], [0.8991764412278507, -0.046917893686049414, 0], [0.8991764412278511, -0.05440479161467427, 0], [0.8991764412278511, -0.05390566508609931, 0], [0.8992656506163363, -0.05440479161467427, 0], [0.9146493636136757, -0.030446718243074596, 0], [0.9151484901422511, -0.02345894684302468, 0], [0.916645869727976, -0.08135762415772398, 0], [0.918143249313701, -0.07337159970052405, 0], [0.9286249064137755, -0.046917893686049414, 0], [0.9336161716995257, -0.0703768405290741, 0], [0.9351135512852509, -0.077863738457699, 0], [0.9376091839281258, -0.05440479161467427, 0], [0.938108310456701, -0.04991265285749934, 0], [0.9475917144996253, -0.053406538557524315, 0], [0.9575742450711253, -0.05190915897179934, 0], [0.9715497878712251, -0.08185675068629897, 0], [0.9725480409283751, -0.02345894684302468, 0], [0.9740454205141, -0.0723733466433741, 0], [0.9740454205141, -0.030446718243074624, 0], [0.9885200898427748, -0.04242575492887446, 0], [0.9890192163713498, -0.046917893686049414, 0], [0.9890192163713498, -0.060394309957574256, 0], [0.9895183428999248, 0.001497379585725004, 0], [0.9895183428999248, -0.031944097828799575, 0], [0.989518342899925, -0.046917893686049414, 0], [0.989518342899925, -0.0559021712003993, 0], [0.990516595957075, -0.07087596705764909, 0], [0.99101572248565, -0.08035937110057396, 0], [0.9995008734714248, -0.06588470177189915, 0], [0.9995008734714248, 0.001497379585725004, 0], [1, -0.08035937110057396, 0]];
 exports.cells = [[0, 1, 23], [0, 23, 24], [0, 24, 25], [0, 25, 987], [1, 22, 23], [1, 984, 22], [2, 3, 11], [2, 11, 984], [3, 10, 11], [3, 983, 10], [4, 5, 8], [4, 8, 9], [4, 9, 983], [5, 6, 7], [5, 7, 8], [5, 992, 6], [7, 991, 8], [9, 10, 983], [9, 982, 10], [11, 12, 984], [12, 13, 20], [12, 20, 21], [12, 21, 985], [12, 985, 984], [13, 14, 986], [13, 981, 14], [13, 986, 20], [14, 15, 19], [14, 19, 986], [15, 16, 18], [15, 18, 19], [15, 990, 16], [16, 17, 18], [17, 989, 18], [22, 984, 985], [23, 988, 24], [26, 27, 57], [26, 57, 59], [26, 59, 996], [27, 56, 57], [27, 1000, 56], [28, 29, 56], [28, 56, 1000], [29, 1002, 56], [30, 31, 1005], [30, 1005, 1002], [31, 1003, 1005], [32, 33, 39], [32, 39, 1003], [33, 1006, 39], [34, 35, 38], [34, 38, 39], [34, 39, 1006], [35, 36, 38], [35, 1008, 36], [36, 37, 38], [37, 1009, 38], [39, 1005, 1003], [40, 41, 45], [40, 45, 1004], [40, 46, 47], [40, 47, 1001], [40, 1001, 1005], [40, 1004, 46], [41, 42, 43], [41, 43, 44], [41, 44, 45], [41, 1010, 42], [43, 1007, 44], [48, 49, 55], [48, 55, 1001], [49, 999, 55], [50, 51, 54], [50, 54, 55], [50, 55, 999], [51, 52, 54], [51, 995, 52], [52, 53, 54], [53, 993, 54], [55, 998, 1001], [56, 1002, 998], [57, 58, 59], [57, 994, 58], [59, 997, 996], [60, 61, 91], [60, 91, 92], [60, 92, 93], [60, 93, 1021], [61, 90, 91], [61, 1020, 90], [62, 63, 67], [62, 67, 1019], [62, 1019, 1020], [63, 64, 66], [63, 66, 67], [63, 1027, 64], [64, 65, 66], [65, 1026, 66], [68, 69, 83], [68, 83, 1015], [68, 1015, 1019], [69, 82, 83], [69, 1018, 82], [70, 71, 1017], [70, 80, 81], [70, 81, 1018], [70, 1017, 80], [71, 78, 79], [71, 79, 1017], [71, 1022, 78], [71, 1023, 1022], [72, 73, 74], [72, 74, 75], [72, 75, 76], [72, 76, 77], [72, 77, 1023], [73, 1024, 74], [75, 1025, 76], [77, 1022, 1023], [81, 1016, 1018], [82, 1018, 1016], [84, 85, 89], [84, 89, 1014], [84, 1014, 1015], [85, 86, 88], [85, 88, 89], [85, 1012, 86], [86, 87, 88], [87, 1011, 88], [90, 1020, 1014], [91, 1013, 92], [94, 95, 103], [94, 103, 104], [94, 104, 105], [94, 105, 1029], [94, 1029, 1031], [95, 102, 103], [95, 1036, 102], [96, 97, 100], [96, 100, 101], [96, 101, 1036], [97, 98, 99], [97, 99, 100], [97, 1038, 98], [99, 1039, 100], [101, 1035, 1036], [102, 1036, 1035], [105, 1028, 1029], [106, 107, 1032], [106, 1030, 1028], [106, 1032, 1030], [107, 108, 122], [107, 122, 1032], [108, 109, 121], [108, 121, 122], [109, 1033, 121], [109, 1034, 1033], [110, 111, 120], [110, 120, 1033], [110, 1033, 1034], [111, 112, 119], [111, 119, 120], [112, 1037, 119], [112, 1041, 1037], [113, 114, 115], [113, 115, 1041], [114, 1040, 115], [115, 116, 124], [115, 124, 1037], [115, 1037, 1041], [116, 123, 124], [116, 1030, 123], [116, 1031, 1030], [117, 1028, 118], [117, 1029, 1028], [118, 1028, 1030], [123, 1030, 1032], [125, 126, 130], [125, 130, 1047], [125, 1047, 1043], [126, 127, 128], [126, 128, 129], [126, 129, 130], [126, 1042, 127], [128, 1046, 129], [131, 132, 144], [131, 144, 145], [131, 145, 1047], [132, 1051, 144], [132, 1052, 1051], [133, 134, 143], [133, 143, 1052], [134, 135, 142], [134, 142, 143], [135, 1056, 142], [136, 137, 141], [136, 141, 1054], [136, 1054, 1056], [137, 138, 140], [137, 140, 141], [137, 1055, 138], [138, 139, 140], [139, 1053, 140], [142, 1056, 1054], [143, 1051, 1052], [145, 1050, 1047], [146, 147, 153], [146, 153, 1043], [146, 1043, 1050], [147, 1049, 153], [148, 149, 152], [148, 152, 153], [148, 153, 1049], [149, 150, 151], [149, 151, 152], [149, 1048, 150], [151, 1045, 152], [153, 1044, 1043], [154, 155, 177], [154, 177, 178], [154, 178, 179], [154, 179, 1073], [155, 156, 1065], [155, 176, 177], [155, 1065, 176], [156, 157, 192], [156, 180, 181], [156, 181, 1063], [156, 192, 193], [156, 193, 1068], [156, 1063, 1065], [156, 1068, 180], [157, 190, 191], [157, 191, 1069], [157, 1067, 190], [157, 1069, 192], [157, 1072, 1067], [158, 159, 163], [158, 163, 1070], [158, 1070, 1072], [159, 160, 161], [159, 161, 162], [159, 162, 163], [159, 1074, 160], [161, 1071, 162], [164, 165, 188], [164, 188, 189], [164, 189, 1070], [165, 1059, 1061], [165, 1061, 188], [166, 167, 187], [166, 187, 1059], [167, 168, 187], [168, 169, 186], [168, 186, 187], [169, 1057, 1058], [169, 1058, 186], [170, 171, 185], [170, 185, 1058], [170, 1058, 1057], [171, 172, 185], [172, 173, 184], [172, 184, 185], [173, 1060, 1062], [173, 1062, 184], [174, 175, 183], [174, 183, 1062], [174, 1062, 1060], [175, 1065, 183], [177, 1064, 178], [180, 194, 195], [180, 195, 1066], [180, 1068, 194], [182, 183, 1065], [182, 1065, 1063], [187, 1061, 1059], [189, 1067, 1072], [189, 1072, 1070], [196, 197, 205], [196, 205, 206], [196, 206, 207], [196, 207, 1077], [196, 1077, 1079], [197, 204, 205], [197, 1083, 204], [198, 199, 202], [198, 202, 203], [198, 203, 1083], [199, 200, 201], [199, 201, 202], [199, 1085, 200], [201, 1086, 202], [203, 1082, 1083], [204, 1083, 1082], [207, 1075, 1077], [208, 209, 224], [208, 224, 1076], [208, 1076, 1078], [208, 1078, 1075], [209, 210, 224], [210, 211, 223], [210, 223, 224], [211, 1080, 223], [211, 1081, 1080], [212, 213, 222], [212, 222, 1080], [212, 1080, 1081], [213, 214, 221], [213, 221, 222], [214, 1084, 221], [214, 1088, 1084], [215, 216, 217], [215, 217, 1088], [216, 1087, 217], [217, 218, 226], [217, 226, 1084], [217, 1084, 1088], [218, 225, 226], [218, 1078, 225], [218, 1079, 1078], [219, 1075, 220], [219, 1077, 1075], [220, 1075, 1078], [225, 1078, 1076], [227, 228, 250], [227, 250, 251], [227, 251, 252], [227, 252, 1105], [228, 229, 1099], [228, 249, 250], [228, 1099, 249], [229, 230, 265], [229, 254, 1095], [229, 265, 266], [229, 266, 1100], [229, 1095, 1099], [229, 1100, 254], [230, 263, 264], [230, 264, 1101], [230, 1097, 263], [230, 1101, 265], [230, 1104, 1097], [231, 232, 236], [231, 236, 1102], [231, 1102, 1104], [232, 233, 234], [232, 234, 235], [232, 235, 236], [232, 1106, 233], [234, 1103, 235], [237, 238, 261], [237, 261, 262], [237, 262, 1102], [238, 1091, 1093], [238, 1093, 261], [239, 240, 260], [239, 260, 1093], [239, 1093, 1091], [240, 241, 260], [241, 242, 259], [241, 259, 260], [242, 1089, 1090], [242, 1090, 259], [243, 244, 258], [243, 258, 1090], [243, 1090, 1089], [244, 245, 258], [245, 246, 257], [245, 257, 258], [246, 1092, 1094], [246, 1094, 257], [247, 248, 256], [247, 256, 1094], [247, 1094, 1092], [248, 255, 256], [248, 1099, 255], [250, 1098, 251], [253, 254, 1100], [253, 267, 268], [253, 268, 1096], [253, 1100, 267], [255, 1099, 1095], [262, 1097, 1102], [269, 290, 270], [269, 291, 290], [269, 790, 291], [269, 794, 790], [270, 290, 787], [270, 787, 271], [271, 787, 272], [272, 787, 273], [273, 787, 274], [274, 787, 275], [275, 787, 276], [276, 289, 277], [276, 787, 289], [277, 289, 278], [278, 288, 279], [278, 289, 288], [279, 287, 280], [279, 288, 287], [280, 286, 281], [280, 287, 286], [281, 286, 788], [281, 788, 793], [282, 791, 283], [282, 793, 791], [284, 791, 285], [285, 791, 788], [291, 790, 292], [292, 324, 293], [292, 325, 324], [292, 790, 325], [293, 324, 786], [293, 786, 785], [294, 323, 295], [294, 785, 786], [294, 786, 323], [295, 322, 296], [295, 323, 322], [296, 321, 297], [296, 322, 321], [297, 320, 784], [297, 321, 320], [298, 319, 299], [298, 779, 319], [298, 784, 779], [299, 317, 300], [299, 318, 317], [299, 319, 318], [300, 316, 301], [300, 317, 316], [301, 316, 780], [301, 780, 783], [302, 782, 303], [302, 783, 782], [304, 782, 305], [305, 782, 781], [306, 780, 307], [306, 781, 782], [306, 782, 780], [307, 315, 308], [307, 780, 315], [308, 314, 309], [308, 315, 314], [309, 314, 777], [309, 777, 778], [310, 776, 311], [310, 778, 776], [312, 776, 313], [313, 776, 777], [320, 779, 784], [326, 330, 792], [326, 790, 330], [326, 792, 327], [327, 792, 789], [328, 789, 329], [329, 789, 792], [330, 790, 794], [330, 794, 331], [331, 794, 795], [332, 795, 796], [332, 796, 333], [334, 796, 335], [335, 796, 794], [336, 357, 337], [336, 922, 357], [336, 927, 922], [337, 355, 338], [337, 356, 355], [337, 357, 356], [338, 354, 339], [338, 355, 354], [339, 354, 919], [339, 919, 920], [340, 348, 341], [340, 349, 348], [340, 920, 349], [341, 348, 921], [341, 921, 925], [342, 344, 926], [342, 345, 344], [342, 925, 345], [342, 926, 343], [345, 346, 923], [345, 347, 346], [345, 925, 347], [347, 925, 921], [349, 920, 918], [350, 918, 920], [350, 920, 351], [351, 920, 917], [352, 917, 920], [352, 920, 353], [353, 920, 919], [358, 922, 928], [358, 928, 359], [359, 928, 924], [360, 924, 361], [361, 924, 928], [362, 927, 363], [362, 928, 927], [364, 914, 915], [364, 915, 365], [365, 915, 912], [366, 368, 911], [366, 910, 368], [366, 911, 367], [366, 912, 910], [368, 910, 369], [369, 374, 908], [369, 375, 374], [369, 910, 375], [370, 908, 371], [371, 908, 906], [372, 906, 907], [372, 907, 373], [374, 907, 908], [376, 390, 377], [376, 391, 390], [376, 910, 391], [377, 389, 378], [377, 390, 389], [378, 388, 379], [378, 389, 388], [379, 387, 380], [379, 388, 387], [380, 386, 381], [380, 387, 386], [381, 386, 916], [381, 916, 909], [382, 909, 383], [383, 909, 913], [384, 913, 916], [384, 916, 385], [391, 910, 915], [392, 915, 393], [393, 915, 914], [394, 396, 802], [394, 801, 396], [394, 802, 395], [394, 804, 801], [396, 801, 397], [397, 403, 799], [397, 801, 403], [398, 797, 399], [398, 799, 797], [400, 797, 401], [401, 797, 798], [402, 798, 799], [402, 799, 403], [404, 418, 405], [404, 419, 418], [404, 801, 419], [405, 417, 406], [405, 418, 417], [406, 416, 407], [406, 417, 416], [407, 415, 408], [407, 416, 415], [408, 414, 409], [408, 415, 414], [409, 414, 806], [409, 806, 800], [410, 800, 411], [411, 800, 803], [412, 803, 806], [412, 806, 413], [419, 801, 805], [420, 805, 421], [421, 805, 804], [422, 423, 424], [422, 424, 825], [424, 831, 825], [425, 426, 427], [425, 427, 840], [425, 840, 831], [428, 429, 441], [428, 441, 825], [428, 825, 840], [429, 430, 439], [429, 439, 440], [429, 440, 441], [430, 431, 438], [430, 438, 439], [431, 824, 438], [431, 839, 824], [432, 433, 434], [432, 434, 839], [434, 830, 839], [435, 436, 437], [435, 437, 824], [435, 824, 830], [442, 546, 443], [442, 547, 546], [442, 885, 547], [443, 545, 444], [443, 546, 545], [444, 544, 879], [444, 545, 544], [444, 879, 445], [445, 450, 878], [445, 878, 882], [445, 879, 450], [446, 882, 447], [447, 878, 880], [447, 882, 878], [448, 878, 449], [448, 880, 878], [450, 879, 451], [451, 879, 452], [452, 542, 453], [452, 543, 542], [452, 879, 543], [453, 542, 866], [454, 487, 455], [454, 866, 487], [455, 486, 852], [455, 487, 486], [455, 852, 456], [456, 852, 457], [457, 847, 853], [457, 852, 847], [458, 853, 459], [459, 853, 851], [460, 847, 461], [460, 851, 853], [460, 853, 847], [461, 847, 850], [462, 847, 849], [462, 849, 463], [462, 850, 847], [464, 847, 465], [464, 849, 847], [465, 470, 846], [465, 471, 470], [465, 847, 471], [466, 842, 467], [466, 846, 842], [468, 842, 469], [469, 842, 845], [470, 845, 846], [472, 847, 852], [472, 852, 473], [473, 484, 474], [473, 485, 484], [473, 852, 485], [474, 483, 475], [474, 484, 483], [475, 482, 841], [475, 483, 482], [476, 480, 477], [476, 481, 480], [476, 841, 848], [476, 848, 481], [477, 480, 844], [477, 844, 843], [478, 843, 479], [479, 843, 844], [482, 848, 841], [487, 866, 488], [488, 540, 489], [488, 541, 540], [488, 866, 541], [489, 540, 877], [489, 877, 854], [490, 494, 856], [490, 854, 862], [490, 856, 491], [490, 862, 494], [491, 492, 855], [491, 493, 492], [491, 856, 493], [494, 496, 495], [494, 497, 496], [494, 499, 497], [494, 862, 499], [495, 496, 857], [497, 498, 858], [497, 499, 498], [499, 862, 859], [500, 502, 501], [500, 859, 502], [501, 502, 860], [502, 859, 862], [502, 862, 503], [503, 504, 861], [503, 505, 504], [503, 506, 505], [503, 507, 506], [503, 508, 507], [503, 862, 508], [509, 862, 864], [509, 864, 510], [510, 511, 863], [510, 512, 511], [510, 864, 512], [513, 862, 869], [513, 864, 862], [513, 867, 514], [513, 869, 867], [514, 867, 865], [515, 865, 867], [515, 867, 516], [517, 520, 518], [517, 867, 520], [518, 520, 868], [519, 868, 520], [520, 867, 869], [521, 526, 522], [521, 869, 526], [522, 526, 523], [523, 526, 524], [524, 526, 525], [525, 526, 870], [526, 869, 527], [527, 528, 871], [527, 529, 528], [527, 869, 872], [527, 872, 529], [530, 532, 531], [530, 535, 532], [530, 869, 535], [530, 872, 869], [531, 532, 873], [532, 535, 533], [533, 534, 874], [533, 535, 534], [535, 539, 875], [535, 869, 539], [536, 538, 537], [536, 875, 538], [537, 538, 876], [538, 875, 539], [539, 869, 877], [541, 866, 542], [547, 885, 881], [548, 550, 549], [548, 551, 550], [548, 881, 551], [549, 550, 883], [551, 552, 884], [551, 553, 552], [551, 881, 885], [551, 885, 553], [554, 556, 933], [554, 602, 931], [554, 603, 602], [554, 775, 603], [554, 931, 932], [554, 932, 556], [554, 933, 555], [556, 599, 557], [556, 932, 599], [557, 598, 558], [557, 599, 598], [558, 598, 938], [558, 938, 559], [559, 938, 941], [560, 941, 942], [560, 942, 561], [562, 938, 945], [562, 942, 938], [562, 945, 563], [563, 945, 943], [564, 943, 945], [564, 945, 565], [566, 597, 567], [566, 938, 597], [566, 945, 938], [567, 596, 568], [567, 597, 596], [568, 595, 569], [568, 596, 595], [569, 594, 934], [569, 595, 594], [570, 592, 571], [570, 593, 592], [570, 934, 593], [571, 591, 572], [571, 592, 591], [572, 591, 573], [573, 590, 929], [573, 591, 590], [574, 589, 575], [574, 929, 930], [574, 930, 589], [575, 588, 576], [575, 589, 588], [576, 587, 577], [576, 588, 587], [577, 586, 937], [577, 587, 586], [578, 585, 579], [578, 936, 585], [578, 937, 936], [579, 584, 940], [579, 585, 584], [580, 584, 939], [580, 939, 581], [580, 940, 584], [581, 939, 944], [582, 939, 583], [582, 944, 939], [586, 936, 937], [590, 930, 929], [593, 934, 935], [594, 935, 934], [600, 931, 601], [600, 932, 931], [604, 627, 899], [604, 899, 605], [604, 904, 627], [605, 626, 606], [605, 899, 626], [606, 625, 607], [606, 626, 625], [607, 625, 900], [607, 900, 903], [608, 624, 609], [608, 903, 624], [609, 623, 610], [609, 624, 623], [610, 622, 611], [610, 623, 622], [611, 620, 893], [611, 621, 620], [611, 622, 897], [611, 897, 621], [612, 619, 613], [612, 893, 894], [612, 894, 619], [613, 618, 889], [613, 619, 618], [614, 618, 888], [614, 887, 615], [614, 888, 887], [614, 889, 618], [616, 887, 888], [616, 888, 617], [620, 894, 893], [624, 903, 900], [627, 901, 628], [627, 904, 901], [628, 901, 629], [629, 650, 630], [629, 901, 650], [630, 649, 895], [630, 650, 649], [631, 648, 632], [631, 649, 891], [631, 891, 648], [631, 895, 649], [632, 645, 890], [632, 646, 645], [632, 647, 646], [632, 648, 647], [633, 643, 634], [633, 644, 643], [633, 890, 644], [634, 641, 635], [634, 642, 641], [634, 643, 642], [635, 641, 892], [635, 892, 896], [636, 896, 898], [636, 898, 637], [638, 898, 639], [639, 896, 640], [639, 898, 896], [640, 896, 892], [644, 890, 886], [645, 886, 890], [651, 653, 652], [651, 656, 653], [651, 657, 656], [651, 901, 657], [653, 656, 902], [654, 656, 905], [654, 902, 656], [654, 905, 655], [657, 901, 904], [658, 690, 659], [658, 691, 690], [658, 960, 691], [658, 961, 960], [659, 690, 959], [659, 959, 958], [660, 958, 959], [660, 959, 661], [661, 959, 955], [662, 955, 663], [663, 955, 953], [664, 950, 665], [664, 953, 955], [664, 955, 950], [665, 950, 952], [666, 668, 951], [666, 950, 668], [666, 951, 667], [666, 952, 950], [668, 950, 669], [669, 674, 948], [669, 675, 674], [669, 950, 675], [670, 948, 671], [671, 948, 946], [672, 946, 947], [672, 947, 673], [674, 947, 948], [676, 950, 955], [676, 955, 956], [676, 956, 677], [677, 686, 678], [677, 687, 686], [677, 956, 687], [678, 685, 679], [678, 686, 685], [679, 684, 949], [679, 685, 684], [680, 949, 681], [681, 949, 954], [682, 954, 957], [682, 957, 683], [684, 957, 949], [688, 955, 689], [688, 956, 955], [689, 955, 959], [692, 694, 962], [692, 695, 694], [692, 960, 695], [692, 962, 693], [695, 960, 961], [696, 726, 697], [696, 727, 726], [696, 820, 727], [697, 726, 816], [697, 816, 819], [698, 704, 699], [698, 705, 704], [698, 819, 705], [699, 704, 813], [699, 813, 818], [700, 818, 701], [701, 818, 815], [702, 813, 703], [702, 815, 813], [705, 819, 812], [706, 712, 707], [706, 713, 712], [706, 812, 713], [707, 712, 808], [707, 808, 809], [708, 807, 709], [708, 809, 807], [710, 807, 711], [711, 807, 808], [713, 812, 811], [714, 724, 715], [714, 725, 724], [714, 811, 725], [715, 723, 716], [715, 724, 723], [716, 722, 717], [716, 723, 722], [717, 722, 817], [717, 817, 810], [718, 810, 719], [719, 810, 814], [720, 814, 817], [720, 817, 721], [725, 811, 816], [727, 820, 821], [728, 731, 822], [728, 821, 731], [728, 822, 729], [730, 822, 731], [731, 821, 820], [732, 733, 772], [732, 772, 773], [732, 773, 774], [732, 774, 964], [733, 771, 772], [733, 971, 771], [733, 972, 971], [734, 735, 770], [734, 770, 972], [735, 736, 768], [735, 768, 769], [735, 769, 770], [736, 767, 768], [736, 978, 767], [737, 738, 766], [737, 766, 980], [737, 980, 978], [738, 739, 975], [738, 765, 766], [738, 975, 765], [739, 746, 975], [739, 970, 746], [740, 741, 742], [740, 742, 745], [740, 745, 969], [740, 969, 970], [741, 968, 742], [742, 743, 745], [743, 744, 745], [743, 967, 744], [746, 747, 976], [746, 763, 764], [746, 764, 975], [746, 970, 969], [746, 976, 763], [747, 748, 762], [747, 762, 976], [748, 761, 762], [748, 977, 761], [749, 750, 759], [749, 759, 760], [749, 760, 979], [749, 979, 977], [750, 758, 759], [750, 973, 974], [750, 974, 758], [751, 752, 755], [751, 755, 756], [751, 756, 974], [751, 974, 973], [752, 753, 754], [752, 754, 755], [752, 966, 753], [754, 965, 755], [756, 757, 974], [761, 977, 979], [767, 978, 980], [770, 971, 972], [772, 963, 773], [776, 778, 777], [780, 782, 783], [788, 791, 793], [794, 796, 795], [797, 799, 798], [800, 806, 803], [801, 804, 805], [807, 809, 808], [810, 817, 814], [811, 812, 816], [812, 819, 816], [813, 815, 818], [823, 827, 828], [823, 828, 833], [823, 833, 826], [824, 839, 830], [825, 831, 840], [826, 833, 835], [826, 834, 829], [826, 835, 837], [826, 836, 834], [826, 837, 836], [829, 834, 832], [836, 837, 838], [842, 846, 845], [854, 869, 862], [854, 877, 869], [906, 908, 907], [909, 916, 913], [910, 912, 915], [922, 927, 928], [938, 942, 941], [946, 948, 947], [949, 957, 954], [998, 1002, 1005], [998, 1005, 1001], [1014, 1020, 1015], [1015, 1020, 1019], [1043, 1047, 1050], [1097, 1104, 1102]];
-},{}],188:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 'use strict';
 
 exports.positions = [[-0.36325983553692365, 0.05180788455336988, 0], [-0.7168655272492744, -0.11744195420831986, 0], [-0.7168655272492744, -0.07797887778136081, 0], [-0.7168655272492744, -0.06900999677523377, 0], [-0.7168655272492744, -0.0685262818445662, 0], [-0.7168655272492744, -0.06755885198323115, 0], [-0.7168655272492744, -0.06707513705256367, 0], [-0.7168655272492744, -0.06561391486617218, 0], [-0.7168655272492744, -0.06244961302805545, 0], [-0.7168655272492744, -0.06062560464366334, 0], [-0.7168655272492744, -0.05486133505320866, 0], [-0.7168655272492744, -0.01817961947758789, 0], [-0.7168655272492744, 0.03107868429538859, 0], [-0.7168655272492744, 0.06776039987100936, 0], [-0.7189515478877782, 0.08540591744598516, 0], [-0.734007175104805, 0.10046154466301194, 0], [-0.7577696710738472, 0.10046154466301194, 0], [-0.7728252982908739, 0.08540591744598516, 0], [-0.7749113189293777, 0.0675386971944534, 0], [-0.7749113189293777, 0.02944614640438568, 0], [-0.7749113189293777, -0.021706707513705265, 0], [-0.7749113189293777, -0.05979925830377302, 0], [-0.7758082070299903, -0.07794612624959694, 0], [-0.7828019187358917, -0.09700751773621412, 0], [-0.7963257820058046, -0.10935736455981941, 0], [-0.8158960819090616, -0.11535845291841339, 0], [-0.8395137153337633, -0.11535845291841339, 0], [-0.8589857606417285, -0.10935736455981941, 0], [-0.8726229945985167, -0.09700751773621412, 0], [-0.8797603091744599, -0.07794612624959694, 0], [-0.8806836504353435, -0.05979925830377302, 0], [-0.8806836504353435, -0.021706707513705265, 0], [-0.8806836504353435, 0.02944614640438568, 0], [-0.8806836504353435, 0.0675386971944534, 0], [-0.8824371170590133, 0.08457957110609482, 0], [-0.8953764914543696, 0.09919179297000968, 0], [-0.9068143340857788, 0.10227547565301515, 0], [-0.9090112060625605, 0.10253748790712673, 0], [-0.9134553369880684, 0.10254756530151564, 0], [-0.9332070299903257, 0.10254756530151564, 0], [-0.9597307320219284, 0.10254756530151564, 0], [-0.9794824250241857, 0.10254756530151564, 0], [-0.9893885037084811, 0.10118711705901322, 0], [-0.9986395517574976, 0.09193606900999679, 0], [-0.9986395517574976, 0.0783315865849726, 0], [-0.9893885037084811, 0.06908053853595615, 0], [-0.9756328603676233, 0.06772009029345374, 0], [-0.9450378910029023, 0.06772009029345374, 0], [-0.9380844888745565, 0.06217752337955499, 0], [-0.9380844888745565, 0.026906643018381166, 0], [-0.9380844888745565, -0.020457110609480817, 0], [-0.9380844888745565, -0.055727990970654624, 0], [-0.9360967228313447, -0.0858052341986456, 0], [-0.920874818606901, -0.12420262616897774, 0], [-0.8921693606901, -0.14902576789745242, 0], [-0.8517942800709448, -0.1610606961464044, 0], [-0.8055667526604321, -0.16129877458884234, 0], [-0.7673935827152532, -0.15110045146726864, 0], [-0.7516930022573364, -0.14219203482747497, 0], [-0.7516930022573364, -0.14352225088681067, 0], [-0.750332554014834, -0.15062681393098998, 0], [-0.7410815059658175, -0.15987786198000645, 0], [-0.7315583682683006, -0.16123831022250884, 0], [-0.7195864237342793, -0.16123831022250884, 0], [-0.7100632860367624, -0.15987786198000645, 0], [-0.7008122379877458, -0.15062681393098998, 0], [-0.7008122379877458, -0.13702233150596577, 0], [-0.7100632860367624, -0.12777128345694932, 0], [0.42820612302483063, -0.11621251209287323, 0], [0.41356870767494347, -0.0964608190906159, 0], [0.39391274991938086, -0.0699371170590132, 0], [0.3792753345694937, -0.05018542405675588, 0], [0.38292083198968063, -0.04083360206385036, 0], [0.40908174782328266, -0.013342470170912607, 0], [0.4181413253789099, -0.0035673976136729917, 0], [0.42219243792325045, 0.003970493389229298, 0], [0.42056997742663627, 0.01874395356336667, 0], [0.4069856497903901, 0.031078684295388608, 0], [0.3926858271525311, 0.0321065785230571, 0], [0.38274951628506915, 0.026906643018381204, 0], [0.37121089970977095, 0.01545872299258306, 0], [0.34017252499193784, -0.01868348919703319, 0], [0.3318082876491453, -0.02788415027410507, 0], [0.32604401805869054, -0.03923129635601415, 0], [0.32685020960980316, -0.060383747178329554, 0], [0.33616172202515293, -0.07731376975169296, 0], [0.34038415027410474, -0.08293947516930017, 0], [0.3537870848113509, -0.10180939616252817, 0], [0.3717853111899383, -0.1271490043534343, 0], [0.38518824572718424, -0.1460189253466623, 0], [0.3907408900354721, -0.15334771041599476, 0], [0.4019872621734921, -0.16013987423411796, 0], [0.42005603031280203, -0.15912205740083837, 0], [0.4330961786520473, -0.14545711060948077, 0], [0.4348597226701063, -0.13029063205417601, 0], [0.43211867139632365, -0.12184577555627214, 0], [0.2850088681070624, 0.10254756530151564, 0], [0.28448484359883897, 0.10254756530151564, 0], [0.2831344727507257, 0.10264833924540472, 0], [0.28119961302805563, 0.10309174459851661, 0], [0.27589890357949054, 0.10319251854240567, 0], [0.25683247339567883, 0.10319251854240567, 0], [0.2456969525959367, 0.10183207029990325, 0], [0.2364459045469205, 0.0925810222508868, 0], [0.2364459045469205, 0.07897653982586263, 0], [0.2456969525959367, 0.06972549177684619, 0], [0.25350693324733964, 0.06836504353434376, 0], [0.25794098677845856, 0.06836504353434376, 0], [0.2589487262173493, 0.06608345846098033, 0], [0.2589487262173493, 0.04961636619235731, 0], [0.2589487262173493, 0.004083864076104492, 0], [0.2589487262173493, -0.07051404788777813, 0], [0.2589487262173493, -0.11604655000403095, 0], [0.2589487262173493, -0.13251364227265397, 0], [0.2608029667849081, -0.1459005159625927, 0], [0.27418574653337613, -0.1589205095130603, 0], [0.2953079651725252, -0.1589205095130603, 0], [0.30869074492099324, -0.1459005159625927, 0], [0.31054498548855203, -0.1324194816188326, 0], [0.31054498548855203, -0.1152727950661077, 0], [0.31054498548855203, -0.06786117381489844, 0], [0.31054498548855203, 0.009815382134795233, 0], [0.31054498548855203, 0.05722700338600453, 0], [0.31054498548855203, 0.07437368993872943, 0], [0.3091543050628829, 0.08785472428248954, 0], [0.2962149306675266, 0.10087471783295711, 0], [-0.6249596904224445, 0.10264833924540472, 0], [-0.6268945501451145, 0.10309174459851661, 0], [-0.6321952595936795, 0.10319251854240567, 0], [-0.6512616897774912, 0.10319251854240567, 0], [-0.6623972105772331, 0.10183207029990325, 0], [-0.6716482586262497, 0.0925810222508868, 0], [-0.6716482586262497, 0.07897653982586263, 0], [-0.6623972105772331, 0.06972549177684619, 0], [-0.6549903257013867, 0.06836504353434376, 0], [-0.6523298935827153, 0.06836504353434376, 0], [-0.6517252499193809, 0.06608345846098033, 0], [-0.6517252499193809, 0.04961636619235731, 0], [-0.6517252499193809, 0.004083864076104492, 0], [-0.6517252499193809, -0.07051404788777813, 0], [-0.6517252499193809, -0.11604655000403095, 0], [-0.6517252499193809, -0.13251364227265397, 0], [-0.6498710093518221, -0.1459005159625927, 0], [-0.6364882296033538, -0.1589205095130603, 0], [-0.6153660109642052, -0.1589205095130603, 0], [-0.6019832312157369, -0.1459005159625927, 0], [-0.600128990648178, -0.1324194816188326, 0], [-0.600128990648178, -0.1152727950661077, 0], [-0.600128990648178, -0.06786117381489844, 0], [-0.600128990648178, 0.009815382134795233, 0], [-0.600128990648178, 0.05722700338600453, 0], [-0.600128990648178, 0.07437368993872943, 0], [-0.6014995162850694, 0.08749193808448888, 0], [-0.6139148661722025, 0.10051193163495646, 0], [-0.39832916801031926, 0.016839326023863285, 0], [-0.39069932078361824, 0.028301102466946153, 0], [-0.3805992522573364, 0.032339618268300556, 0], [-0.36690155393421486, 0.032339618268300556, 0], [-0.356801485407933, 0.028301102466946153, 0], [-0.349171638181232, 0.016839326023863285, 0], [-0.3479522734601742, 0.0009699492099322759, 0], [-0.3479522734601742, -0.038004373589164774, 0], [-0.3479522734601742, -0.09034132134795231, 0], [-0.3479522734601742, -0.12931564414704935, 0], [-0.349171638181232, -0.1451850209609803, 0], [-0.356801485407933, -0.1566467974040632, 0], [-0.36690155393421486, -0.16068531320541757, 0], [-0.3805992522573364, -0.16068531320541757, 0], [-0.39069932078361824, -0.1566467974040632, 0], [-0.39832916801031926, -0.1451850209609803, 0], [-0.399548532731377, -0.12931564414704935, 0], [-0.399548532731377, -0.09034132134795231, 0], [-0.399548532731377, -0.038004373589164774, 0], [-0.399548532731377, 0.0009699492099322759, 0], [-0.015889531602708895, -0.12008475088681068, 0], [-0.028763402934537385, -0.08393209851660756, 0], [-0.04605117300870687, -0.03538425104804902, 0], [-0.05892504434053536, 0.0007684013221541495, 0], [-0.06627902289584009, 0.01606336665591746, 0], [-0.08371291518864887, 0.028035311189938725, 0], [-0.10515761044824246, 0.028045388584327646, 0], [-0.12214809738793964, 0.01633545630441795, 0], [-0.12873619396968705, 0.0038797968397291218, 0], [-0.13737755965817466, -0.01657731376975168, 0], [-0.1489816792970009, -0.04404829087391162, 0], [-0.15762304498548851, -0.06450540148339248, 0], [-0.16033890277329899, -0.06450540148339248, 0], [-0.1689802684617866, -0.04404829087391162, 0], [-0.18058438810061272, -0.01657731376975168, 0], [-0.18922575378910034, 0.0038797968397291218, 0], [-0.19581385037084809, 0.01633545630441795, 0], [-0.21280433731054504, 0.028045388584327646, 0], [-0.22385923895517568, 0.029667849080941635, 0], [-0.22438326346339887, 0.029667849080941635, 0], [-0.2257336343115125, 0.029768623024830698, 0], [-0.22766849403418254, 0.030212028377942624, 0], [-0.23659706546275394, 0.030312802321831686, 0], [-0.27162608835859403, 0.030312802321831686, 0], [-0.28638947113834246, 0.028952354079329272, 0], [-0.295640519187359, 0.019701306030312817, 0], [-0.295640519187359, 0.006096823605288638, 0], [-0.28638947113834246, -0.003154224443727798, 0], [-0.27656401160915833, -0.004514672686230232, 0], [-0.26326185101580135, -0.004514672686230232, 0], [-0.26209539261528547, -0.009696972750725568, 0], [-0.2739111375362787, -0.04267524588842302, 0], [-0.2897779950016125, -0.08696035553047397, 0], [-0.30159373992260574, -0.11993862866817147, 0], [-0.30484118026443086, -0.13524871009351813, 0], [-0.2967389551757499, -0.15260198323121568, 0], [-0.28593598839084156, -0.15875927120283775, 0], [-0.2816228635923895, -0.1592832957110609, 0], [-0.27204933892292815, -0.15813447275072554, 0], [-0.25963398903579504, -0.1495082231538213, 0], [-0.25428289261528547, -0.13848859238955175, 0], [-0.2451124637213803, -0.11274084972589486, 0], [-0.23279788777813615, -0.07816530957755558, 0], [-0.22362745888423097, -0.0524175669138987, 0], [-0.22046819574330856, -0.05244527974846822, 0], [-0.2095342228313447, -0.07836937681393097, 0], [-0.19485145920670743, -0.11318173573040943, 0], [-0.18391748629474358, -0.1391058327958722, 0], [-0.18171557562076757, -0.1441470493389229, 0], [-0.18074814575943243, -0.14608190906159296, 0], [-0.1801636568848759, -0.1471501128668171, 0], [-0.17972025153176396, -0.147593518219929, 0], [-0.17913576265720743, -0.14827878103837466, 0], [-0.1781683327958723, -0.14968961625282162, 0], [-0.17730167687842646, -0.15065704611415665, 0], [-0.17677765237020326, -0.1511810706223798, 0], [-0.17581022250886813, -0.15204772653982582, 0], [-0.17439938729442117, -0.15301515640116087, 0], [-0.17371412447597556, -0.1535996452757174, 0], [-0.17327071912286374, -0.15404305062882936, 0], [-0.17220251531763975, -0.15462753950338595, 0], [-0.1702676555949696, -0.155594969364721, 0], [-0.1692901483392455, -0.15607868429538851, 0], [-0.1690281360851339, -0.15607868429538851, 0], [-0.16865527249274448, -0.15607868429538851, 0], [-0.1685544985488554, -0.15607868429538851, 0], [-0.16811109319574358, -0.15607868429538851, 0], [-0.16714366333440867, -0.15646162528216698, 0], [-0.1656522089648501, -0.15698564979039012, 0], [-0.1644026120606259, -0.15736859077716855, 0], [-0.1638785875524027, -0.15736859077716855, 0], [-0.16251813930990044, -0.15746936472105766, 0], [-0.1603212673331188, -0.15791277007416957, 0], [-0.15791277007416993, -0.15800346662366974, 0], [-0.15553450499838817, -0.1577414543695582, 0], [-0.15408336020638558, -0.15736859077716855, 0], [-0.15355933569816238, -0.15736859077716855, 0], [-0.15230973879393817, -0.15725773943889057, 0], [-0.1508182844243796, -0.1565523218316671, 0], [-0.1498508545630447, -0.15607868429538851, 0], [-0.14940744920993287, -0.15607868429538851, 0], [-0.1493066752660438, -0.15607868429538851, 0], [-0.14929659787165483, -0.15607868429538851, 0], [-0.14903458561754324, -0.15607868429538851, 0], [-0.14769429216381869, -0.15559496936472095, 0], [-0.14575943244114853, -0.1546275395033859, 0], [-0.14469122863592454, -0.15404305062882936, 0], [-0.14424782328281271, -0.1535996452757174, 0], [-0.14356256046436688, -0.1530151564011608, 0], [-0.14215172524991992, -0.15204772653982576, 0], [-0.141184295388585, -0.1511810706223798, 0], [-0.14066027088036182, -0.15065704611415665, 0], [-0.13979361496291598, -0.14968961625282162, 0], [-0.13882618510158085, -0.14827878103837466, 0], [-0.1382416962270242, -0.147593518219929, 0], [-0.13779829087391238, -0.1471501128668171, 0], [-0.13721380199935584, -0.14608190906159296, 0], [-0.1362463721380207, -0.1441470493389229, 0], [-0.13404446146404458, -0.1391058327958722, 0], [-0.12311048855208062, -0.11318173573040943, 0], [-0.10842772492744335, -0.07836937681393089, 0], [-0.0974937520154795, -0.052445279748468146, 0], [-0.09433448887455731, -0.05241756691389863, 0], [-0.08516405998065213, -0.0781653095775555, 0], [-0.07284948403740799, -0.11274084972589475, 0], [-0.0636790551435028, -0.13848859238955166, 0], [-0.058327958722993456, -0.14950822315382128, 0], [-0.045912608835860125, -0.15813447275072548, 0], [-0.03633908416639875, -0.15919259916156064, 0], [-0.03202595936794661, -0.1584871815543372, 0], [-0.02085012899064853, -0.15288415027410504, 0], [-0.012485891647855518, -0.1356114962915188, 0], [0.5559496936472104, -0.07362544340535308, 0], [0.5578845533698806, -0.07406884875846499, 0], [0.5618172565301514, -0.07416962270235407, 0], [0.5806871775233793, -0.07416962270235407, 0], [0.6060267857142856, -0.07416962270235407, 0], [0.6248967067075135, -0.07416962270235407, 0], [0.6288294098677842, -0.07415954530796516, 0], [0.6307642695904543, -0.07389753305385362, 0], [0.6323363431151239, -0.07352466946146403, 0], [0.6349967752337953, -0.07352466946146403, 0], [0.6464749274427599, -0.07253708481135118, 0], [0.6570965011286678, -0.06209690422444372, 0], [0.656590112060625, -0.035099564656562394, 0], [0.6442301878426311, -0.0055123347307319956, 0], [0.6203215696549498, 0.01802845856175429, 0], [0.5857107586262491, 0.03165309577555628, 0], [0.5428805727990966, 0.031674510238632714, 0], [0.5069168715736854, 0.01751829047081587, 0], [0.4819274528377939, -0.008881963479522718, 0], [0.4689402108190903, -0.04553092752337954, 0], [0.4685736455981937, -0.08405554659787164, 0], [0.4796487020316025, -0.11650475653015153, 0], [0.5034212753950333, -0.1429075298290874, 0], [0.5415843679458234, -0.15842671718800383, 0], [0.5754595291841338, -0.15938406965494997, 0], [0.6144792002579811, -0.15406320541760715, 0], [0.632215414382457, -0.15010278942276684, 0], [0.6443889068042565, -0.13734480812641078, 0], [0.6432098516607547, -0.12082795872299258, 0], [0.6323061109319574, -0.11191954208319896, 0], [0.6144792002579811, -0.11288697194453398, 0], [0.5754595291841338, -0.11865124153498866, 0], [0.5558375826346338, -0.11904929861335047, 0], [0.5381693909222831, -0.11220674782328278, 0], [0.5259732243631083, -0.09968054659787162, 0], [0.5196723335214444, -0.08267998226378584, 0], [0.5184214769429214, -0.06179458239277651, 0], [0.5266748629474358, -0.02438225572395999, 0], [0.5410049177684615, -0.00848201688971299, 0], [0.5562772089648498, -0.002731603716543034, 0], [0.5741519872621732, -0.002700741696226987, 0], [0.5886886286681712, -0.008465011286681704, 0], [0.6000206586584971, -0.01906643018381167, 0], [0.6073015761044822, -0.0335375685262818, 0], [0.601297968397291, -0.04192196065785227, 0], [0.5667123508545626, -0.04192196065785227, 0], [0.5528962431473714, -0.04316148016768781, 0], [0.5446126249596899, -0.05144509835536923, 0], [0.5439172847468556, -0.06327595936794583, 0], [0.5500846501128667, -0.07164019671073846, 0], [0.20025798129635586, -0.10270376491454365, 0], [0.20025798129635586, -0.0790722750725572, 0], [0.20025798129635586, -0.0473385601418897, 0], [0.20025798129635586, -0.023707070299903245, 0], [0.1985171114156723, -0.007304851257658801, 0], [0.18481689374395338, 0.011874949613028062, 0], [0.15799590857787815, 0.023647865607868447, 0], [0.11865879958078018, 0.0290417909545308, 0], [0.08743147371815518, 0.028559335698161888, 0], [0.0563930990003223, 0.023681876813930983, 0], [0.04148863269912928, 0.02034625927120285, 0], [0.030383344082554054, 0.010329329248629471, 0], [0.030020557884553156, -0.005341019026120619, 0], [0.040400274105127254, -0.01602305707836182, 0], [0.05699774266365676, -0.015559496936472106, 0], [0.09069654950016104, -0.010238632699129295, 0], [0.10107626572073514, -0.009029345372460501, 0], [0.11304821025475631, -0.009029345372460501, 0], [0.12815422444372748, -0.009563447275072549, 0], [0.14240491978394032, -0.013973566994517878, 0], [0.14734536238310203, -0.020818637133182858, 0], [0.14801676878426284, -0.035673976136730096, 0], [0.14801676878426284, -0.07912770074169621, 0], [0.14721309658174753, -0.09616605530474037, 0], [0.14101046033537545, -0.10934224846823602, 0], [0.12918463801999303, -0.11967661641405995, 0], [0.11234027329893559, -0.12559708561754268, 0], [0.09044461464043829, -0.12471783295711054, 0], [0.07583239277652343, -0.11335053208642369, 0], [0.07438754635601397, -0.09973471259271204, 0], [0.07864272613672973, -0.09121679498548858, 0], [0.09262133182844234, -0.08308811673653659, 0], [0.10899709771041555, -0.07922847468558525, 0], [0.11762334730731983, -0.07072315382134793, 0], [0.11559527168655248, -0.05627217026765554, 0], [0.10865698564979032, -0.050386971944534, 0], [0.09756933247339528, -0.04821025475653016, 0], [0.08008631288294077, -0.05047137012254106, 0], [0.054341089567881085, -0.057905967832957136, 0], [0.03473299943566577, -0.0714172343598839, 0], [0.023741081505965544, -0.09312142252499193, 0], [0.023554649709770725, -0.11923824975814257, 0], [0.032964416720412615, -0.1386120404708159, 0], [0.04917642494356622, -0.1523626451144792, 0], [0.06946977789422748, -0.15964356256046439, 0], [0.09990728797162163, -0.1590313608513383, 0], [0.13525878748790698, -0.14454006772009032, 0], [0.15316631731699437, -0.14181917123508547, 0], [0.1624967248468232, -0.15525359762979685, 0], [0.17398243510157996, -0.15995218276362463, 0], [0.19035190261206036, -0.15910190261206061, 0], [0.20286802644308244, -0.14862141244759755, 0], [0.20433932602386307, -0.1350773943889068, 0], [0.2010540954530795, -0.11992099322799095, 0], [0.8089729119638824, 0.033537568526281855, 0], [0.7885762657207349, 0.033537568526281855, 0], [0.775667123508545, 0.032156965495001646, 0], [0.7629897613673005, 0.02238189293776205, 0], [0.7562379071267331, 0.022452434698484378, 0], [0.7435605449854881, 0.031159303450499862, 0], [0.7345412770074164, 0.03224766204450179, 0], [0.734017252499193, 0.03224766204450179, 0], [0.73266688165108, 0.032348435988390864, 0], [0.7307320219284099, 0.03279184134150277, 0], [0.7255320864237338, 0.032892615285391835, 0], [0.7069090615930345, 0.032892615285391835, 0], [0.6958743147371815, 0.03153216704288942, 0], [0.6866232666881651, 0.022281118993872986, 0], [0.6866232666881651, 0.008676636568848789, 0], [0.6958743147371815, -0.0005744114801676294, 0], [0.7036842953885842, -0.0019348597226700635, 0], [0.7081183489197032, -0.0019348597226700635, 0], [0.7091260883585939, -0.0076714164785552565, 0], [0.7091260883585939, -0.04417677765237016, 0], [0.7091260883585939, -0.09319826265720728, 0], [0.7091260883585939, -0.12970362383102219, 0], [0.7109803289261529, -0.14654546920348271, 0], [0.724363108674621, -0.15956546275395028, 0], [0.7454853273137696, -0.15956546275395028, 0], [0.7588681070622376, -0.14654546920348271, 0], [0.7607223476297966, -0.1309507013866494, 0], [0.7607223476297966, -0.10238128829409861, 0], [0.7607223476297966, -0.06401664785553046, 0], [0.7607223476297966, -0.035447234762979674, 0], [0.7649548532731376, -0.0277329893582715, 0], [0.7835778781038372, -0.013544018058690733, 0], [0.7917405675588518, -0.010319251854240567, 0], [0.8090333763302158, -0.010319251854240567, 0], [0.8229804901644624, -0.009392131570461135, 0], [0.8367260561109315, -0.0005240245082231429, 0], [0.8368268300548214, 0.018300548210254765, 0], [0.8235246694614635, 0.03160270880361177, 0], [-0.47033215091905844, 0.028377942599161567, 0], [-0.48097387939374403, 0.028377942599161567, 0], [-0.48339245404708164, 0.0333158658497259, 0], [-0.48339245404708164, 0.055042728152208995, 0], [-0.48524669461464043, 0.0710859400193486, 0], [-0.4986294743631088, 0.08410593356981619, 0], [-0.5197516930022574, 0.08410593356981619, 0], [-0.5331344727507257, 0.0710859400193486, 0], [-0.5349887133182845, 0.055042728152208995, 0], [-0.5349887133182845, 0.0333158658497259, 0], [-0.5350894872621735, 0.028377942599161567, 0], [-0.5355328926152854, 0.028377942599161567, 0], [-0.5424359077716866, 0.027017494356659153, 0], [-0.551686955820703, 0.017766446307642715, 0], [-0.551686955820703, 0.00416196388261852, 0], [-0.5424359077716866, -0.005089084166397898, 0], [-0.5355328926152854, -0.006449532408900332, 0], [-0.5350894872621735, -0.006449532408900332, 0], [-0.5349887133182845, -0.012019812157368564, 0], [-0.5349887133182845, -0.047467046920348234, 0], [-0.5349887133182845, -0.09506761931634956, 0], [-0.5349887133182845, -0.13051485407932925, 0], [-0.5331344727507257, -0.1471904224443727, 0], [-0.5197516930022574, -0.16021041599484032, 0], [-0.4986294743631088, -0.16021041599484032, 0], [-0.48524669461464043, -0.1471904224443727, 0], [-0.48339245404708164, -0.13048714124475969, 0], [-0.48339245404708164, -0.09486355207997414, 0], [-0.48339245404708164, -0.04702616091583356, 0], [-0.48339245404708164, -0.011402571751048056, 0], [-0.48097387939374403, -0.005804579168010299, 0], [-0.47033215091905844, -0.005804579168010299, 0], [-0.4577555627217027, -0.00490769106739758, 0], [-0.4461464043856821, 0.0031743792325056434, 0], [-0.4461464043856821, 0.019126894550145133, 0], [-0.4577555627217027, 0.027470977104159962, 0], [0.9323706062560466, 0.05225128990648179, 0], [0.9469022089648496, 0.047837391164140625, 0], [0.9630134432441146, 0.04768371089970979, 0], [0.9741136931634953, 0.05191117784585619, 0], [0.9825257981296354, 0.06286278619800066, 0], [0.9831518562560462, 0.07702530433731056, 0], [0.9779242079168007, 0.08655600008061916, 0], [0.9634694453402124, 0.094616655917446, 0], [0.950116897774911, 0.0960980328926153, 0], [0.9434658174782324, 0.0960980328926153, 0], [0.9419542083198964, 0.09811351177039666, 0], [0.9419542083198964, 0.10698161883263466, 0], [0.9434658174782324, 0.108997097710416, 0], [0.950116897774911, 0.108997097710416, 0], [0.961131489841986, 0.11023661722025155, 0], [0.9738176697033212, 0.11702752136407611, 0], [0.978672454450177, 0.12510707231538215, 0], [0.9781118993872939, 0.1372843437600774, 0], [0.9673895517574973, 0.14742220251531765, 0], [0.9502378265075779, 0.14821831667204127, 0], [0.9372984521122218, 0.1435424056755885, 0], [0.9315744920993227, 0.14251451144792004, 0], [0.9284706546275396, 0.15093921315704611, 0], [0.9337108997097712, 0.15627015478877782, 0], [0.9504393743953563, 0.16165148339245405, 0], [0.9600128990648178, 0.16252821670428894, 0], [0.9685736455981944, 0.1618618490003225, 0], [0.9820068123186074, 0.1570524125282167, 0], [0.9933892292808773, 0.14375403095775557, 0], [0.9940341825217671, 0.12360931957433087, 0], [0.9824250241857464, 0.10873508545630442, 0], [0.9722670106417284, 0.10373669783940666, 0], [0.9722670106417284, 0.10329329248629475, 0], [0.9831304417929698, 0.09924217994195422, 0], [0.9978434376007739, 0.08287649145436957, 0], [0.999276946952596, 0.06359717631409224, 0], [0.9935378708481135, 0.05032272855530476, 0], [0.9821756086746212, 0.040101731296356025, 0], [0.9653110891647858, 0.034324864962915196, 0], [0.9446448726217347, 0.034303450499838774, 0], [0.92809779103515, 0.03897936149629153, 0], [0.9234118026443083, 0.04393743953563369, 0], [0.9269590454692032, 0.052805546597871664, 0], [-1, 0.08513382779748468, 0], [-0.982586262495969, 0.06772009029345374, 0], [-0.982586262495969, 0.10254756530151564, 0], [-0.9380844888745565, -0.06127055788455337, 0], [-0.9380844888745565, 0.06772009029345374, 0], [-0.9103514995162851, 0.10254756530151564, 0], [-0.9058368268300548, 0.1019026120606256, 0], [-0.8806836504353435, 0.07352466946146405, 0], [-0.8806836504353435, -0.06578523057078364, 0], [-0.8277974846823606, -0.11609158336020638, 0], [-0.8277974846823606, -0.16252821670428894, 0], [-0.7749113189293777, -0.06578523057078364, 0], [-0.7749113189293777, 0.07352466946146405, 0], [-0.7516930022573364, -0.14382457271847787, 0], [-0.7516930022573364, -0.1418897129958078, 0], [-0.7458884230893261, 0.10254756530151564, 0], [-0.7342792647533054, -0.16123831022250884, 0], [-0.7168655272492744, 0.07352466946146405, 0], [-0.7168655272492744, -0.1264108352144469, 0], [-0.7168655272492744, -0.16123831022250884, 0], [-0.6994517897452435, -0.14382457271847787, 0], [-0.673008706868752, 0.0857787810383747, 0], [-0.6555949693647212, 0.06836504353434376, 0], [-0.6555949693647212, 0.10319251854240567, 0], [-0.6517252499193809, -0.1347952273460174, 0], [-0.6517252499193809, 0.06836504353434376, 0], [-0.6278619800064495, 0.10319251854240567, 0], [-0.6259271202837795, -0.1605933569816188, 0], [-0.6239922605611093, 0.10254756530151564, 0], [-0.600128990648178, 0.07674943566591422, 0], [-0.600128990648178, -0.1347952273460174, 0], [-0.5530474040632054, 0.010964205095130618, 0], [-0.5356336665591745, -0.006449532408900332, 0], [-0.5356336665591745, 0.028377942599161567, 0], [-0.5349887133182845, -0.13608513382779744, 0], [-0.5349887133182845, -0.006449532408900332, 0], [-0.5349887133182845, 0.028377942599161567, 0], [-0.5349887133182845, 0.059980651402773304, 0], [-0.5091905836826831, -0.16188326346339885, 0], [-0.5091905836826831, 0.08577878103837472, 0], [-0.48339245404708164, -0.005804579168010299, 0], [-0.48339245404708164, -0.13608513382779744, 0], [-0.48339245404708164, 0.059980651402773304, 0], [-0.48339245404708164, 0.028377942599161567, 0], [-0.4679135762657207, 0.028377942599161567, 0], [-0.4679135762657207, -0.005804579168010299, 0], [-0.4446952595936795, 0.010964205095130618, 0], [-0.4008384392131571, 0.07674943566591422, 0], [-0.399548532731377, -0.13544018058690743, 0], [-0.399548532731377, 0.007094485649790401, 0], [-0.39869195420831993, 0.06625886810706226, 0], [-0.39869195420831993, 0.08751209287326668, 0], [-0.3842409706546277, 0.10178168332795873, 0], [-0.3842409706546277, 0.05180788455336988, 0], [-0.3737504030957757, -0.16123831022250884, 0], [-0.3737504030957757, 0.03289261528539182, 0], [-0.3737504030957757, 0.049661399548532735, 0], [-0.3737504030957757, 0.10383747178329572, 0], [-0.36325983553692365, 0.10169098677845857, 0], [-0.3488088519832313, 0.06625886810706225, 0], [-0.3488088519832313, 0.08724000322476622, 0], [-0.34666236697839414, 0.07674943566591422, 0], [-0.3479522734601742, -0.13544018058690743, 0], [-0.3479522734601742, 0.007094485649790401, 0], [-0.3034504998387617, -0.1251209287326668, 0], [-0.2970009674298614, 0.012899064817800737, 0], [-0.2879716220574009, -0.15801354401805864, 0], [-0.2795872299258304, -0.1593034504998387, 0], [-0.2795872299258304, -0.004514672686230232, 0], [-0.2795872299258304, 0.030312802321831686, 0], [-0.2602386326991294, -0.004514672686230232, 0], [-0.2557239600128991, -0.1425346662366978, 0], [-0.22863592389551757, 0.030312802321831686, 0], [-0.22476620445017736, 0.029667849080941635, 0], [-0.2234762979683973, 0.029667849080941635, 0], [-0.22218639148661723, -0.0483714930667526, 0], [-0.19058368268300552, 0.007094485649790401, 0], [-0.18219929055143502, -0.1431796194775878, 0], [-0.18026443082876487, -0.147049338922928, 0], [-0.1796194775878749, -0.14769429216381808, 0], [-0.17768461786520484, -0.1502741051273782, 0], [-0.17639471138342477, -0.15156401160915828, 0], [-0.17381489841986464, -0.15349887133182838, 0], [-0.17316994517897466, -0.1541438245727184, 0], [-0.16930022573363446, -0.15607868429538851, 0], [-0.1680103192518545, -0.15607868429538851, 0], [-0.16478555304740428, -0.15736859077716855, 0], [-0.16349564656562432, -0.15736859077716855, 0], [-0.15898097387939414, -0.15801354401805864, 0], [-0.1589809738793938, -0.0677200902934537, 0], [-0.15446630119316396, -0.15736859077716855, 0], [-0.153176394711384, -0.15736859077716855, 0], [-0.14995162850693378, -0.15607868429538851, 0], [-0.14866172202515382, -0.15607868429538851, 0], [-0.14479200257981362, -0.1541438245727184, 0], [-0.14414704933892364, -0.15349887133182838, 0], [-0.1415672363753634, -0.15156401160915828, 0], [-0.14027732989358344, -0.1502741051273782, 0], [-0.13834247017091328, -0.14769429216381808, 0], [-0.1376975169300233, -0.147049338922928, 0], [-0.13576265720735303, -0.1431796194775878, 0], [-0.12737826507578198, 0.007094485649790401, 0], [-0.09577555627217094, -0.04837149306675256, 0], [-0.0944856497903902, 0.029667849080941635, 0], [-0.06223798774588918, -0.14253466623669772, 0], [-0.060948081264108445, 0.00644953240890035, 0], [-0.03837471783295798, -0.15930345049983866, 0], [-0.029990325701387377, -0.1580135440180586, 0], [-0.01386649467913581, -0.1257658819735569, 0], [0.02225088681070586, -0.10770719122863594, 0], [0.028700419219606532, 0.0019348597226701177, 0], [0.049338922928087614, -0.0167687842631409, 0], [0.049338922928087614, 0.022573363431151235, 0], [0.07384714608190879, -0.10512737826507577, 0], [0.08029667849080924, -0.16059335698161883, 0], [0.09448564979038987, -0.04837149306675267, 0], [0.09448564979039009, 0.029667849080941635, 0], [0.09835536923573018, -0.009029345372460501, 0], [0.1022250886810705, -0.1264108352144469, 0], [0.10673976136730068, -0.07997420187036437, 0], [0.11576910673976104, -0.009029345372460501, 0], [0.11770396646243109, -0.06127055788455337, 0], [0.14801676878426284, -0.08900354724282487, 0], [0.14801676878426284, -0.0257981296356014, 0], [0.15124153498871307, -0.13028055465978716, 0], [0.1815543373105446, -0.16059335698161883, 0], [0.20025798129635586, -0.0199935504675911, 0], [0.20025798129635586, -0.10641728474685584, 0], [0.20477265398258582, -0.14059980651402773, 0], [0.23508545630441802, 0.0857787810383747, 0], [0.2524991938084489, 0.06836504353434376, 0], [0.2524991938084489, 0.10319251854240567, 0], [0.2589487262173493, -0.1347952273460174, 0], [0.2589487262173493, 0.06836504353434376, 0], [0.2802321831667205, 0.10319251854240567, 0], [0.2841019026120606, 0.10254756530151564, 0], [0.2847468558529507, -0.1605933569816188, 0], [0.28539180909384076, 0.10254756530151564, 0], [0.31054498548855203, 0.07674943566591422, 0], [0.31054498548855203, -0.1347952273460174, 0], [0.32473395678813266, -0.049016446307642667, 0], [0.33311834891970316, -0.026443082876491435, 0], [0.3382779748468234, -0.07997420187036433, 0], [0.3769751693002257, -0.047081586584972565, 0], [0.37826507578200563, 0.023218316672041304, 0], [0.387294421154466, -0.14898419864559814, 0], [0.3982586262495966, 0.032892615285391835, 0], [0.4105127378265072, -0.1612383102225088, 0], [0.41502741051273784, -0.007094485649790365, 0], [0.422766849403418, 0.009674298613350552, 0], [0.43050628829409865, -0.11931634956465653, 0], [0.4350209609803286, -0.13608513382779744, 0], [0.4672686230248304, -0.06707513705256367, 0], [0.5188648822960333, -0.07287971622057397, 0], [0.5433731054498545, -0.057400838439213134, 0], [0.5549822637858755, -0.07352466946146403, 0], [0.5588519832312153, -0.04192196065785227, 0], [0.5588519832312155, -0.07416962270235407, 0], [0.5646565623992257, 0.033537568526281855, 0], [0.5659464688810059, -0.0019348597226700995, 0], [0.566591422121896, -0.11996130280554654, 0], [0.566591422121896, -0.1605933569816188, 0], [0.6091583360206383, -0.04192196065785227, 0], [0.6233473073202191, -0.1115769106739761, 0], [0.6233473073202191, -0.15285391809093837, 0], [0.6278619800064493, -0.07416962270235407, 0], [0.6317316994517894, -0.07352466946146403, 0], [0.6356014188971295, -0.07352466946146403, 0], [0.6452757175104804, -0.127700741696227, 0], [0.6581747823282809, -0.0509513060303128, 0], [0.6852628184456626, 0.015478877781360886, 0], [0.7026765559496935, -0.0019348597226700635, 0], [0.7026765559496935, 0.032892615285391835, 0], [0.7091260883585939, -0.1354401805869074, 0], [0.7091260883585939, -0.0019348597226700635, 0], [0.7297645920670746, 0.032892615285391835, 0], [0.7336343115124149, 0.03224766204450179, 0], [0.7349242179941948, 0.03224766204450179, 0], [0.7349242179941953, -0.1612383102225088, 0], [0.7594324411480164, 0.014833924540470835, 0], [0.7607223476297966, -0.030957755562721664, 0], [0.7607223476297966, -0.1354401805869074, 0], [0.7839406643018378, 0.033537568526281855, 0], [0.7878103837471782, -0.010319251854240567, 0], [0.8129635601418894, -0.010319251854240567, 0], [0.8136085133827795, 0.033537568526281855, 0], [0.8387616897774908, 0.008384392131570467, 0], [0.9226056110931957, 0.04192196065785232, 0], [0.9277652370203158, 0.05482102547565304, 0], [0.9277652370203162, 0.1528539180909384, 0], [0.9322799097065462, 0.14059980651402773, 0], [0.9419542083198964, 0.108997097710416, 0], [0.9419542083198964, 0.0960980328926153, 0], [0.9516285069332471, 0.108997097710416, 0], [0.9516285069332471, 0.0960980328926153, 0], [0.9548532731376975, 0.033537568526281855, 0], [0.9554982263785874, 0.04708158658497261, 0], [0.9574330861012574, 0.1489841986455982, 0], [0.9600128990648178, 0.1560786842953886, 0], [0.9722670106417284, 0.10319251854240569, 0], [0.9722670106417284, 0.10383747178329572, 0], [0.9793614962915185, 0.13028055465978716, 0], [0.9838761689777487, 0.07094485649790393, 0], [0.9954853273137698, 0.1328603676233473, 0], [1, 0.07094485649790393, 0]];
 exports.cells = [[0, 557, 566], [0, 560, 557], [0, 563, 560], [1, 22, 2], [1, 23, 22], [1, 521, 23], [1, 525, 521], [2, 22, 518], [2, 518, 3], [3, 518, 4], [4, 518, 5], [5, 518, 6], [6, 518, 7], [7, 518, 8], [8, 21, 9], [8, 518, 21], [9, 21, 10], [10, 20, 11], [10, 21, 20], [11, 19, 12], [11, 20, 19], [12, 18, 13], [12, 19, 18], [13, 18, 519], [13, 519, 524], [14, 522, 15], [14, 524, 522], [16, 522, 17], [17, 522, 519], [23, 521, 24], [24, 56, 25], [24, 57, 56], [24, 521, 57], [25, 56, 517], [25, 517, 516], [26, 55, 27], [26, 516, 517], [26, 517, 55], [27, 54, 28], [27, 55, 54], [28, 53, 29], [28, 54, 53], [29, 52, 515], [29, 53, 52], [30, 51, 31], [30, 510, 51], [30, 515, 510], [31, 49, 32], [31, 50, 49], [31, 51, 50], [32, 48, 33], [32, 49, 48], [33, 48, 511], [33, 511, 514], [34, 513, 35], [34, 514, 513], [36, 513, 37], [37, 513, 512], [38, 511, 39], [38, 512, 513], [38, 513, 511], [39, 47, 40], [39, 511, 47], [40, 46, 41], [40, 47, 46], [41, 46, 508], [41, 508, 509], [42, 507, 43], [42, 509, 507], [44, 507, 45], [45, 507, 508], [52, 510, 515], [58, 62, 523], [58, 521, 62], [58, 523, 59], [59, 523, 520], [60, 520, 61], [61, 520, 523], [62, 521, 525], [62, 525, 63], [63, 525, 526], [64, 526, 527], [64, 527, 65], [66, 527, 67], [67, 527, 525], [68, 89, 69], [68, 652, 89], [68, 657, 652], [69, 87, 70], [69, 88, 87], [69, 89, 88], [70, 86, 71], [70, 87, 86], [71, 86, 649], [71, 649, 650], [72, 80, 73], [72, 81, 80], [72, 650, 81], [73, 80, 651], [73, 651, 655], [74, 76, 656], [74, 77, 76], [74, 655, 77], [74, 656, 75], [77, 78, 653], [77, 79, 78], [77, 655, 79], [79, 655, 651], [81, 650, 648], [82, 648, 650], [82, 650, 83], [83, 650, 647], [84, 647, 650], [84, 650, 85], [85, 650, 649], [90, 652, 658], [90, 658, 91], [91, 658, 654], [92, 654, 93], [93, 654, 658], [94, 657, 95], [94, 658, 657], [96, 644, 645], [96, 645, 97], [97, 645, 642], [98, 100, 641], [98, 640, 100], [98, 641, 99], [98, 642, 640], [100, 640, 101], [101, 106, 638], [101, 107, 106], [101, 640, 107], [102, 638, 103], [103, 638, 636], [104, 636, 637], [104, 637, 105], [106, 637, 638], [108, 122, 109], [108, 123, 122], [108, 640, 123], [109, 121, 110], [109, 122, 121], [110, 120, 111], [110, 121, 120], [111, 119, 112], [111, 120, 119], [112, 118, 113], [112, 119, 118], [113, 118, 646], [113, 646, 639], [114, 639, 115], [115, 639, 643], [116, 643, 646], [116, 646, 117], [123, 640, 645], [124, 645, 125], [125, 645, 644], [126, 128, 533], [126, 532, 128], [126, 533, 127], [126, 535, 532], [128, 532, 129], [129, 135, 530], [129, 532, 135], [130, 528, 131], [130, 530, 528], [132, 528, 133], [133, 528, 529], [134, 529, 530], [134, 530, 135], [136, 150, 137], [136, 151, 150], [136, 532, 151], [137, 149, 138], [137, 150, 149], [138, 148, 139], [138, 149, 148], [139, 147, 140], [139, 148, 147], [140, 146, 141], [140, 147, 146], [141, 146, 537], [141, 537, 531], [142, 531, 143], [143, 531, 534], [144, 534, 537], [144, 537, 145], [151, 532, 536], [152, 536, 153], [153, 536, 535], [154, 155, 156], [154, 156, 556], [156, 562, 556], [157, 158, 159], [157, 159, 570], [157, 570, 562], [160, 161, 173], [160, 173, 556], [160, 556, 570], [161, 162, 171], [161, 171, 172], [161, 172, 173], [162, 163, 170], [162, 170, 171], [163, 555, 170], [163, 569, 555], [164, 165, 166], [164, 166, 569], [166, 561, 569], [167, 168, 169], [167, 169, 555], [167, 555, 561], [174, 278, 175], [174, 279, 278], [174, 615, 279], [175, 277, 176], [175, 278, 277], [176, 276, 609], [176, 277, 276], [176, 609, 177], [177, 182, 608], [177, 608, 612], [177, 609, 182], [178, 612, 179], [179, 608, 610], [179, 612, 608], [180, 608, 181], [180, 610, 608], [182, 609, 183], [183, 609, 184], [184, 274, 185], [184, 275, 274], [184, 609, 275], [185, 274, 596], [186, 219, 187], [186, 596, 219], [187, 218, 582], [187, 219, 218], [187, 582, 188], [188, 582, 189], [189, 577, 583], [189, 582, 577], [190, 583, 191], [191, 583, 581], [192, 577, 193], [192, 581, 583], [192, 583, 577], [193, 577, 580], [194, 577, 579], [194, 579, 195], [194, 580, 577], [196, 577, 197], [196, 579, 577], [197, 202, 576], [197, 203, 202], [197, 577, 203], [198, 572, 199], [198, 576, 572], [200, 572, 201], [201, 572, 575], [202, 575, 576], [204, 577, 582], [204, 582, 205], [205, 216, 206], [205, 217, 216], [205, 582, 217], [206, 215, 207], [206, 216, 215], [207, 214, 571], [207, 215, 214], [208, 212, 209], [208, 213, 212], [208, 571, 578], [208, 578, 213], [209, 212, 574], [209, 574, 573], [210, 573, 211], [211, 573, 574], [214, 578, 571], [219, 596, 220], [220, 272, 221], [220, 273, 272], [220, 596, 273], [221, 272, 607], [221, 607, 584], [222, 226, 586], [222, 584, 592], [222, 586, 223], [222, 592, 226], [223, 224, 585], [223, 225, 224], [223, 586, 225], [226, 228, 227], [226, 229, 228], [226, 231, 229], [226, 592, 231], [227, 228, 587], [229, 230, 588], [229, 231, 230], [231, 592, 589], [232, 234, 233], [232, 589, 234], [233, 234, 590], [234, 589, 592], [234, 592, 235], [235, 236, 591], [235, 237, 236], [235, 238, 237], [235, 239, 238], [235, 240, 239], [235, 592, 240], [241, 592, 594], [241, 594, 242], [242, 243, 593], [242, 244, 243], [242, 594, 244], [245, 592, 599], [245, 594, 592], [245, 597, 246], [245, 599, 597], [246, 597, 595], [247, 595, 597], [247, 597, 248], [249, 252, 250], [249, 597, 252], [250, 252, 598], [251, 598, 252], [252, 597, 599], [253, 258, 254], [253, 599, 258], [254, 258, 255], [255, 258, 256], [256, 258, 257], [257, 258, 600], [258, 599, 259], [259, 260, 601], [259, 261, 260], [259, 599, 602], [259, 602, 261], [262, 264, 263], [262, 267, 264], [262, 599, 267], [262, 602, 599], [263, 264, 603], [264, 267, 265], [265, 266, 604], [265, 267, 266], [267, 271, 605], [267, 599, 271], [268, 270, 269], [268, 605, 270], [269, 270, 606], [270, 605, 271], [271, 599, 607], [273, 596, 274], [279, 615, 611], [280, 282, 281], [280, 283, 282], [280, 611, 283], [281, 282, 613], [283, 284, 614], [283, 285, 284], [283, 611, 615], [283, 615, 285], [286, 288, 664], [286, 334, 661], [286, 335, 334], [286, 661, 663], [286, 662, 335], [286, 663, 288], [286, 664, 287], [288, 331, 289], [288, 663, 331], [289, 330, 290], [289, 331, 330], [290, 330, 669], [290, 669, 291], [291, 669, 672], [292, 672, 673], [292, 673, 293], [294, 669, 676], [294, 673, 669], [294, 676, 295], [295, 676, 674], [296, 674, 676], [296, 676, 297], [298, 329, 299], [298, 669, 329], [298, 676, 669], [299, 328, 300], [299, 329, 328], [300, 327, 301], [300, 328, 327], [301, 326, 665], [301, 327, 326], [302, 324, 303], [302, 325, 324], [302, 665, 325], [303, 323, 304], [303, 324, 323], [304, 323, 305], [305, 322, 659], [305, 323, 322], [306, 321, 307], [306, 659, 660], [306, 660, 321], [307, 320, 308], [307, 321, 320], [308, 319, 309], [308, 320, 319], [309, 318, 668], [309, 319, 318], [310, 317, 311], [310, 667, 317], [310, 668, 667], [311, 316, 671], [311, 317, 316], [312, 316, 670], [312, 670, 313], [312, 671, 316], [313, 670, 675], [314, 670, 315], [314, 675, 670], [318, 667, 668], [322, 660, 659], [325, 665, 666], [326, 666, 665], [332, 661, 333], [332, 663, 661], [336, 359, 629], [336, 629, 337], [336, 634, 359], [337, 358, 338], [337, 629, 358], [338, 357, 339], [338, 358, 357], [339, 357, 630], [339, 630, 633], [340, 356, 341], [340, 633, 356], [341, 355, 342], [341, 356, 355], [342, 354, 343], [342, 355, 354], [343, 352, 623], [343, 353, 352], [343, 354, 627], [343, 627, 353], [344, 351, 345], [344, 623, 624], [344, 624, 351], [345, 350, 619], [345, 351, 350], [346, 350, 618], [346, 617, 347], [346, 618, 617], [346, 619, 350], [348, 617, 618], [348, 618, 349], [352, 624, 623], [356, 633, 630], [359, 631, 360], [359, 634, 631], [360, 631, 361], [361, 382, 362], [361, 631, 382], [362, 381, 625], [362, 382, 381], [363, 380, 364], [363, 381, 621], [363, 621, 380], [363, 625, 381], [364, 377, 620], [364, 378, 377], [364, 379, 378], [364, 380, 379], [365, 375, 366], [365, 376, 375], [365, 620, 376], [366, 373, 367], [366, 374, 373], [366, 375, 374], [367, 373, 622], [367, 622, 626], [368, 626, 628], [368, 628, 369], [370, 628, 371], [371, 626, 372], [371, 628, 626], [372, 626, 622], [376, 620, 616], [377, 616, 620], [383, 385, 384], [383, 388, 385], [383, 389, 388], [383, 631, 389], [385, 388, 632], [386, 388, 635], [386, 632, 388], [386, 635, 387], [389, 631, 634], [390, 422, 391], [390, 423, 422], [390, 691, 423], [390, 692, 691], [391, 422, 690], [391, 690, 689], [392, 689, 690], [392, 690, 393], [393, 690, 686], [394, 686, 395], [395, 686, 684], [396, 681, 397], [396, 684, 686], [396, 686, 681], [397, 681, 683], [398, 400, 682], [398, 681, 400], [398, 682, 399], [398, 683, 681], [400, 681, 401], [401, 406, 679], [401, 407, 406], [401, 681, 407], [402, 679, 403], [403, 679, 677], [404, 677, 678], [404, 678, 405], [406, 678, 679], [408, 681, 686], [408, 686, 687], [408, 687, 409], [409, 418, 410], [409, 419, 418], [409, 687, 419], [410, 417, 411], [410, 418, 417], [411, 416, 680], [411, 417, 416], [412, 680, 413], [413, 680, 685], [414, 685, 688], [414, 688, 415], [416, 688, 680], [420, 686, 421], [420, 687, 686], [421, 686, 690], [424, 426, 693], [424, 427, 426], [424, 691, 427], [424, 693, 425], [427, 691, 692], [428, 458, 429], [428, 459, 458], [428, 551, 459], [429, 458, 547], [429, 547, 550], [430, 436, 431], [430, 437, 436], [430, 550, 437], [431, 436, 544], [431, 544, 549], [432, 549, 433], [433, 549, 546], [434, 544, 435], [434, 546, 544], [437, 550, 543], [438, 444, 439], [438, 445, 444], [438, 543, 445], [439, 444, 539], [439, 539, 540], [440, 538, 441], [440, 540, 538], [442, 538, 443], [443, 538, 539], [445, 543, 542], [446, 456, 447], [446, 457, 456], [446, 542, 457], [447, 455, 448], [447, 456, 455], [448, 454, 449], [448, 455, 454], [449, 454, 548], [449, 548, 541], [450, 541, 451], [451, 541, 545], [452, 545, 548], [452, 548, 453], [457, 542, 547], [459, 551, 552], [460, 463, 553], [460, 552, 463], [460, 553, 461], [462, 553, 463], [463, 552, 551], [464, 465, 504], [464, 504, 505], [464, 505, 506], [464, 506, 695], [465, 503, 504], [465, 702, 503], [465, 703, 702], [466, 467, 502], [466, 502, 703], [467, 468, 500], [467, 500, 501], [467, 501, 502], [468, 499, 500], [468, 709, 499], [469, 470, 498], [469, 498, 711], [469, 711, 709], [470, 471, 706], [470, 497, 498], [470, 706, 497], [471, 478, 706], [471, 701, 478], [472, 473, 474], [472, 474, 477], [472, 477, 700], [472, 700, 701], [473, 699, 474], [474, 475, 477], [475, 476, 477], [475, 698, 476], [478, 479, 707], [478, 495, 496], [478, 496, 706], [478, 701, 700], [478, 707, 495], [479, 480, 494], [479, 494, 707], [480, 493, 494], [480, 708, 493], [481, 482, 491], [481, 491, 492], [481, 492, 710], [481, 710, 708], [482, 490, 491], [482, 704, 705], [482, 705, 490], [483, 484, 487], [483, 487, 488], [483, 488, 705], [483, 705, 704], [484, 485, 486], [484, 486, 487], [484, 697, 485], [486, 696, 487], [488, 489, 705], [493, 708, 710], [499, 709, 711], [502, 702, 703], [504, 694, 505], [507, 509, 508], [511, 513, 514], [519, 522, 524], [525, 527, 526], [528, 530, 529], [531, 537, 534], [532, 535, 536], [538, 540, 539], [541, 548, 545], [542, 543, 547], [543, 550, 547], [544, 546, 549], [554, 558, 559], [554, 559, 564], [554, 564, 557], [555, 569, 561], [556, 562, 570], [557, 564, 565], [557, 565, 567], [557, 567, 566], [566, 567, 568], [572, 576, 575], [584, 599, 592], [584, 607, 599], [636, 638, 637], [639, 646, 643], [640, 642, 645], [652, 657, 658], [669, 673, 672], [677, 679, 678], [680, 688, 685]];
-},{}],189:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25802,7 +25710,7 @@ function boundingBox(positions) {
 
   return [min, max];
 }
-},{}],190:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25873,7 +25781,7 @@ function boundingSphereFromBoundingBox() {
   }
   return Math.sqrt(maxRadiusSq);
 }
-},{"gl-vec3":56}],191:[function(require,module,exports){
+},{"gl-vec3":55}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25934,7 +25842,7 @@ function computeBounds(object) {
     size: size
   };
 }
-},{"./boundingBox":189,"./boundingSphere":190,"gl-vec3":56}],192:[function(require,module,exports){
+},{"./boundingBox":188,"./boundingSphere":189,"gl-vec3":55}],191:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25973,7 +25881,7 @@ function isObjectOutsideBounds(machine, entity) {
 
   return aabbout;
 }
-},{}],193:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25995,7 +25903,7 @@ var camera = {
   scale: 1
 };
 exports.default = camera;
-},{}],194:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26046,7 +25954,7 @@ function cameraOffsetToEntityBoundsCenter(_ref) {
     target: target
   };
 }
-},{"gl-vec3":56}],195:[function(require,module,exports){
+},{"gl-vec3":55}],194:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26139,7 +26047,7 @@ function computeCameraToFitBounds(_ref) {
     target: [].concat(_toConsumableArray(camNewTgt))
   };
 }
-},{"gl-vec3":56}],196:[function(require,module,exports){
+},{"gl-vec3":55}],195:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26299,7 +26207,7 @@ function controlsStream(interactions, cameraData, focuses$, entityFocuses$, proj
       .merge(cameraState$.take(1))
   )*/
 }
-},{"../cameraEffects/cameraOffsetToEntityBoundsCenter":194,"../cameraEffects/computeCameraToFitBounds":195,"../utils/modelUtils":207,"../utils/most/animationFrames":208,"../utils/most/limitFlow":210,"./orbitControls":197,"gl-mat4":30}],197:[function(require,module,exports){
+},{"../cameraEffects/cameraOffsetToEntityBoundsCenter":193,"../cameraEffects/computeCameraToFitBounds":194,"../utils/modelUtils":208,"../utils/most/animationFrames":209,"../utils/most/limitFlow":211,"./orbitControls":196,"gl-mat4":29}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26502,7 +26410,7 @@ function setObservables (observables) {
       rotate(self.objects, angle)
     })
 }*/
-},{"gl-mat4":30,"gl-vec3":56}],198:[function(require,module,exports){
+},{"gl-mat4":29,"gl-vec3":55}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26528,7 +26436,7 @@ function elementSize(element) {
   return (0, _most.fromEvent)('resize', window) //only window fires resize events...
   .throttle(throttle /* ms */).map(extractSize).startWith(extractSize());
 }
-},{"most":117}],199:[function(require,module,exports){
+},{"most":116}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26939,7 +26847,7 @@ function pointerGestures(baseInteractions) {
     pointerMoves: baseInteractions.pointerMoves$
   };
 }
-},{"./utils":200,"@most/prelude":3,"fast.js/object/assign":14,"most":117}],200:[function(require,module,exports){
+},{"./utils":199,"@most/prelude":3,"fast.js/object/assign":13,"most":116}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26970,7 +26878,7 @@ function normalizeWheel(event) {
   delta = delta >= 0 ? 1 : -1;
   return delta;
 }
-},{}],201:[function(require,module,exports){
+},{}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27004,7 +26912,7 @@ function makeAndroidInterface() {
     }
   };
 }
-},{}],202:[function(require,module,exports){
+},{}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27028,7 +26936,7 @@ function detectPlatform() {
     return 'android';
   }
 }
-},{}],203:[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27055,7 +26963,7 @@ function makeInterface() {
   var actions = platform === 'ios' ? (0, _iosInterface.makeIosInterface)() : (0, _androidInterface.makeAndroidInterface)();
   return actions;
 }
-},{"./androidInterface":201,"./detector":202,"./iosInterface":204}],204:[function(require,module,exports){
+},{"./androidInterface":200,"./detector":201,"./iosInterface":203}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27087,7 +26995,7 @@ function makeIosInterface() {
     }
   };
 }
-},{}],205:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27141,7 +27049,7 @@ function centerGeometry(geometry, bounds, transforms) {
   transform(geometry.positions, translateMat);
   return geometry;
 }
-},{"gl-mat4":30,"gl-vec3":56}],206:[function(require,module,exports){
+},{"gl-mat4":29,"gl-vec3":55}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27179,7 +27087,78 @@ function computeTMatrixFromTransforms(params) {
 
   return transforms;
 }
-},{"gl-mat4":30}],207:[function(require,module,exports){
+},{"gl-mat4":29}],206:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = computeNormalsFromUnindexedPositions;
+
+var _glVec = require('gl-vec3');
+
+var _glVec2 = _interopRequireDefault(_glVec);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function computeNormalsFromUnindexedPositions(positions) {
+  var normals = new Float32Array(positions.length);
+  var pointA = void 0;
+  var pointB = void 0;
+  var pointC = void 0;
+  var cb = void 0;
+  var ab = void 0;
+
+  for (var i = 0, il = positions.length; i < il; i += 9) {
+    pointA = _glVec2.default.fromValues(positions[i], positions[i + 1], positions[i + 2]);
+    pointB = _glVec2.default.fromValues(positions[i + 3], positions[i + 4], positions[i + 5]);
+    pointC = _glVec2.default.fromValues(positions[i + 6], positions[i + 7], positions[i + 8]);
+
+    cb = _glVec2.default.subtract([], pointC, pointB);
+    ab = _glVec2.default.subtract([], pointA, pointB);
+    cb = _glVec2.default.cross(cb, cb, ab);
+    cb = _glVec2.default.normalize(cb, cb); // normalize
+
+    normals[i] = cb[0];
+    normals[i + 1] = cb[1];
+    normals[i + 2] = cb[2];
+
+    normals[i + 3] = cb[0];
+    normals[i + 4] = cb[1];
+    normals[i + 5] = cb[2];
+
+    normals[i + 6] = cb[0];
+    normals[i + 7] = cb[1];
+    normals[i + 8] = cb[2];
+  }
+
+  return normals;
+}
+},{"gl-vec3":55}],207:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = doNormalsNeedComputing;
+/* very simple heuristic to determine whether or not normals for a given geometry
+need to be (re)computed or not*/
+function doNormalsNeedComputing(geometry) {
+  var needsRecompute = true;
+  if (!geometry.normals) {
+    needsRecompute = true;
+  } else {
+    // we check the fist 1000 normals to see if they are set to 0
+    for (var i = 0; i < Math.min(geometry.normals.length, 1000); i++) {
+      if (geometry.normals[i] !== 0) {
+        needsRecompute = false;
+        break;
+      }
+    }
+  }
+  return needsRecompute;
+}
+},{}],208:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27229,7 +27208,7 @@ function model(defaults, actions, updateFunctions) {
   // .distinctUntilChanged()
   .multicast();
 }
-},{"most":117}],208:[function(require,module,exports){
+},{"most":116}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27317,7 +27296,7 @@ function rafStream() {
   });
   return stream;
 }
-},{"@most/create":1,"most":117}],209:[function(require,module,exports){
+},{"@most/create":1,"most":116}],210:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27343,7 +27322,7 @@ function callBackToStream() {
   });
   return { stream: stream, callback: callback };
 }
-},{"@most/create":1}],210:[function(require,module,exports){
+},{"@most/create":1}],211:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27469,7 +27448,7 @@ var RateLimitTask = function () {
 
   return RateLimitTask;
 }();
-},{}],211:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27491,7 +27470,7 @@ function offsetTransformsByBounds(transforms, bounds) {
   var offsetPos = [0.5 * (bounds.max[0] - bounds.min[0]) * axes[0] + pos[0], 0.5 * (bounds.max[1] - bounds.min[1]) * axes[1] + pos[1], 0.5 * (bounds.max[2] - bounds.min[2]) * axes[2] + pos[2]];
   return Object.assign({}, transforms, { pos: offsetPos });
 }
-},{}],212:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27507,700 +27486,7 @@ function formatRawMachineData(rawData) {
     printable_area: rawData.printable_area
   };
 }
-},{}],213:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-exports.default = drawCuboid;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
- // works in client & server
-function drawCuboid(regl, params) {
-  var size = params.size;
-
-  var _size = _slicedToArray(size, 3);
-
-  var width = _size[0];
-  var length = _size[1];
-  var height = _size[2];
-
-  var halfWidth = width * 0.5;
-  var halfLength = length * 0.5;
-  var halfHeight = height * 0.5;
-
-  var position = [-halfWidth, -halfLength, -halfHeight, halfWidth, -halfLength, -halfHeight, halfWidth, halfLength, -halfHeight, -halfWidth, halfLength, -halfHeight, -halfWidth, -halfLength, halfHeight, halfWidth, -halfLength, halfHeight, halfWidth, halfLength, halfHeight, -halfWidth, halfLength, halfHeight];
-
-  // use this one for clean cube wireframe outline
-  var cells = [0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 5, 1, 2, 6, 7, 3];
-
-  var normal = position.map(function (p) {
-    return p / size;
-  });
-
-  return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
-    frag: "precision mediump float;\n#define GLSLIFY 1\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
-
-    attributes: {
-      position: position,
-      normal: normal },
-    elements: cells,
-    uniforms: {
-      model: function model(context, props) {
-        return props.model || _glMat2.default.identity([]);
-      },
-      color: regl.prop('color'),
-      angle: function angle(_ref) {
-        var tick = _ref.tick;
-        return 0.01 * tick;
-      }
-    },
-    primitive: 'line strip',
-    lineWidth: 2,
-
-    depth: {
-      enable: true,
-      mask: false,
-      func: 'less',
-      range: [0, 1]
-    }
-  });
-}
-},{"gl-mat4":30}],214:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = drawCuboidFromCoords;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
- // works in client & server
-function drawCuboidFromCoords(regl, params) {
-  var coords = params.coords;
-  var height = params.height;
-
-
-  var position = coords.map(function (x) {
-    return [].concat(_toConsumableArray(x), [0]);
-  }).concat(coords.map(function (x) {
-    return [].concat(_toConsumableArray(x), [height]);
-  }));
-
-  // use this one for clean cube wireframe outline
-  var cells = [0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 5, 1, 2, 6, 7, 3];
-
-  var normal = position.map(function (p) {
-    return 1;
-  });
-
-  return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n //fragNormal = normal;\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
-    frag: "precision mediump float;\n#define GLSLIFY 1\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
-
-    attributes: {
-      position: position,
-      normal: normal },
-    elements: cells,
-    uniforms: {
-      model: function model(context, props) {
-        return props.model || _glMat2.default.identity([]);
-      },
-      color: regl.prop('color'),
-      angle: function angle(_ref) {
-        var tick = _ref.tick;
-        return 0.01 * tick;
-      }
-    },
-    primitive: 'line strip',
-    lineWidth: 3,
-
-    depth: {
-      enable: true,
-      mask: false,
-      func: 'less',
-      range: [0, 1]
-    },
-    cull: {
-      enable: true,
-      face: 'front'
-    }
-  });
-}
-},{"gl-mat4":30}],215:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = makeDrawEnclosure;
-
-var _drawGrid = require('./drawGrid');
-
-var _drawGrid2 = _interopRequireDefault(_drawGrid);
-
-var _drawTri = require('./drawTri');
-
-var _drawTri2 = _interopRequireDefault(_drawTri);
-
-var _drawCuboid = require('./drawCuboid');
-
-var _drawCuboid2 = _interopRequireDefault(_drawCuboid);
-
-var _drawCuboidFromCoords = require('./drawCuboidFromCoords');
-
-var _drawCuboidFromCoords2 = _interopRequireDefault(_drawCuboidFromCoords);
-
-var _drawStaticMesh = require('./drawStaticMesh');
-
-var _drawStaticMesh2 = _interopRequireDefault(_drawStaticMesh);
-
-var _computeTMatrixFromTransforms = require('../../common/utils/computeTMatrixFromTransforms');
-
-var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
-
-var _getBrandingSvgGeometry = require('../../branding/getBrandingSvgGeometry');
-
-var _getBrandingSvgGeometry2 = _interopRequireDefault(_getBrandingSvgGeometry);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import getBrandingSvg from '../../branding/getBrandingSvg'
-// import makeDrawImgPlane from './drawImgPlane'
-
-
-function makeDrawEnclosure(regl, params) {
-  var machine_disallowed_areas = params.machine_disallowed_areas;
-  var machine_volume = params.machine_volume;
-  var name = params.name;
-
-
-  var drawGrid = (0, _drawGrid2.default)(regl, { size: machine_volume, ticks: 50, centered: true });
-  var drawGridDense = (0, _drawGrid2.default)(regl, { size: machine_volume, ticks: 10, centered: true });
-  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, 0.1] });
-  var gridOffsetD = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, 0.5] });
-
-  var triSize = { width: 50, height: 20 };
-  var drawTri = (0, _drawTri2.default)(regl, { width: triSize.width, height: triSize.height });
-  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, machine_volume[1] * 0.5, 0.1] });
-
-  var containerSize = [machine_volume[0], machine_volume[1], machine_volume[2]];
-  var drawCuboid = (0, _drawCuboid2.default)(regl, { size: containerSize });
-  var containerCuboidMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, machine_volume[2] * 0.5] });
-
-  var buildPlaneGeo = {
-    positions: [[-1, +1, 0], [+1, +1, 0], [+1, -1, 0], [-1, -1, 0]],
-    cells: [[2, 1, 0], [2, 0, 3]]
-  };
-  var planeReducer = 0.5; // fudge value in order to prevent overlaps with bounds (z fighting)
-  var buildPlaneModel = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.15], sca: [machine_volume[0] * 0.5 - planeReducer, machine_volume[1] * 0.5 - planeReducer, 1] });
-  var drawBuildPlane = (0, _drawStaticMesh2.default)(regl, {
-    geometry: buildPlaneGeo,
-    extras: {
-      cull: {
-        enable: true,
-        face: 'back'
-      }
-    }
-  });
-
-  // branding
-  // const logoTexure = svgStringAsReglTexture(regl, getBrandingSvg(name))
-  // const logoPlane = makeDrawImgPlane(regl, {texture: logoTexure})
-  // logoTexure.width * logoScale, logoTexure.height * logoScale
-  var logoMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 60, 1], rot: [Math.PI / 2, Math.PI, 0] });
-  var logoMesh = (0, _getBrandingSvgGeometry2.default)(name);
-  // const logoMesh = svgStringAsGeometry(logoImg)
-  var drawLogoMesh = (0, _drawStaticMesh2.default)(regl, { geometry: logoMesh });
-
-  //const dissalowedVolumes = machine_disallowed_areas
-  //  .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
-
-  return function (_ref) {
-    var view = _ref.view;
-    var camera = _ref.camera;
-
-    drawGrid({ view: view, camera: camera, color: [0, 0, 0, 0.2], model: gridOffset });
-    drawGridDense({ view: view, camera: camera, color: [0, 0, 0, 0.06], model: gridOffsetD });
-
-    // drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
-    drawBuildPlane({ view: view, camera: camera, color: [1, 1, 1, 1], model: buildPlaneModel });
-    drawCuboid({ view: view, camera: camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix });
-    // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
-    // logoPlane({view, camera, color: [0.4, 0.4, 0.4, 1], model: logoMatrix2})
-    drawLogoMesh({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: logoMatrix });
-  };
-}
-
-// import svgStringAsReglTexture from '../../common/utils/image/svgStringAsReglTexture'
-// import svgStringAsGeometry from '../../common/utils/geometry/svgStringAsGeometry'
-},{"../../branding/getBrandingSvgGeometry":186,"../../common/utils/computeTMatrixFromTransforms":206,"./drawCuboid":213,"./drawCuboidFromCoords":214,"./drawGrid":216,"./drawStaticMesh":218,"./drawTri":220}],216:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = prepareDrawGrid;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
- // works in client & server
-function prepareDrawGrid(regl) {
-  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  var positions = [];
-  var infinite = params.infinite || false;
-  var centered = params.centered || false;
-
-  var size = params.size;
-  var ticks = params.ticks;
-
-  ticks = ticks || 1;
-  size = size || [16, 16];
-
-  var width = size[0];
-  var length = size[1];
-
-  if (centered) {
-    var halfWidth = width * 0.5;
-    var halfLength = length * 0.5;
-
-    var remWidth = halfWidth % ticks;
-    var widthStart = -halfWidth + remWidth;
-    var widthEnd = -widthStart;
-
-    var remLength = halfLength % ticks;
-    var lengthStart = -halfLength + remLength;
-    var lengthEnd = -lengthStart;
-
-    var skipEvery = 0;
-
-    for (var i = widthStart, j = 0; i <= widthEnd; i += ticks, j += 1) {
-      if (j % skipEvery !== 0) {
-        positions.push(lengthStart, i, 0);
-        positions.push(lengthEnd, i, 0);
-        positions.push(lengthStart, i, 0);
-      }
-    }
-    for (var _i = lengthStart, _j = 0; _i <= lengthEnd; _i += ticks, _j += 1) {
-      if (_j % skipEvery !== 0) {
-        positions.push(_i, widthStart, 0);
-        positions.push(_i, widthEnd, 0);
-        positions.push(_i, widthStart, 0);
-      }
-    }
-  } else {
-    for (var _i2 = -width * 0.5; _i2 <= width * 0.5; _i2 += ticks) {
-      positions.push(-length * 0.5, _i2, 0);
-      positions.push(length * 0.5, _i2, 0);
-      positions.push(-length * 0.5, _i2, 0);
-    }
-
-    for (var _i3 = -length * 0.5; _i3 <= length * 0.5; _i3 += ticks) {
-      positions.push(_i3, -width * 0.5, 0);
-      positions.push(_i3, width * 0.5, 0);
-      positions.push(_i3, -width * 0.5, 0);
-    }
-  }
-
-  var frag = infinite ? "precision mediump float;\n#define GLSLIFY 1\nuniform vec4 color;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\n#define FOG_DENSITY 0.03\nfloat fogFactorExp(\n  const float dist,\n  const float density\n) {\n  return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);\n}\n\nuniform vec4 fogColor;\n\nvoid main() {\n  float fogDistance = gl_FragCoord.z / gl_FragCoord.w;\n  float fogAmount = fogFactorExp(fogDistance * 0.1, FOG_DENSITY);\n\n  float dist = distance( vec2(0.,0.), vec2(worldPosition.x,worldPosition.y));\n  dist *= 0.0016;\n  dist = clamp(dist, 0.0, 1.0);\n  //0 ===> 200\n  //\n  //vec4 col = vec4(fogColor.r, color.g, color.b, 0.);\n  //gl_FragColor = col;//mix(color, fogColor, fogAmount);\n  gl_FragColor = mix(color, fogColor, dist);\n}\n" : "precision mediump float;\n#define GLSLIFY 1\nvarying vec3  fragPosition;\nuniform vec4 color;\nvoid main() {\n  gl_FragColor = color;\n}\n";
-
-  return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
-    frag: frag,
-
-    attributes: {
-      position: regl.buffer(positions)
-    },
-    count: positions.length / 3,
-    uniforms: {
-      model: function model(context, props) {
-        return props.model || _glMat2.default.identity([]);
-      },
-      view: function view(context, props) {
-        return props.view;
-      },
-      _projection: function _projection(context, props) {
-        return _glMat2.default.ortho([], -300, 300, 350, -350, 0.01, 1000);
-      },
-      color: regl.prop('color'),
-      fogColor: function fogColor(context, props) {
-        return props.fogColor || [1, 1, 1, 1];
-      }
-    },
-    lineWidth: 2,
-    primitive: 'lines',
-    cull: {
-      enable: true,
-      face: 'front'
-    },
-    polygonOffset: {
-      enable: true,
-      offset: {
-        factor: 1,
-        units: Math.random() * 10
-      }
-    }
-
-  });
-}
-},{"gl-mat4":30}],217:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = drawPrintheadShadow;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
- // works in client & server
-function drawPrintheadShadow(regl, params) {
-  var width = params.width;
-  var length = params.length;
-
-  var halfWidth = width * 0.5;
-  var halfLength = length * 0.5;
-
-  return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position, normal;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n fragNormal = normal;\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
-    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
-
-    attributes: {
-      position: [-halfWidth, -halfLength, 0, halfWidth, -halfLength, 0, halfWidth, halfLength, 0, -halfWidth, halfLength, 0],
-      normal: [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1]
-    },
-    elements: [0, 1, 3, 3, 1, 2],
-    // count: 4,
-    uniforms: {
-      model: function model(context, props) {
-        return props.model || _glMat2.default.identity([]);
-      },
-      color: regl.prop('color')
-    },
-    cull: {
-      enable: true,
-      face: 'back'
-    },
-    polygonOffset: {
-      enable: true,
-      offset: {
-        factor: 1,
-        units: Math.random() * 10
-      }
-    }
-  });
-}
-},{"gl-mat4":30}],218:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = drawMesh;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
- // works in client & server
-function drawMesh(regl) {
-  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { extras: {} };
-  var prop = regl.prop;
-  var buffer = regl.buffer;
-  var geometry = params.geometry;
-
-  var commandParams = {
-    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
-    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
-
-    uniforms: {
-      model: function model(context, props) {
-        return props.model || _glMat2.default.identity([]);
-      },
-      color: prop('color')
-    },
-    attributes: {
-      position: buffer(geometry.positions)
-    },
-    elements: geometry.cells,
-    cull: {
-      enable: false,
-      face: 'front'
-    }
-  };
-
-  // Splice in any extra params
-  commandParams = Object.assign({}, commandParams, params.extras);
-  return regl(commandParams);
-}
-},{"gl-mat4":30}],219:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = drawMesh;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
- // works in client & server
-function drawMesh(regl) {
-  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { extras: {} };
-  var prop = regl.prop;
-  var buffer = regl.buffer;
-  var geometry = params.geometry;
-
-  var commandParams = {
-    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position, normal;\n\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 _worldSpacePosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  _worldSpacePosition = worldSpacePosition;\n  gl_Position = projection * view * worldSpacePosition;\n\n  vec4 glPosition = projection * view * model * vec4(position, 1);\n  //gl_Position = glPosition;\n  gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n\n}\n",
-    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvarying vec4 _worldSpacePosition;\n\nuniform vec2 printableArea;\n\nvec4 errorColor = vec4(0.15, 0.15, 0.15, 0.3);//vec4(0.15, 0.15, 0.15, 0.3);\n\nvoid main () {\n  vec4 depth = gl_FragCoord;\n\n  float v = 0.8; // shadow value\n  vec4 endColor = color;\n\n  //if anything is outside the printable area, shade differently\n  /*if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){\n    endColor = errorColor;\n  }\n  if(_worldSpacePosition.y>printableArea.y*0.5 || _worldSpacePosition.y<printableArea.y*-0.5) {\n    endColor = errorColor;\n  }*/\n\n  vec3 ambient = ambientLightAmount * endColor.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * endColor.rgb * clamp(cosTheta , 0.0, 1.0 );\n\n  float cosTheta2 = dot(fragNormal, vec3(-lightDir.x, -lightDir.y, lightDir.z));\n  vec3 diffuse2 = diffuseLightAmount * endColor.rgb * clamp(cosTheta2 , 0.0, 1.0 );\n\n  gl_FragColor = vec4((ambient + diffuse + diffuse2 * v), endColor.a);\n}\n",
-
-    uniforms: {
-      model: function model(context, props) {
-        return props.model || _glMat2.default.identity([]);
-      },
-      color: prop('color'),
-      printableArea: function printableArea(context, props) {
-        return props.printableArea || [0, 0];
-      }
-    },
-    attributes: {
-      position: buffer(geometry.positions)
-    },
-    // elements: geometry.cells
-    cull: {
-      enable: true,
-      face: 'back'
-    }
-  };
-  if (geometry.cells) {
-    commandParams.elements = geometry.cells;
-  } else {
-    commandParams.count = geometry.positions.length / 3;
-  }
-
-  if (geometry.normals) {
-    commandParams.attributes.normal = buffer(geometry.normals);
-  }
-  // Splice in any extra params
-  commandParams = Object.assign({}, commandParams, params.extras);
-  return regl(commandParams);
-}
-},{"gl-mat4":30}],220:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = drawTri;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
- // works in client & server
-function drawTri(regl, params) {
-  var width = params.width;
-  var height = params.height;
-
-  return regl({
-    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
-    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
-
-    attributes: {
-      position: [width / 2, height, 0, 0, 0, 0, width, 0, 0]
-    },
-    count: 3,
-    uniforms: {
-      model: function model(context, props) {
-        return props.model || _glMat2.default.identity([]);
-      },
-      color: regl.prop('color')
-    },
-    cull: {
-      enable: false,
-      face: 'back'
-    }
-  });
-}
-},{"gl-mat4":30}],221:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = prepareRender;
-
-var _wrapperScope = require('./wrapperScope');
-
-var _wrapperScope2 = _interopRequireDefault(_wrapperScope);
-
-var _drawPrintheadShadow = require('./drawPrintheadShadow');
-
-var _drawPrintheadShadow2 = _interopRequireDefault(_drawPrintheadShadow);
-
-var _computeTMatrixFromTransforms = require('../../common/utils/computeTMatrixFromTransforms');
-
-var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
-
-var _index = require('./drawGrid/index');
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function prepareRender(regl, params) {
-  var wrapperScope = (0, _wrapperScope2.default)(regl);
-  var tick = 0;
-
-  // infine grid, always there
-  // infinite grid
-  var gridSize = [1220, 1200]; // size of 'infinite grid'
-  var drawInfiniGrid = (0, _index2.default)(regl, { size: gridSize, ticks: 10, infinite: true });
-  var infiniGridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -1.8] });
-
-  var command = function command(props) {
-    var entities = props.entities;
-    var machine = props.machine;
-    var camera = props.camera;
-    var view = props.view;
-    var background = props.background;
-    var outOfBoundsColor = props.outOfBoundsColor;
-
-
-    wrapperScope(props, function (context) {
-      regl.clear({
-        color: background,
-        depth: 1
-      });
-      drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1], fogColor: background, model: infiniGridOffset });
-
-      entities.map(function (entity) {
-        //use this for colors that change outside build area
-        //const color = entity.visuals.color
-        //const printableArea = machine ? machine.params.printable_area : [0, 0]
-        //this one for single color for outside bounds
-        var color = entity.bounds.outOfBounds ? outOfBoundsColor : entity.visuals.color;
-        var printableArea = undefined;
-
-        entity.visuals.draw({ view: view, camera: camera, color: color, model: entity.modelMat, printableArea: printableArea });
-      });
-
-      if (machine) {
-        machine.draw({ view: view, camera: camera });
-      }
-
-      /*entities.map(function (entity) {
-        const {pos} = entity.transforms
-        const offset = pos[2]-entity.bounds.size[2]*0.5
-        const model = _model({pos: [pos[0], pos[1], -0.1]})
-        const headSize = [100,60]
-        const width = entity.bounds.size[0]+headSize[0]
-        const length = entity.bounds.size[1]+headSize[1]
-         return makeDrawPrintheadShadow(regl, {width,length})({view, camera, model, color: [0.1, 0.1, 0.1, 0.15]})
-      })*/
-    });
-  };
-
-  return function render(data) {
-    command(data);
-    // boilerplate etc
-    tick += 0.01;
-    // for stats
-    // regl.poll()
-  };
-}
-},{"../../common/utils/computeTMatrixFromTransforms":206,"./drawGrid/index":216,"./drawPrintheadShadow":217,"./wrapperScope":222}],222:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = wrapperScope;
-
-var _glMat = require('gl-mat4');
-
-var _glMat2 = _interopRequireDefault(_glMat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function wrapperScope(regl) {
-  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var fbo = params.fbo;
-
-
-  var commandParams = {
-    cull: {
-      enable: true
-    },
-    context: {
-      lightDir: [0.39, 0.87, 0.29]
-    },
-    uniforms: {
-      lightDir: function lightDir(context) {
-        return context.lightDir;
-      },
-      lightColor: [1, 0.8, 0],
-      lightView: function lightView(context) {
-        return _glMat2.default.lookAt([], context.lightDir, [0.0, 0.0, 0.0], [0.0, 0.0, 1.0]);
-      },
-      lightProjection: _glMat2.default.ortho([], -25, 25, -20, 20, -25, 25),
-
-      ambientLightAmount: 0.8,
-      diffuseLightAmount: 0.9,
-      view: function view(context, props) {
-        return props.view;
-      },
-      projection: function projection(context, props) {
-        return props.camera.projection;
-      },
-      camNear: function camNear(context, props) {
-        return props.camera.near;
-      },
-      camFar: function camFar(context, props) {
-        return props.camera.far;
-      }
-    },
-    framebuffer: fbo
-  };
-
-  commandParams = Object.assign({}, commandParams, params.extras);
-  return regl(commandParams);
-}
-},{"gl-mat4":30}],223:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28252,10 +27538,10 @@ function entityPrep(rawGeometry$) {
 
   return addedEntities$;
 } // helpers
-},{"../common/utils/centerGeometry":205,"../common/utils/offsetTransformsByBounds":211,"./prepPipeline":226}],224:[function(require,module,exports){
+},{"../common/utils/centerGeometry":204,"../common/utils/offsetTransformsByBounds":212,"./prepPipeline":217}],215:[function(require,module,exports){
 'use strict';
 
-var _render = require('./drawCommands/render');
+var _render = require('./rendering/render');
 
 var _render2 = _interopRequireDefault(_render);
 
@@ -28433,7 +27719,7 @@ addEntities$.forEach(function (m) {
   return modelLoaded(true);
 }); // side effect => dispatch to callback)
 objectFitsPrintableVolume$.forEach(objectFitsPrintableVolume);
-},{"../common/bounds/isObjectOutsideBounds":192,"../common/camera":193,"../common/controls/controlsStream":196,"../common/controls/orbitControls":197,"../common/interactions/elementSizing":198,"../common/interactions/pointerGestures":199,"../common/mobilePlatforms/interface":203,"../common/utils/most/limitFlow":210,"./drawCommands/render":221,"./entityPrep":223,"./loader":225,"./sideEffects/adressBarDriver":227,"./sideEffects/nativeApiDriver":228,"./state":229,"./visualState":230,"most":117,"regl":149}],225:[function(require,module,exports){
+},{"../common/bounds/isObjectOutsideBounds":191,"../common/camera":192,"../common/controls/controlsStream":195,"../common/controls/orbitControls":196,"../common/interactions/elementSizing":197,"../common/interactions/pointerGestures":198,"../common/mobilePlatforms/interface":202,"../common/utils/most/limitFlow":211,"./entityPrep":214,"./loader":216,"./rendering/render":226,"./sideEffects/adressBarDriver":228,"./sideEffects/nativeApiDriver":229,"./state":230,"./visualState":231,"most":116,"regl":148}],216:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -28635,7 +27921,7 @@ function loadTest(uri) {
   });
 }
 }).call(this,require("buffer").Buffer)
-},{"@most/create":1,"buffer":9,"fetch-readablestream":16,"stream":150,"usco-stl-parser":176}],226:[function(require,module,exports){
+},{"@most/create":1,"buffer":8,"fetch-readablestream":15,"stream":149,"usco-stl-parser":175}],217:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28653,9 +27939,13 @@ var _computeTMatrixFromTransforms = require('../common/utils/computeTMatrixFromT
 
 var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
 
-var _angleNormals = require('angle-normals');
+var _computeNormalsFromUnindexedPositions = require('../common/utils/geometry/computeNormalsFromUnindexedPositions');
 
-var _angleNormals2 = _interopRequireDefault(_angleNormals);
+var _computeNormalsFromUnindexedPositions2 = _interopRequireDefault(_computeNormalsFromUnindexedPositions);
+
+var _doNormalsNeedComputing = require('../common/utils/geometry/doNormalsNeedComputing');
+
+var _doNormalsNeedComputing2 = _interopRequireDefault(_doNormalsNeedComputing);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28663,7 +27953,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function injectBounds(entity) {
   var bounds = (0, _computeBounds2.default)(entity);
   var result = Object.assign({}, entity, { bounds: bounds });
-  //console.log('data with bounds', result)
+  // console.log('data with bounds', result)
   return result;
 }
 
@@ -28671,19 +27961,715 @@ function injectBounds(entity) {
 function injectTMatrix(entity) {
   var modelMat = (0, _computeTMatrixFromTransforms2.default)(entity.transforms);
   var result = Object.assign({}, entity, { modelMat: modelMat });
-  //console.log('result', result)
+  // console.log('result', result)
   return result;
 }
 
-// inject object transformation matrix : costly : only do it when changes happened to objects
+// inject normals
 function injectNormals(entity) {
   var geometry = entity.geometry;
+  // FIXME: not entirely sure we should always recompute it, but we had cases of files with normals specified, but wrong
+  // let tmpGeometry = reindex(geometry.positions)
+  // geometry.normals = normals(tmpGeometry.cells, tmpGeometry.positions)
 
-  geometry.normals = geometry.cells && !geometry.normals ? (0, _angleNormals2.default)(geometry.cells, geometry.positions) : geometry.normals;
+  geometry.normals = (0, _doNormalsNeedComputing2.default)(geometry) ? (0, _computeNormalsFromUnindexedPositions2.default)(geometry.positions) : geometry.normals;
   var result = Object.assign({}, entity, { geometry: geometry });
   return result;
 }
-},{"../common/bounds/computeBounds":191,"../common/utils/computeTMatrixFromTransforms":206,"angle-normals":5}],227:[function(require,module,exports){
+},{"../common/bounds/computeBounds":190,"../common/utils/computeTMatrixFromTransforms":205,"../common/utils/geometry/computeNormalsFromUnindexedPositions":206,"../common/utils/geometry/doNormalsNeedComputing":207}],218:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+exports.default = drawCuboid;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function drawCuboid(regl, params) {
+  var size = params.size;
+
+  var _size = _slicedToArray(size, 3);
+
+  var width = _size[0];
+  var length = _size[1];
+  var height = _size[2];
+
+  var halfWidth = width * 0.5;
+  var halfLength = length * 0.5;
+  var halfHeight = height * 0.5;
+
+  var position = [-halfWidth, -halfLength, -halfHeight, halfWidth, -halfLength, -halfHeight, halfWidth, halfLength, -halfHeight, -halfWidth, halfLength, -halfHeight, -halfWidth, -halfLength, halfHeight, halfWidth, -halfLength, halfHeight, halfWidth, halfLength, halfHeight, -halfWidth, halfLength, halfHeight];
+
+  // use this one for clean cube wireframe outline
+  var cells = [0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 5, 1, 2, 6, 7, 3];
+
+  var normal = position.map(function (p) {
+    return p / size;
+  });
+
+  return regl({
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    attributes: {
+      position: position,
+      normal: normal },
+    elements: cells,
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: regl.prop('color'),
+      angle: function angle(_ref) {
+        var tick = _ref.tick;
+        return 0.01 * tick;
+      }
+    },
+    primitive: 'line strip',
+    lineWidth: 2,
+
+    depth: {
+      enable: true,
+      mask: false,
+      func: 'less',
+      range: [0, 1]
+    }
+  });
+}
+},{"gl-mat4":29}],219:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = drawCuboidFromCoords;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+ // works in client & server
+function drawCuboidFromCoords(regl, params) {
+  var coords = params.coords;
+  var height = params.height;
+
+
+  var position = coords.map(function (x) {
+    return [].concat(_toConsumableArray(x), [0]);
+  }).concat(coords.map(function (x) {
+    return [].concat(_toConsumableArray(x), [height]);
+  }));
+
+  // use this one for clean cube wireframe outline
+  var cells = [0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 5, 1, 2, 6, 7, 3];
+
+  var normal = position.map(function (p) {
+    return 1;
+  });
+
+  return regl({
+    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n //fragNormal = normal;\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    attributes: {
+      position: position,
+      normal: normal },
+    elements: cells,
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: regl.prop('color'),
+      angle: function angle(_ref) {
+        var tick = _ref.tick;
+        return 0.01 * tick;
+      }
+    },
+    primitive: 'line strip',
+    lineWidth: 3,
+
+    depth: {
+      enable: true,
+      mask: false,
+      func: 'less',
+      range: [0, 1]
+    },
+    cull: {
+      enable: true,
+      face: 'front'
+    }
+  });
+}
+},{"gl-mat4":29}],220:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = makeDrawEnclosure;
+
+var _drawGrid = require('./drawGrid');
+
+var _drawGrid2 = _interopRequireDefault(_drawGrid);
+
+var _drawTri = require('./drawTri');
+
+var _drawTri2 = _interopRequireDefault(_drawTri);
+
+var _drawCuboid = require('./drawCuboid');
+
+var _drawCuboid2 = _interopRequireDefault(_drawCuboid);
+
+var _drawCuboidFromCoords = require('./drawCuboidFromCoords');
+
+var _drawCuboidFromCoords2 = _interopRequireDefault(_drawCuboidFromCoords);
+
+var _drawStaticMesh = require('./drawStaticMesh');
+
+var _drawStaticMesh2 = _interopRequireDefault(_drawStaticMesh);
+
+var _computeTMatrixFromTransforms = require('../../common/utils/computeTMatrixFromTransforms');
+
+var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
+
+var _getBrandingSvgGeometry = require('../../branding/getBrandingSvgGeometry');
+
+var _getBrandingSvgGeometry2 = _interopRequireDefault(_getBrandingSvgGeometry);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import getBrandingSvg from '../../branding/getBrandingSvg'
+// import makeDrawImgPlane from './drawImgPlane'
+
+
+function makeDrawEnclosure(regl, params) {
+  var machine_disallowed_areas = params.machine_disallowed_areas;
+  var machine_volume = params.machine_volume;
+  var name = params.name;
+
+
+  var drawGrid = (0, _drawGrid2.default)(regl, { size: machine_volume, ticks: 50, centered: true });
+  var drawGridDense = (0, _drawGrid2.default)(regl, { size: machine_volume, ticks: 10, centered: true });
+  var gridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, 0.1] });
+  var gridOffsetD = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, 0.5] });
+
+  var triSize = { width: 50, height: 20 };
+  var drawTri = (0, _drawTri2.default)(regl, { width: triSize.width, height: triSize.height });
+  var triMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [-triSize.width / 2, machine_volume[1] * 0.5, 0.1] });
+
+  var containerSize = [machine_volume[0], machine_volume[1], machine_volume[2]];
+  var drawCuboid = (0, _drawCuboid2.default)(regl, { size: containerSize });
+  var containerCuboidMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, machine_volume[2] * 0.5] });
+
+  var buildPlaneGeo = {
+    positions: [[-1, +1, 0], [+1, +1, 0], [+1, -1, 0], [-1, -1, 0]],
+    cells: [[2, 1, 0], [2, 0, 3]]
+  };
+  var planeReducer = 0.5; // fudge value in order to prevent overlaps with bounds (z fighting)
+  var buildPlaneModel = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -0.15], sca: [machine_volume[0] * 0.5 - planeReducer, machine_volume[1] * 0.5 - planeReducer, 1] });
+  var drawBuildPlane = (0, _drawStaticMesh2.default)(regl, {
+    geometry: buildPlaneGeo,
+    extras: {
+      cull: {
+        enable: true,
+        face: 'back'
+      }
+    }
+  });
+
+  // branding
+  // const logoTexure = svgStringAsReglTexture(regl, getBrandingSvg(name))
+  // const logoPlane = makeDrawImgPlane(regl, {texture: logoTexure})
+  // logoTexure.width * logoScale, logoTexure.height * logoScale
+  var logoMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 60, 1], rot: [Math.PI / 2, Math.PI, 0] });
+  var logoMesh = (0, _getBrandingSvgGeometry2.default)(name);
+  // const logoMesh = svgStringAsGeometry(logoImg)
+  var drawLogoMesh = (0, _drawStaticMesh2.default)(regl, { geometry: logoMesh });
+
+  //const dissalowedVolumes = machine_disallowed_areas
+  //  .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
+
+  return function (_ref) {
+    var view = _ref.view;
+    var camera = _ref.camera;
+
+    drawGrid({ view: view, camera: camera, color: [0, 0, 0, 0.2], model: gridOffset });
+    drawGridDense({ view: view, camera: camera, color: [0, 0, 0, 0.06], model: gridOffsetD });
+
+    // drawTri({view, camera, color: [0, 0, 0, 0.5], model: triMatrix})
+    drawBuildPlane({ view: view, camera: camera, color: [1, 1, 1, 1], model: buildPlaneModel });
+    drawCuboid({ view: view, camera: camera, color: [0, 0, 0.0, 0.5], model: containerCuboidMatrix });
+    // dissalowedVolumes.forEach(x => x({view, camera, color: [1, 0, 0, 1]}))
+    // logoPlane({view, camera, color: [0.4, 0.4, 0.4, 1], model: logoMatrix2})
+    drawLogoMesh({ view: view, camera: camera, color: [0, 0, 0, 0.5], model: logoMatrix });
+  };
+}
+
+// import svgStringAsReglTexture from '../../common/utils/image/svgStringAsReglTexture'
+// import svgStringAsGeometry from '../../common/utils/geometry/svgStringAsGeometry'
+},{"../../branding/getBrandingSvgGeometry":185,"../../common/utils/computeTMatrixFromTransforms":205,"./drawCuboid":218,"./drawCuboidFromCoords":219,"./drawGrid":221,"./drawStaticMesh":223,"./drawTri":225}],221:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = prepareDrawGrid;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function prepareDrawGrid(regl) {
+  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  var positions = [];
+  var infinite = params.infinite || false;
+  var centered = params.centered || false;
+
+  var size = params.size;
+  var ticks = params.ticks;
+
+  ticks = ticks || 1;
+  size = size || [16, 16];
+
+  var width = size[0];
+  var length = size[1];
+
+  if (centered) {
+    var halfWidth = width * 0.5;
+    var halfLength = length * 0.5;
+
+    var remWidth = halfWidth % ticks;
+    var widthStart = -halfWidth + remWidth;
+    var widthEnd = -widthStart;
+
+    var remLength = halfLength % ticks;
+    var lengthStart = -halfLength + remLength;
+    var lengthEnd = -lengthStart;
+
+    var skipEvery = 0;
+
+    for (var i = widthStart, j = 0; i <= widthEnd; i += ticks, j += 1) {
+      if (j % skipEvery !== 0) {
+        positions.push(lengthStart, i, 0);
+        positions.push(lengthEnd, i, 0);
+        positions.push(lengthStart, i, 0);
+      }
+    }
+    for (var _i = lengthStart, _j = 0; _i <= lengthEnd; _i += ticks, _j += 1) {
+      if (_j % skipEvery !== 0) {
+        positions.push(_i, widthStart, 0);
+        positions.push(_i, widthEnd, 0);
+        positions.push(_i, widthStart, 0);
+      }
+    }
+  } else {
+    for (var _i2 = -width * 0.5; _i2 <= width * 0.5; _i2 += ticks) {
+      positions.push(-length * 0.5, _i2, 0);
+      positions.push(length * 0.5, _i2, 0);
+      positions.push(-length * 0.5, _i2, 0);
+    }
+
+    for (var _i3 = -length * 0.5; _i3 <= length * 0.5; _i3 += ticks) {
+      positions.push(_i3, -width * 0.5, 0);
+      positions.push(_i3, width * 0.5, 0);
+      positions.push(_i3, -width * 0.5, 0);
+    }
+  }
+
+  var frag = infinite ? "precision mediump float;\n#define GLSLIFY 1\nuniform vec4 color;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\n#define FOG_DENSITY 0.03\nfloat fogFactorExp(\n  const float dist,\n  const float density\n) {\n  return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);\n}\n\nuniform vec4 fogColor;\n\nvoid main() {\n  float fogDistance = gl_FragCoord.z / gl_FragCoord.w;\n  float fogAmount = fogFactorExp(fogDistance * 0.1, FOG_DENSITY);\n\n  float dist = distance( vec2(0.,0.), vec2(worldPosition.x,worldPosition.y));\n  dist *= 0.0016;\n  dist = clamp(dist, 0.0, 1.0);\n  //0 ===> 200\n  //\n  //vec4 col = vec4(fogColor.r, color.g, color.b, 0.);\n  //gl_FragColor = col;//mix(color, fogColor, fogAmount);\n  gl_FragColor = mix(color, fogColor, dist);\n}\n" : "precision mediump float;\n#define GLSLIFY 1\nvarying vec3  fragPosition;\nuniform vec4 color;\nvoid main() {\n  gl_FragColor = color;\n}\n";
+
+  return regl({
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
+    frag: frag,
+
+    attributes: {
+      position: regl.buffer(positions)
+    },
+    count: positions.length / 3,
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      view: function view(context, props) {
+        return props.view;
+      },
+      _projection: function _projection(context, props) {
+        return _glMat2.default.ortho([], -300, 300, 350, -350, 0.01, 1000);
+      },
+      color: regl.prop('color'),
+      fogColor: function fogColor(context, props) {
+        return props.fogColor || [1, 1, 1, 1];
+      }
+    },
+    lineWidth: 2,
+    primitive: 'lines',
+    cull: {
+      enable: true,
+      face: 'front'
+    },
+    polygonOffset: {
+      enable: true,
+      offset: {
+        factor: 1,
+        units: Math.random() * 10
+      }
+    }
+
+  });
+}
+},{"gl-mat4":29}],222:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = drawPrintheadShadow;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function drawPrintheadShadow(regl, params) {
+  var width = params.width;
+  var length = params.length;
+
+  var halfWidth = width * 0.5;
+  var halfLength = length * 0.5;
+
+  return regl({
+    vert: "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position, normal;\nuniform mat4 model, view, projection;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n fragNormal = normal;\n fragPosition = position;\n gl_Position = projection * view * model * vec4(position, 1);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    attributes: {
+      position: [-halfWidth, -halfLength, 0, halfWidth, -halfLength, 0, halfWidth, halfLength, 0, -halfWidth, halfLength, 0],
+      normal: [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1]
+    },
+    elements: [0, 1, 3, 3, 1, 2],
+    // count: 4,
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: regl.prop('color')
+    },
+    cull: {
+      enable: true,
+      face: 'back'
+    },
+    polygonOffset: {
+      enable: true,
+      offset: {
+        factor: 1,
+        units: Math.random() * 10
+      }
+    }
+  });
+}
+},{"gl-mat4":29}],223:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = drawMesh;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function drawMesh(regl) {
+  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { extras: {} };
+  var prop = regl.prop;
+  var buffer = regl.buffer;
+  var geometry = params.geometry;
+
+  var commandParams = {
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: prop('color')
+    },
+    attributes: {
+      position: buffer(geometry.positions)
+    },
+    elements: geometry.cells,
+    cull: {
+      enable: false,
+      face: 'front'
+    }
+  };
+
+  // Splice in any extra params
+  commandParams = Object.assign({}, commandParams, params.extras);
+  return regl(commandParams);
+}
+},{"gl-mat4":29}],224:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = drawMesh;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function drawMesh(regl) {
+  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { extras: {} };
+  var prop = regl.prop;
+  var buffer = regl.buffer;
+  var geometry = params.geometry;
+
+  var commandParams = {
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position, normal;\n\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 _worldSpacePosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  _worldSpacePosition = worldSpacePosition;\n  gl_Position = projection * view * worldSpacePosition;\n\n  vec4 glPosition = projection * view * model * vec4(position, 1);\n  //gl_Position = glPosition;\n  gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n\n}\n",
+    frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvarying vec4 _worldSpacePosition;\n\nuniform vec2 printableArea;\n\nvec4 errorColor = vec4(0.15, 0.15, 0.15, 0.3);//vec4(0.15, 0.15, 0.15, 0.3);\n\nvoid main () {\n  vec4 depth = gl_FragCoord;\n\n  float v = 0.8; // shadow value\n  vec4 endColor = color;\n\n  //if anything is outside the printable area, shade differently\n  /*if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){\n    endColor = errorColor;\n  }\n  if(_worldSpacePosition.y>printableArea.y*0.5 || _worldSpacePosition.y<printableArea.y*-0.5) {\n    endColor = errorColor;\n  }*/\n\n  vec3 ambient = ambientLightAmount * endColor.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * endColor.rgb * clamp(cosTheta , 0.0, 1.0 );\n\n  float cosTheta2 = dot(fragNormal, vec3(-lightDir.x, -lightDir.y, lightDir.z));\n  vec3 diffuse2 = diffuseLightAmount * endColor.rgb * clamp(cosTheta2 , 0.0, 1.0 );\n\n  gl_FragColor = vec4((ambient + diffuse + diffuse2 * v), endColor.a);\n}\n",
+
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: prop('color'),
+      printableArea: function printableArea(context, props) {
+        return props.printableArea || [0, 0];
+      }
+    },
+    attributes: {
+      position: buffer(geometry.positions)
+    },
+    // elements: geometry.cells
+    cull: {
+      enable: true,
+      face: 'back'
+    }
+  };
+  if (geometry.cells) {
+    commandParams.elements = geometry.cells;
+  } else {
+    commandParams.count = geometry.positions.length / 3;
+  }
+
+  if (geometry.normals) {
+    commandParams.attributes.normal = buffer(geometry.normals);
+  }
+  // Splice in any extra params
+  commandParams = Object.assign({}, commandParams, params.extras);
+  return regl(commandParams);
+}
+},{"gl-mat4":29}],225:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = drawTri;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ // works in client & server
+function drawTri(regl, params) {
+  var width = params.width;
+  var height = params.height;
+
+  return regl({
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position;\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 worldPosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  //fragNormal = normal;\n  fragPosition = position;\n  worldPosition = model * vec4(position, 1);\n  vec4 glPosition = projection * view * worldPosition;\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
+    frag: "precision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragPosition;\nuniform vec4 color;\n\nvoid main() {\n  gl_FragColor = color;\n}\n",
+
+    attributes: {
+      position: [width / 2, height, 0, 0, 0, 0, width, 0, 0]
+    },
+    count: 3,
+    uniforms: {
+      model: function model(context, props) {
+        return props.model || _glMat2.default.identity([]);
+      },
+      color: regl.prop('color')
+    },
+    cull: {
+      enable: false,
+      face: 'back'
+    }
+  });
+}
+},{"gl-mat4":29}],226:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = prepareRender;
+
+var _wrapperScope = require('./wrapperScope');
+
+var _wrapperScope2 = _interopRequireDefault(_wrapperScope);
+
+var _drawPrintheadShadow = require('./drawPrintheadShadow');
+
+var _drawPrintheadShadow2 = _interopRequireDefault(_drawPrintheadShadow);
+
+var _computeTMatrixFromTransforms = require('../../common/utils/computeTMatrixFromTransforms');
+
+var _computeTMatrixFromTransforms2 = _interopRequireDefault(_computeTMatrixFromTransforms);
+
+var _index = require('./drawGrid/index');
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function prepareRender(regl, params) {
+  var wrapperScope = (0, _wrapperScope2.default)(regl);
+  var tick = 0;
+
+  // infine grid, always there
+  // infinite grid
+  var gridSize = [1220, 1200]; // size of 'infinite grid'
+  var drawInfiniGrid = (0, _index2.default)(regl, { size: gridSize, ticks: 10, infinite: true });
+  var infiniGridOffset = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, 0, -1.8] });
+
+  var command = function command(props) {
+    var entities = props.entities;
+    var machine = props.machine;
+    var camera = props.camera;
+    var view = props.view;
+    var background = props.background;
+    var outOfBoundsColor = props.outOfBoundsColor;
+
+
+    wrapperScope(props, function (context) {
+      regl.clear({
+        color: background,
+        depth: 1
+      });
+      drawInfiniGrid({ view: view, camera: camera, color: [0, 0, 0, 0.1], fogColor: background, model: infiniGridOffset });
+
+      entities.map(function (entity) {
+        //use this for colors that change outside build area
+        //const color = entity.visuals.color
+        //const printableArea = machine ? machine.params.printable_area : [0, 0]
+        //this one for single color for outside bounds
+        var color = entity.bounds.outOfBounds ? outOfBoundsColor : entity.visuals.color;
+        var printableArea = undefined;
+
+        entity.visuals.draw({ view: view, camera: camera, color: color, model: entity.modelMat, printableArea: printableArea });
+      });
+
+      if (machine) {
+        machine.draw({ view: view, camera: camera });
+      }
+
+      /*entities.map(function (entity) {
+        const {pos} = entity.transforms
+        const offset = pos[2]-entity.bounds.size[2]*0.5
+        const model = _model({pos: [pos[0], pos[1], -0.1]})
+        const headSize = [100,60]
+        const width = entity.bounds.size[0]+headSize[0]
+        const length = entity.bounds.size[1]+headSize[1]
+         return makeDrawPrintheadShadow(regl, {width,length})({view, camera, model, color: [0.1, 0.1, 0.1, 0.15]})
+      })*/
+    });
+  };
+
+  return function render(data) {
+    command(data);
+    // boilerplate etc
+    tick += 0.01;
+    // for stats
+    // regl.poll()
+  };
+}
+},{"../../common/utils/computeTMatrixFromTransforms":205,"./drawGrid/index":221,"./drawPrintheadShadow":222,"./wrapperScope":227}],227:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = wrapperScope;
+
+var _glMat = require('gl-mat4');
+
+var _glMat2 = _interopRequireDefault(_glMat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function wrapperScope(regl) {
+  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var fbo = params.fbo;
+
+
+  var commandParams = {
+    cull: {
+      enable: true
+    },
+    context: {
+      lightDir: [0.39, 0.87, 0.29]
+    },
+    uniforms: {
+      lightDir: function lightDir(context) {
+        return context.lightDir;
+      },
+      lightColor: [1, 0.8, 0],
+      lightView: function lightView(context) {
+        return _glMat2.default.lookAt([], context.lightDir, [0.0, 0.0, 0.0], [0.0, 0.0, 1.0]);
+      },
+      lightProjection: _glMat2.default.ortho([], -25, 25, -20, 20, -25, 25),
+
+      ambientLightAmount: 0.8,
+      diffuseLightAmount: 0.9,
+      view: function view(context, props) {
+        return props.view;
+      },
+      projection: function projection(context, props) {
+        return props.camera.projection;
+      },
+      camNear: function camNear(context, props) {
+        return props.camera.near;
+      },
+      camFar: function camFar(context, props) {
+        return props.camera.far;
+      }
+    },
+    framebuffer: fbo
+  };
+
+  commandParams = Object.assign({}, commandParams, params.extras);
+  return regl(commandParams);
+}
+},{"gl-mat4":29}],228:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28713,7 +28699,7 @@ var adressBarDriver = (0, _create2.default)(function (add, end, error) {
 });
 
 exports.default = adressBarDriver;
-},{"@most/create":1}],228:[function(require,module,exports){
+},{"@most/create":1}],229:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28749,7 +28735,7 @@ function nativeApiDriver(out$) {
     modelUri$: modelUri$
   };
 }
-},{"../../common/utils/most/callBackToStream":209,"../../common/utils/printing/formatRawMachineData":212}],229:[function(require,module,exports){
+},{"../../common/utils/most/callBackToStream":210,"../../common/utils/printing/formatRawMachineData":213}],230:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28815,7 +28801,7 @@ function makeState(machine$, entities$) {
   }, [entities$, machine$]);
   return appState$;
 }
-},{"../common/bounds/isObjectOutsideBounds":192,"../common/utils/modelUtils":207,"most":117}],230:[function(require,module,exports){
+},{"../common/bounds/isObjectOutsideBounds":191,"../common/utils/modelUtils":208,"most":116}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28825,11 +28811,11 @@ exports.makeVisualState = makeVisualState;
 
 var _most = require('most');
 
-var _drawEnclosure = require('./drawCommands/drawEnclosure');
+var _drawEnclosure = require('./rendering/drawEnclosure');
 
 var _drawEnclosure2 = _interopRequireDefault(_drawEnclosure);
 
-var _index = require('./drawCommands/drawStaticMesh2/index');
+var _index = require('./rendering/drawStaticMesh2/index');
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -28863,4 +28849,4 @@ function makeVisualState(regl, machine$, entities$, camState$) {
     return { entities: entities, machine: machine, view: view, camera: camera, background: background, outOfBoundsColor: outOfBoundsColor };
   }, [entitiesWithVisuals$, machineWithVisuals$, camState$]);
 }
-},{"./drawCommands/drawEnclosure":215,"./drawCommands/drawStaticMesh2/index":219,"most":117}]},{},[224]);
+},{"./rendering/drawEnclosure":220,"./rendering/drawStaticMesh2/index":224,"most":116}]},{},[215]);
