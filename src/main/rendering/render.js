@@ -56,7 +56,7 @@ export default function prepareRender (regl, params) {
     command(data)
     // boilerplate etc
     tick += 0.01
-    // for stats
+    // for stats, resizing etc
     // regl.poll()
   }
 }

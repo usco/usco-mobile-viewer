@@ -15,12 +15,9 @@ void main() {
   fragNormal = normal;
   vec4 worldSpacePosition = model * vec4(position, 1);
   _worldSpacePosition = worldSpacePosition;
-  gl_Position = projection * view * worldSpacePosition;
-
+  //gl_Position = projection * view * worldSpacePosition;
 
   vec4 glPosition = projection * view * model * vec4(position, 1);
-  //gl_Position = glPosition;
-  gl_Position = zBufferAdjust(glPosition, camNear, camFar);
-
-
+  gl_Position = glPosition;
+  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);
 }

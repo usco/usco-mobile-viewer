@@ -16,7 +16,6 @@ export default function drawMesh (regl, params = {extras: {}}) {
     attributes: {
       position: buffer(geometry.positions)
     },
-    // elements: geometry.cells
     cull: {
       enable: true,
       face: 'back'
