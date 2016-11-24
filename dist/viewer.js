@@ -27718,7 +27718,28 @@ viewerReady();
 addEntities$.forEach(function (m) {
   return modelLoaded(true);
 }); // side effect => dispatch to callback)
-objectFitsPrintableVolume$.forEach(objectFitsPrintableVolume);
+objectFitsPrintableVolume$.forEach(objectFitsPrintableVolume); // dispatch message to signify out of bounds or not
+
+
+// for testing only
+var machineParams = {
+  'name': 'ultimaker3_extended',
+  'machine_width': 215,
+  'machine_depth': 215,
+  'machine_height': 300,
+  'printable_area': [200, 200]
+};
+
+// for testing
+// informations about the active machine
+window.nativeApi.setMachineParams(machineParams);
+
+/*setTimeout(function () {
+  window.nativeApi.setMachineParams(machineParams)
+}, 2000)
+setTimeout(function () {
+  window.nativeApi.setModelUri( 'http://localhost:8080/data/sanguinololu_enclosure_full.stl')
+}, 50)*/
 },{"../common/bounds/isObjectOutsideBounds":191,"../common/camera":192,"../common/controls/controlsStream":195,"../common/controls/orbitControls":196,"../common/interactions/elementSizing":197,"../common/interactions/pointerGestures":198,"../common/mobilePlatforms/interface":202,"../common/utils/most/limitFlow":211,"./entityPrep":214,"./loader":216,"./rendering/render":226,"./sideEffects/adressBarDriver":228,"./sideEffects/nativeApiDriver":229,"./state":230,"./visualState":231,"most":116,"regl":148}],216:[function(require,module,exports){
 (function (Buffer){
 'use strict';
@@ -28196,9 +28217,10 @@ function makeDrawEnclosure(regl, params) {
   // logoTexure.width * logoScale, logoTexure.height * logoScale
   var logoMatrix = (0, _computeTMatrixFromTransforms2.default)({ pos: [0, -machine_volume[1] * 0.5, 20], sca: [60, 60, 1], rot: [Math.PI / 2, Math.PI, 0] });
   var logoMesh = (0, _getBrandingSvgGeometry2.default)(name);
-  // const logoMesh = svgStringAsGeometry(logoImg)
-  var drawLogoMesh = (0, _drawStaticMesh2.default)(regl, { geometry: logoMesh });
+  if (!logoMesh) console.warn('no logo found for machine called: \'' + name + '\' ');
+  var drawLogoMesh = logoMesh ? (0, _drawStaticMesh2.default)(regl, { geometry: logoMesh }) : function () {};
 
+  // const logoMesh = svgStringAsGeometry(logoImg)
   //const dissalowedVolumes = machine_disallowed_areas
   //  .map((area) => drawCuboidFromCoords(regl, {height: machine_volume[2], coords: area}))
 
@@ -28452,7 +28474,7 @@ function drawMesh(regl) {
   var geometry = params.geometry;
 
   var commandParams = {
-    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position, normal;\n\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 _worldSpacePosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  _worldSpacePosition = worldSpacePosition;\n  gl_Position = projection * view * worldSpacePosition;\n\n  vec4 glPosition = projection * view * model * vec4(position, 1);\n  //gl_Position = glPosition;\n  gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n\n}\n",
+    vert: "precision mediump float;\n#define GLSLIFY 1\n\nuniform float camNear, camFar;\nuniform mat4 model, view, projection;\n\nattribute vec3 position, normal;\n\nvarying vec3 fragNormal, fragPosition;\nvarying vec4 _worldSpacePosition;\n\nvec4 zBufferAdjust(vec4 glPosition, float camNear, float camFar)\n{\n  glPosition.z = 2.0*log(glPosition.w/camNear)/log(camFar/camNear) - 1.;\n  glPosition.z *= glPosition.w;\n  return glPosition;\n}\n\nvoid main() {\n  fragPosition = position;\n  fragNormal = normal;\n  vec4 worldSpacePosition = model * vec4(position, 1);\n  _worldSpacePosition = worldSpacePosition;\n  //gl_Position = projection * view * worldSpacePosition;\n\n  vec4 glPosition = projection * view * model * vec4(position, 1);\n  gl_Position = glPosition;\n  //gl_Position = zBufferAdjust(glPosition, camNear, camFar);\n}\n",
     frag: "/*precision mediump float;\n\nuniform vec4 color;\nvarying vec3 vnormal;\nvarying vec3 fragNormal, fragPosition;\n\nvoid main() {\n  //gl_FragColor = color;\n  gl_FragColor = vec4(abs(fragNormal), 1.0);\n}*/\n\nprecision mediump float;\n#define GLSLIFY 1\nvarying vec3 fragNormal;\nuniform float ambientLightAmount;\nuniform float diffuseLightAmount;\nuniform vec4 color;\nuniform vec3 lightDir;\nuniform vec3 opacity;\n\nvarying vec4 _worldSpacePosition;\n\nuniform vec2 printableArea;\n\nvec4 errorColor = vec4(0.15, 0.15, 0.15, 0.3);//vec4(0.15, 0.15, 0.15, 0.3);\n\nvoid main () {\n  vec4 depth = gl_FragCoord;\n\n  float v = 0.8; // shadow value\n  vec4 endColor = color;\n\n  //if anything is outside the printable area, shade differently\n  /*if(_worldSpacePosition.x>printableArea.x*0.5 || _worldSpacePosition.x<-printableArea.x*0.5){\n    endColor = errorColor;\n  }\n  if(_worldSpacePosition.y>printableArea.y*0.5 || _worldSpacePosition.y<printableArea.y*-0.5) {\n    endColor = errorColor;\n  }*/\n\n  vec3 ambient = ambientLightAmount * endColor.rgb;\n  float cosTheta = dot(fragNormal, lightDir);\n  vec3 diffuse = diffuseLightAmount * endColor.rgb * clamp(cosTheta , 0.0, 1.0 );\n\n  float cosTheta2 = dot(fragNormal, vec3(-lightDir.x, -lightDir.y, lightDir.z));\n  vec3 diffuse2 = diffuseLightAmount * endColor.rgb * clamp(cosTheta2 , 0.0, 1.0 );\n\n  gl_FragColor = vec4((ambient + diffuse + diffuse2 * v), endColor.a);\n}\n",
 
     uniforms: {
@@ -28467,7 +28489,6 @@ function drawMesh(regl) {
     attributes: {
       position: buffer(geometry.positions)
     },
-    // elements: geometry.cells
     cull: {
       enable: true,
       face: 'back'
@@ -28608,7 +28629,7 @@ function prepareRender(regl, params) {
     command(data);
     // boilerplate etc
     tick += 0.01;
-    // for stats
+    // for stats, resizing etc
     // regl.poll()
   };
 }
