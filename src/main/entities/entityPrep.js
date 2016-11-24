@@ -1,7 +1,7 @@
 // helpers
-import centerGeometry from '../common/utils/centerGeometry'
-import offsetTransformsByBounds from '../common/utils/offsetTransformsByBounds'
-import { injectNormals, injectTMatrix, injectBounds } from './prepPipeline'
+import centerGeometry from '../../common/utils/geometry/centerGeometry'
+import offsetTransformsByBounds from '../../common/utils/offsetTransformsByBounds'
+import { injectNormals, injectTMatrix, injectBounds } from './prepHelpers'
 
 /* Pipeline:
   - data => process (normals computation, color format conversion) => (drawCall generation) => drawCall

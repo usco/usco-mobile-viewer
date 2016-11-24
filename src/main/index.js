@@ -26,7 +26,7 @@ import adressBarDriver from './sideEffects/adressBarDriver'
 
 import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
 
-import entityPrep from './entityPrep'
+import entityPrep from './entities/entityPrep'
 import { makeEntitiesModel, makeMachineModel, makeState } from './state'
 import { makeVisualState } from './visualState'
 
