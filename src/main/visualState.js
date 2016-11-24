@@ -1,6 +1,6 @@
 import { combine, combineArray, merge } from 'most'
-import makeDrawEnclosure from './drawCommands/drawEnclosure'
-import drawStaticMesh from './drawCommands/drawStaticMesh2/index'
+import makeDrawEnclosure from './rendering/drawEnclosure'
+import drawStaticMesh from './rendering/drawStaticMesh2/index'
 
 export function makeVisualState (regl, machine$, entities$, camState$) {
   const machineWithVisuals$ = machine$
