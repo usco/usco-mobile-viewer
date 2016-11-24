@@ -153,7 +153,7 @@ const machineParams = {
 
 // for testing
 // informations about the active machine
-window.nativeApi.setMachineParams(machineParams)
+//window.nativeApi.setMachineParams(machineParams)
 
 /*setTimeout(function () {
   window.nativeApi.setMachineParams(machineParams)
