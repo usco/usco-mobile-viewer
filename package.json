@@ -6,9 +6,9 @@
   "scripts": {
     "test": "ava './src/common/**/*.test.js' --require babel-register --verbose",
     "build-srv": "babel src/ -d dist",
-    "build": "browserify src/main/index.js -o dist/viewer.js -t [babelify browserify minifyify ]",
+    "build": "browserify src/main/index.js -o dist/viewer.js -t [babelify browserify minifyify]",
     "watch": "watchify src/main -o dist/index.js -t [ babelify]",
-    "start-dev": "budo src/main/index.js:dist/bundle.js --port=8080 --live -- -t babelify",
+    "start-dev": "budo src/main/index.js:dist/viewer.js --port=8080 --live -- -t babelify",
     "test-render": "node src/serverSide/launch.js",
     "host": "http-server -p 8090",
     "release-patch": "git checkout master; npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
@@ -53,8 +53,7 @@
   },
   "browserify": {
     "transform": [
-      "glslify-sync/transform",
-      "rollupify"
+      "glslify-sync/transform"
     ]
   }
 }

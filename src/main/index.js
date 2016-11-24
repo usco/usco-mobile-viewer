@@ -138,7 +138,7 @@ const objectFitsPrintableVolume$ = combine(function (entity, machineParams) {
 
 // display app version, notify 'outside world the viewer is ready etc'
 appMetadata.forEach(function (data) {
-  viewerReady(`v: ${data.version}`)
+  viewerReady(`'${data.version}'`)
   console.info(`Viewer version: ${data.version}`)
 })
 
