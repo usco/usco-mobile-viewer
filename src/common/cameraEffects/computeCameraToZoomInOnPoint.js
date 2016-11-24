@@ -49,6 +49,7 @@ export default function zoomInOn (options, camera, target) {
   // return data instead of mutating anything, making things more testable too
   // return a set of end /final points , both for the position...and target
   return { position: camPosTarget, target: camTgtTarget }
+}
 
 /*return {
 starts:[camPos,camTgt]//order matters
@@ -57,7 +58,6 @@ starts:[camPos,camTgt]//order matters
 ,easing:[TWEEN.Easing.Quadratic.In,TWEEN.Easing.Quadratic.In]
 ,duration:zoomTime}
   }*/
-}
 
 
 /*
