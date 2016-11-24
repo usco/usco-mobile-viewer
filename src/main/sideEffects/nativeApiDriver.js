@@ -2,8 +2,7 @@
 import callBackToStream from '../../common/utils/most/callBackToStream'
 import formatRawMachineData from '../../common/utils/printing/formatRawMachineData'
 
-export default function nativeApiDriver(out$){
-
+export default function nativeApiDriver (out$) {
   const makeModelUriFromCb = callBackToStream()
   const modelUri$ = makeModelUriFromCb.stream
 
@@ -16,6 +15,5 @@ export default function nativeApiDriver(out$){
 
   return {
     machineParams$,
-    modelUri$
-  }
+  modelUri$}
 }
