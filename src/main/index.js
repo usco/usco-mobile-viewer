@@ -1,5 +1,5 @@
-//perhaps needed for simplicity: npm module
-//require('typedarray-methods')
+// perhaps needed for simplicity: npm module
+// require('typedarray-methods')
 const reglM = require('regl')
 // use this one for server side render
 // const regl = require('regl')(require('gl')(256, 256))
@@ -20,7 +20,7 @@ import controlsStream from '../common/controls/controlsStream'
 // import pickStream from '../common/picking/pickStream'
 
 import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
-import {elementSize} from '../common/interactions/elementSizing'
+import { elementSize } from '../common/interactions/elementSizing'
 /* --------------------- */
 import adressBarDriver from './sideEffects/adressBarDriver'
 
@@ -33,10 +33,12 @@ import { makeVisualState } from './visualState'
 // basic api
 import makeInterface from '../common/mobilePlatforms/interface'
 import nativeApiDriver from './sideEffects/nativeApiDriver'
+import appMetadataDriver from './sideEffects/appMetadataDriver'
 
 // ////////////
 const {viewerReady, modelLoaded, objectFitsPrintableVolume, machineParamsLoaded} = makeInterface()
 const nativeApi = nativeApiDriver()
+const appMetadata = appMetadataDriver()
 
 const regl = reglM({
   extensions: [
@@ -60,7 +62,6 @@ const modelUri$ = merge(
   })
   .filter(x => x !== null)
   .multicast()
-
 
 const setMachineParams$ = merge(
   nativeApi.machineParams$
@@ -135,12 +136,15 @@ const objectFitsPrintableVolume$ = combine(function (entity, machineParams) {
   .tap(e => console.log('objectFitsPrintableVolume??', e))
   .multicast()
 
-viewerReady()
+// display app version, notify 'outside world the viewer is ready etc'
+appMetadata.forEach(function (data) {
+  viewerReady(`v: ${data.version}`)
+  console.info(`Viewer version: ${data.version}`)
+})
 
 // OUTPUTS (sink side effects)
 addEntities$.forEach(m => modelLoaded(true)) // side effect => dispatch to callback)
 objectFitsPrintableVolume$.forEach(objectFitsPrintableVolume) // dispatch message to signify out of bounds or not
-
 
 // for testing only
 const machineParams = {
@@ -153,7 +157,7 @@ const machineParams = {
 
 // for testing
 // informations about the active machine
-//window.nativeApi.setMachineParams(machineParams)
+// window.nativeApi.setMachineParams(machineParams)
 
 /*setTimeout(function () {
   window.nativeApi.setMachineParams(machineParams)

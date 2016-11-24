@@ -9,7 +9,7 @@ function callNativeApp (path, payload) {
 
 export function makeIosInterface () {
   return {
-    viewerReady: () => callNativeApp('viewer', 'ready'),
+    viewerReady: (value) => callNativeApp('viewer', `ready`),//(v${value})`),
     modelLoaded: (value) => callNativeApp('loadModel', value ? 'success' : 'error'),
     machineParamsLoaded: (value) => callNativeApp('machineParams', value ? 'success' : 'error'),
     objectFitsPrintableVolume: (value) => callNativeApp('objectFitsPrintableVolume', `${value}`)
