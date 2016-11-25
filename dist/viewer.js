@@ -25643,7 +25643,7 @@ function extend() {
 },{}],185:[function(require,module,exports){
 module.exports={
   "name": "usco-mobile",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "",
   "main": "src/main/index.js",
   "scripts": {
@@ -27098,7 +27098,10 @@ var mobileCaller = {
 function makeAndroidInterface() {
   return {
     viewerReady: function viewerReady(value) {
-      return mobileCaller.call('onViewerReady(' + value + ')');
+      return mobileCaller.call('onViewerReady()');
+    },
+    viewerVersion: function viewerVersion(value) {
+      return mobileCaller.call('onViewerVersion(' + value + ')');
     },
     modelLoaded: function modelLoaded(value) {
       return mobileCaller.call('onLoadModel(' + value + ')');
@@ -27171,7 +27174,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.makeIosInterface = makeIosInterface;
 function callNativeApp(path, payload) {
   try {
-    //console.log('calling native app', path, payload)
+    // console.log('calling native app', path, payload)
     window.webkit.messageHandlers[path].postMessage(payload);
   } catch (err) {
     // console.log('Not native')
@@ -27182,7 +27185,10 @@ function makeIosInterface() {
   return {
     viewerReady: function viewerReady(value) {
       return callNativeApp('viewer', 'ready');
-    }, //(v${value})`),
+    },
+    viewerVersion: function viewerVersion(value) {
+      return callNativeApp('viewerVersion', '' + value);
+    },
     modelLoaded: function modelLoaded(value) {
       return callNativeApp('loadModel', value ? 'success' : 'error');
     },
@@ -27895,6 +27901,7 @@ var reglM = require('regl');
 var _makeInterface = (0, _interface2.default)();
 
 var viewerReady = _makeInterface.viewerReady;
+var viewerVersion = _makeInterface.viewerVersion;
 var modelLoaded = _makeInterface.modelLoaded;
 var objectFitsPrintableVolume = _makeInterface.objectFitsPrintableVolume;
 var machineParamsLoaded = _makeInterface.machineParamsLoaded;
@@ -27993,7 +28000,8 @@ var objectFitsPrintableVolume$ = (0, _most.combine)(function (entity, machinePar
 
 // display app version, notify 'outside world the viewer is ready etc'
 appMetadata.forEach(function (data) {
-  viewerReady('\'' + data.version + '\'');
+  viewerVersion('\'' + data.version + '\'');
+  viewerReady();
   console.info('Viewer version: ' + data.version);
 });
 
