@@ -1,6 +1,6 @@
 function callNativeApp (path, payload) {
   try {
-    //console.log('calling native app', path, payload)
+    // console.log('calling native app', path, payload)
     window.webkit.messageHandlers[path].postMessage(payload)
   } catch(err) {
     // console.log('Not native')
@@ -9,7 +9,8 @@ function callNativeApp (path, payload) {
 
 export function makeIosInterface () {
   return {
-    viewerReady: (value) => callNativeApp('viewer', `ready`),//(v${value})`),
+    viewerReady: (value) => callNativeApp('viewer', `ready`),
+    viewerVersion: (value) => callNativeApp('viewerVersion', `${value}`),
     modelLoaded: (value) => callNativeApp('loadModel', value ? 'success' : 'error'),
     machineParamsLoaded: (value) => callNativeApp('machineParams', value ? 'success' : 'error'),
     objectFitsPrintableVolume: (value) => callNativeApp('objectFitsPrintableVolume', `${value}`)

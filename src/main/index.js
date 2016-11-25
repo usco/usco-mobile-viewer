@@ -36,7 +36,7 @@ import nativeApiDriver from './sideEffects/nativeApiDriver'
 import appMetadataDriver from './sideEffects/appMetadataDriver'
 
 // ////////////
-const {viewerReady, modelLoaded, objectFitsPrintableVolume, machineParamsLoaded} = makeInterface()
+const {viewerReady, viewerVersion, modelLoaded, objectFitsPrintableVolume, machineParamsLoaded} = makeInterface()
 const nativeApi = nativeApiDriver()
 const appMetadata = appMetadataDriver()
 
@@ -138,7 +138,8 @@ const objectFitsPrintableVolume$ = combine(function (entity, machineParams) {
 
 // display app version, notify 'outside world the viewer is ready etc'
 appMetadata.forEach(function (data) {
-  viewerReady(`'${data.version}'`)
+  viewerVersion(`'${data.version}'`)
+  viewerReady()
   console.info(`Viewer version: ${data.version}`)
 })
 

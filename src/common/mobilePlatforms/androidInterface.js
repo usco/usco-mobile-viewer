@@ -11,7 +11,8 @@ let mobileCaller = {
 
 export function makeAndroidInterface () {
   return {
-    viewerReady: (value) => mobileCaller.call(`onViewerReady(${value})`),
+    viewerReady: (value) => mobileCaller.call(`onViewerReady()`),
+    viewerVersion: (value) => mobileCaller.call(`onViewerVersion(${value})`),
     modelLoaded: (value) => mobileCaller.call(`onLoadModel(${value})`),
     machineParamsLoaded: (value) => mobileCaller.call(`onMachineParamsResult(${value})`),
     objectFitsPrintableVolume: (value) => mobileCaller.call(`objectFitsPrintableVolume(${value})`)
