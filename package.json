@@ -2,6 +2,7 @@
   "name": "usco-mobile",
   "version": "0.6.0",
   "description": "",
+  "repository":"https://github.com/usco/usco-mobile",
   "main": "src/main/index.js",
   "scripts": {
     "test": "ava './src/common/**/*.test.js' --require babel-register --verbose",
@@ -35,6 +36,7 @@
     "ray-triangle-intersection": "^1.0.3",
     "regl": "^1.3.0",
     "typedarray-methods": "^1.0.0",
+    "usco-renderer": "github:usco/usco-renderer",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
     "vertices-bounding-box": "^1.0.0"
   },

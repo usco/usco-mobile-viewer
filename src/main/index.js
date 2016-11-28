@@ -5,7 +5,7 @@ const reglM = require('regl')
 // const regl = require('regl')(require('gl')(256, 256))
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
-import prepareRender from './rendering/render'
+import {default as prepareRender} from './rendering/render'
 
 import { params as cameraDefaults } from '../common/controls/orbitControls'
 import camera from '../common/camera'
@@ -158,7 +158,7 @@ const machineParams = {
 
 // for testing
 // informations about the active machine
-// window.nativeApi.setMachineParams(machineParams)
+//window.nativeApi.setMachineParams(machineParams)
 
 /*setTimeout(function () {
   window.nativeApi.setMachineParams(machineParams)

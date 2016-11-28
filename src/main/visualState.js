@@ -1,6 +1,6 @@
-import { combine, combineArray, merge } from 'most'
+import { combineArray } from 'most'
 import makeDrawEnclosure from './rendering/drawEnclosure'
-import drawStaticMesh from './rendering/drawStaticMesh2/index'
+import { drawStaticMesh2 as drawStaticMesh } from 'usco-renderer'
 
 export function makeVisualState (regl, machine$, entities$, camState$) {
   const machineWithVisuals$ = machine$
