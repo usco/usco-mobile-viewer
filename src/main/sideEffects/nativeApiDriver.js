@@ -12,6 +12,9 @@ export default function nativeApiDriver (out$) {
   window.nativeApi = {}
   window.nativeApi.setModelUri = makeModelUriFromCb.callback
   window.nativeApi.setMachineParams = makeMachineParamsFromCb.callback
+  window.nativeApi.heartbeat = function () { // ping pong
+    return true
+  }
 
   return {
     machineParams$,
