@@ -1,8 +1,8 @@
 {
   "name": "usco-mobile",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "",
-  "repository":"https://github.com/usco/usco-mobile",
+  "repository": "https://github.com/usco/usco-mobile",
   "main": "src/main/index.js",
   "scripts": {
     "test": "ava './src/common/**/*.test.js' --require babel-register --verbose",
