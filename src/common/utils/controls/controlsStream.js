@@ -1,12 +1,11 @@
-import { update, rotate, zoom, setFocus } from './orbitControls'
-import computeCameraToFitBounds from '../cameraEffects/computeCameraToFitBounds'
-import cameraOffsetToEntityBoundsCenter from '../cameraEffects/cameraOffsetToEntityBoundsCenter'
+import { update, rotate, zoom, setFocus } from 'usco-orbit-controls'
+import { computeCameraToFitBounds, cameraOffsetToEntityBoundsCenter } from 'usco-camera-utils'
 
-import { model } from '../utils/modelUtils'
-import {animationFrames, rafStream} from '../utils/most/animationFrames'
+import { model } from '../modelUtils'
+import {animationFrames, rafStream} from '../most/animationFrames'
 
 import mat4 from 'gl-mat4'
-import limitFlow from '../utils/most/limitFlow'
+import limitFlow from '../most/limitFlow'
 
 export default function controlsStream (interactions, cameraData, focuses$, entityFocuses$, projection$) {
   const {settings, camera} = cameraData

@@ -6,8 +6,7 @@ const reglM = require('regl')
 // use this one for rendering inside a specific canvas/element
 // var regl = require('regl')(canvasOrElement)
 import { default as prepareRender } from './rendering/render'
-
-import { params as cameraDefaults } from '../common/controls/orbitControls'
+import { params as cameraDefaults } from 'usco-orbit-controls'
 import camera from '../common/camera'
 
 import { combine, merge, just } from 'most'
@@ -16,22 +15,22 @@ import limitFlow from '../common/utils/most/limitFlow'
 import loadAsStream from './loader'
 
 // interactions
-import controlsStream from '../common/controls/controlsStream'
+import controlsStream from '../common/utils/controls/controlsStream'
 // import pickStream from '../common/picking/pickStream'
 
-import { interactionsFromEvents, pointerGestures } from '../common/interactions/pointerGestures'
-import { elementSize } from '../common/interactions/elementSizing'
+import { interactionsFromEvents, pointerGestures } from '../common/utils/interactions/pointerGestures'
+import { elementSize } from '../common/utils/interactions/elementSizing'
 /* --------------------- */
 import adressBarDriver from './sideEffects/adressBarDriver'
 
-import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
+import isObjectOutsideBounds from '../common/utils/printing/isObjectOutsideBounds'
 
 import entityPrep from './entities/entityPrep'
 import { makeEntitiesModel, makeMachineModel, makeState } from './state'
 import { makeVisualState } from './visualState'
 
 // basic api
-import makeInterface from '../common/mobilePlatforms/interface'
+import makeInterface from '../common/utils/mobilePlatforms/interface'
 import nativeApiDriver from './sideEffects/nativeApiDriver'
 import appMetadataDriver from './sideEffects/appMetadataDriver'
 

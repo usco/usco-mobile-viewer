@@ -1,5 +1,5 @@
 import { model } from '../common/utils/modelUtils'
-import isObjectOutsideBounds from '../common/bounds/isObjectOutsideBounds'
+import isObjectOutsideBounds from '../common/utils/printing/isObjectOutsideBounds'
 import { combine, combineArray, merge, just } from 'most'
 
 export function makeEntitiesModel (actions) {

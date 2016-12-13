@@ -36,8 +36,13 @@
     "ray-triangle-intersection": "^1.0.3",
     "regl": "^1.3.0",
     "typedarray-methods": "^1.0.0",
+    "usco-bounds-utils": "github:usco/usco-bounds-utils",
+    "usco-camera-utils": "github:usco/usco-camera-utils",
+    "usco-geometry-utils": "github:usco/usco-geometry-utils",
+    "usco-orbit-controls": "github:usco/usco-orbit-controls",
     "usco-renderer": "github:usco/usco-renderer",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
+    "usco-transform-utils": "github:usco/usco-transform-utils",
     "vertices-bounding-box": "^1.0.0"
   },
   "devDependencies": {

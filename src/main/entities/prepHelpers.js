@@ -1,7 +1,7 @@
-import computeBounds from '../../common/bounds/computeBounds'
-import computeTMatrixFromTransforms from '../../common/utils/computeTMatrixFromTransforms'
-import computeNormalsFromUnindexedPositions from '../../common/utils/geometry/computeNormalsFromUnindexedPositions'
-import doNormalsNeedComputing from '../../common/utils/geometry/doNormalsNeedComputing'
+import { computeBounds } from 'usco-bounds-utils'
+import { computeTMatrixFromTransforms } from 'usco-transform-utils'
+import { computeNormalsFromUnindexedPositions } from 'usco-geometry-utils'
+import { doNormalsNeedComputing } from 'usco-geometry-utils'
 
 // inject bounding box(& co) data
 export function injectBounds (entity) {

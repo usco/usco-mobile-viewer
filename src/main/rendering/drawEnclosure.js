@@ -4,7 +4,7 @@ import {drawCuboid as prepareDrawCuboid} from 'usco-renderer'
 import {drawCuboidFromCoords} from 'usco-renderer'
 import {drawStaticMesh as makeDrawStaticMesh} from 'usco-renderer'
 
-import { default as model } from '../../common/utils/computeTMatrixFromTransforms'
+import { computeTMatrixFromTransforms as model } from 'usco-transform-utils'
 
 // import svgStringAsReglTexture from '../../common/utils/image/svgStringAsReglTexture'
 // import svgStringAsGeometry from '../../common/utils/geometry/svgStringAsGeometry'
