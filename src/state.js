@@ -1,5 +1,5 @@
 import { model } from './utils/modelUtils'
-import isObjectOutsideBounds from './utils/printing/isObjectOutsideBounds'
+import { isObjectOutsideBounds } from 'usco-printing-utils'
 import { combine, combineArray, merge, just } from 'most'
 
 export function makeEntitiesModel (actions) {

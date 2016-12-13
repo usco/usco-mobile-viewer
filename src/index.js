@@ -23,7 +23,7 @@ import { elementSize } from './utils/interactions/elementSizing'
 /* --------------------- */
 import adressBarDriver from './sideEffects/adressBarDriver'
 
-import isObjectOutsideBounds from './utils/printing/isObjectOutsideBounds'
+import { isObjectOutsideBounds } from 'usco-printing-utils'
 
 import entityPrep from './entities/entityPrep'
 import { makeEntitiesModel, makeMachineModel, makeState } from './state'

@@ -40,6 +40,7 @@
     "usco-camera-utils": "github:usco/usco-camera-utils",
     "usco-geometry-utils": "github:usco/usco-geometry-utils",
     "usco-orbit-controls": "github:usco/usco-orbit-controls",
+    "usco-printing-utils": "github:usco/usco-printing-utils",
     "usco-renderer": "github:usco/usco-renderer",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
     "usco-transform-utils": "github:usco/usco-transform-utils",
