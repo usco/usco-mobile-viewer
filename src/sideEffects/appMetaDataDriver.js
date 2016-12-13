@@ -5,7 +5,7 @@ import {just} from 'most'
  * @return {Observable} observable with a single 'version' field as value
 */
 export default function appMetaDataDriver () {
-  const json = require('../../../package.json')
+  const json = require('../../package.json')
   const appMetadata$ = just({
     version: json.version
   }).multicast()

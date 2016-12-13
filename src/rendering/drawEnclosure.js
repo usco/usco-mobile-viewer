@@ -8,7 +8,7 @@ import { computeTMatrixFromTransforms as model } from 'usco-transform-utils'
 
 // import svgStringAsReglTexture from '../../common/utils/image/svgStringAsReglTexture'
 // import svgStringAsGeometry from '../../common/utils/geometry/svgStringAsGeometry'
-import getBrandingSvgGeometry from '../../branding/getBrandingSvgGeometry'
+import getBrandingSvgGeometry from '../branding/getBrandingSvgGeometry'
 // import getBrandingSvg from '../../branding/getBrandingSvg'
 // import makeDrawImgPlane from './drawImgPlane'
 
