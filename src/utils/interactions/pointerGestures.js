@@ -193,11 +193,6 @@ function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
       let startY2 = ts.touches[1].pageY // * window.devicePixelRatio
 
       const startDist = ((startX1 - startX2) * (startX1 - startX2)) + ((startY1 - startY2) * (startY1 - startY2))
-      const startPivot = [(startX1 - startX2) * 0.5 + startX2, (startY1 - startY2) * 0.5 + startY2]
-
-      let curDist = startDist
-      let prevdiff
-      let saveDist = 0
 
       return touchMoves$
         .tap(e => e.preventDefault())
@@ -210,38 +205,7 @@ function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
           let curY2 = e.touches[1].pageY // * window.devicePixelRatio
 
           const currentDist = ((curX1 - curX2) * (curX1 - curX2)) + ((curY1 - curY2) * (curY1 - curY2))
-          const currentPivot = [(curX1 - curX2) * 0.5 + curX2, (curY1 - curY2) * 0.5 + curY2]
-
           return currentDist
-
-          let diff = currentDist - startDist // (currentDist - startDist) / (window.devicePixelRatio * window.devicePixelRatio)
-          if (Math.abs(diff) > threshold) {
-            curDist = currentDist - saveDist
-            // did we move the pivot a lot ?
-            /*offset = ((currentPivot[0] - startPivot[0]) * (currentPivot[0] - startPivot[0]))
-              + ((currentPivot[1] - startPivot[1]) * (currentPivot[1] - startPivot[1]))
-            if(offset >1000){
-              diff= undefined
-            }*/
-            if (Math.abs(prevdiff - diff) < 1000) {
-              diff = undefined
-            }
-            prevdiff = diff
-          } else {
-            diff = undefined
-          }
-          const debugEl = document.getElementById('debug')
-          // debugEl.innerHTML = `start: [${startPivot[0]}, ${startPivot[1]}], cur: [${currentPivot[0]}, ${currentPivot[1]}], `
-          debugEl.innerHTML = `${diff}`
-          // `cur1: ${curX1}, ${curY1} ${curX2}, ${curY2}/n
-          // [${currentPivot[0]}, ${currentPivot[1]}]
-          // `
-
-          // FIXME: there was a touchmove, diff is the same (ie difference between current distance between fingers and start distance )
-          // FIXME: also do we need relative or absolute zoom ?
-          // debugEl.innerHTML = `diff: ${diff} start: ${startDist}, current: ${curDist}, offset ${offset}`
-          return diff
-        // return {dist: currentDist, pivot: currentPivot}
         })
         .loop(function (prev, cur) {
           if (prev) {
@@ -253,7 +217,6 @@ function pinchZoomsFromTouch (touchStart$, touchMoves$, touchEnd$) {
           return {seed: cur, value: cur - startDist}
         }, undefined)
         .filter(x => x !== undefined)
-        // .filter(diff => Math.abs(diff) > threshold)
         .map(x => x * 0.000005) // arbitrary, in order to harmonise desktop /mobile up to a point
         /*.map(function (e) {
           const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
