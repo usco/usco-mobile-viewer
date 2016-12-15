@@ -35339,7 +35339,7 @@ function extend() {
 },{}],284:[function(require,module,exports){
 module.exports={
   "name": "usco-mobile",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "",
   "repository": "https://github.com/usco/usco-mobile",
   "main": "src/index.js",
