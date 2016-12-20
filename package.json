@@ -6,12 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "ava './src/utils/**/*.test.js' --require babel-register --verbose",
-    "build-srv": "babel src/ -d dist",
     "build": "browserify src/index.js -o dist/viewer.js -t [babelify browserify minifyify]",
-    "watch": "watchify src -o dist/index.js -t [ babelify]",
     "start-dev": "budo src/index.js:dist/viewer.js --port=8080 --live -- -t babelify",
-    "test-render": "node src/serverSide/launch.js",
-    "host": "http-server -p 8090",
     "release-patch": "git checkout master; npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
     "release-minor": "git checkout master; npm version minor && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
     "release-major": "git checkout master; npm version major && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
@@ -41,7 +37,7 @@
     "usco-geometry-utils": "github:usco/usco-geometry-utils",
     "usco-orbit-controls": "github:usco/usco-orbit-controls",
     "usco-printing-utils": "github:usco/usco-printing-utils",
-    "usco-renderer": "github:usco/usco-renderer",
+    "usco-render-utils": "github:usco/usco-render-utils",
     "usco-stl-parser": "github:usco/usco-stl-parser#streaming",
     "usco-transform-utils": "github:usco/usco-transform-utils",
     "vertices-bounding-box": "^1.0.0"
