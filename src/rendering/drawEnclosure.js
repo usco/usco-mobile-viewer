@@ -1,8 +1,8 @@
-import {drawGrid as prepareDrawGrid} from 'usco-renderer'
-import {drawTri as prepareDrawTriangle} from 'usco-renderer'
-import {drawCuboid as prepareDrawCuboid} from 'usco-renderer'
-import {drawCuboidFromCoords} from 'usco-renderer'
-import {drawStaticMesh as makeDrawStaticMesh} from 'usco-renderer'
+import {drawGrid as prepareDrawGrid} from 'usco-render-utils'
+import {drawTri as prepareDrawTriangle} from 'usco-render-utils'
+import {drawCuboid as prepareDrawCuboid} from 'usco-render-utils'
+import {drawCuboidFromCoords} from 'usco-render-utils'
+import {drawStaticMesh as makeDrawStaticMesh} from 'usco-render-utils'
 
 import { computeTMatrixFromTransforms as model } from 'usco-transform-utils'
 

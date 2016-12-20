@@ -2,7 +2,7 @@ import makeWrapperScope from './wrapperScope'
 import makeDrawPrintheadShadow from './drawPrintheadShadow'
 
 import { computeTMatrixFromTransforms as model } from 'usco-transform-utils'
-import { drawGrid as prepareDrawGrid } from 'usco-renderer'
+import { drawGrid as prepareDrawGrid } from 'usco-render-utils'
 
 export default function prepareRender (regl, params) {
   const wrapperScope = makeWrapperScope(regl)
