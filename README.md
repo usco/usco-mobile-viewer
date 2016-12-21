@@ -6,11 +6,14 @@
 [![Dependency Status](https://david-dm.org/usco/usco-mobile.svg)](https://david-dm.org/usco/usco-mobile)
 [![devDependency Status](https://david-dm.org/usco/usco-mobile/dev-status.svg)](https://david-dm.org/usco/usco-mobile#info=devDependencies)
 
+<img src="https://raw.githubusercontent.com/usco/usco-mobile/master/screenshot.png" />
+
 
 > Mobile app components for usco project
 
 This is a small-ish (700 kb minified) mobile 3d file viewer component : minimal renderer + loading (stl only for now)
-(Ios/Android)
+tested and working on Ios/Android (as part of the Ultimaker 3 app : [android](https://play.google.com/store/apps/details?id=com.ultimaker.control)
+& [ios](https://itunes.apple.com/app/id1133171222))
 
 - coded in es6
 - uses streaming (node.js streams) to minimize memory consumption
