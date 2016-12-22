@@ -8,7 +8,7 @@ import mat4 from 'gl-mat4'
 import limitFlow from '../most/limitFlow'
 
 export default function controlsStream (interactions, cameraData, focuses$, entityFocuses$, projection$) {
-  const {settings, camera} = cameraData
+  let {settings, camera} = cameraData
   const {gestures} = interactions
 
   const rate$ = rafStream() // heartBeat
@@ -66,7 +66,7 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
     }
 
     function applyZoom (state, zooms) {
-      state = zoom(settings, state, zooms) // mutating, meh
+      state = zoom(settings, state, zooms)//, {adjustPlanes: true}) // mutating, meh
       return state
     }
 
@@ -85,6 +85,15 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
       state.targetTgt = phase2.target
       state.positionTgt = phase2.position
       return state
+      //FIXME: just a test for zoomToFit for now
+      //console.log('zoomToFit', state.position, state.target,  input)
+      /*camera.near = 0.01
+      settings.limits.minDistance = 0
+      let camera = state
+      const {bounds, transforms} = input
+      camera = Object.assign({}, state, cameraOffsetToEntityBoundsCenter({camera, bounds, transforms, axis: 2}))
+      camera = Object.assign({}, state, computeCameraToFitBounds({camera, bounds, transforms}))
+      return camera*/
     }
 
     //this is used for 'continuous updates' for things like spin effects, autoRotate etc
