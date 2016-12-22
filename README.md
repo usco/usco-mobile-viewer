@@ -58,8 +58,7 @@ npm run start-dev
 
 ## Usage
 
-```
-```
+See index.html for an example of use : this is not meant to be used as a library !
 
 Because of the dependency on fetch + readeable streams , if not running this in
 a recent Chrome/Chromium you will need a few polyfills :
