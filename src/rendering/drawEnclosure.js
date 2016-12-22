@@ -19,7 +19,7 @@ export default function makeDrawEnclosure (regl, params) {
   const drawGrid = prepareDrawGrid(regl, { size: machine_volume, ticks: 50, centered: true })
   const drawGridDense = prepareDrawGrid(regl, { size: machine_volume, ticks: 10, centered: true })
   const gridOffset = model({pos: [0, 0, 0.1]})
-  const gridOffsetD = model({pos: [0, 0, 0.5]})
+  const gridOffsetD = model({pos: [0, 0, 0.3]})
 
   const triSize = {width: 50, height: 20}
   const drawTri = prepareDrawTriangle(regl, {width: triSize.width, height: triSize.height})
