@@ -10,9 +10,9 @@ import limitFlow from '../most/limitFlow'
 export default function controlsStream (interactions, cameraData, focuses$, entityFocuses$, projection$) {
   let {settings, camera} = cameraData
   const {gestures} = interactions
-
   const rate$ = rafStream() // heartBeat
 
+  console.log('camera', camera.near, 'settings', settings)
   /*let i = 0
   var newdiv = document.createElement("DIV")
   newdiv.style.zIndex = 99
@@ -52,7 +52,6 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
       const projection = mat4.perspective([], state.fov, input.width / input.height, // context.viewportWidth / context.viewportHeight,
         state.near,
         state.far)
-      //state = Object.assign({}, state, {projection})
       state.projection = projection
       state.aspect = input.width / input.height
       //state = Object.assign({}, state, update(settings, state)) // not sure
@@ -60,7 +59,6 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
     }
 
     function applyRotation (state, angles) {
-      //textNode.nodeValue= 'applyRotation'
       state = rotate(settings, state, angles) // mutating, meh
       return state
     }
@@ -78,6 +76,7 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
     function zoomToFit (state, input) {
       //console.log('zoomToFit', state.position, state.target,  input)
       let camera = state
+
       const {bounds, transforms} = input
       const offsetTargetAndPosition = cameraOffsetToEntityBoundsCenter({camera, bounds, transforms, axis: 2})
       camera = Object.assign({}, state, offsetTargetAndPosition)
@@ -98,9 +97,6 @@ export default function controlsStream (interactions, cameraData, focuses$, enti
 
     //this is used for 'continuous updates' for things like spin effects, autoRotate etc
     function updateState (state) {
-      //i++
-      //textNode.nodeValue= 'foo'+i
-      //return state
       return Object.assign({}, state, update(settings, state))
     }
 
