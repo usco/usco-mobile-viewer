@@ -67,6 +67,19 @@ these are also provided in the dist folder
 - https://github.com/creatorrr/web-streams-polyfill
 
 
+### Branding:
+
+branding/ logos displayed in the app are flat 3d geometry generated from svg Files
+for increased quality & speed : to regenerate those files , please see the script in
+src/branding/generateBrandingGeoFromSvg
+
+and use the following command:
+
+```
+  node src/branding/launchGenBrandingGeoFromSvg.js
+```
+
+
 ## Contribute
 
 PRs accepted.
