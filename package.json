@@ -1,6 +1,6 @@
 {
   "name": "usco-mobile",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "",
   "repository": "https://github.com/usco/usco-mobile",
   "main": "src/index.js",
